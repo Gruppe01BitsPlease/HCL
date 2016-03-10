@@ -57,7 +57,7 @@ class LogOnGUI extends JFrame{
 
 class TestLogOn{
 	public static void main(String[] args){
-	LogOnGUI test = new LogOnGUI("Vision 0.1");
-	test.setVisible(true);
+		LogOnGUI test = new LogOnGUI("Vision 0.1");
+		test.setVisible(true);
 	}
 }
