@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import backend.*;
 
 @SuppressWarnings("serial")
 class LogOnGUI extends JFrame{
@@ -19,15 +20,24 @@ class LogOnGUI extends JFrame{
 		
 		//Create label, textfield and center their text.
 		JLabel jUser = new JLabel("Username: ", SwingConstants.LEFT);
-		JTextField user = new JTextField();
+		final JTextField user = new JTextField();
 		user.setHorizontalAlignment(JTextField.LEFT);
 		JLabel jPassword = new JLabel("Password: ", SwingConstants.LEFT);
-		JTextField password = new JPasswordField();
+		final JTextField password = new JPasswordField();
 		Action enterpass = new AbstractAction() {
-			public void actionPerformed(ActionEvent e) {
-				System.out.println("LOGGEDON");
-				MainMenuGUI main = new MainMenuGUI("Vision 0.1");
-				main.setVisible(true);
+			public void actionPerformed(ActionEvent pressed) {
+				String navn = user.getText();
+				String pass = password.getText();
+				User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
+				int i = u.logon(navn, pass);
+				if (i >= 0) {
+					System.out.println("LOGGEDON");
+					MainMenuGUI main = new MainMenuGUI("Vision 0.1");
+					main.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Login feilet!");
+				}
 			}
 		};
 		password.addActionListener(enterpass);
@@ -43,9 +53,18 @@ class LogOnGUI extends JFrame{
 		JButton LogOn = new JButton("LogOn");
 		LogOn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent pressed) {
-				System.out.println("LOGGEDON");
-				MainMenuGUI main = new MainMenuGUI("Vision 0.1");
-				main.setVisible(true);
+				String navn = user.getText();
+				String pass = password.getText();
+				User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
+				int i = u.logon(navn, pass);
+				if (i >= 0) {
+					System.out.println("LOGGEDON");
+					MainMenuGUI main = new MainMenuGUI("Vision 0.1");
+					main.setVisible(true);
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Login feilet!");
+				}
 			}
 		});
 		JButton Help = new JButton("About");
