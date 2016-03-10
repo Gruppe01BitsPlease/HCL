@@ -18,8 +18,8 @@ public class PersonaliaGUI extends JFrame {
  		PanelInfo center = new PanelInfo();
 		add(center, BorderLayout.CENTER);
 	 	
-		PanelButtons sør = new PanelButtons();
- 		add(sør, BorderLayout.SOUTH);
+		PanelButtons south = new PanelButtons();
+ 		add(south, BorderLayout.SOUTH);
  		
  		pack();
 	}
