@@ -17,6 +17,10 @@ public class User extends SQL {
 		super(databasenavn, brukernavn, passord);
 		connected = connect();
 	}
+	public User() {
+		super("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
+		connected = connect();
+	}
 
 	/**
 	 * Makes and inserts an user into the database, probably prone to exploits..
@@ -55,13 +59,17 @@ public class User extends SQL {
 
 		if (!connected)
 			return -2;
-
 		String[][] results = getStringTable(
 				"Select user_salt, user_pass, user_role from HCL_users where user_name = '" + username + "'");
-
-		byte[] salt = Base64.decode(results[1][0]); //0 row is titles
-		byte[] pass = Base64.decode(results[1][1]);
-		int rolle = Integer.parseInt(results[1][2]);
+		byte[] salt;
+		byte[] pass;
+		try {
+			salt = Base64.decode(results[1][0]); //0 row is titles
+			pass = Base64.decode(results[1][1]);
+		}
+		catch (ArrayIndexOutOfBoundsException e) {
+			return -1;
+		}		int rolle = Integer.parseInt(results[1][2]);
 
 		try {
 			if (crypt.authenticate(password, pass, salt)) {

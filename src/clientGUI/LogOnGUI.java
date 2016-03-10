@@ -55,7 +55,7 @@ class LogOnGUI extends JFrame{
 			public void actionPerformed(ActionEvent pressed) {
 				String navn = user.getText();
 				String pass = password.getText();
-				User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
+				User u = new User();
 				int i = u.logon(navn, pass);
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
@@ -85,6 +85,8 @@ class LogOnGUI extends JFrame{
 
 class TestLogOn{
 	public static void main(String[] args){
+	//	User u = new User();
+	//	u.generateUser("jens", "1234", 0);
 		LogOnGUI test = new LogOnGUI("Vision 0.1");
 		test.setVisible(true);
 	}
