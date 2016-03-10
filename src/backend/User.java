@@ -1,11 +1,7 @@
-package SQL;
+package backend;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 

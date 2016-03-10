@@ -1,9 +1,6 @@
-package SQL;
+package backend;
 
-import java.awt.event.ItemEvent;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SQL {
 

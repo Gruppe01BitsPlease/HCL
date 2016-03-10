@@ -1,4 +1,4 @@
-package SQL;
+package backend;
 
 import static javax.swing.JOptionPane.showInputDialog;
 
