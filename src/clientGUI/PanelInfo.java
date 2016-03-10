@@ -1,4 +1,4 @@
-package Vision;
+package clientGUI;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;

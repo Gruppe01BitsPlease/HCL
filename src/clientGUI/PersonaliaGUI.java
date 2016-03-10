@@ -1,4 +1,4 @@
-package Vision;
+package clientGUI;
 
 
 import javax.swing.*;
