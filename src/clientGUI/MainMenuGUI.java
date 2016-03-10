@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class MainMenuGUI extends JFrame {
 	public MainMenuGUI (String title, int rolle){
-		//window parameters
+		//window parameters  
 		setTitle(title);
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );

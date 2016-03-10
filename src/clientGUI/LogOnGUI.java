@@ -32,7 +32,7 @@ class LogOnGUI extends JFrame{
 				int i = u.logon(navn, pass);
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
-					MainMenuGUI main = new MainMenuGUI("Vision 0.1");
+					MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
 					main.setVisible(true);
 				}
 				else {
@@ -59,7 +59,7 @@ class LogOnGUI extends JFrame{
 				int i = u.logon(navn, pass);
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
-					MainMenuGUI main = new MainMenuGUI("Vision 0.1");
+					MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
 					main.setVisible(true);
 				}
 				else {
