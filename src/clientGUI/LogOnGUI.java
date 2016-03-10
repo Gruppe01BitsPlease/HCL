@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
 @SuppressWarnings("serial")
 class LogOnGUI extends JFrame{
@@ -22,6 +23,14 @@ class LogOnGUI extends JFrame{
 		user.setHorizontalAlignment(JTextField.LEFT);
 		JLabel jPassword = new JLabel("Password: ", SwingConstants.LEFT);
 		JTextField password = new JPasswordField();
+		Action enterpass = new AbstractAction() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("LOGGEDON");
+				MainMenuGUI main = new MainMenuGUI("Vision 0.1");
+				main.setVisible(true);
+			}
+		};
+		password.addActionListener(enterpass);
 		password.setHorizontalAlignment(JTextField.LEFT);
 		
 		//add label and textfield
