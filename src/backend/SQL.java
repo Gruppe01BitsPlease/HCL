@@ -220,9 +220,10 @@ public class SQL {
 
 	public static void main(String[] args) throws Exception {
 
-		Logon logon = new Logon("Database.ini");
+		Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
 		SQL sql = new SQL(logon.getDatabase(), logon.getUser(), logon.getPassword());
-
+		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
+		//System.out.println(sql.connect());
 		if (sql.connect()) {
 
 			String[][] tabell = sql.getStringTable("select * from bok");

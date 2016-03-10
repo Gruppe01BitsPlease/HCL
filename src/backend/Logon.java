@@ -85,7 +85,7 @@ public class Logon {
 
 	public static void main(String[] args) {
 
-		Logon logon = new Logon("Database.ini");
+		Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
 		System.out.println(logon.logon());
 
 		System.out.println(

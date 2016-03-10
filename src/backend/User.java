@@ -78,9 +78,9 @@ public class User extends SQL {
 
 		User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
 
-		//u.generateUser("bj�rn", "m�dahamat", 1); //Username, psw, role, 0 CEO
+		//u.generateUser("bjørn", "mådahamat", 1); //Username, psw, role, 0 CEO
 
-		int rolle = u.logon("bj�rn", "m�dahamat");
+		int rolle = u.logon("bjørn", "mådahamat");
 		System.out.println(rolle);
 	}
 }

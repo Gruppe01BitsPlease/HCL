@@ -2,7 +2,7 @@ package backend;
 
 import java.io.*;
 
-//import com.mysql.jdbc.Field;
+import com.mysql.jdbc.Field;
 
 
 public class File { //for writing to files and stuff
@@ -20,11 +20,12 @@ public class File { //for writing to files and stuff
 	private boolean rInit() {
 		try {
 			r = new BufferedReader(new FileReader(filename));
-		}
+            return true;
+        }
 		catch (FileNotFoundException e) {
-			return false;
+            e.printStackTrace();
+            return false;
 		}
-		return true;
 	}
 
 	private boolean wInit() {
@@ -85,9 +86,12 @@ public class File { //for writing to files and stuff
 		String out = "";
 		String temp = "";
 		try {
-			rInit();
+			System.out.println(rInit());
+            System.out.println(r);
 			for (int i = 0; i <= end; i++) {
-				temp = r.readLine();
+                temp = r.readLine();
+                System.out.println(r);
+
 				if (i >= start && i <= end) {
 					out += temp + "\n";
 				}
@@ -137,7 +141,9 @@ public class File { //for writing to files and stuff
 	}
 
 	public static void main(String[] args) {
-		File file = new File("oPakke.txt", true);
+		File file = new File(System.getProperty("user.dir")+"/src/backend/Database.ini", true);
+
+
 		//file.clearFile();
 		//		for (int i = 0; i < 10; i++) {
 		//			file.writeLine("Dette er linje nr: " + i);
