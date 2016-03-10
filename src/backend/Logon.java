@@ -1,12 +1,9 @@
-package SQL;
-
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+package backend;
 
 public class Logon {
 
-	File file;
-	SQL sql;
+	backend.File file;
+	backend.SQL sql;
 	private String filename;
 
 	public Logon(String filename) {
@@ -88,7 +85,7 @@ public class Logon {
 
 	public static void main(String[] args) {
 
-		Logon logon = new Logon("Database.txt");
+		Logon logon = new Logon("Database.ini");
 		System.out.println(logon.logon());
 
 		System.out.println(

@@ -1,11 +1,9 @@
-package SQL;
+package backend;
 
 import java.io.*;
-import java.nio.file.FileAlreadyExistsException;
-import java.util.Date;
 
-import com.mysql.jdbc.Field;
-import com.sun.media.jfxmedia.events.NewFrameEvent;
+//import com.mysql.jdbc.Field;
+
 
 public class File { //for writing to files and stuff
 
@@ -139,7 +137,7 @@ public class File { //for writing to files and stuff
 	}
 
 	public static void main(String[] args) {
-		oPakke.File file = new oPakke.File("oPakke.txt", true);
+		File file = new File("oPakke.txt", true);
 		//file.clearFile();
 		//		for (int i = 0; i < 10; i++) {
 		//			file.writeLine("Dette er linje nr: " + i);
