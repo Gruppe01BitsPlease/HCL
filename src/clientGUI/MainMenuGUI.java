@@ -8,9 +8,9 @@ import java.awt.event.ActionListener;
 @SuppressWarnings("serial")
 public class MainMenuGUI extends JFrame {
 	public MainMenuGUI (String title, int rolle){
-		//window parameters  
+		//window parameters
 		setTitle(title);
-		setLayout(new GridLayout(5, 1));
+		setLayout(new GridLayout(6, 1));
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
 		setSize(300, 190);
 		setLocationRelativeTo(null);
@@ -20,6 +20,12 @@ public class MainMenuGUI extends JFrame {
 		JButton Employees = new JButton("Employees");
 		JButton CEO = new JButton("CEO");
 		JButton Admin = new JButton("Admin");
+		JButton Logout = new JButton("Log out");
+		Logout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent pressed) {
+				dispose();
+			}
+		});
 		Employees.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent pressed) {
 				System.out.println("PLACEHOLDER");
@@ -32,6 +38,7 @@ public class MainMenuGUI extends JFrame {
 		add(Employees);
 		add(CEO);
 		add(Admin);
+		add(Logout);
 				/*0: CEO, 1: Salesperson, 2: Chef,
 	 *         3: Driver*/
 		if (rolle == 3) {
