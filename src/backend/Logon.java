@@ -1,9 +1,14 @@
 package backend;
 
+/**
+ * Used to log onto the SQL database using info from the Database.ini
+ * Im sure posting my SQL username and password on github / giving it to all the customers is a GREAT idea.
+ * TODO: Encrypt my password so it's not stolen :(
+ */
 public class Logon {
 
-	backend.File file;
-	backend.SQL sql;
+	private backend.File file;
+	private backend.SQL sql;
 	private String filename;
 
 	public Logon(String filename) {
@@ -40,10 +45,13 @@ public class Logon {
 
 		sql = new SQL(database, user, password);
 
-		return sql.connect();
+		return sql.connect(); // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
 	}
 
-	public void changeDatabase(String newDatabase) {
+    /**
+     * Clears the file and rewrites the data with the "Database" line changed.
+     */
+    public void changeDatabase(String newDatabase) {
 
 		String database = getDatabase();
 		String user = getUser();
@@ -57,6 +65,9 @@ public class Logon {
 
 	}
 
+    /**
+     * Clears the file and rewrites the data with the "User" line changed.
+     */
 	public void changeUser(String newUser) {
 		String database = getDatabase();
 		String user = getUser();
@@ -69,7 +80,10 @@ public class Logon {
 		file.writeLine(pass);
 	}
 
-	public void changePassword(String newPass) {
+    /**
+     * Clears the file and rewrites the data with the "Password" line changed.
+     */
+    public void changePassword(String newPass) {
 
 		String database = getDatabase();
 		String user = getUser();

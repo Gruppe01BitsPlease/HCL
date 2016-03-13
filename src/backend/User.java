@@ -24,7 +24,6 @@ public class User extends SQL {
 
 	/**
 	 * Makes and inserts an user into the database, probably prone to exploits..
-	 * TODO Make it so only the CEO can do this
 	 */
 	public boolean generateUser(String username, String password, int role) {
 		if (!connected)
@@ -33,7 +32,7 @@ public class User extends SQL {
 		PBKDF2 crypt = new PBKDF2();
 
 		try {
-			byte[] salt = crypt.generateSalt();
+            byte[] salt = crypt.generateSalt();
 			byte[] pass = crypt.getEncryptedPassword(password, salt);
 
 			String salt2 = Base64.encode(salt);
@@ -59,8 +58,10 @@ public class User extends SQL {
 
 		if (!connected)
 			return -2;
+
 		String[][] results = getStringTable(
 				"Select user_salt, user_pass, user_role from HCL_users where user_name = '" + username + "'");
+        //TODO Change to prepared statement
 		byte[] salt;
 		byte[] pass;
 		try {

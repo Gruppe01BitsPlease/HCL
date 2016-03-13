@@ -63,27 +63,32 @@ public class SQL {
 
 	/**
 	 * @return A ResultSet object
+     * TODO Change to use PreparedStatements
 	 */
 	public ResultSet query(String query) {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
 		try {
-			setning = forbindelse.createStatement();
-			res = setning.executeQuery(query);
+            Statement setning = forbindelse.createStatement();
+            ResultSet res = setning.executeQuery(query);
+            System.out.println(setning.toString()+" "+res.toString());
+            return res;
+			//setning = forbindelse.createStatement();
+			//res = setning.executeQuery(query);
 
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+		catch (SQLException e) {
+            System.out.println("Error"+e);
+			return null;
 		}
-
-		return res;
-	}
+    }
 
 	/**
 	 * Inserts something into the database through the specified query sentence
 	 * 
 	 * @return True if it worked, false otherwise
+     * TODO Use try-with, and prepared statements
 	 */
 	public boolean insert(String query) {
 		if (query == null || query.trim().equals("")) {
@@ -142,7 +147,7 @@ public class SQL {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
-		int colomns = 0;
+        //TODO Fix try-with-resources because it's a bitch
 		try {
 			ResultSet res = query(query);
 			ResultSetMetaData meta = res.getMetaData();
@@ -227,13 +232,12 @@ public class SQL {
 		if (sql.connect()) {
 
 			String[][] tabell = sql.getStringTable("select * from bok");
-
-			sql.print2dArray(tabell);
-
-			System.out.println("End: " + sql.end());
+			//System.out.println("End: " + sql.end());
+            sql.print2dArray(tabell);
 		}
 		else {
 			System.out.println("Could not contact database @ " + logon.getDatabase());
-		}
+        }
+        System.out.println(sql.query("Select * from bok").toString());
 	}
 }

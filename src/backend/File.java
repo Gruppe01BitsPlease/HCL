@@ -2,8 +2,6 @@ package backend;
 
 import java.io.*;
 
-import com.mysql.jdbc.Field;
-
 
 public class File { //for writing to files and stuff
 
