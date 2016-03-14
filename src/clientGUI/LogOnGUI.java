@@ -55,7 +55,10 @@ class LogOnGUI extends JFrame{
 			public void actionPerformed(ActionEvent pressed) {
 				String navn = user.getText();
 				String pass = password.getText();
-				User u = new User();
+                //Fixed so it reads from the .ini file instead
+                Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
+                User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
+
 				int i = u.logon(navn, pass);
 				if (i >= 0) {
 					System.out.println("LOGGEDON");

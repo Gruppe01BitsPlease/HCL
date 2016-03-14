@@ -4,22 +4,22 @@ import java.sql.*;
 
 public class SQL {
 
-	private String brukernavn;// = "olavhus";
-	private String passord;// = "CmrXjoQn";
+	private String username;// = "olavhus";
+	private String password;// = "CmrXjoQn";
 	private String databasedriver = "com.mysql.jdbc.Driver";
-	private String databasenavn;//"jdbc:mysql://mysql.stud.iie.ntnu.no:3306/olavhus?user=olavhus&password=CmrXjoQn;
+	private String databasename;//"jdbc:mysql://mysql.stud.iie.ntnu.no:3306/olavhus?user=olavhus&password=CmrXjoQn;
 	private String database;
-	private Connection forbindelse;
-	private Statement setning;
+	private Connection connection;
+	private Statement sentence;
 	private ResultSet res;
 
 	public static int colomns = 0;
 
-	public SQL(String databasenavn, String brukernavn, String passord) {
-		this.databasenavn = databasenavn;
-		this.brukernavn = brukernavn;
-		this.passord = passord; //kryptert i tilfellet ?
-		this.database = databasenavn + brukernavn + "?user=" + brukernavn + "&password=" + passord;
+	public SQL(String databasename, String username, String password) {
+		this.databasename = databasename;
+		this.username = username;
+		this.password = password;
+		this.database = databasename + username + "?user=" + username + "&password=" + password;
 	}
 
 	/**
@@ -35,7 +35,7 @@ public class SQL {
 		}
 
 		try {
-			forbindelse = DriverManager.getConnection(database);
+			connection = DriverManager.getConnection(database);
 			//setning = forbindelse.createStatement();
 			return true;
 		}
@@ -43,6 +43,9 @@ public class SQL {
 			return false;
 		}
 	}
+    public Connection getConnection(){
+        return connection;
+    }
 
 	/**
 	 * Attemts to end the link with the database
@@ -51,7 +54,7 @@ public class SQL {
 	public boolean end() {
 
 		try {
-			forbindelse.close();
+			connection.close();
 			//setning.close();
 			res.close();
 			return true;
@@ -71,7 +74,7 @@ public class SQL {
 		}
         ResultSet out;
 		try { //Can't use try-with, because you cant do stuff with a closed ResultSet object
-            Statement setning = forbindelse.createStatement();
+            Statement setning = connection.createStatement();
             ResultSet res = setning.executeQuery(query);
             return res;
 
@@ -95,8 +98,8 @@ public class SQL {
 		}
 		else {
 			try {
-				setning = forbindelse.createStatement();
-				setning.execute(query);
+				sentence = connection.createStatement();
+				sentence.execute(query);
 				return true;
 			}
 			catch (SQLException e) {
@@ -104,7 +107,7 @@ public class SQL {
 			}
 			finally {
 				try {
-					setning.close();
+					sentence.close();
 				}
 				catch (SQLException e) {
 				}
@@ -114,6 +117,7 @@ public class SQL {
 
 	/**
 	 * Updates a value in a table, when I've coded it V('.')V
+     * TODO: Make this
 	 */
 	public boolean update(String update) {
 
@@ -123,9 +127,9 @@ public class SQL {
 		//		catch (SQLException e) {}
 
 		try {
-			setning = forbindelse.createStatement();
+			sentence = connection.createStatement();
 
-			if (setning.executeUpdate(update) != 0) {
+			if (sentence.executeUpdate(update) != 0) {
 				return true;
 			}
 			else {
@@ -139,8 +143,8 @@ public class SQL {
 	}
 
 	/**
-	 * @return The query as a handy-dandy String[], titles of columbs are in the
-	 *         first row, data in the otherss
+	 * @return The query as a handy-dandy String[][], titles of columbs are in the
+	 *         first row, data in the others
 	 */
 	public String[][] getStringTable(String query) {
 		if (query == null || query.trim().equals("")) {

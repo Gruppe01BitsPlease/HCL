@@ -2,13 +2,18 @@ package backend;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+import java.sql.PreparedStatement;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationException;
 
 public class User extends SQL {
 
 	private PBKDF2 crypt = new PBKDF2();
 	private boolean connected;
+
 
 	/**
 	 * Extends SQL, because it's SQL with more features
@@ -17,19 +22,16 @@ public class User extends SQL {
 		super(databasenavn, brukernavn, passord);
 		connected = connect();
 	}
-	public User() {
-		super("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
-		connected = connect();
-	}
 
 	/**
 	 * Makes and inserts an user into the database, probably prone to exploits..
 	 */
 	public boolean generateUser(String username, String password, int role) {
-		if (!connected)
-			return false;
 
-		PBKDF2 crypt = new PBKDF2();
+        Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
+
+		if (!connect())
+			return false;
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -38,10 +40,20 @@ public class User extends SQL {
 			String salt2 = Base64.encode(salt);
 			String pass2 = Base64.encode(pass);
 
-			insert("INSERT INTO HCL_users(user_name, user_role, user_salt, user_pass) values('" + username + "'," + role
-					+ ",'" + salt2 + "','" + pass2 + "');");
-			return true;
-		}
+
+            String insertTableSQL =
+                    "INSERT INTO HCL_users(user_name, user_role, user_salt, user_pass) values(?,?,'" + salt2 + "', '" + pass2 + "');";
+            try {
+                PreparedStatement prep = getConnection().prepareStatement(insertTableSQL);
+                prep.setString(1, username);
+                prep.setInt(2, role);
+                prep.executeUpdate();
+                return true;
+            }
+            catch(SQLException e){
+                return false;
+            }
+        }
 		catch (NoSuchAlgorithmException e) {
 			return false;
 		}
@@ -59,22 +71,36 @@ public class User extends SQL {
 		if (!connected)
 			return -2;
 
-		String[][] results = getStringTable(
-				"Select user_salt, user_pass, user_role from HCL_users where user_name = '" + username + "'");
-        //TODO Change to prepared statement
-		byte[] salt;
-		byte[] pass;
-		try {
-			salt = Base64.decode(results[1][0]); //0 row is titles
-			pass = Base64.decode(results[1][1]);
-		}
-		catch (ArrayIndexOutOfBoundsException e) {
-			return -1;
-		}		int rolle = Integer.parseInt(results[1][2]);
+        String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
+
+        PreparedStatement prep;
+        ResultSet res;
+        String userSalt;
+        String userPass;
+        String userRole;
+        try {
+            prep = getConnection().prepareStatement(insertTableSQL);
+            prep.setString(1, username);
+            res  = prep.executeQuery();
+            if(res.next()) {
+                userSalt = res.getString(1);
+                userPass = res.getString(2);
+                userRole = res.getString(3);
+            }
+            else return -1;
+        }
+        catch(SQLException e){
+            return -1;
+        }
+
+		//String[][] results = getStringTable(prep.toString().split(":")[1]); // But it defeats the purpose? nah
+		byte[] salt = Base64.decode(userSalt);
+		byte[] pass = Base64.decode(userPass);
+        int role = Integer.parseInt(userRole);
 
 		try {
 			if (crypt.authenticate(password, pass, salt)) {
-				return rolle;
+				return role;
 			}
 		}
 		catch (Exception e) {
@@ -85,11 +111,13 @@ public class User extends SQL {
 
 	public static void main(String[] args) {
 
-		User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
+        Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
 
-		//u.generateUser("bjørn", "mådahamat", 1); //Username, psw, role, 0 CEO
+		User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
 
-		int rolle = u.logon("bjørn", "mådahamat");
+		//u.generateUser("preparedTest", "test", 1); //Username, psw, role, 0 CEO
+
+		int rolle = u.logon("olavhus", "ostost");
 		System.out.println(rolle);
 	}
 }
