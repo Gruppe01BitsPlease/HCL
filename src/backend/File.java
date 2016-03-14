@@ -1,6 +1,9 @@
 package backend;
 
 import java.io.*;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+//import java.util.Base64;
+import java.util.Arrays;
 
 
 public class File { //for writing to files and stuff
@@ -122,6 +125,24 @@ public class File { //for writing to files and stuff
 		rEnd();
 		return out;
 	}
+    public String readLineAsBase64(int line){
+
+        String read = readLine(line);//Better make sure this is in Base64.. Else you fucked up
+        byte[] decoded = Base64.decode(read);
+        String out = new String(decoded); //Briliant
+
+        return out;
+
+    }
+
+    /**
+     * Because plaintext 2utrygt4me
+     */
+    public boolean writeLineAsBase64(String line){
+        byte[] bytes = line.getBytes();
+        String base64 = Base64.encode(bytes);
+        return writeLine(base64);
+    }
 
 	public boolean writeObject(Object o) {
 		boolean ok = false;
@@ -141,7 +162,6 @@ public class File { //for writing to files and stuff
 	public static void main(String[] args) {
 		File file = new File(System.getProperty("user.dir")+"/src/backend/Database.ini", true);
 
-
 		//file.clearFile();
 		//		for (int i = 0; i < 10; i++) {
 		//			file.writeLine("Dette er linje nr: " + i);
@@ -151,9 +171,13 @@ public class File { //for writing to files and stuff
 		/*for (int i = 0; i < 5; i++) {
 			file.writeObject(new Date(1234567L)):
 		}*/
+        file.clearFile();
+        file.writeLineAsBase64("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
+        file.writeLineAsBase64("olavhus");
+        file.writeLineAsBase64("CmrXjoQn");
 
-		System.out.println(file.readLines(0, 10)); // Reads from line n to m, including m
-		System.out.println(file.readLine(10)); // Reads the nth line
-
-	}
+        System.out.println(file.readLineAsBase64(0));
+        System.out.println(file.readLineAsBase64(1));
+        System.out.println(file.readLineAsBase64(2));
+    }
 }

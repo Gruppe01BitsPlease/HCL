@@ -3,7 +3,7 @@ package backend;
 /**
  * Used to log onto the SQL database using info from the Database.ini
  * Im sure posting my SQL username and password on github / giving it to all the customers is a GREAT idea.
- * TODO: Encrypt my password so it's not stolen :(
+ * EDIT: Fixed it so the file uses Base64 so atealst it's not plaintext
  */
 public class Logon {
 
@@ -17,17 +17,17 @@ public class Logon {
 	}
 
 	public String getDatabase() {
-		String database = file.readLine(0);
+		String database = file.readLineAsBase64(0);
 		return database;
 	}
 
 	public String getUser() {
-		String user = file.readLine(1);
+		String user = file.readLineAsBase64(1);
 		return user;
 	}
 
 	public String getPassword() {
-		String pass = file.readLine(2);
+		String pass = file.readLineAsBase64(2);
 		return pass;
 	}
 
@@ -37,9 +37,9 @@ public class Logon {
 
 	public boolean logon() {
 
-		String database = file.readLine(0);
-		String user = file.readLine(1);
-		String password = file.readLine(2);
+		String database = getDatabase();
+		String user = getUser();
+		String password = getPassword();
 
 		//System.out.println(database + user + password);
 
