@@ -1,30 +1,34 @@
 package backend;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import java.sql.PreparedStatement;
+import java.util.Properties;
+
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-import com.sun.xml.internal.bind.v2.runtime.IllegalAnnotationException;
 
 public class User extends SQL {
 
 	private PBKDF2 crypt = new PBKDF2();
-	private boolean connected;
 
 
-	/**
+    /**
 	 * Extends SQL, because it's SQL with more features
 	 */
 	public User(String databasenavn, String brukernavn, String passord) {
 		super(databasenavn, brukernavn, passord);
-		connected = connect();
+		connect();
 	}
 
 	/**
-	 * Makes and inserts an user into the database, probably prone to exploits..
+	 * Makes and inserts an user into the database
+     * Now uses prepared statements, hopefully safe
 	 */
 	public boolean generateUser(String username, String password, int role) {
 
@@ -68,7 +72,7 @@ public class User extends SQL {
 	 */
 	public int logon(String username, String password) {
 
-		if (!connected)
+		if (!connect())
 			return -2;
 
         String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
@@ -109,11 +113,23 @@ public class User extends SQL {
 		return -1;
 	}
 
+
 	public static void main(String[] args) {
 
-        Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
+        //Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
+		//User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
+        //Properties properties = new Properties();
+       //properties.load
+       /* ClassLoader classLoader = new ClassLoader();
+        URL url = classLoader.getResource("./src/backend/Database.ini");
+        InputStream is = User.class.getResourceAsStream("/Database.ini");
 
-		User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
+        System.out.println(url.getPath());*/
+
+        //Logon logon = new Logon(User.class.getResource("Database.ini").getPath());
+
+        Logon logon = new Logon("./src/backend/Database.ini");
+        User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
 
 		//u.generateUser("preparedTest", "test", 1); //Username, psw, role, 0 CEO
 
