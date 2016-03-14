@@ -1,5 +1,7 @@
 package backend;
 
+import java.net.ConnectException;
+
 /**
  * Used to log onto the SQL database using info from the Database.ini
  * Im sure posting my SQL username and password on github / giving it to all the customers is a GREAT idea.
@@ -13,6 +15,11 @@ public class Logon {
 
 	public Logon(String filename) {
 		this.filename = filename;
+		file = new File(filename, true);
+	}
+
+	public Logon() {
+		filename = System.getProperty("user.dir")+"/src/backend/Database.ini";
 		file = new File(filename, true);
 	}
 
@@ -49,6 +56,7 @@ public class Logon {
 		sql = new SQL(database, user, password);
 
 		return sql.connect(); // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
+
 	}
 
     /**

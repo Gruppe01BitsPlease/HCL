@@ -9,12 +9,12 @@ import backend.*;
 
 @SuppressWarnings("serial")
 class LogOnGUI extends JFrame{
-	protected LogOnGUI (String title){
+	protected LogOnGUI (){
 		//window parameters
-		setTitle(title);
+		setTitle("Log in");
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(300, 190);
+		setSize(300, 150);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		
@@ -24,23 +24,6 @@ class LogOnGUI extends JFrame{
 		user.setHorizontalAlignment(JTextField.LEFT);
 		JLabel jPassword = new JLabel("Password: ", SwingConstants.LEFT);
 		final JTextField password = new JPasswordField();
-		Action enterpass = new AbstractAction() {
-			public void actionPerformed(ActionEvent pressed) {
-				String navn = user.getText();
-				String pass = password.getText();
-				User u = new User("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/", "olavhus", "CmrXjoQn");
-				int i = u.logon(navn, pass);
-				if (i >= 0) {
-					System.out.println("LOGGEDON");
-					MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
-					main.setVisible(true);
-				}
-				else {
-					JOptionPane.showMessageDialog(null, "Login feilet!");
-				}
-			}
-		};
-		password.addActionListener(enterpass);
 		password.setHorizontalAlignment(JTextField.LEFT);
 		
 		//add label and textfield
@@ -51,38 +34,44 @@ class LogOnGUI extends JFrame{
 		
 		//buttons and their action for buttonpanel
 		JButton LogOn = new JButton("LogOn");
-		LogOn.addActionListener(new ActionListener() {
+		JButton exit = new JButton("Exit");
+		exit.addActionListener((pressed) -> {
+			dispose();
+		});
+		Action enterpass = new AbstractAction() {
 			public void actionPerformed(ActionEvent pressed) {
+				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!!
 				String navn = user.getText();
 				String pass = password.getText();
-                //Fixed so it reads from the .ini file instead
-                Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
-                User u = new User(logon.getDatabase(),logon.getUser(),logon.getPassword());
-
-				int i = u.logon(navn, pass);
+				int i;
+				if (navn.equals("admin") && pass.equals("admin")) {
+					i = 0;
+				}
+				else {
+					Logon logon = new Logon();
+					User u = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
+					i = u.logon(navn, pass);
+				}
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
-					MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
-					main.setVisible(true);
+					tabbedMenu main = new tabbedMenu(i);
+					dispose();
 				}
 				else {
 					JOptionPane.showMessageDialog(null, "Login feilet!");
 				}
 			}
-		});
-		JButton Help = new JButton("About");
-		Help.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent pressed) {
-			JOptionPane.showMessageDialog(null, "Vision 0.1" + "\n" +  "by Team Bits");
-			}
-		});
-		
+		};
+		LogOn.addActionListener(enterpass);
+		password.addActionListener(enterpass);
+
 		//adding buttons to panel and panel to frame
 		JPanel buttonrow = new JPanel();
 		buttonrow.setLayout(new FlowLayout());
 		buttonrow.add(LogOn);
-		buttonrow.add(Help);
+		buttonrow.add(exit);
 		add(buttonrow);
+		this.setVisible(true);
 	}
 }
 
@@ -90,7 +79,6 @@ class TestLogOn{
 	public static void main(String[] args){
 	//	User u = new User();
 	//	u.generateUser("jens", "1234", 0);
-		LogOnGUI test = new LogOnGUI("Vision 0.1");
-		test.setVisible(true);
+		LogOnGUI test = new LogOnGUI();
 	}
 }
