@@ -51,34 +51,30 @@ class LogOnGUI extends JFrame{
 		
 		//buttons and their action for buttonpanel
 		JButton LogOn = new JButton("LogOn");
-		LogOn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent pressed) {
-				String navn = user.getText();
-				String pass = password.getText();
-				User u = new User();
-				int i = u.logon(navn, pass);
-				if (i >= 0) {
-					System.out.println("LOGGEDON");
-					MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
-					main.setVisible(true);
-				}
-				else {
-					JOptionPane.showMessageDialog(null, "Login feilet!");
-				}
+		LogOn.addActionListener((pressed) -> {
+			String navn = user.getText();
+			String pass = password.getText();
+			User u = new User();
+			int i = u.logon(navn, pass);
+			if (i >= 0) {
+				System.out.println("LOGGEDON");
+				MainMenuGUI main = new MainMenuGUI("Vision 0.1", i);
+				main.setVisible(true);
+			}
+			else {
+				JOptionPane.showMessageDialog(null, "Login feilet!");
 			}
 		});
-		JButton Help = new JButton("About");
-		Help.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent pressed) {
-			JOptionPane.showMessageDialog(null, "Vision 0.1" + "\n" +  "by Team Bits");
-			}
+		JButton exit = new JButton("Exit");
+		exit.addActionListener((pressed) -> {
+			dispose();
 		});
 		
 		//adding buttons to panel and panel to frame
 		JPanel buttonrow = new JPanel();
 		buttonrow.setLayout(new FlowLayout());
 		buttonrow.add(LogOn);
-		buttonrow.add(Help);
+		buttonrow.add(exit);
 		add(buttonrow);
 	}
 }

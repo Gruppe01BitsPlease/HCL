@@ -7,8 +7,8 @@ import java.awt.*;
 public class PersonaliaGUI extends JFrame {
 
 
-	public PersonaliaGUI(String tittel) {
-        setTitle (tittel);
+	public PersonaliaGUI() {
+        setTitle ("Personalia");
  		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
  		setLayout(new BorderLayout(10, 10));
  		

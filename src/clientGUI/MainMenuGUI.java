@@ -29,7 +29,7 @@ public class MainMenuGUI extends JFrame {
 		Employees.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent pressed) {
 				System.out.println("PLACEHOLDER");
-				PersonaliaGUI personalia = new PersonaliaGUI("Vision 0.1");
+				PersonaliaGUI personalia = new PersonaliaGUI();
 				personalia.setVisible(true);
 			}
 		});
