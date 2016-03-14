@@ -45,8 +45,8 @@ public class SQL {
 	}
 
 	/**
-	 * Attemts to end the link with the database, not really needed but still
-	 * good practice I guess
+	 * Attemts to end the link with the database
+     * TODO: Make this not shit
 	 */
 	public boolean end() {
 
@@ -63,23 +63,22 @@ public class SQL {
 
 	/**
 	 * @return A ResultSet object
-     * TODO Change to use PreparedStatements
+     * Cant close the ResultSet object here; if you do, you can't do anything with the object because reasons
 	 */
 	public ResultSet query(String query) {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
-		try {
+        ResultSet out;
+		try { //Can't use try-with, because you cant do stuff with a closed ResultSet object
             Statement setning = forbindelse.createStatement();
             ResultSet res = setning.executeQuery(query);
-            System.out.println(setning.toString()+" "+res.toString());
             return res;
-			//setning = forbindelse.createStatement();
-			//res = setning.executeQuery(query);
+
 
 		}
 		catch (SQLException e) {
-            System.out.println("Error"+e);
+            System.out.println("Error: "+e.toString());
 			return null;
 		}
     }
@@ -88,7 +87,7 @@ public class SQL {
 	 * Inserts something into the database through the specified query sentence
 	 * 
 	 * @return True if it worked, false otherwise
-     * TODO Use try-with, and prepared statements
+     * TODO Use try-with
 	 */
 	public boolean insert(String query) {
 		if (query == null || query.trim().equals("")) {
@@ -147,7 +146,6 @@ public class SQL {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
-        //TODO Fix try-with-resources because it's a bitch
 		try {
 			ResultSet res = query(query);
 			ResultSetMetaData meta = res.getMetaData();
@@ -155,7 +153,7 @@ public class SQL {
 
 			String[][] out = arrayWithCorrectSize(query);
 
-			for (int i = 1; i <= colomns; i++) {
+            for (int i = 1; i <= colomns; i++) {
 				out[0][i - 1] = meta.getColumnName(i); // Legger inn s�ylenavnene i �verste rad? hopefully
 			}
 			int i = 1;
@@ -169,6 +167,7 @@ public class SQL {
 			return out;
 		}
 		catch (SQLException e) {
+            System.out.println("Error: "+e.toString());
 			return null;
 		}
 
@@ -185,7 +184,6 @@ public class SQL {
 			ResultSetMetaData meta = res.getMetaData();
 			int rows = 0;
 			colomns = meta.getColumnCount();
-			//System.out.println(colomns);
 			String[][] out;
 
 			while (res.next()) {
@@ -238,6 +236,5 @@ public class SQL {
 		else {
 			System.out.println("Could not contact database @ " + logon.getDatabase());
         }
-        System.out.println(sql.query("Select * from bok").toString());
 	}
 }

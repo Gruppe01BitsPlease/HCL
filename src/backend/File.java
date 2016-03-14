@@ -127,7 +127,7 @@ public class File { //for writing to files and stuff
 	}
     public String readLineAsBase64(int line){
 
-        String read = readLine(line);//Better make sure this is in Base64.. Else you fucked up
+        String read = new StringBuilder(readLine(line)).reverse().toString();//Better make sure this is in Base64.. Else you fucked up
         byte[] decoded = Base64.decode(read);
         String out = new String(decoded); //Briliant
 
@@ -141,7 +141,7 @@ public class File { //for writing to files and stuff
     public boolean writeLineAsBase64(String line){
         byte[] bytes = line.getBytes();
         String base64 = Base64.encode(bytes);
-        return writeLine(base64);
+        return writeLine(new StringBuilder(base64).reverse().toString());//In reverse 'cause that's much safer they'll never know
     }
 
 	public boolean writeObject(Object o) {

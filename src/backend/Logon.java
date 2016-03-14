@@ -35,7 +35,10 @@ public class Logon {
 		file.clearFile();
 	}
 
-	public boolean logon() {
+    /**
+     * Returns true if the stars align
+     */
+    public boolean logon() {
 
 		String database = getDatabase();
 		String user = getUser();
@@ -59,9 +62,9 @@ public class Logon {
 
 		clearFile(filename);
 
-		file.writeLine(newDatabase);
-		file.writeLine(user);
-		file.writeLine(pass);
+		file.writeLineAsBase64(newDatabase);
+		file.writeLineAsBase64(user);
+		file.writeLineAsBase64(pass);
 
 	}
 
@@ -75,9 +78,9 @@ public class Logon {
 
 		clearFile(filename);
 
-		file.writeLine(database);
-		file.writeLine(newUser);
-		file.writeLine(pass);
+		file.writeLineAsBase64(database);
+		file.writeLineAsBase64(newUser);
+		file.writeLineAsBase64(pass);
 	}
 
     /**
@@ -91,9 +94,9 @@ public class Logon {
 
 		clearFile(filename);
 
-		file.writeLine(database);
-		file.writeLine(user);
-		file.writeLine(newPass);
+		file.writeLineAsBase64(database);
+		file.writeLineAsBase64(user);
+		file.writeLineAsBase64(newPass);
 
 	}
 
