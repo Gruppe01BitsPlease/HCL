@@ -182,18 +182,16 @@ public class File { //for writing to files and stuff
         file.writeLineAsBase64("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
         file.writeLineAsBase64("olavhus");
         file.writeLineAsBase64("CmrXjoQn");*/
-        ClassLoader classLoader = new ClassLoader();
-        URL url = classLoader.getResource("Database.ini");
         //ImputSream url2 = User.class.getResourceAsStream("Database.ini");
-
+        File file = null;
         try {
-            File file = new File(File.class.getResource("Database.ini").toURI().getPath(), true);
+            file = new File(File.class.getResource("Database.ini").toURI().getPath(), true);
             System.out.println(file.readLineAsBase64(0));
             System.out.println(file.readLineAsBase64(1));
             System.out.println(file.readLineAsBase64(2));
         }
         catch(Exception e){}
-
+        System.out.println(file.getFilename());
 
     }
 }
