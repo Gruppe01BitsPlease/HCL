@@ -5,16 +5,18 @@ import backend.SQL;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import backend.*;
 
 /**
  * Created by Jens on 14.03.2016.
  */
 public class tabbedMenu extends JFrame {
-    SQL user;
+    SQL sql;
 	double x;
 	double y;
-    public tabbedMenu (int rolle){
-		user = new SQL(new Logon());
+    public tabbedMenu (int rolle) throws Exception {
+		sql = new SQL(new Logon(new File()));
         setTitle("Bits Please HCL System 0.1");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
@@ -26,21 +28,74 @@ public class tabbedMenu extends JFrame {
         setLocationRelativeTo(null);
         setResizable(true);
         JTabbedPane tabs = new JTabbedPane();
-		JMenuBar bar = new JMenuBar();
-		JMenu file = new JMenu("File");
-		bar.add(file);
+		menubar bar = new menubar();
         tabs.addTab("Employees", new employeeTab());
         tabs.addTab("CEO functions", new CEOtab());
+		tabs.addTab("Orders", new orderTab());
         add(tabs, BorderLayout.CENTER);
 		add(bar, BorderLayout.NORTH);
         this.setVisible(true);
     }
-	private class menubar{}
+	private class menubar extends JMenuBar {
+		public menubar() {
+			JMenu file = new JMenu("File");
+			JMenuItem settings = new JMenuItem("Database Settings...");
+			JMenuItem logout = new JMenuItem("Log out...");
+			JMenuItem about = new JMenuItem("About...");
+			Action settingspress = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					settingsMenu meny = new settingsMenu();
+				}
+			};
+			Action logoutpress = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					LogOnGUI logon = new LogOnGUI();
+					dispose();
+				}
+			};
+			Action aboutpress = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
+				}
+			};
+			settings.addActionListener(settingspress);
+			logout.addActionListener(logoutpress);
+			about.addActionListener(aboutpress);
+			file.add(settings);
+			file.add(logout);
+			file.add(about);
+			add(file);
+		}
+		private class settingsMenu extends JFrame{
+			public settingsMenu() {
+				setTitle("Database settings");
+				setLayout(new GridLayout(6, 1));
+				setSize((int) (x * 0.3), (int) (y * 0.3));
+				setLocationRelativeTo(null);
+				JLabel dbNameLabel = new JLabel("Database name:");
+				JTextField DBname = new JTextField();
+				JLabel userLabel = new JLabel("User Name:");
+				JTextField user = new JTextField();
+				JLabel passLabel = new JLabel("Password:");
+				JTextField pass = new JTextField();
+				add(dbNameLabel);
+				add(DBname);
+				add(userLabel);
+				add(user);
+				add(passLabel);
+				add(pass);
+				setVisible(true);
+			}
+		}
+	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] emp = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
-		String[] clm = { "Employees", "ID" };
-    //    String[][] emp = user.getStringTable("SELECT * FROM HCL_users");
+        String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
+//		String[][] table = sql.getStringTable("SELECT user_name, user_epost, user_adresse FROM HCL_users");
+		String[] titles = { "Employees", "E-mail" };
         public employeeTab() {
             setLayout(new BorderLayout());
 			//add(new top(), BorderLayout.NORTH);
@@ -50,7 +105,7 @@ public class tabbedMenu extends JFrame {
         private class center extends JPanel {
             public center() {
                 setLayout(new BorderLayout());
-				JTable list = new JTable(emp, clm);
+				JTable list = new JTable(table, titles);
 				JScrollPane scroll = new JScrollPane(list);
                 add(scroll, BorderLayout.SOUTH);
             }
@@ -65,12 +120,41 @@ public class tabbedMenu extends JFrame {
 			}
 		}
 		private class bottom extends JPanel {
+			String[][] searchTable;
 			public bottom() {
 				setLayout(new BorderLayout());
 				JTextField search = new JTextField();
 				JButton searcher = new JButton("Search");
+				Action searchPress = new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						for (int i = 0; i < table.length; i++) {
+							for (int j = 0; j < table[i].length; i++) {
+								if (search.getText().equalsIgnoreCase(table[i][j])) {
+									for (int k = 0; k < table[i].length; i++) {
+										if (searchTable[i][k] != null) {
+											searchTable[k][j] = table[i][j];
+										}
+									}
+									searchTable[i] = table[i];
+								}
+							}
+						}
+						searchWindow window = new searchWindow();
+					}
+				};
+				search.addActionListener(searchPress);
+				searcher.addActionListener(searchPress);
 				add(search, BorderLayout.CENTER);
 				add(searcher, BorderLayout.EAST);
+			}
+			private class searchWindow extends JFrame {
+				public searchWindow() {
+					setSize((int) (x * 0.3), (int) (y * 0.3));
+					JTable searchTab = new JTable(searchTable, titles);
+					add(searchTab, BorderLayout.CENTER);
+					setVisible(true);
+				}
 			}
 		}
     }
@@ -83,6 +167,32 @@ public class tabbedMenu extends JFrame {
             add(test2);
         }
     }
+	private class orderTab extends JPanel {
+		String[][] table = { { "McDonalds" , "McStreet 15"}, { "HiST", "Kjellern"}};
+		String[] titles = { "Customer", "Adress"};
+		public orderTab() {
+			setLayout(new BorderLayout());
+			add(new center(), BorderLayout.NORTH);
+			add(new bottom(), BorderLayout.SOUTH);
+		}
+		private class center extends JPanel {
+			public center() {
+				setLayout(new BorderLayout());
+				JTable list = new JTable(table, titles);
+				JScrollPane scroll = new JScrollPane(list);
+				add(scroll, BorderLayout.SOUTH);
+			}
+		}
+		private class bottom extends JPanel {
+			public bottom() {
+				setLayout(new BorderLayout());
+				JTextField search = new JTextField();
+				JButton searcher = new JButton("Search");
+				add(search, BorderLayout.CENTER);
+				add(searcher, BorderLayout.EAST);
+			}
+		}
+	}
 
 }
 class test {
