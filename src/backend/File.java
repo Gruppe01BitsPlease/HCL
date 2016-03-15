@@ -193,7 +193,7 @@ public class File{ //for writing to files and stuff
         //ImputSream url2 = User.class.getResourceAsStream("Database.ini");
         File file = null;
         try {
-            file = new File();
+            file = new File(File.class.getResource("Database.ini").toURI().getPath(), true);
             System.out.println(file.readLineAsBase64(0));
             System.out.println(file.readLineAsBase64(1));
             System.out.println(file.readLineAsBase64(2));
