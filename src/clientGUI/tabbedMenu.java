@@ -26,12 +26,16 @@ public class tabbedMenu extends JFrame {
         setLocationRelativeTo(null);
         setResizable(true);
         JTabbedPane tabs = new JTabbedPane();
+		JMenuBar bar = new JMenuBar();
+		JMenu file = new JMenu("File");
+		bar.add(file);
         tabs.addTab("Employees", new employeeTab());
         tabs.addTab("CEO functions", new CEOtab());
-        add(tabs, BorderLayout.NORTH);
+        add(tabs, BorderLayout.CENTER);
+		add(bar, BorderLayout.NORTH);
         this.setVisible(true);
     }
-
+	private class menubar
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
         String[][] emp = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
@@ -39,15 +43,16 @@ public class tabbedMenu extends JFrame {
     //    String[][] emp = user.getStringTable("SELECT * FROM HCL_users");
         public employeeTab() {
             setLayout(new BorderLayout());
-			add(new top(), BorderLayout.NORTH);
-            add(new center(), BorderLayout.CENTER);
+			//add(new top(), BorderLayout.NORTH);
+            add(new center(), BorderLayout.NORTH);
 			add(new bottom(), BorderLayout.SOUTH);
         }
         private class center extends JPanel {
             public center() {
                 setLayout(new BorderLayout());
 				JTable list = new JTable(emp, clm);
-                add(list, BorderLayout.SOUTH);
+				JScrollPane scroll = new JScrollPane(list);
+                add(scroll, BorderLayout.SOUTH);
             }
         }
 		private class top extends JPanel {
