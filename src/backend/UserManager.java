@@ -2,6 +2,7 @@ package backend;
 
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.ECField;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,6 +64,42 @@ public class UserManager extends SQL {
         return false;
     }
     public boolean deleteUser(){
+        return false;
+    }
+    public boolean changePassword(String username, String oldpass, String newpass){
+
+        if(logon(username,oldpass) >= 0){
+
+            String insertTableSQL = "Select user_salt, user_pass  from HCL_users where user_name = ?;";
+
+            String userSalt = "";
+            String userPass = "";
+            try {
+                PreparedStatement prep  = getConnection().prepareStatement(insertTableSQL);
+                prep.setString(1, username);
+                ResultSet res  = prep.executeQuery();
+                if(res.next()) {
+                    userSalt = res.getString(1);
+                    userPass = res.getString(2);
+                }
+            }
+            catch(SQLException e){
+                return false;
+            }
+            String newSalt2 = "";
+            String newPass2 = "";
+            try{
+                byte[] newSalt = crypt.generateSalt();
+                byte[] newPass = crypt.getEncryptedPassword(newpass,newSalt);
+                newSalt2 = Base64.encode(newSalt);
+                newPass2 = Base64.encode(newPass);
+            }
+            catch (Exception e){return false;}
+
+            update("HCL_users","user_pass",userPass,newPass2);
+            update("HCL_users","user_salt",userSalt,newSalt2);
+            return true;
+        }
         return false;
     }
 
@@ -132,9 +169,12 @@ public class UserManager extends SQL {
         catch (URISyntaxException e){}
         UserManager u = new UserManager(logon);
 
-		u.generateUser("testteswt", "test", 3); //Username, psw, role, 0 CEO
+		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
 
-		int rolle = u.logon("olavhus", "ostost");
+		int rolle = u.logon("Magisk", "ost");
 		System.out.println(rolle);
-	}
+     /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
+        System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
+
+    }
 }
