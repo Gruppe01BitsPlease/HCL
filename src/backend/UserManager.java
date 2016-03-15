@@ -27,10 +27,6 @@ public class UserManager extends SQL {
      * Now uses prepared statements, hopefully safe
 	 */
 	public boolean generateUser(String username, String password, int role) {
-        try {
-            Logon logon = new Logon(new File(UserManager.class.getResource("Database.ini").toURI().getPath(), true));
-        }
-        catch (URISyntaxException e){}
 
 		if (!connect())
 			return false;
@@ -136,7 +132,7 @@ public class UserManager extends SQL {
         catch (URISyntaxException e){}
         UserManager u = new UserManager(logon);
 
-		//u.generateUser("preparedTest", "test", 1); //Username, psw, role, 0 CEO
+		u.generateUser("testteswt", "test", 3); //Username, psw, role, 0 CEO
 
 		int rolle = u.logon("olavhus", "ostost");
 		System.out.println(rolle);

@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.Arrays;
 
 
-public class File { //for writing to files and stuff
+public class File{ //for writing to files and stuff
 
 	private String filename;
 	private BufferedReader r;
@@ -20,6 +20,10 @@ public class File { //for writing to files and stuff
 		this.filename = filename;
 		this.append = append;
 	}
+    public boolean fileExists(){
+        java.io.File file = new java.io.File(filename);
+        return file.exists() && !file.isDirectory();
+    }
 
 	private boolean rInit() {
 		try {
@@ -192,6 +196,7 @@ public class File { //for writing to files and stuff
         }
         catch(Exception e){}
         System.out.println(file.getFilename());
+        System.out.println(file.fileExists());
 
     }
 }
