@@ -46,24 +46,25 @@ class LogOnGUI extends JFrame{
 				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!!
 				String navn = user.getText();
 				String pass = password.getText();
-				UserManager u = new UserManager(new Logon());
 				int i;
-				if (navn.equals("admin") && pass.equals("admin")) {
-					i = 0;
+				try {
+					UserManager u = new UserManager(new Logon(new File()));
+					if (navn.equals("admin") && pass.equals("admin")) {
+						i = 0;
+					} else {
+						i = u.logon(navn, pass);
+					}
+					if (i >= 0) {
+						tabbedMenu main = new tabbedMenu(i);
+						dispose();
+					} else if (i == -1) {
+						JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");
+					} else if (i == -2) {
+						JOptionPane.showMessageDialog(null, "Could not connect to the database.");
+					}
 				}
-				else {
-					i = u.logon(navn, pass);
-				}
-				if (i >= 0) {
-					System.out.println("LOGGEDON");
-					tabbedMenu main = new tabbedMenu(i);
-					dispose();
-				}
-				else if (i == -1) {
-					JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");
-				}
-				else if (i == -2) {
-					JOptionPane.showMessageDialog(null, "Could not connect to the database.");
+				catch (Exception e) {
+					JOptionPane.showMessageDialog(null, "Could not locate the settings file.");
 				}
 			}
 		};
@@ -81,7 +82,7 @@ class LogOnGUI extends JFrame{
 }
 
 class TestLogOn{
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception {
 	//	User u = new User();
 	//	u.generateUser("jens", "1234", 0);
 		LogOnGUI test = new LogOnGUI();
