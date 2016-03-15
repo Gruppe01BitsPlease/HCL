@@ -11,7 +11,7 @@ public interface Factory {
     boolean deleteUser(); //False if user does not exist or something
     boolean logonUser(String username, String password);
 
-    boolean changeDatabase(String newDatabase,String newUsername, String newPassword); //Changes the .ini file, because the lUsers are unable to find their own ass in the dark without the help of a flashlight and a map
+    boolean changeDatabase(String newDatabase,String newUsername, String newPassword);
     String getDatabaseInfo();
 
     String[] getUsers();

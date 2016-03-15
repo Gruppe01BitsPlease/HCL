@@ -1,6 +1,7 @@
 package backend;
 
 import java.net.ConnectException;
+import java.net.URISyntaxException;
 
 /**
  * Used to log onto the SQL database using info from the Database.ini
@@ -11,17 +12,20 @@ public class Logon {
 
 	private backend.File file;
 	private backend.SQL sql;
-	private String filename;
+    private String filename;
 
-	public Logon(String filename) {
-		this.filename = filename;
-		file = new File(filename, true);
+	public Logon(File file) {
+		this.file  = file;
+        filename = file.getFilename();
 	}
 
 	//Should read from the file
 	public Logon() {
-		filename = System.getProperty("user.dir")+"/src/backend/Database.ini";
-		file = new File(filename, true);
+        try {
+            file = new File(Logon.class.getResource("Database.ini").toURI().getPath(), true);
+        }
+        catch (URISyntaxException e){}
+        filename = file.getFilename();
 	}
 
 	public String getDatabase() {
@@ -39,9 +43,6 @@ public class Logon {
 		return pass;
 	}
 
-	public void clearFile(String filename) {
-		file.clearFile();
-	}
 
     /**
      * Returns true if the stars align
@@ -54,7 +55,7 @@ public class Logon {
 
 		//System.out.println(database + user + password);
 
-		sql = new SQL(database, user, password);
+		sql = new SQL(this);
 
 		return sql.connect(); // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
 
@@ -69,7 +70,7 @@ public class Logon {
 		String user = getUser();
 		String pass = getPassword();
 
-		clearFile(filename);
+		file.clearFile();
 
 		file.writeLineAsBase64(newDatabase);
 		file.writeLineAsBase64(user);
@@ -85,7 +86,7 @@ public class Logon {
 		String user = getUser();
 		String pass = getPassword();
 
-		clearFile(filename);
+		file.clearFile();
 
 		file.writeLineAsBase64(database);
 		file.writeLineAsBase64(newUser);
@@ -101,7 +102,7 @@ public class Logon {
 		String user = getUser();
 		String pass = getPassword();
 
-		clearFile(filename);
+		file.clearFile();
 
 		file.writeLineAsBase64(database);
 		file.writeLineAsBase64(user);
@@ -110,8 +111,11 @@ public class Logon {
 	}
 
 	public static void main(String[] args) {
-
-		Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
+        Logon logon = null;
+        try {
+            logon = new Logon(new File(Logon.class.getResource("Database.ini").toURI().getPath(), true));
+        }
+        catch (URISyntaxException e){}
 		System.out.println(logon.logon());
 
 		System.out.println(
