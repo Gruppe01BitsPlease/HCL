@@ -1,5 +1,6 @@
 package backend;
 
+import java.net.URISyntaxException;
 import java.sql.*;
 
 public class SQL {
@@ -15,10 +16,10 @@ public class SQL {
 
 	public static int colomns = 0;
 
-	public SQL(String databasename, String username, String password) {
-		this.databasename = databasename;
-		this.username = username;
-		this.password = password;
+	public SQL(Logon logon) {
+		this.databasename = logon.getDatabase();
+		this.username = logon.getUser();
+		this.password = logon.getPassword();
 		this.database = databasename + username + "?user=" + username + "&password=" + password;
 	}
 
@@ -226,9 +227,12 @@ public class SQL {
 	}
 
 	public static void main(String[] args) throws Exception {
-
-		Logon logon = new Logon(System.getProperty("user.dir")+"/src/backend/Database.ini");
-		SQL sql = new SQL(logon.getDatabase(), logon.getUser(), logon.getPassword());
+        Logon logon = null;
+        try {
+            logon = new Logon(new File(SQL.class.getResource("Database.ini").toURI().getPath(),true));
+        }
+        catch (URISyntaxException e){}
+		SQL sql = new SQL(logon);
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
 		if (sql.connect()) {

@@ -2,7 +2,7 @@ package clientGUI;
 
 import backend.Logon;
 import backend.SQL;
-import backend.User;
+import backend.UserManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,8 +11,8 @@ import java.awt.*;
  * Created by Jens on 14.03.2016.
  */
 public class tabbedMenu extends JFrame {
-    User user;
-    public tabbedMenu (User user, int rolle){
+    UserManager user;
+    public tabbedMenu (UserManager user, int rolle){
         this.user = user;
         setTitle("Bits Please HCL System 0.1");
         setLayout(new BorderLayout());

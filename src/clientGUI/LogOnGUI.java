@@ -49,7 +49,7 @@ class LogOnGUI extends JFrame{
 				}
 				else {
 					Logon logon = new Logon();
-					User u = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
+                    UserManager u = new UserManager(logon);
 					i = u.logon(navn, pass);
 				}
 				if (i >= 0) {
