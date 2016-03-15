@@ -35,7 +35,7 @@ public class tabbedMenu extends JFrame {
 		add(bar, BorderLayout.NORTH);
         this.setVisible(true);
     }
-	private class menubar
+	private class menubar{}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
         String[][] emp = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING

@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.ECField;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
@@ -39,7 +40,6 @@ public class UserManager extends SQL {
 			String salt2 = Base64.encode(salt);
 			String pass2 = Base64.encode(pass);
 
-
             String insertTableSQL =
                     "INSERT INTO HCL_users(user_name, user_role, user_salt, user_pass) values(?,?,'" + salt2 + "', '" + pass2 + "');";
             try {
@@ -60,11 +60,19 @@ public class UserManager extends SQL {
 			return false;
 		}
 	}
-    public boolean editUser(){
+    public boolean editUser(int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, int wage, int hours, Date start){
         return false;
     }
-    public boolean deleteUser(){
-        return false;
+    public boolean deleteUser(String username){
+        String insertTableSQL = "DELETE FROM HCL_users WHERE user_name = ?";
+
+        try {
+            PreparedStatement prep = getConnection().prepareStatement(insertTableSQL);
+            prep.setString(1, username);
+            prep.execute();
+            return true;
+        }
+        catch (Exception e){return false;}
     }
     public boolean changePassword(String username, String oldpass, String newpass){
 
@@ -175,6 +183,7 @@ public class UserManager extends SQL {
 		System.out.println(rolle);
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
+        u.deleteUser("testteswt");
 
     }
 }
