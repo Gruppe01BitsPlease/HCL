@@ -14,7 +14,10 @@ class LogOnGUI extends JFrame{
 		setTitle("Log in");
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(300, 150);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		double x = (double) screen.width * 0.25;
+		double y = (double) screen.height * 0.20;
+		setSize((int) x, (int) y);
 		setLocationRelativeTo(null);
 		setResizable(false);
 		
@@ -43,18 +46,18 @@ class LogOnGUI extends JFrame{
 				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!!
 				String navn = user.getText();
 				String pass = password.getText();
+				Logon logon = new Logon();
+				User u = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
 				int i;
 				if (navn.equals("admin") && pass.equals("admin")) {
 					i = 0;
 				}
 				else {
-					Logon logon = new Logon();
-					User u = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
 					i = u.logon(navn, pass);
 				}
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
-					tabbedMenu main = new tabbedMenu(i);
+					tabbedMenu main = new tabbedMenu(u, i);
 					dispose();
 				}
 				else {

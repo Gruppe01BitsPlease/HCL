@@ -12,28 +12,18 @@ import java.awt.*;
  */
 public class tabbedMenu extends JFrame {
     User user;
+	double x;
+	double y;
     public tabbedMenu (User user, int rolle){
         this.user = user;
         setTitle("Bits Please HCL System 0.1");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
-        setSize(1600, 900);
-        setLocationRelativeTo(null);
-        setResizable(true);
-        JTabbedPane tabs = new JTabbedPane();
-        tabs.addTab("Employees", new employeeTab());
-        tabs.addTab("CEO functions", new CEOtab());
-        add(tabs, BorderLayout.NORTH);
-        this.setVisible(true);
-    }
-
-    //This constructor is probably just for testing,
-    // gonna need an SQL object sent to the menu to connect to the database (probably easiest)
-    public tabbedMenu (int rolle){
-        setTitle("Bits Please HCL System 0.1");
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
-        setSize(1600, 900);
+		//Dynamic size based on screen resolution bitches
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		x = (double) screen.width * 0.75;
+		y = (double) screen.height * 0.75;
+        setSize((int) x, (int) y);
         setLocationRelativeTo(null);
         setResizable(true);
         JTabbedPane tabs = new JTabbedPane();
@@ -45,42 +35,40 @@ public class tabbedMenu extends JFrame {
 
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] emp = {{ "Bob", "John", "Dave" }, { "0", "1", "2" }}; //TESTING
+        String[][] emp = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
+		String[] clm = { "Employees", "ID" };
+    //    String[][] emp = user.getStringTable("SELECT * FROM HCL_users");
         public employeeTab() {
-            setLayout(new GridLayout(1, 2));
- //           String[][] emp = sql.getStringTable("SELECT * FROM HCL_users");
-            String[] emp2 = emp[1];
-            JList list1 = new JList(emp2);
-            JButton test = new JButton("Emplyee Testing");
-            JButton test2 = new JButton("Testing more");
-            JPanel tab1 = new list1();
-            JPanel tab2 = new list2();
-            add(tab1);
-            add(tab2);
-          //  add(test);
-         //   add(test2);
+            setLayout(new BorderLayout());
+			add(new top(), BorderLayout.NORTH);
+            add(new center(), BorderLayout.CENTER);
+			add(new bottom(), BorderLayout.SOUTH);
         }
-        //The [][] must be split into []'s, unfortunately
-        private class list1 extends JPanel {
-            public list1() {
+        private class center extends JPanel {
+            public center() {
                 setLayout(new BorderLayout());
-                String[] tab = emp[0];
-                JList list = new JList(tab);
-                JLabel listlabel = new JLabel("Employees");
-                add(listlabel, BorderLayout.NORTH);
+				JTable list = new JTable(emp, clm);
                 add(list, BorderLayout.SOUTH);
             }
         }
-        private class list2 extends JPanel {
-            public list2() {
-                setLayout(new BorderLayout());
-                String[] tab = emp[1];
-                JList list = new JList(tab);
-                JLabel listlabel = new JLabel("ID");
-                add(listlabel, BorderLayout.NORTH);
-                add(list, BorderLayout.SOUTH);
-            }
-        }
+		private class top extends JPanel {
+			public top() {
+				setLayout(new BorderLayout());
+				JLabel label1 = new JLabel("Employee");
+				JLabel label2 = new JLabel("ID");
+				add(label1, BorderLayout.WEST);
+				add(label2, BorderLayout.EAST);
+			}
+		}
+		private class bottom extends JPanel {
+			public bottom() {
+				setLayout(new BorderLayout());
+				JTextField search = new JTextField();
+				JButton searcher = new JButton("Search");
+				add(search, BorderLayout.CENTER);
+				add(searcher, BorderLayout.EAST);
+			}
+		}
     }
     private class CEOtab extends JPanel {
         public CEOtab() {
@@ -95,6 +83,10 @@ public class tabbedMenu extends JFrame {
 }
 class test {
     public static void main(String[] args) throws Exception {
-        tabbedMenu menu = new tabbedMenu(1);
+        Logon logon = new Logon();
+        User user = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
+	//	String[][] temp = user.getStringTable("SELECT * FROM HCL_users");
+     //   System.out.println(temp[0][0]);
+        tabbedMenu menu = new tabbedMenu(user, 1);
     }
 }

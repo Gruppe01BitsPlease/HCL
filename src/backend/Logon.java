@@ -18,6 +18,7 @@ public class Logon {
 		file = new File(filename, true);
 	}
 
+	//Should read from the file
 	public Logon() {
 		filename = System.getProperty("user.dir")+"/src/backend/Database.ini";
 		file = new File(filename, true);
