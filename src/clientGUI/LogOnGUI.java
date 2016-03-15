@@ -46,8 +46,7 @@ class LogOnGUI extends JFrame{
 				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!!
 				String navn = user.getText();
 				String pass = password.getText();
-				Logon logon = new Logon();
-				User u = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
+				UserManager u = new UserManager(new Logon());
 				int i;
 				if (navn.equals("admin") && pass.equals("admin")) {
 					i = 0;
@@ -57,11 +56,14 @@ class LogOnGUI extends JFrame{
 				}
 				if (i >= 0) {
 					System.out.println("LOGGEDON");
-					tabbedMenu main = new tabbedMenu(u, i);
+					tabbedMenu main = new tabbedMenu(i);
 					dispose();
 				}
-				else {
-					JOptionPane.showMessageDialog(null, "Login feilet!");
+				else if (i == -1) {
+					JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");
+				}
+				else if (i == -2) {
+					JOptionPane.showMessageDialog(null, "Could not connect to the database.");
 				}
 			}
 		};

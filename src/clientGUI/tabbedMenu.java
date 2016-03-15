@@ -2,7 +2,6 @@ package clientGUI;
 
 import backend.Logon;
 import backend.SQL;
-import backend.User;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,11 +10,11 @@ import java.awt.*;
  * Created by Jens on 14.03.2016.
  */
 public class tabbedMenu extends JFrame {
-    User user;
+    SQL user;
 	double x;
 	double y;
-    public tabbedMenu (User user, int rolle){
-        this.user = user;
+    public tabbedMenu (int rolle){
+		user = new SQL(new Logon());
         setTitle("Bits Please HCL System 0.1");
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
@@ -83,10 +82,6 @@ public class tabbedMenu extends JFrame {
 }
 class test {
     public static void main(String[] args) throws Exception {
-        Logon logon = new Logon();
-        User user = new User(logon.getDatabase(), logon.getUser(), logon.getPassword());
-	//	String[][] temp = user.getStringTable("SELECT * FROM HCL_users");
-     //   System.out.println(temp[0][0]);
-        tabbedMenu menu = new tabbedMenu(user, 1);
+        tabbedMenu menu = new tabbedMenu(1);
     }
 }
