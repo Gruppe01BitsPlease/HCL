@@ -19,6 +19,7 @@ public class Logon {
         filename = file.getFilename();
 	}
 
+	//Should read from the file
 	public Logon() {
         try {
             file = new File(Logon.class.getResource("Database.ini").toURI().getPath(), true);
