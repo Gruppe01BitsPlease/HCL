@@ -118,29 +118,25 @@ public class SQL {
 
 	/**
 	 * Updates a value in a table, when I've coded it V('.')V
-     * TODO: Make this
 	 */
-	public boolean update(String update) {
+	public boolean update(String table, String colomnName, String oldValue, String newValue) {
+        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+colomnName+" = ?";
 
-		//		try{
-		//			forbindelse.setAutoCommit(false);
-		//		}
-		//		catch (SQLException e) {}
+        try {
+            PreparedStatement prep = connection.prepareStatement(pString);
 
-		try {
-			sentence = connection.createStatement();
+            prep.setString(1, newValue);
+            prep.setString(2, oldValue);
 
-			if (sentence.executeUpdate(update) != 0) {
-				return true;
-			}
-			else {
-				return false;
-			}
-		}
-		catch (SQLException e) {
-			return false;
-		}
+            System.out.println(prep.toString());
 
+            prep.executeUpdate();
+            return true;
+        }
+        catch(SQLException e){
+            return false;
+        }
 	}
 
 	/**
@@ -237,7 +233,7 @@ public class SQL {
 		//System.out.println(sql.connect());
 		if (sql.connect()) {
 
-			String[][] tabell = sql.getStringTable("select * from bok");
+			String[][] tabell = sql.getStringTable("select * from HCL_users");
 			//System.out.println("End: " + sql.end());
             sql.print2dArray(tabell);
 		}
