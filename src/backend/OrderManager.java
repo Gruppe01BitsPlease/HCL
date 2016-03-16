@@ -13,7 +13,7 @@ public class OrderManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_order";
-    public static final String CURRENT_TABLE_GENEREATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
     public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(order_id)";
 
     public OrderManager(SQL sql){
@@ -27,7 +27,7 @@ public class OrderManager {
         try {
             Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(order_date).getTime());
             Date date2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(delivery_date).getTime());
-            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENEREATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
+            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
             prep.setInt(1,customer_id);
