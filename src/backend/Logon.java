@@ -15,6 +15,7 @@ public class Logon {
     private String filename;
 
 	public Logon(File file) {
+
 		this.file  = file;
         filename = file.getFilename();
 	}
@@ -49,15 +50,9 @@ public class Logon {
      */
     public boolean logon() {
 
-		String database = getDatabase();
-		String user = getUser();
-		String password = getPassword();
-
-		//System.out.println(database + user + password);
-
 		sql = new SQL(this);
 
-		return sql.connect(); // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
+		return sql.isConnected; // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
 
 	}
 
@@ -121,14 +116,20 @@ public class Logon {
 		System.out.println(
 				"DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());
 
-		//		logon.changeUser("olavhus");
-		//		System.out.println(logon.getUser());
-		//		System.out.println(logon.getDatabase());
-		//		logon.changePassword("ost");
-		//		System.out.println(logon.getPassword());
-		//		logon.changeDatabase("Ost@ostost.com");
+        logon.changeUser("olavhus");
+        logon.changePassword("ost");
+        logon.changeDatabase("Ost@ostost.com");
+
 		System.out.println(
 				"DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());
+
+        logon.changeUser("olavhus");
+        logon.changePassword("CmrXjoQn");
+        logon.changeDatabase("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
+
+        System.out.println(
+                "DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());
+
 	}
 }
 /*
