@@ -190,7 +190,7 @@ public class SQL {
 	 *         first row, data in the others
      *
 	 */
-	public String[][] getStringTable(String query) {
+	public String[][] getStringTable(String query){
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}

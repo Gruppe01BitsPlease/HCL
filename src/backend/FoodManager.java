@@ -9,8 +9,10 @@ import java.sql.SQLException;
 public class FoodManager {
 
     private SQL sql;
-    public  static final String CURRENT_TABLE = "HCL_food";
-    public static final String CURRENT_TABLE_ARGUMENTS = "(name,price)";
+    public static final String CURRENT_TABLE = "HCL_food";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name,price)";
+    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name,price)";
+
 
     public FoodManager(SQL sql){
         this.sql = sql;
@@ -21,7 +23,7 @@ public class FoodManager {
         if(!(name.trim().length() > 0) &&!(price >= 0)) return false;
 
         try {
-            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+" "+CURRENT_TABLE_ARGUMENTS+" VALUES(?,?)";
+            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
             prep.setString(1,name);
@@ -33,10 +35,9 @@ public class FoodManager {
         catch (SQLException e){return false;}
     }
 
-
     public boolean delete(String name) {
         try {
-            String sqlPrep = "DELETE FROM HCL_food WHERE name = ?";
+            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setString(1,name);
             prep.executeUpdate();

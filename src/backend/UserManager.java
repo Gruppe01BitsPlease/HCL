@@ -66,17 +66,17 @@ public class UserManager extends SQL{
         if(username.trim().equals("") || username == null) return false;
 
 
-        if(!firstname.trim().equals("") && firstname != null)
+        if(!firstname.trim().equals(""))
          update("HCL_users","user_firstname","user_name",username,firstname);
         if(role >= 0)
             update("HCL_users","user_role","user_name",username,role);
-        if(!lastname.trim().equals("") && lastname != null)
+        if(!lastname.trim().equals(""))
             update("HCL_users","user_lastname","user_name",username,lastname);
-        if(!email.trim().equals("") && email != null)
+        if(!email.trim().equals(""))
             update("HCL_users","user_email","user_name",username,email);
         if(tlf > 0 )
             update("HCL_users","user_tlf","user_name",username,tlf);
-        if(!adress.trim().equals("") && adress != null)
+        if(!adress.trim().equals(""))
             update("HCL_users","user_adress","user_name",username,adress);
         if(postnr > 0)
             update("HCL_users","user_postnr","user_name",username,postnr);
@@ -210,18 +210,19 @@ public class UserManager extends SQL{
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
 
-		int rolle = u.logon("Magisk", "ost");
+		int rolle = u.logon("Olav", "ostost");
 		System.out.println(rolle);
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
       //  u.deleteUser("testteswt");
         //u.editUser("Magisk",2,"Olav","Husby","OlavH96@gmail.com",93240605,"Bøkveien 11A",7059,200,20,new Date(System.currentTimeMillis()));
 
-        //u.generate("Bjørn","Mådahamat",0);
-        try {
-            u.edit("Bjørn", 1, "Bjørn", "Hafeld", "BjørnHafeld@gmail.com", 12345678, "Borti Sjægget", 1000, 100, 1000, "2011-02-02");
+       //u.generate("Trine","Pjusken",0);
+            try {
+                u.edit("Bjørn", 0, "Bjørn", "Hafeld", "BjørnHafeld@gmail.com", 12345678, "Borti Sjægget", 1000, 100, 1000, "2011-02-02");
         }
         catch (Exception e){}
         //u.delete("Bjørn");
+        System.out.println(u.changePassword("Olav","ost","ostost"));
     }
 }
