@@ -12,20 +12,20 @@ import java.text.SimpleDateFormat;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
-public class UserManager extends SQL{
+public class UserManager{
 
     public final static String CURRENT_TABLE = "HCL_users";
     public final static String CURRENT_TABLE_GENERATE_ARGUMENTS = "(user_name, user_role, user_salt, user_pass)";
     public final static String CURRENT_TABLE_DELETE_ARGUMENTS = "user_name";
 	private PBKDF2 crypt = new PBKDF2();
     private Logon logon;
+    private SQL sql;
 
     /**
 	 * Extends SQL, because it's SQL with more features
 	 */
-	public UserManager(Logon logon) {
-		super(logon);
-        this.logon = logon;
+	public UserManager(SQL sql) {
+		this.sql = sql;
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class UserManager extends SQL{
             String insertTableSQL =
                     "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" values(?,?,'" + salt2 + "', '" + pass2 + "');";
             try {
-                PreparedStatement prep = connection.prepareStatement(insertTableSQL);
+                PreparedStatement prep = sql.connection.prepareStatement(insertTableSQL);
                 prep.setString(1, username);
                 prep.setInt(2, role);
                 prep.executeUpdate();
@@ -67,27 +67,27 @@ public class UserManager extends SQL{
 
 
         if(!firstname.trim().equals(""))
-         update("HCL_users","user_firstname","user_name",username,firstname);
+         sql.update("HCL_users","user_firstname","user_name",username,firstname);
         if(role >= 0)
-            update("HCL_users","user_role","user_name",username,role);
+           sql. update("HCL_users","user_role","user_name",username,role);
         if(!lastname.trim().equals(""))
-            update("HCL_users","user_lastname","user_name",username,lastname);
+            sql.update("HCL_users","user_lastname","user_name",username,lastname);
         if(!email.trim().equals(""))
-            update("HCL_users","user_email","user_name",username,email);
+            sql.update("HCL_users","user_email","user_name",username,email);
         if(tlf > 0 )
-            update("HCL_users","user_tlf","user_name",username,tlf);
+            sql.update("HCL_users","user_tlf","user_name",username,tlf);
         if(!adress.trim().equals(""))
-            update("HCL_users","user_adress","user_name",username,adress);
+            sql.update("HCL_users","user_adress","user_name",username,adress);
         if(postnr > 0)
-            update("HCL_users","user_postnr","user_name",username,postnr);
+            sql.update("HCL_users","user_postnr","user_name",username,postnr);
         if(wage >= 0)
-            update("HCL_users","user_wage","user_name",username,wage);
+            sql.update("HCL_users","user_wage","user_name",username,wage);
         if(hours >= 0)
-            update("HCL_users","user_hours","user_name",username,hours);
+            sql.update("HCL_users","user_hours","user_name",username,hours);
         if(start != null)
             try {
                 Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
-                update("HCL_users","user_start","user_name",username,date);
+                sql.update("HCL_users","user_start","user_name",username,date);
             }
             catch (Exception e){}
 
@@ -98,7 +98,7 @@ public class UserManager extends SQL{
         String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
 
         try {
-            PreparedStatement prep = connection.prepareStatement(insertTableSQL);
+            PreparedStatement prep = sql.connection.prepareStatement(insertTableSQL);
             prep.setString(1, username);
             prep.execute();
             return true;
@@ -114,7 +114,7 @@ public class UserManager extends SQL{
             String userSalt = "";
             String userPass = "";
             try {
-                PreparedStatement prep  = connection.prepareStatement(insertTableSQL);
+                PreparedStatement prep  = sql.connection.prepareStatement(insertTableSQL);
                 prep.setString(1, username);
                 ResultSet res  = prep.executeQuery();
                 if(res.next()) {
@@ -135,8 +135,8 @@ public class UserManager extends SQL{
             }
             catch (Exception e){return false;}
 
-            update("HCL_users","user_pass","user_name",username,newPass2);
-            update("HCL_users","user_salt","user_name",username,newSalt2);
+            sql.update("HCL_users","user_pass","user_name",username,newPass2);
+            sql.update("HCL_users","user_salt","user_name",username,newSalt2);
             return true;
         }
         return false;
@@ -148,7 +148,7 @@ public class UserManager extends SQL{
 	 */
 	public int logon(String username, String password) {
 
-		if (!isConnected)
+		if (!sql.isConnected)
 			return -2;
 
         String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
@@ -157,7 +157,7 @@ public class UserManager extends SQL{
         String userPass;
         String userRole;
         try {
-            PreparedStatement prep  = connection.prepareStatement(insertTableSQL);
+            PreparedStatement prep  = sql.connection.prepareStatement(insertTableSQL);
             prep.setString(1, username);
             ResultSet res  = prep.executeQuery();
             if(res.next()) { //Only checks the first line, so if there are several results it only checks the first one
@@ -206,7 +206,8 @@ public class UserManager extends SQL{
         logon = new Logon(new File(UserManager.class.getResource("Database.ini").toURI().getPath(),true));
         }
         catch (URISyntaxException e){}
-        UserManager u = new UserManager(logon);
+        SQL sql = new SQL(logon);
+        UserManager u = new UserManager(sql);
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
 
@@ -223,6 +224,6 @@ public class UserManager extends SQL{
         }
         catch (Exception e){}
         //u.delete("Bjørn");
-        System.out.println(u.changePassword("Olav","ost","ostost"));
+        System.out.println(u.changePassword("Olav","ostost","ostost"));
     }
 }

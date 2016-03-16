@@ -67,7 +67,8 @@ public class IngredientManager {
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setString(1,name);
             int row = prep.executeUpdate();
-            if(row == 0)return false;
+            if(row == 0)
+                return false;
 
             return true;
         }
