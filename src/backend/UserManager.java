@@ -12,8 +12,11 @@ import java.text.SimpleDateFormat;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
-public class UserManager extends SQL {
+public class UserManager extends SQL{
 
+    public final static String CURRENT_TABLE = "HCL_users";
+    public final static String CURRENT_TABLE_GENERATE_ARGUMENTS = "(user_name, user_role, user_salt, user_pass)";
+    public final static String CURRENT_TABLE_DELETE_ARGUMENTS = "user_name";
 	private PBKDF2 crypt = new PBKDF2();
     private Logon logon;
 
@@ -29,7 +32,7 @@ public class UserManager extends SQL {
 	 * Makes and inserts an user into the database
      * Now uses prepared statements, hopefully safe
 	 */
-	public boolean generateUser(String username, String password, int role) {
+	public boolean generate(String username, String password, int role) {
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -39,7 +42,7 @@ public class UserManager extends SQL {
 			String pass2 = Base64.encode(pass);
 
             String insertTableSQL =
-                    "INSERT INTO HCL_users(user_name, user_role, user_salt, user_pass) values(?,?,'" + salt2 + "', '" + pass2 + "');";
+                    "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" values(?,?,'" + salt2 + "', '" + pass2 + "');";
             try {
                 PreparedStatement prep = connection.prepareStatement(insertTableSQL);
                 prep.setString(1, username);
@@ -58,7 +61,7 @@ public class UserManager extends SQL {
 			return false;
 		}
 	}
-    public boolean editUser(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, int wage, int hours, String start){
+    public boolean edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, int wage, int hours, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
         if(username.trim().equals("") || username == null) return false;
 
@@ -91,8 +94,8 @@ public class UserManager extends SQL {
 
         return true;
     }
-    public boolean deleteUser(String username){
-        String insertTableSQL = "DELETE FROM HCL_users WHERE user_name = ?";
+    public boolean delete(String username){
+        String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
 
         try {
             PreparedStatement prep = connection.prepareStatement(insertTableSQL);
@@ -214,11 +217,11 @@ public class UserManager extends SQL {
       //  u.deleteUser("testteswt");
         //u.editUser("Magisk",2,"Olav","Husby","OlavH96@gmail.com",93240605,"Bøkveien 11A",7059,200,20,new Date(System.currentTimeMillis()));
 
-       //u.generateUser("Bjørn","Mådahamat",0);
+        //u.generate("Bjørn","Mådahamat",0);
         try {
-            u.editUser("Bjørn", 1, "Bjørn", "Hafeld", "BjørnHafeld@gmail.com", 12345678, "Borti Sjægget", 1000, 100, 1000, "2011-02-02");
+            u.edit("Bjørn", 1, "Bjørn", "Hafeld", "BjørnHafeld@gmail.com", 12345678, "Borti Sjægget", 1000, 100, 1000, "2011-02-02");
         }
         catch (Exception e){}
-       //u.deleteUser("Bjørn");
+        //u.delete("Bjørn");
     }
 }
