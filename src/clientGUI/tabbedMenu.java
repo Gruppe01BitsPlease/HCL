@@ -6,6 +6,8 @@ import backend.SQL;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -65,7 +67,6 @@ public class tabbedMenu extends JFrame {
                                             searchTable[k] = table[i];
                                             added = true;
                                             rowAdded.add(i);
-                                            System.out.println(rowAdded.contains(i));
                                         } else {
                                             k++;
                                         }
@@ -152,9 +153,10 @@ public class tabbedMenu extends JFrame {
 	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
+        String[][] table = {{ "Bob", "bob@bob.com", "0" }, { "John", "John.com", "1" }, { "Dave", "Dave.com", "3" }}; //TESTING
 //		String[][] table = sql.getStringTable("SELECT user_name, user_epost, user_adresse FROM HCL_users");
-		String[] titles = { "Employees", "E-mail" };
+		String[] titles = { "Employees", "E-mail", "ID" };
+        JTable list;
         public employeeTab() {
             setLayout(new BorderLayout());
             center center = new center();
@@ -166,9 +168,68 @@ public class tabbedMenu extends JFrame {
         private class center extends JPanel {
             public center() {
                 setLayout(new BorderLayout());
-				JTable list = new JTable(table, titles);
+				list = new JTable(table, titles) {
+                    private static final long serialVersionUID = 1L;
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                list.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (e.getClickCount() == 2) {
+                            editWindow edit = new editWindow(table[list.getSelectedRow()], list.getSelectedRow());
+                            System.out.println(list.getSelectedRow());
+                        }
+                    }
+                });
 				JScrollPane scroll = new JScrollPane(list);
                 add(scroll, BorderLayout.CENTER);
+            }
+        }
+        private class editWindow extends JFrame {
+            public editWindow(String[] employee, int index) {
+                setTitle("Edit employee");
+                setLayout(new GridLayout(4, 2));
+                setSize((int) (x * 0.4), (int) (y * 0.2));
+                setLocationRelativeTo(null);
+                setAlwaysOnTop(true);
+                setResizable(false);
+                JLabel name = new JLabel("Name");
+                JLabel email = new JLabel("E-mail");
+                JLabel id = new JLabel ("Employee ID");
+                JTextField nameField = new JTextField(employee[0]);
+                JTextField mailField = new JTextField(employee[1]);
+                JTextField idField = new JTextField(employee[2]);
+                JButton save = new JButton("Save");
+                JButton cancel = new JButton("Cancel");
+                cancel.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
+                save.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        employee[0] = nameField.getText();
+                        employee[1] = mailField.getText();
+                        employee[2] = idField.getText();
+                        table[index] = employee;
+                        //list = new JTable(table, titles);
+                        list.repaint();
+                        dispose();
+                    }
+                });
+                add(name);
+                add(nameField);
+                add(email);
+                add(mailField);
+                add(id);
+                add(idField);
+                add(save);
+                add(cancel);
+                setVisible(true);
             }
         }
     }
