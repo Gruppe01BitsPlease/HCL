@@ -16,18 +16,19 @@ import backend.*;
  */
 public class tabbedMenu extends JFrame {
     SQL sql;
-	double x;
-	double y;
-    public tabbedMenu (int rolle) throws Exception {
+    //X and Y is the size of the main menu window, other windows should be scaled according to this value
+	int x;
+	int y;
+    public tabbedMenu (int rolle, String username) throws Exception {
 		sql = new SQL(new Logon(new File()));
-        setTitle("Bits Please HCL System 0.1");
+        setTitle("Bits Please HCL System 0.1 - " + username);
         setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE );
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Dynamic size based on screen resolution bitches
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		x = (double) screen.width * 0.75;
-		y = (double) screen.height * 0.75;
-        setSize((int) x, (int) y);
+		x = (int) (screen.width * 0.75);
+		y = (int) (screen.height * 0.75);
+        setSize(x, y);
         setLocationRelativeTo(null);
         setResizable(false);
         JTabbedPane tabs = new JTabbedPane();
@@ -51,19 +52,23 @@ public class tabbedMenu extends JFrame {
             Action searchPress = new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    ArrayList<Integer> rowAdded = new ArrayList<Integer>();
                     searchTable = new String[table.length][table[0].length];
                     for (int i = 0; i < table.length; i++) {
                         for (int j = 0; j < table[i].length; j++) {
-                            if (table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
+                            if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
                                 int k = 0;
                                 boolean added = false;
-                                while (!added && k < searchTable[0].length) {
-                                    if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
-                                        searchTable[k] = table[i];
-                                        added = true;
-                                    }
-                                    else {
-                                        k++;
+                                for (int l = 0; l < searchTable.length; l++) {
+                                    while (!added && k < searchTable[0].length) {
+                                        if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
+                                            searchTable[k] = table[i];
+                                            added = true;
+                                            rowAdded.add(i);
+                                            System.out.println(rowAdded.contains(i));
+                                        } else {
+                                            k++;
+                                        }
                                     }
                                 }
                             }
@@ -79,9 +84,11 @@ public class tabbedMenu extends JFrame {
         }
         private class searchWindow extends JFrame {
             public searchWindow() {
-                setSize((int) (x * 0.3), (int) (y * 0.3));
+                setSize((int) (x * 0.4), (int) (y * 0.4));
+                setTitle("Search results");
                 JTable searchTab = new JTable(searchTable, titles);
                 add(searchTab, BorderLayout.CENTER);
+                setLocationRelativeTo(null);
                 setVisible(true);
             }
         }
@@ -89,7 +96,8 @@ public class tabbedMenu extends JFrame {
 	private class menubar extends JMenuBar {
 		public menubar() {
 			JMenu file = new JMenu("File");
-			JMenuItem settings = new JMenuItem("Database Settings...");
+            JMenu settings = new JMenu("Settings");
+			JMenuItem DBsettings = new JMenuItem("Database Settings...");
 			JMenuItem logout = new JMenuItem("Log out...");
 			JMenuItem about = new JMenuItem("About...");
 			Action settingspress = new AbstractAction() {
@@ -111,13 +119,14 @@ public class tabbedMenu extends JFrame {
 					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
 				}
 			};
-			settings.addActionListener(settingspress);
+			DBsettings.addActionListener(settingspress);
 			logout.addActionListener(logoutpress);
 			about.addActionListener(aboutpress);
-			file.add(settings);
-			file.add(logout);
-			file.add(about);
+			settings.add(DBsettings);
+            file.add(logout);
+            file.add(about);
 			add(file);
+            add(settings);
 		}
 		private class settingsMenu extends JFrame{
 			public settingsMenu() {
@@ -177,7 +186,7 @@ public class tabbedMenu extends JFrame {
 		String[] titles = { "Customer", "Adress"};
 		public orderTab() {
 			setLayout(new BorderLayout());
-			add(new center(), BorderLayout.NORTH);
+			add(new center(), BorderLayout.CENTER);
 			add(new genericSearch(table, titles), BorderLayout.SOUTH);
 		}
 		private class center extends JPanel {
@@ -185,7 +194,7 @@ public class tabbedMenu extends JFrame {
 				setLayout(new BorderLayout());
 				JTable list = new JTable(table, titles);
 				JScrollPane scroll = new JScrollPane(list);
-				add(scroll, BorderLayout.SOUTH);
+				add(scroll, BorderLayout.CENTER);
 			}
 		}
 	}
@@ -193,6 +202,6 @@ public class tabbedMenu extends JFrame {
 }
 class test {
     public static void main(String[] args) throws Exception {
-        tabbedMenu menu = new tabbedMenu(1);
+        tabbedMenu menu = new tabbedMenu(1, "test");
     }
 }
