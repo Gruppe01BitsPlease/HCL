@@ -6,6 +6,9 @@ import backend.SQL;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import backend.*;
 
 /**
@@ -26,7 +29,7 @@ public class tabbedMenu extends JFrame {
 		y = (double) screen.height * 0.75;
         setSize((int) x, (int) y);
         setLocationRelativeTo(null);
-        setResizable(true);
+        setResizable(false);
         JTabbedPane tabs = new JTabbedPane();
 		menubar bar = new menubar();
         tabs.addTab("Employees", new employeeTab());
@@ -35,6 +38,53 @@ public class tabbedMenu extends JFrame {
         add(tabs, BorderLayout.CENTER);
 		add(bar, BorderLayout.NORTH);
         this.setVisible(true);
+    }
+    private class genericSearch extends JPanel {
+        //This is a generic search tab with button, which will show results in a popup window
+        String[][] searchTable;
+        String[] titles;
+        public genericSearch(String[][] table, String[] titles) {
+            this.titles = titles;
+            setLayout(new BorderLayout());
+            JTextField search = new JTextField();
+            JButton searcher = new JButton("Search");
+            Action searchPress = new AbstractAction() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    searchTable = new String[table.length][table[0].length];
+                    for (int i = 0; i < table.length; i++) {
+                        for (int j = 0; j < table[i].length; j++) {
+                            if (table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
+                                int k = 0;
+                                boolean added = false;
+                                while (!added && k < searchTable[0].length) {
+                                    if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
+                                        searchTable[k] = table[i];
+                                        added = true;
+                                    }
+                                    else {
+                                        k++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    searchWindow window = new searchWindow();
+                }
+            };
+            search.addActionListener(searchPress);
+            searcher.addActionListener(searchPress);
+            add(search, BorderLayout.CENTER);
+            add(searcher, BorderLayout.EAST);
+        }
+        private class searchWindow extends JFrame {
+            public searchWindow() {
+                setSize((int) (x * 0.3), (int) (y * 0.3));
+                JTable searchTab = new JTable(searchTable, titles);
+                add(searchTab, BorderLayout.CENTER);
+                setVisible(true);
+            }
+        }
     }
 	private class menubar extends JMenuBar {
 		public menubar() {
@@ -98,65 +148,20 @@ public class tabbedMenu extends JFrame {
 		String[] titles = { "Employees", "E-mail" };
         public employeeTab() {
             setLayout(new BorderLayout());
-			//add(new top(), BorderLayout.NORTH);
-            add(new center(), BorderLayout.NORTH);
-			add(new bottom(), BorderLayout.SOUTH);
+            center center = new center();
+            Dimension dim = new Dimension((int) (x * 0.5), (int) (y * 0.5));
+            center.setMinimumSize(dim);
+            add(center, BorderLayout.CENTER);
+			add(new genericSearch(table, titles), BorderLayout.SOUTH);
         }
         private class center extends JPanel {
             public center() {
                 setLayout(new BorderLayout());
 				JTable list = new JTable(table, titles);
 				JScrollPane scroll = new JScrollPane(list);
-                add(scroll, BorderLayout.SOUTH);
+                add(scroll, BorderLayout.CENTER);
             }
         }
-		private class top extends JPanel {
-			public top() {
-				setLayout(new BorderLayout());
-				JLabel label1 = new JLabel("Employee");
-				JLabel label2 = new JLabel("ID");
-				add(label1, BorderLayout.WEST);
-				add(label2, BorderLayout.EAST);
-			}
-		}
-		private class bottom extends JPanel {
-			String[][] searchTable;
-			public bottom() {
-				setLayout(new BorderLayout());
-				JTextField search = new JTextField();
-				JButton searcher = new JButton("Search");
-				Action searchPress = new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						for (int i = 0; i < table.length; i++) {
-							for (int j = 0; j < table[i].length; i++) {
-								if (search.getText().equalsIgnoreCase(table[i][j])) {
-									for (int k = 0; k < table[i].length; i++) {
-										if (searchTable[i][k] != null) {
-											searchTable[k][j] = table[i][j];
-										}
-									}
-									searchTable[i] = table[i];
-								}
-							}
-						}
-						searchWindow window = new searchWindow();
-					}
-				};
-				search.addActionListener(searchPress);
-				searcher.addActionListener(searchPress);
-				add(search, BorderLayout.CENTER);
-				add(searcher, BorderLayout.EAST);
-			}
-			private class searchWindow extends JFrame {
-				public searchWindow() {
-					setSize((int) (x * 0.3), (int) (y * 0.3));
-					JTable searchTab = new JTable(searchTable, titles);
-					add(searchTab, BorderLayout.CENTER);
-					setVisible(true);
-				}
-			}
-		}
     }
     private class CEOtab extends JPanel {
         public CEOtab() {
@@ -172,24 +177,15 @@ public class tabbedMenu extends JFrame {
 		String[] titles = { "Customer", "Adress"};
 		public orderTab() {
 			setLayout(new BorderLayout());
-			add(new center(), BorderLayout.NORTH);
-			add(new bottom(), BorderLayout.SOUTH);
+			add(new center(), BorderLayout.CENTER);
+			add(new genericSearch(table, titles), BorderLayout.SOUTH);
 		}
 		private class center extends JPanel {
 			public center() {
 				setLayout(new BorderLayout());
 				JTable list = new JTable(table, titles);
 				JScrollPane scroll = new JScrollPane(list);
-				add(scroll, BorderLayout.SOUTH);
-			}
-		}
-		private class bottom extends JPanel {
-			public bottom() {
-				setLayout(new BorderLayout());
-				JTextField search = new JTextField();
-				JButton searcher = new JButton("Search");
-				add(search, BorderLayout.CENTER);
-				add(searcher, BorderLayout.EAST);
+				add(scroll, BorderLayout.CENTER);
 			}
 		}
 	}
