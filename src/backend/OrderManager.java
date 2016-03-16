@@ -5,7 +5,7 @@ package backend;
  */
 public class OrderManager {
 
-    public boolean generate(String name,String email, int tlf) {
+    public boolean generate() {
         return false;
     }
 

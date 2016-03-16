@@ -10,9 +10,10 @@ public class SQL {
 	private String databasedriver = "com.mysql.jdbc.Driver";
 	private String databasename;//"jdbc:mysql://mysql.stud.iie.ntnu.no:3306/olavhus?user=olavhus&password=CmrXjoQn;
 	private String database;
-	private Connection connection;
+	public  Connection connection;
 	private Statement sentence;
 	private ResultSet res;
+    public boolean isConnected = false;
 
 	public static int colomns = 0;
 
@@ -21,32 +22,33 @@ public class SQL {
 		this.username = logon.getUser();
 		this.password = logon.getPassword();
 		this.database = databasename + username + "?user=" + username + "&password=" + password;
+        this.connection = connect();
+        if(connection != null){
+            isConnected = true;
+        }
 	}
 
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
-	public boolean connect() {
+	private Connection connect() {
 
 		try {
 			Class.forName(databasedriver);
 		}
 		catch (ClassNotFoundException e) {
-			return false;
+			return null;
 		}
-
 		try {
 			connection = DriverManager.getConnection(database);
 			//setning = forbindelse.createStatement();
-			return true;
+			return connection;
 		}
 		catch (SQLException e) {
-			return false;
+			return null;
 		}
 	}
-    public Connection getConnection(){
-        return connection;
-    }
+
 
 	/**
 	 * Attemts to end the link with the database
@@ -55,9 +57,9 @@ public class SQL {
 	public boolean end() {
 
 		try {
-			connection.close();
+            res.close();
+            connection.close();
 			//setning.close();
-			res.close();
 			return true;
 		}
 		catch (SQLException e) {
@@ -117,17 +119,18 @@ public class SQL {
 	}
 
 	/**
-	 * Updates a value in a table, when I've coded it V('.')V
+	 * Updates a value in a table, can only update if there is a unique value there to begin with -.-'
+     * TODO: Fix pls ^
 	 */
-	public boolean update(String table, String colomnName, String oldValue, String newValue) {
+	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, String newValue) {
         //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
-        String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+colomnName+" = ?";
+        String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
 
         try {
             PreparedStatement prep = connection.prepareStatement(pString);
 
             prep.setString(1, newValue);
-            prep.setString(2, oldValue);
+            prep.setString(2, primaryKeyValue);
 
             System.out.println(prep.toString());
 
@@ -138,10 +141,54 @@ public class SQL {
             return false;
         }
 	}
+    public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, int newValue) {
+        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1){
+            return false;
+        }
+
+        String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
+
+        try {
+            PreparedStatement prep = connection.prepareStatement(pString);
+
+            prep.setInt(1, newValue);
+            prep.setString(2, primaryKeyValue);
+
+            System.out.println(prep.toString());
+
+            prep.executeUpdate();
+            return true;
+        }
+        catch(SQLException e){
+            return false;
+        }
+    }
+    public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, Date newDate) {
+        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
+
+        try {
+            PreparedStatement prep = connection.prepareStatement(pString);
+
+            prep.setDate(1, newDate);
+            prep.setString(2, primaryKeyValue);
+
+            System.out.println(prep.toString());
+
+            prep.executeUpdate();
+            return true;
+        }
+        catch(SQLException e){
+            return false;
+        }
+    }
 
 	/**
+     * Note: Very prone to SQL injection (v.v)
 	 * @return The query as a handy-dandy String[][], titles of columbs are in the
 	 *         first row, data in the others
+     *
 	 */
 	public String[][] getStringTable(String query) {
 		if (query == null || query.trim().equals("")) {
@@ -231,7 +278,7 @@ public class SQL {
 		SQL sql = new SQL(logon);
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
-		if (sql.connect()) {
+		if (sql.isConnected) {
 
 			String[][] tabell = sql.getStringTable("select * from HCL_users");
 			//System.out.println("End: " + sql.end());
@@ -240,5 +287,6 @@ public class SQL {
 		else {
 			System.out.println("Could not contact database @ " + logon.getDatabase());
         }
+        sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
 	}
 }
