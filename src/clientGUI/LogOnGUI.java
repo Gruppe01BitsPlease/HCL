@@ -55,7 +55,7 @@ class LogOnGUI extends JFrame{
 						i = u.logon(navn, pass);
 					}
 					if (i >= 0) {
-						tabbedMenu main = new tabbedMenu(i);
+						tabbedMenu main = new tabbedMenu(i, navn);
 						dispose();
 					} else if (i == -1) {
 						JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");
