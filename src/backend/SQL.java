@@ -190,7 +190,7 @@ public class SQL {
 	 *         first row, data in the others
      *
 	 */
-	public String[][] getStringTable(String query){
+	public String[][] getStringTable(String query, boolean header){
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
@@ -199,20 +199,34 @@ public class SQL {
 			ResultSetMetaData meta = res.getMetaData();
 			colomns = meta.getColumnCount();
 
-			String[][] out = arrayWithCorrectSize(query);
+			String[][] out = null;
 
-            for (int i = 1; i <= colomns; i++) {
-				out[0][i - 1] = meta.getColumnName(i); // Legger inn s�ylenavnene i �verste rad? hopefully
-			}
-			int i = 1;
-			while (res.next() && i < out.length) {
-
-				for (int j = 1; j <= colomns; j++) {
-					out[i][j - 1] = res.getString(j);
+			if(header){
+				out = arrayWithCorrectSize(query, true);
+				for (int i = 1; i <= colomns; i++) {
+					out[0][i - 1] = meta.getColumnName(i); // Legger inn s�ylenavnene i �verste rad? hopefully
 				}
-				i++;
+				int i = 1;
+				while (res.next() && i < out.length) {
+
+					for (int j = 1; j <= colomns; j++) {
+						out[i][j - 1] = res.getString(j);
+					}
+					i++;
+				}
+				return out;
+			}else {
+				out = arrayWithCorrectSize(query, false);
+				int i = 0;
+				while (res.next() && i < out.length) {
+
+					for (int j = 1; j <= colomns; j++) {
+						out[i][j - 1] = res.getString(j);
+					}
+					i++;
+				}
+				return out;
 			}
-			return out;
 		}
 		catch (SQLException e) {
             System.out.println("Error: "+e.toString());
@@ -225,7 +239,7 @@ public class SQL {
 	 * Returns an array with the correct size for the specified query Returns
 	 * and null if something goes wrong
 	 */
-	public String[][] arrayWithCorrectSize(String query) {
+	public String[][] arrayWithCorrectSize(String query, boolean header) {
 
 		try {
 			ResultSet res = query(query);
@@ -237,7 +251,11 @@ public class SQL {
 			while (res.next()) {
 				rows++;
 			}
-			out = new String[rows + 1][colomns]; // +1 for overskrifter
+			if(header){
+				out = new String[rows + 1][colomns]; // +1 for overskrifter
+			}else {
+				out = new String[rows][colomns];
+			}
 			return out;
 		}
 		catch (SQLException e) {
@@ -280,7 +298,7 @@ public class SQL {
 		//System.out.println(sql.connect());
 		if (sql.isConnected) {
 
-			String[][] tabell = sql.getStringTable("select * from HCL_users");
+			String[][] tabell = sql.getStringTable("select * from HCL_users", true);
 			//System.out.println("End: " + sql.end());
             sql.print2dArray(tabell);
 		}

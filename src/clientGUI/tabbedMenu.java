@@ -93,8 +93,8 @@ public class tabbedMenu extends JFrame {
 	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
-//		String[][] table = sql.getStringTable("SELECT user_name, user_epost, user_adresse FROM HCL_users");
+        //String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
+		String[][] table = sql.getStringTable("SELECT user_name, user_email, user_adress FROM HCL_users", false);
 		String[] titles = { "Employees", "E-mail" };
         public employeeTab() {
             setLayout(new BorderLayout());
