@@ -143,9 +143,9 @@ public class tabbedMenu extends JFrame {
 	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
-//		String[][] table = sql.getStringTable("SELECT user_name, user_epost, user_adresse FROM HCL_users");
-		String[] titles = { "Employees", "E-mail" };
+        //String[][] table = {{ "Bob", "0" }, { "John", "1" }, { "Dave", "3" }}; //TESTING
+		String[][] table = sql.getStringTable("SELECT user_name, user_email, user_adress, user_postnr, user_tlf FROM HCL_users", false);
+		String[] titles = { "Employees", "E-mail", "Adress ", "Zip-Code", "Number"};
         public employeeTab() {
             setLayout(new BorderLayout());
             center center = new center();
@@ -174,7 +174,7 @@ public class tabbedMenu extends JFrame {
     }
 	private class orderTab extends JPanel {
 		String[][] table = { { "McDonalds" , "McStreet 15"}, { "HiST", "Kjellern"}};
-		String[] titles = { "Customer", "Adress"};
+		String[] titles = { "Customer", "Adress", };
 		public orderTab() {
 			setLayout(new BorderLayout());
 			add(new center(), BorderLayout.CENTER);

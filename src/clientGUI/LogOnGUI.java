@@ -13,10 +13,10 @@ class LogOnGUI extends JFrame{
 		//window parameters
 		setTitle("Log in");
 		setLayout(new GridLayout(5, 1));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		double x = (double) screen.width * 0.25;
-		double y = (double) screen.height * 0.20;
+		double y = (double) screen.height * 0.25;
 		setSize((int) x, (int) y);
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -48,7 +48,7 @@ class LogOnGUI extends JFrame{
 				String pass = password.getText();
 				int i;
 				try {
-					UserManager u = new UserManager(new Logon(new File()));
+					UserManager u = new UserManager(new SQL(new Logon(new File())));
 					if (navn.equals("admin") && pass.equals("admin")) {
 						i = 0;
 					} else {
