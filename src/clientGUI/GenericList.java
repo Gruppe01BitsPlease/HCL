@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import backend.*;
 
-class genericList extends JPanel {
+class GenericList extends JPanel {
     //This is a generic list, shown in the middle of the tab where needed
     //Use the type int to choose which edit window appears whe double clicking
     String[][] table;
@@ -19,7 +19,7 @@ class genericList extends JPanel {
     int x;
     int y;
 
-    public genericList(SQL sql, String[][] table, String[] titles, int type) {
+    public GenericList(SQL sql, String[][] table, String[] titles, int type) {
         this.sql = sql;
         this.table = table;
         this.titles = titles;
@@ -53,7 +53,7 @@ class genericList extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    public genericList(SQL sql, String query, String[] titles, int type) {
+    public GenericList(SQL sql, String query, String[] titles, int type) {
         this.sql = sql;
         this.table = sql.getStringTable(query, false);
         this.titles = titles;
@@ -244,7 +244,7 @@ class genericList extends JPanel {
                 setSize((int) (x * 0.4), (int) (y * 0.4));
                 setTitle("Search results");
                 setAlwaysOnTop(true);
-                genericList searchTab = new genericList(sql, searchTable, titles, type);
+                GenericList searchTab = new GenericList(sql, searchTable, titles, type);
                 add(searchTab, BorderLayout.CENTER);
                 setLocationRelativeTo(null);
                 setVisible(true);
