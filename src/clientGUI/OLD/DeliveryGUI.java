@@ -1,12 +1,12 @@
-package clientGUI;
+package clientGUI.OLD;
 
 import javax.swing.*;
 
 /**
  * Created by Jens on 10-Mar-16.
  */
-public class AdminGUI extends JFrame {
-    public AdminGUI(String tittel) {
+public class DeliveryGUI extends JFrame {
+    public DeliveryGUI(String tittel) {
         setTitle(tittel);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
