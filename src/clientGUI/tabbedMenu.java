@@ -49,7 +49,7 @@ public class tabbedMenu extends JFrame {
         String[] titles;
         JTable list;
         int type;
-        public genericList(String[][] table, String[] titles, int type) {
+        public genericList(String[][] table, String[] titles, int type, boolean searchable) {
             this.table = table;
             this.titles = titles;
             this.type = type;
@@ -77,7 +77,9 @@ public class tabbedMenu extends JFrame {
             });
             JScrollPane scroll = new JScrollPane(list);
             add(scroll, BorderLayout.CENTER);
-            add(new genericSearch(), BorderLayout.SOUTH);
+			if (searchable) {
+				add(new genericSearch(), BorderLayout.SOUTH);
+			}
         }
         private class orderWindow extends JFrame {
             public orderWindow(String[] selected, int index) {
@@ -169,6 +171,7 @@ public class tabbedMenu extends JFrame {
                 setLayout(new BorderLayout());
                 JTextField search = new JTextField();
                 JButton searcher = new JButton("Search");
+                searcher.setToolTipText("Search for any entry and display all matches in seperate window.");
                 Action searchPress = new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -205,65 +208,12 @@ public class tabbedMenu extends JFrame {
                 public searchWindow() {
                     setSize((int) (x * 0.4), (int) (y * 0.4));
                     setTitle("Search results");
-                    genericList searchTab = new genericList(searchTable, titles, type);
+					setAlwaysOnTop(true);
+                    genericList searchTab = new genericList(searchTable, titles, type, false);
                     add(searchTab, BorderLayout.CENTER);
                     setLocationRelativeTo(null);
                     setVisible(true);
                 }
-            }
-        }
-    }
-    private class genericSearch extends JPanel {
-        //This is a generic search tab with button, which will show results in a popup window
-        String[][] searchTable;
-        String[] titles;
-        int type;
-        public genericSearch(String[][] table, String[] titles, int type) {
-            this.titles = titles;
-            this.type = type;
-            setLayout(new BorderLayout());
-            JTextField search = new JTextField();
-            JButton searcher = new JButton("Search");
-            Action searchPress = new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ArrayList<Integer> rowAdded = new ArrayList<Integer>();
-                    searchTable = new String[table.length][table[0].length];
-                    for (int i = 0; i < table.length; i++) {
-                        for (int j = 0; j < table[i].length; j++) {
-                            if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
-                                int k = 0;
-                                boolean added = false;
-                                for (int l = 0; l < searchTable.length; l++) {
-                                    while (!added && k < searchTable[0].length) {
-                                        if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
-                                            searchTable[k] = table[i];
-                                            added = true;
-                                            rowAdded.add(i);
-                                        } else {
-                                            k++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    searchWindow window = new searchWindow();
-                }
-            };
-            search.addActionListener(searchPress);
-            searcher.addActionListener(searchPress);
-            add(search, BorderLayout.CENTER);
-            add(searcher, BorderLayout.EAST);
-        }
-        private class searchWindow extends JFrame {
-            public searchWindow() {
-                setSize((int) (x * 0.4), (int) (y * 0.4));
-                setTitle("Search results");
-                genericList searchTab = new genericList(searchTable, titles, type);
-                add(searchTab, BorderLayout.CENTER);
-                setLocationRelativeTo(null);
-                setVisible(true);
             }
         }
     }
@@ -326,14 +276,13 @@ public class tabbedMenu extends JFrame {
 	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-        String[][] table = {{ "Bob", "bob@bob.com", "0" }, { "John", "John.com", "1" }, { "Dave", "Dave.com", "3" }}; //TESTING
-//		String[][] table = sql.getStringTable("SELECT user_name, user_epost, user_adresse FROM HCL_users", false);
+       // String[][] table = {{ "Bob", "bob@bob.com", "0" }, { "John", "John.com", "1" }, { "Dave", "Dave.com", "3" }}; //TESTING
+		String[][] table = sql.getStringTable("SELECT user_name, user_email, user_adress FROM HCL_users", false);
 		String[] titles = { "Employees", "E-mail", "Address" };
         JTable list;
         public employeeTab() {
             setLayout(new BorderLayout());
-            add(new genericList(table, titles, 1), BorderLayout.CENTER);
-			//add(new genericSearch(table, titles, 1), BorderLayout.SOUTH);
+            add(new genericList(table, titles, 1, true), BorderLayout.CENTER);
         }
     }
     private class CEOtab extends JPanel {
@@ -350,8 +299,7 @@ public class tabbedMenu extends JFrame {
 		String[] titles = { "Customer", "Adress"};
 		public orderTab() {
 			setLayout(new BorderLayout());
-			add(new genericList(table, titles, 2), BorderLayout.CENTER);
-			add(new genericSearch(table, titles, 2), BorderLayout.SOUTH);
+			add(new genericList(table, titles, 2, true), BorderLayout.CENTER);
 		}
 	}
 }
