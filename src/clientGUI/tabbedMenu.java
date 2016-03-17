@@ -19,6 +19,7 @@ import backend.*;
 public class tabbedMenu extends JFrame {
     SQL sql;
     //X and Y is the size of the main menu window, other windows should be scaled according to this value
+    //
 	int x;
 	int y;
     public tabbedMenu (int rolle, String username) throws Exception {
