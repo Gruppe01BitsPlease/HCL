@@ -45,7 +45,6 @@ public class PanelList extends JPanel {
 		add(rullenavnliste);
 	}
 	
-	//TODO SETMETODER, GETMETODER
 }
 public class PanelInfo extends JPanel {
 	public PanelInfo() {
@@ -93,7 +92,6 @@ public class PanelInfo extends JPanel {
 	
 	}
 	
-	//TODO SETMETODER, GETMETODER
 }
 public class PanelButtons extends JPanel {
 	public PanelButtons() {

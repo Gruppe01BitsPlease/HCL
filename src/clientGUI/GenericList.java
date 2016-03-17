@@ -102,6 +102,7 @@ class genericList extends JPanel {
     }
 
     private class orderWindow extends JFrame {
+        //TODO add fields for all data
         public orderWindow(String[] selected, int index) {
             setTitle("Edit order");
             setLayout(new GridLayout(3, 2));
@@ -142,6 +143,7 @@ class genericList extends JPanel {
     }
 
     private class employeeWindow extends JFrame {
+        //TODO add fields for all data
         public employeeWindow(String[] selected, int index) {
             setTitle("Edit employee nr: " + (selected[0]));
             setLayout(new GridLayout(4, 2));
