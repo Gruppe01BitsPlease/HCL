@@ -31,11 +31,13 @@ public class UserManager{
 	/**
 	 * Makes and inserts an user into the database
      * Now uses prepared statements, hopefully safe
-     * TODO: Maybe change to int so it's easier to analyze
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
 	 */
-	public boolean generate(String username, String password, int role) {
+	public int generate(String username, String password, int role) {
 
-      //  if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return false; // User already exists
+        if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return -1; // User already exists
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -51,33 +53,37 @@ public class UserManager{
                 prep.setString(1, username);
                 prep.setInt(2, role);
                 prep.executeUpdate();
-                return true;
+                return 1;
             }
             catch(SQLException e){
-                return false;
+                return -2;
             }
         }
 		catch (NoSuchAlgorithmException e) {
-			return false;
+			return -2;
 		}
 		catch (InvalidKeySpecException e) {
-			return false;
+			return -2;
 		}
 	}
 
     /**
      * Edits any of the information in the Users-table
-     * TODO: Check if the row actually exists first
+     * @return
+     *  1: OK
+     * -1: Already exists
+     * -2: SQL Exception
      */
-    public boolean edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, String start){
+    public int edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
-     //   if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
+
+        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
 
 
         if(!firstname.trim().equals(""))
-         sql.update("HCL_users","user_firstname","user_name",username,firstname);
-        if(role >= 0)
-           sql. update("HCL_users","user_role","user_name",username,role);
+            sql.update("HCL_users","user_firstname","user_name",username,firstname);
+        if(role >= -1)
+            sql. update("HCL_users","user_role","user_name",username,role);
         if(!lastname.trim().equals(""))
             sql.update("HCL_users","user_lastname","user_name",username,lastname);
         if(!email.trim().equals(""))
@@ -88,19 +94,23 @@ public class UserManager{
             sql.update("HCL_users","user_adress","user_name",username,adress);
         if(postnr > 0)
             sql.update("HCL_users","user_postnr","user_name",username,postnr);
-        if(start != null)
+        if(start != null) {
             try {
                 Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
-                sql.update("HCL_users","user_start","user_name",username,date);
-            }
-            catch (Exception e){}
-
-
-        return true;
+                sql.update("HCL_users", "user_start", "user_name", username, date);
+            } catch (Exception e) {}
+        }
+        return 1;
     }
-    public boolean delete(String username){
 
-        //if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     */
+    public int delete(String username){
+
+        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
 
         String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
 
@@ -108,15 +118,24 @@ public class UserManager{
             PreparedStatement prep = sql.connection.prepareStatement(insertTableSQL);
             prep.setString(1, username);
             prep.execute();
-            return true;
+            return 1;
         }
-        catch (Exception e){return false;}
+        catch (Exception e){return -2;}
     }
-    public boolean changePassword(String username, String oldpass, String newpass){
+
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong Old Password
+     */
+    public int changePassword(String username, String oldpass, String newpass){
+
+        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
 
         if(logon(username,oldpass) >= 0){
 
-            String insertTableSQL = "Select user_salt, user_pass  from HCL_users where user_name = ?;";
+            String insertTableSQL = "Select user_salt, user_pass from HCL_users where user_name = ?;";
 
             String userSalt = "";
             String userPass = "";
@@ -130,7 +149,7 @@ public class UserManager{
                 }
             }
             catch(SQLException e){
-                return false;
+                return -2;
             }
             String newSalt2 = "";
             String newPass2 = "";
@@ -140,13 +159,13 @@ public class UserManager{
                 newSalt2 = Base64.encode(newSalt);
                 newPass2 = Base64.encode(newPass);
             }
-            catch (Exception e){return false;}
+            catch (Exception e){return -2;}
 
             sql.update("HCL_users","user_pass","user_name",username,newPass2);
             sql.update("HCL_users","user_salt","user_name",username,newSalt2);
-            return true;
+            return 1;
         }
-        return false;
+        return -3;
     }
 
 	/**
@@ -218,8 +237,7 @@ public class UserManager{
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
 
-		int rolle = u.logon("Olav", "ostost");
-		System.out.println(rolle);
+		System.out.println(u.logon("Olav", "ostost"));
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
       //  u.deleteUser("testteswt");
