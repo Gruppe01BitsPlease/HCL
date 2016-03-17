@@ -171,6 +171,7 @@ public class tabbedMenu extends JFrame {
                 setLayout(new BorderLayout());
                 JTextField search = new JTextField();
                 JButton searcher = new JButton("Search");
+                searcher.setToolTipText("Search for any entry and display all matches in seperate window.");
                 Action searchPress = new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
@@ -275,8 +276,8 @@ public class tabbedMenu extends JFrame {
 	}
     //Tabs for the menu, to add one just add it to "tabs" above
     private class employeeTab extends JPanel {
-    //    String[][] table = {{ "Bob", "bob@bob.com", "0" }, { "John", "John.com", "1" }, { "Dave", "Dave.com", "3" }}; //TESTING
-		String[][] table = sql.getStringTable("SELECT last_name, email, adress FROM HCL_employee", false);
+       // String[][] table = {{ "Bob", "bob@bob.com", "0" }, { "John", "John.com", "1" }, { "Dave", "Dave.com", "3" }}; //TESTING
+		String[][] table = sql.getStringTable("SELECT user_name, user_email, user_adress FROM HCL_users", false);
 		String[] titles = { "Employees", "E-mail", "Address" };
         JTable list;
         public employeeTab() {
