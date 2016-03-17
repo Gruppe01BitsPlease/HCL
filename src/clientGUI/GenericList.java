@@ -19,8 +19,11 @@ class genericList extends JPanel {
     int x;
     int y;
 
-    public genericList(SQL sql, String[][] table, String[] titles, int type) {
-        this.sql = sql;
+    public genericList(String[][] table, String[] titles, int type) {
+        try {
+            this.sql = new SQL(new Logon(new File()));
+        }
+        catch (Exception e) {}
         this.table = table;
         this.titles = titles;
         this.type = type;
@@ -53,9 +56,19 @@ class genericList extends JPanel {
         add(scroll, BorderLayout.CENTER);
     }
 
-    public genericList(SQL sql, String query, String[] titles, int type) {
-        this.sql = sql;
-        this.table = sql.getStringTable(query, false);
+    public genericList(String query, String[] titles, int type) {
+        try {
+            this.sql = new SQL(new Logon(new File()));
+        }
+        catch (Exception e) {
+            System.out.println("SQL problem");
+        }
+        try {
+            this.table = sql.getStringTable(query, false);
+        }
+        catch (Exception e) {
+            System.out.println("SQL table problem");
+        }
         this.titles = titles;
         this.type = type;
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -230,7 +243,10 @@ class genericList extends JPanel {
                             }
                         }
                     }
-                    searchWindow window = new searchWindow();
+                    try {
+                        searchWindow window = new searchWindow();
+                    }
+                    catch (Exception l) {}
                 }
             };
             search.addActionListener(searchPress);
@@ -240,11 +256,11 @@ class genericList extends JPanel {
         }
 
         private class searchWindow extends JFrame {
-            public searchWindow() {
+            public searchWindow() throws Exception {
                 setSize((int) (x * 0.4), (int) (y * 0.4));
                 setTitle("Search results");
                 setAlwaysOnTop(true);
-                genericList searchTab = new genericList(sql, searchTable, titles, type);
+                genericList searchTab = new genericList(searchTable, titles, type);
                 add(searchTab, BorderLayout.CENTER);
                 setLocationRelativeTo(null);
                 setVisible(true);
