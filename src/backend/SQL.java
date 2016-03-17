@@ -5,10 +5,10 @@ import java.sql.*;
 
 public class SQL {
 
-	private String username;// = "olavhus";
-	private String password;// = "CmrXjoQn";
+	private String username;
+	private String password;
 	private String databasedriver = "com.mysql.jdbc.Driver";
-	private String databasename;//"jdbc:mysql://mysql.stud.iie.ntnu.no:3306/olavhus?user=olavhus&password=CmrXjoQn;
+	private String databasename;
 	private String database;
 	public  Connection connection;
 	private Statement sentence;
@@ -93,7 +93,7 @@ public class SQL {
 	 * Inserts something into the database through the specified query sentence
 	 * 
 	 * @return True if it worked, false otherwise
-     * TODO Use try-with
+     * TODO Make useful
 	 */
 	public boolean insert(String query) {
 		if (query == null || query.trim().equals("")) {
@@ -120,7 +120,6 @@ public class SQL {
 
 	/**
 	 * Updates a value in a table
-     * TODO: Make DB only take unique values
      * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
      *                        primaryKeyValue: The value of the primary key
 	 */
