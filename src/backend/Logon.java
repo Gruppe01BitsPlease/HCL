@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 /**
  * Used to log onto the SQL database using info from the Database.ini
  * Im sure posting my SQL username and password on github / giving it to all the customers is a GREAT idea.
- * EDIT: Fixed it so the file uses Base64 so atealst it's not plaintext
+ * EDIT: Fixed it so the file uses Reverse-Base64 so at least it's not plaintext
  */
 public class Logon {
 
@@ -30,18 +30,15 @@ public class Logon {
 	}
 
 	public String getDatabase() {
-		String database = file.readLineAsBase64(0);
-		return database;
+		return  file.readLineAsBase64(0);
 	}
 
 	public String getUser() {
-		String user = file.readLineAsBase64(1);
-		return user;
+		return file.readLineAsBase64(1);
 	}
 
 	public String getPassword() {
-		String pass = file.readLineAsBase64(2);
-		return pass;
+		return file.readLineAsBase64(2);
 	}
 
 

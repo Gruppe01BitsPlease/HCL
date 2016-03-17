@@ -11,7 +11,7 @@ public class FoodManager {
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_food";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name,price)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name,price)";
+    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name)";
 
 
     public FoodManager(SQL sql){

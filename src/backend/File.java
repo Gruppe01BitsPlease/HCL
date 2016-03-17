@@ -147,7 +147,6 @@ public class File{ //for writing to files and stuff
         String out = new String(decoded); //Briliant
 
         return out;
-
     }
 
     /**
@@ -191,6 +190,7 @@ public class File{ //for writing to files and stuff
         file.writeLineAsBase64("olavhus");
         file.writeLineAsBase64("CmrXjoQn");*/
         //ImputSream url2 = User.class.getResourceAsStream("Database.ini");
+
         File file = null;
         try {
             file = new File(File.class.getResource("Database.ini").toURI().getPath(), true);

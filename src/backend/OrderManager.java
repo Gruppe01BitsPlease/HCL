@@ -22,11 +22,14 @@ public class OrderManager {
 
     public boolean generate(int customer_id, int price, String adress, int postnr, String order_date, String delivery_date) {
 
-        if(!(order_date.trim().length() > 0) || !(price >= 0) || !(customer_id >=0) ) return false;
+        if(!(order_date.trim().length() > 0) || !(price >= 0) || !(customer_id >=0) ||
+                sql.rowExists(CURRENT_TABLE,"customer_id",customer_id)) return false;
 
         try {
+
             Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(order_date).getTime());
             Date date2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(delivery_date).getTime());
+
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
@@ -46,6 +49,8 @@ public class OrderManager {
 
     public boolean delete(int nr) {
         try {
+            if(!sql.rowExists(CURRENT_TABLE,"customer_id",nr)) return false;
+
             String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,nr);

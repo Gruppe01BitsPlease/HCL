@@ -88,7 +88,7 @@ public class IngredientManager {
         IngredientManager ingredient = new IngredientManager(sql);
 
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
-        System.out.println(ingredient.delete("Pøls"));
-        System.out.println(ingredient.edit("Cheese",10,200,""));
+        System.out.println(ingredient.delete("Ost"));
+       // System.out.println(ingredient.edit("Cheese",10,200,""));
     }
 }
