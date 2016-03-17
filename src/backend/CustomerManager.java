@@ -20,10 +20,16 @@ public class CustomerManager {
         this.sql = sql;
     }
 
-    public boolean generate(String name, String epost, int tlf) {
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int generate(String name, String epost, int tlf) {
 
-        if(sql.rowExists(CURRENT_TABLE, "name",name)) return false;
-        if(!(name.trim().length() > 0) || !(tlf >= 0) || epost.trim().equals("")) return false; //invalid parameters
+        if(sql.rowExists(CURRENT_TABLE, "name",name)) return -1;
+        if(!(name.trim().length() > 0) || !(tlf >= 0) || epost.trim().equals("")) return -3; //invalid parameters
 
         try {
 
@@ -35,21 +41,34 @@ public class CustomerManager {
             prep.setInt(3,tlf);
 
             prep.executeUpdate();
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
+        catch (SQLException e){return -2;}
     }
 
-    public boolean edit(String name, String nyEpost, int nyTlf){
-        if(name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return false;
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int edit(String name, String nyEpost, int nyTlf){
+
+        if(!sql.rowExists(CURRENT_TABLE,"name",name))return -1;
+        if(name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
 
         sql.update(CURRENT_TABLE,"epost","name",name,nyEpost);
         sql.update(CURRENT_TABLE,"tlf","name",name,nyTlf);
-        return true;
+        return 1;
     }
 
-
-    public boolean delete(String name) {
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int delete(String name) {
         try {
             String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
@@ -57,11 +76,11 @@ public class CustomerManager {
             int row = prep.executeUpdate();
 
             if(row == 0)
-                return false;
+                return -1;
 
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
+        catch (SQLException e){return -2;}
     }
 
     public static void main(String[]args){

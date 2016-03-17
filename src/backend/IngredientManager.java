@@ -20,9 +20,15 @@ public class IngredientManager {
         this.sql = sql;
     }
 
-    public boolean generate(String name, int stock, int purchase_price, boolean nuts, boolean gluten, boolean lactose, String other, String purchase_date, String expiration_date) {
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters / Wrong Date format yyyy-MM-dd
+     */
+    public int generate(String name, int stock, int purchase_price, boolean nuts, boolean gluten, boolean lactose, String other, String purchase_date, String expiration_date) {
 
-        if(!(name.trim().length() > 0) || !(stock >= 0) ) return false;
+        if(!(name.trim().length() > 0) || !(stock >= 0) ) return -3;
 
         try {
             Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(purchase_date).getTime());
@@ -42,14 +48,20 @@ public class IngredientManager {
             prep.setDate(9,date2);
 
             prep.executeUpdate();
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
-        catch (ParseException e){return false;}
+        catch (SQLException e){return -2;}
+        catch (ParseException e){return -3;}
     }
 
-    public boolean edit(String name, int newStock,int newPurchase_price, String newOther){
-        if(name.trim().equals("")) return false;
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int edit(String name, int newStock,int newPurchase_price, String newOther){
+        if(name.trim().equals("")) return -3;
 
         if(newStock >= 0)
             sql.update(CURRENT_TABLE,"stock","name",name,newStock);
@@ -57,22 +69,27 @@ public class IngredientManager {
             sql.update(CURRENT_TABLE,"purchase_price","name",name,newPurchase_price);
         if(!newOther.trim().equals(""))
             sql.update(CURRENT_TABLE,"other","name",name,newOther);
-        return true;
+        return 1;
     }
 
-
-    public boolean delete(String name) {
+    /**
+     * @return 1: OK
+     * -1: Did not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int delete(String name) {
         try {
             String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setString(1,name);
             int row = prep.executeUpdate();
             if(row == 0)
-                return false;
+                return -1;
 
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
+        catch (SQLException e){return -2;}
     }
 
     public static void main(String[]args){
