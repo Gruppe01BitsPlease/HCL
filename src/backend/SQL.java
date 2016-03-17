@@ -202,27 +202,27 @@ public class SQL {
      */
     public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
         if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
-            System.out.println("Ostost");
+           // System.out.println("Ostost");
             return false;
         }
 
         try {
-            String sqlPrep = "Select * from " + table + " where ? like ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
-            prep.setString(1, primaryKey);
-            prep.setString(2, primaryKeyValue);
+          //  prep.setString(1, primaryKey);
+            prep.setString(1, primaryKeyValue);
 
             ResultSet res = prep.executeQuery();
 
-            System.out.println(prep.toString()+"\n"+res.toString());
-            while(res.next()){
-                System.out.println("res has next");
-            }
+            //System.out.println(prep.toString()+"\n"+res.toString());
 
+            if(res.next()){
+               return true;
+            }
         }
         catch (SQLException e){
-            System.out.println(e.toString()+"FEIL");
+            System.out.println(e.toString());
             return false;}
 
         return false;
@@ -230,24 +230,30 @@ public class SQL {
 
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
         if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
-            System.out.println(table.split(" \"\':;"));
+            // System.out.println("Ostost");
             return false;
         }
 
         try {
-            String sqlPrep = "Select from " + table + " where ? = ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
-            prep.setString(1, primaryKey);
-            prep.setInt(2, primaryKeyValue);
+            //  prep.setString(1, primaryKey);
+            prep.setInt(1, primaryKeyValue);
 
-            int row = prep.executeUpdate();
+            ResultSet res = prep.executeQuery();
 
-            return row > 0;
+            //System.out.println(prep.toString()+"\n"+res.toString());
+
+            if(res.next()){
+                return true;
+            }
         }
         catch (SQLException e){
-            System.out.println("Error: "+e.toString());
+            System.out.println(e.toString());
             return false;}
+
+        return false;
     }
 
 	/**
@@ -366,7 +372,7 @@ public class SQL {
 		//System.out.println(sql.connect());
 		if (sql.isConnected) {
 
-			String[][] tabell = sql.getStringTable("select * from HCL_users", true);
+			String[][] tabell = sql.getStringTable("Select * from HCL_users where user_name like 'Trine'", true);
 			//System.out.println("End: " + sql.end());
             sql.print2dArray(tabell);
 		}
@@ -375,5 +381,6 @@ public class SQL {
         }
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
         System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
+        System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
 	}
 }
