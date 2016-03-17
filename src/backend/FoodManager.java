@@ -18,9 +18,17 @@ public class FoodManager {
         this.sql = sql;
     }
 
-    public boolean generate(String name, int price) {
+    /**
+     * @return 1: OK
+     * -1: Already exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int generate(String name, int price) {
 
-        if(!(name.trim().length() > 0) &&!(price >= 0)) return false;
+        if(!(name.trim().length() > 0) &&!(price >= 0)) return -3;
+
+        if(sql.rowExists(CURRENT_TABLE,"name",name)) return -1;
 
         try {
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?)";
@@ -30,20 +38,28 @@ public class FoodManager {
             prep.setInt(2,price);
 
             prep.executeUpdate();
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
+        catch (SQLException e){return -2;}
     }
 
-    public boolean delete(String name) {
+    /**
+     * @return 1: OK
+     * -1: Did not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int delete(String name) {
+        if(!sql.rowExists(CURRENT_TABLE,"name",name)) return -1;
+
         try {
             String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setString(1,name);
             prep.executeUpdate();
-            return true;
+            return 1;
         }
-        catch (SQLException e){return false;}
+        catch (SQLException e){return -2;}
     }
 
     public static void main(String[]args){
@@ -58,7 +74,7 @@ public class FoodManager {
         SQL sql = new SQL(logon);
         FoodManager food = new FoodManager(sql);
 
-        food.generate("Ost",10);
-        food.delete("Ost");
+       System.out.println( food.generate("Ost",10));
+        System.out.println(food.delete("Ost"));
     }
 }
