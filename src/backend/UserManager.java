@@ -31,8 +31,11 @@ public class UserManager{
 	/**
 	 * Makes and inserts an user into the database
      * Now uses prepared statements, hopefully safe
+     * TODO: Maybe change to int so it's easier to analyze
 	 */
 	public boolean generate(String username, String password, int role) {
+
+        if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return false; // User already exists
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -61,9 +64,14 @@ public class UserManager{
 			return false;
 		}
 	}
+
+    /**
+     * Edits any of the information in the Users-table
+     * TODO: Check if the row actually exists first
+     */
     public boolean edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, int wage, int hours, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
-        if(username.trim().equals("") || username == null) return false;
+        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
 
 
         if(!firstname.trim().equals(""))
@@ -95,6 +103,9 @@ public class UserManager{
         return true;
     }
     public boolean delete(String username){
+
+        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
+
         String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
 
         try {
@@ -218,12 +229,13 @@ public class UserManager{
       //  u.deleteUser("testteswt");
         //u.editUser("Magisk",2,"Olav","Husby","OlavH96@gmail.com",93240605,"Bøkveien 11A",7059,200,20,new Date(System.currentTimeMillis()));
 
-       //u.generate("Trine","Pjusken",0);
-            try {
-                u.edit("Bjørn", 0, "Bjørn", "Hafeld", "BjørnHafeld@gmail.com", 12345678, "Borti Sjægget", 1000, 100, 1000, "2011-02-02");
+       System.out.println(u.generate("Trine","Pjusken",0));
+
+     /*   try {
+                u.edit("Trine", 0, "Trine", "Olsen", "TrineLise@gmail.com", 65678, "Atmed Elgan", 20, 20, 20, "2014-02-02");
         }
-        catch (Exception e){}
+        catch (Exception e){}*/
         //u.delete("Bjørn");
-        System.out.println(u.changePassword("Olav","ostost","ostost"));
+       // System.out.println(u.changePassword("Olav","ostost","ostost"));
     }
 }

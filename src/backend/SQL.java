@@ -119,11 +119,17 @@ public class SQL {
 	}
 
 	/**
-	 * Updates a value in a table, can only update if there is a unique value there to begin with -.-'
-     * TODO: Fix pls ^
+	 * Updates a value in a table
+     * TODO: Make DB only take unique values
+     * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
+     *                        primaryKeyValue: The value of the primary key
 	 */
 	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, String newValue) {
         //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
+                !rowExists(table,primaryKey,primaryKeyValue)){
+            return false;
+        }
         String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
 
         try {
@@ -142,8 +148,10 @@ public class SQL {
         }
 	}
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, int newValue) {
-        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
-        if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1){
+        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE/=  'Mat'
+
+        if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
+                !rowExists(table,primaryKey,primaryKeyValue)){
             return false;
         }
 
@@ -166,6 +174,10 @@ public class SQL {
     }
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, Date newDate) {
         //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
+                !rowExists(table,primaryKey,primaryKeyValue)){
+            return false;
+        }
         String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
 
         try {
@@ -182,6 +194,55 @@ public class SQL {
         catch(SQLException e){
             return false;
         }
+    }
+
+    /**
+     *@return True if the searched value "primaryKeyValue" exists in the colomn "primaryKey" in the specified table
+     *
+     */
+    public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
+        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+            System.out.println(table.split(" \"\':;"));
+            return false;
+        }
+
+        try {
+            String sqlPrep = "Select from " + table + " where ? = ?";
+            PreparedStatement prep = connection.prepareStatement(sqlPrep);
+
+            prep.setString(1, primaryKey);
+            prep.setString(2, primaryKeyValue);
+
+            ResultSet res = prep.executeQuery();
+
+            if(res.next() == true) System.out.println("res has next");
+
+            return false;
+        }
+        catch (SQLException e){
+            System.out.println(e.toString());
+            return false;}
+    }
+    public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
+        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+            System.out.println(table.split(" \"\':;"));
+            return false;
+        }
+
+        try {
+            String sqlPrep = "Select from " + table + " where ? = ?";
+            PreparedStatement prep = connection.prepareStatement(sqlPrep);
+
+            prep.setString(1, primaryKey);
+            prep.setInt(2, primaryKeyValue);
+
+            int row = prep.executeUpdate();
+
+            return row > 0;
+        }
+        catch (SQLException e){
+            System.out.println("Error: "+e.toString());
+            return false;}
     }
 
 	/**
@@ -288,11 +349,13 @@ public class SQL {
 	}
 
 	public static void main(String[] args) throws Exception {
+
         Logon logon = null;
         try {
             logon = new Logon(new File(SQL.class.getResource("Database.ini").toURI().getPath(),true));
         }
         catch (URISyntaxException e){}
+
 		SQL sql = new SQL(logon);
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
@@ -305,6 +368,7 @@ public class SQL {
 		else {
 			System.out.println("Could not contact database @ " + logon.getDatabase());
         }
-        sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
+        //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
+        System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
 	}
 }
