@@ -35,7 +35,7 @@ public class UserManager{
 	 */
 	public boolean generate(String username, String password, int role) {
 
-        if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return false; // User already exists
+      //  if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return false; // User already exists
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -69,9 +69,9 @@ public class UserManager{
      * Edits any of the information in the Users-table
      * TODO: Check if the row actually exists first
      */
-    public boolean edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, int wage, int hours, String start){
+    public boolean edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
-        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
+     //   if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
 
 
         if(!firstname.trim().equals(""))
@@ -88,10 +88,6 @@ public class UserManager{
             sql.update("HCL_users","user_adress","user_name",username,adress);
         if(postnr > 0)
             sql.update("HCL_users","user_postnr","user_name",username,postnr);
-        if(wage >= 0)
-            sql.update("HCL_users","user_wage","user_name",username,wage);
-        if(hours >= 0)
-            sql.update("HCL_users","user_hours","user_name",username,hours);
         if(start != null)
             try {
                 Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
@@ -104,7 +100,7 @@ public class UserManager{
     }
     public boolean delete(String username){
 
-        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
+        //if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return false; //if the user does not exist
 
         String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
 

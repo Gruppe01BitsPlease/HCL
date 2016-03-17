@@ -202,12 +202,12 @@ public class SQL {
      */
     public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
         if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
-            System.out.println(table.split(" \"\':;"));
+            System.out.println("Ostost");
             return false;
         }
 
         try {
-            String sqlPrep = "Select from " + table + " where ? = ?";
+            String sqlPrep = "Select * from " + table + " where ? like ?";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
             prep.setString(1, primaryKey);
@@ -215,14 +215,19 @@ public class SQL {
 
             ResultSet res = prep.executeQuery();
 
-            if(res.next() == true) System.out.println("res has next");
+            System.out.println(prep.toString()+"\n"+res.toString());
+            while(res.next()){
+                System.out.println("res has next");
+            }
 
-            return false;
         }
         catch (SQLException e){
-            System.out.println(e.toString());
+            System.out.println(e.toString()+"FEIL");
             return false;}
+
+        return false;
     }
+
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
         if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
             System.out.println(table.split(" \"\':;"));
