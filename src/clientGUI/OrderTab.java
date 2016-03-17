@@ -14,7 +14,7 @@ class OrderTab extends JPanel {
         String query = "SELECT * FROM HCL_order ORDER BY delivery_date ASC";
         String[] titles = { "Order", "Customer", "Price", "ZIP-code", "Date Ordered", "Delivery Date" };
         setLayout(new BorderLayout());
-        add(new genericList(query, titles, 1), BorderLayout.CENTER);
+        add(new genericList(query, titles, 2), BorderLayout.CENTER);
     }
 }
 

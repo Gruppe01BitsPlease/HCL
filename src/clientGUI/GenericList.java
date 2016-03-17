@@ -143,7 +143,7 @@ class genericList extends JPanel {
 
     private class employeeWindow extends JFrame {
         public employeeWindow(String[] selected, int index) {
-            setTitle("Edit employee nr: " + (selected[3]));
+            setTitle("Edit employee nr: " + (selected[0]));
             setLayout(new GridLayout(4, 2));
             setSize((int) (x * 0.4), (int) (y * 0.2));
             setLocationRelativeTo(null);
