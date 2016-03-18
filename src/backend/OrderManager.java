@@ -82,6 +82,7 @@ public class OrderManager {
         OrderManager order = new OrderManager(sql);
 
         //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
+
         order.delete(3);
        // order.delete("Ost");
     }

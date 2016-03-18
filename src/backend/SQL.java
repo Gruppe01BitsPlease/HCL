@@ -37,6 +37,7 @@ public class SQL {
 			Class.forName(databasedriver);
 		}
 		catch (ClassNotFoundException e) {
+
 			return null;
 		}
 		try {
@@ -371,7 +372,7 @@ public class SQL {
 		//System.out.println(sql.connect());
 		if (sql.isConnected) {
 
-			String[][] tabell = sql.getStringTable("Select * from HCL_users where user_name like 'Trine'", true);
+			String[][] tabell = sql.getStringTable("Select * from HCL_users", true);
 			//System.out.println("End: " + sql.end());
             sql.print2dArray(tabell);
 		}
@@ -380,6 +381,6 @@ public class SQL {
         }
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
         System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
-        System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
+        //System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
 	}
 }

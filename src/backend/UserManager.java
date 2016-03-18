@@ -237,13 +237,13 @@ public class UserManager{
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
 
-		System.out.println(u.logon("Olav", "ostost"));
+		System.out.println(u.logon("olavhus", "ostost"));
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
       //  u.deleteUser("testteswt");
         //u.editUser("Magisk",2,"Olav","Husby","OlavH96@gmail.com",93240605,"Bøkveien 11A",7059,200,20,new Date(System.currentTimeMillis()));
 
-       System.out.println(u.generate("Trine","Pjusken",0));
+      // System.out.println(u.generate("Jens","jens",0));
 
      /*   try {
                 u.edit("Trine", 0, "Trine", "Olsen", "TrineLise@gmail.com", 65678, "Atmed Elgan", 20, 20, 20, "2014-02-02");

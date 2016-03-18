@@ -44,7 +44,7 @@ public class LinkManager {
         catch (SQLException e){return -2;}
     }
     public int delete(){
-
+        return -1;
     }
 
     public static void main(String[]args){

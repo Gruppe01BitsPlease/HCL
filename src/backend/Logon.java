@@ -113,7 +113,7 @@ public class Logon {
 		System.out.println(
 				"DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());
 
-        logon.changeUser("olavhus");
+       /* logon.changeUser("olavhus");
         logon.changePassword("ost");
         logon.changeDatabase("Ost@ostost.com");
 
@@ -125,7 +125,7 @@ public class Logon {
         logon.changeDatabase("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
 
         System.out.println(
-                "DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());
+                "DB: " + logon.getDatabase() + " - User: " + logon.getUser() + " - Passord: " + logon.getPassword());*/
 
 	}
 }
