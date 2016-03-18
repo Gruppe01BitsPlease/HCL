@@ -9,7 +9,7 @@ import backend.*;
 
 @SuppressWarnings("serial")
 class LogOnGUI extends JFrame{
-	protected LogOnGUI (){
+	protected LogOnGUI () {
 		//window parameters
 		setTitle("Log in");
 		setLayout(new GridLayout(5, 1));
@@ -20,7 +20,7 @@ class LogOnGUI extends JFrame{
 		setSize((int) x, (int) y);
 		setLocationRelativeTo(null);
 		setResizable(false);
-		
+
 		//Create label, textfield and center their text.
 		JLabel jUser = new JLabel("Username: ", SwingConstants.LEFT);
 		final JTextField user = new JTextField();
@@ -28,13 +28,13 @@ class LogOnGUI extends JFrame{
 		JLabel jPassword = new JLabel("Password: ", SwingConstants.LEFT);
 		final JTextField password = new JPasswordField();
 		password.setHorizontalAlignment(JTextField.LEFT);
-		
+
 		//add label and textfield
 		add(jUser);
 		add(user);
 		add(jPassword);
 		add(password);
-		
+
 		//buttons and their action for buttonpanel
 		JButton LogOn = new JButton("LogOn");
 		JButton exit = new JButton("Exit");
@@ -62,8 +62,7 @@ class LogOnGUI extends JFrame{
 					} else if (i == -2) {
 						JOptionPane.showMessageDialog(null, "Could not connect to the database.");
 					}
-				}
-				catch (Exception e) {
+				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Could not locate the settings file.");
 				}
 			}
@@ -79,12 +78,11 @@ class LogOnGUI extends JFrame{
 		add(buttonrow);
 		this.setVisible(true);
 	}
-}
 
-class TestLogOn{
 	public static void main(String[] args) throws Exception {
-	//	User u = new User();
-	//	u.generateUser("jens", "1234", 0);
+		//	User u = new User();
+		//	u.generateUser("jens", "1234", 0);
 		LogOnGUI test = new LogOnGUI();
 	}
 }
+

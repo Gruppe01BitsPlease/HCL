@@ -10,11 +10,11 @@ import java.awt.*;
  */
 class OrderTab extends JPanel {
 
-    public OrderTab(SQL sql) {
-        String[][] table = sql.getStringTable("SELECT * FROM HCL_order ORDER BY delivery_date ASC", false);
+    public OrderTab() {
+        String query = "SELECT * FROM HCL_order ORDER BY delivery_date ASC";
         String[] titles = { "Order", "Customer", "Price", "ZIP-code", "Date Ordered", "Delivery Date" };
         setLayout(new BorderLayout());
-        add(new genericList(table, titles, 1, true), BorderLayout.CENTER);
+        add(new genericList(query, titles, 2), BorderLayout.CENTER);
     }
 }
 

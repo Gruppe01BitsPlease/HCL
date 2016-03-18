@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import backend.*;
 
 class genericList extends JPanel {
     //This is a generic list, shown in the middle of the tab where needed
@@ -14,13 +15,25 @@ class genericList extends JPanel {
     String[] titles;
     JTable list;
     int type;
-     genericList(String[][] table, String[] titles, int type, boolean searchable) {
+    SQL sql;
+    int x;
+    int y;
+
+    public genericList(String[][] table, String[] titles, int type) {
+        try {
+            this.sql = new SQL(new Logon(new File()));
+        }
+        catch (Exception e) {}
         this.table = table;
         this.titles = titles;
         this.type = type;
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        x = (int) (screen.width * 0.75);
+        y = (int) (screen.height * 0.75);
         setLayout(new BorderLayout());
         list = new JTable(table, titles) {
             private static final long serialVersionUID = 1L;
+
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -33,8 +46,7 @@ class genericList extends JPanel {
                     int index = list.getSelectedRow();
                     if (type == 1) {
                         employeeWindow edit = new employeeWindow(selected, index);
-                    }
-                    else if (type == 2) {
+                    } else if (type == 2) {
                         orderWindow edit = new orderWindow(selected, index);
                     }
                 }
@@ -42,11 +54,55 @@ class genericList extends JPanel {
         });
         JScrollPane scroll = new JScrollPane(list);
         add(scroll, BorderLayout.CENTER);
-        if (searchable) {
-            add(new genericSearch(), BorderLayout.SOUTH);
-        }
     }
-    private class orderWindow extends tabbedMenu {
+
+    public genericList(String query, String[] titles, int type) {
+        try {
+            this.sql = new SQL(new Logon(new File()));
+        }
+        catch (Exception e) {
+            System.out.println("SQL problem");
+        }
+        try {
+            this.table = sql.getStringTable(query, false);
+        }
+        catch (Exception e) {
+            System.out.println("SQL table problem");
+        }
+        this.titles = titles;
+        this.type = type;
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        x = (int) (screen.width * 0.75);
+        y = (int) (screen.height * 0.75);
+        setLayout(new BorderLayout());
+        list = new JTable(table, titles) {
+            private static final long serialVersionUID = 1L;
+
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    String[] selected = table[list.getSelectedRow()];
+                    int index = list.getSelectedRow();
+                    if (type == 1) {
+                        employeeWindow edit = new employeeWindow(selected, index);
+                    } else if (type == 2) {
+                        orderWindow edit = new orderWindow(selected, index);
+                    }
+                }
+            }
+        });
+        JScrollPane scroll = new JScrollPane(list);
+        add(scroll, BorderLayout.CENTER);
+        add(new genericSearch(), BorderLayout.SOUTH);
+    }
+
+    private class orderWindow extends JFrame {
+        //TODO add fields for all data
         public orderWindow(String[] selected, int index) {
             setTitle("Edit order");
             setLayout(new GridLayout(3, 2));
@@ -85,23 +141,22 @@ class genericList extends JPanel {
             setVisible(true);
         }
     }
-    private class employeeWindow extends tabbedMenu {
+
+    private class employeeWindow extends JFrame {
+        //TODO add fields for all data
         public employeeWindow(String[] selected, int index) {
-            setTitle("Edit employee");
+            setTitle("Edit employee nr: " + (selected[0]));
             setLayout(new GridLayout(4, 2));
-            Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-            x = (int) (screen.width * 0.75);
-            y = (int) (screen.height * 0.75);
             setSize((int) (x * 0.4), (int) (y * 0.2));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
             JLabel name = new JLabel("Name");
             JLabel email = new JLabel("E-mail");
-            JLabel id = new JLabel ("Employee ID");
+            JLabel address = new JLabel("Address");
             JTextField nameField = new JTextField(selected[0]);
             JTextField mailField = new JTextField(selected[1]);
-            JTextField idField = new JTextField(selected[2]);
+            JTextField addressField = new JTextField(selected[2]);
             JButton save = new JButton("Save");
             JButton cancel = new JButton("Cancel");
             cancel.addActionListener(new AbstractAction() {
@@ -113,28 +168,54 @@ class genericList extends JPanel {
             save.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    selected[0] = nameField.getText();
-                    selected[1] = mailField.getText();
-                    selected[2] = idField.getText();
-                    table[index] = selected;
-                    list.repaint();
-                    dispose();
+                    String nameText = nameField.getText();
+                    String mailText = mailField.getText();
+                    String addressText = addressField.getText();
+                    boolean updated = false;
+                    if (!(nameText.equals(selected[0]))) {
+                        if (sql.update("HCL_users", "user_name", "user_ID", selected[3], nameText)) {
+                            selected[0] = nameText;
+                            updated = true;
+                        }
+                    }
+                    if (!(mailText.equals(selected[1]))) {
+                        if (sql.update("HCL_users", "user_email", "user_ID", selected[3], mailText)) {
+                            selected[1] = mailText;
+                            updated = true;
+                        }
+                    }
+                    if (!(addressText.equals(selected[2]))) {
+                        if (sql.update("HCL_users", "user_adress", "user_ID", selected[3], addressText)) {
+                            selected[2] = addressText;
+                            updated = true;
+                        }
+                    }
+                    //"SELECT user_name, user_email, user_adress, user_ID FROM HCL_users"
+                    if (updated) {
+                        table[index] = selected;
+                        list.repaint();
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Update failed!");
+                    }
                 }
             });
             add(name);
             add(nameField);
             add(email);
             add(mailField);
-            add(id);
-            add(idField);
+            add(address);
+            add(addressField);
             add(save);
             add(cancel);
             setVisible(true);
         }
     }
+
     private class genericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
         String[][] searchTable;
+
         public genericSearch() {
             setLayout(new BorderLayout());
             JTextField search = new JTextField();
@@ -164,7 +245,10 @@ class genericList extends JPanel {
                             }
                         }
                     }
-                    searchWindow window = new searchWindow();
+                    try {
+                        searchWindow window = new searchWindow();
+                    }
+                    catch (Exception l) {}
                 }
             };
             search.addActionListener(searchPress);
@@ -172,15 +256,13 @@ class genericList extends JPanel {
             add(search, BorderLayout.CENTER);
             add(searcher, BorderLayout.EAST);
         }
-        private class searchWindow extends tabbedMenu {
-            public searchWindow() {
-                Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-                x = (int) (screen.width * 0.75);
-                y = (int) (screen.height * 0.75);
+
+        private class searchWindow extends JFrame {
+            public searchWindow() throws Exception {
                 setSize((int) (x * 0.4), (int) (y * 0.4));
                 setTitle("Search results");
                 setAlwaysOnTop(true);
-                genericList searchTab = new genericList(searchTable, titles, type, false);
+                genericList searchTab = new genericList(searchTable, titles, type);
                 add(searchTab, BorderLayout.CENTER);
                 setLocationRelativeTo(null);
                 setVisible(true);
