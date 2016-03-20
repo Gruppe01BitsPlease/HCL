@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import backend.*;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 class GenericList extends JPanel {
     //This is a generic list, shown in the middle of the tab where needed
@@ -14,7 +15,6 @@ class GenericList extends JPanel {
     private String[][] table;
     private String[] titles;
     private JTable list;
-    private int type = -1;
     private SQL sql;
     private int x;
     private int y;
@@ -26,12 +26,6 @@ class GenericList extends JPanel {
         catch (Exception e) {}
         this.table = table;
         this.titles = titles;
-        if (this instanceof EmployeeTab) {
-            type = 1;
-        }
-        else if (this instanceof OrderTab) {
-            type = 2;
-        }
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         x = (int) (screen.width * 0.75);
         y = (int) (screen.height * 0.75);
@@ -43,20 +37,30 @@ class GenericList extends JPanel {
                 return false;
             }
         };
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    String[] selected = table[list.getSelectedRow()];
-                    int index = list.getSelectedRow();
-                    if (type == 1) {
-                        employeeWindow edit = new employeeWindow(selected, index);
-                    } else if (type == 2) {
+        if (this instanceof OrderTab) {
+            list.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        String[] selected = table[list.getSelectedRow()];
+                        int index = list.getSelectedRow();
                         orderWindow edit = new orderWindow(selected, index);
                     }
                 }
-            }
-        });
+            });
+        }
+        else if (this instanceof EmployeeTab) {
+            list.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (e.getClickCount() == 2) {
+                        String[] selected = table[list.getSelectedRow()];
+                        int index = list.getSelectedRow();
+                        employeeWindow edit = new employeeWindow(selected, index);
+                    }
+                }
+            });
+        }
         JScrollPane scroll = new JScrollPane(list);
         add(scroll, BorderLayout.CENTER);
     }
@@ -66,7 +70,7 @@ class GenericList extends JPanel {
         public editWindow(String[] selected, int index) {
             setTitle("Edit order");
             setLayout(new GridLayout(selected.length + 1, 2));
-            setSize((int) (x * 0.4), (int) (y * 0.2));
+            setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.05));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
