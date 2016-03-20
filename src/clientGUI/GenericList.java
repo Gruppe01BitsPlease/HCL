@@ -60,20 +60,25 @@ class GenericList extends JPanel {
         JScrollPane scroll = new JScrollPane(list);
         add(scroll, BorderLayout.CENTER);
     }
-
-    private class orderWindow extends JFrame {
-        //TODO add fields for all data
-        public orderWindow(String[] selected, int index) {
+    abstract class editWindow extends JFrame {
+        //This class automatically adds text fields for the columns in the table.
+        //Save and cancel will get messed up if there's not an even number of fields
+        public editWindow(String[] selected, int index) {
             setTitle("Edit order");
-            setLayout(new GridLayout(3, 2));
+            setLayout(new GridLayout(selected.length + 1, 2));
             setSize((int) (x * 0.4), (int) (y * 0.2));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
-            JLabel customer = new JLabel("Customer");
-            JLabel address = new JLabel("Address");
-            JTextField customerField = new JTextField(selected[0]);
-            JTextField addressField = new JTextField(selected[1]);
+            ArrayList<JTextField> fields = new ArrayList<>();
+            for (int i = 0; i < titles.length; i++) {
+                JLabel j = new JLabel(titles[i]);
+                JTextField k = new JTextField(selected[i]);
+                fields.add(k);
+                add(j);
+                add(k);
+            }
+            setVisible(true);
             JButton save = new JButton("Save");
             JButton cancel = new JButton("Cancel");
             cancel.addActionListener(new AbstractAction() {
@@ -85,90 +90,29 @@ class GenericList extends JPanel {
             save.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    selected[0] = customerField.getText();
-                    selected[1] = addressField.getText();
+                    for (int i = 0; i < selected.length; i++) {
+                        selected[i] = fields.get(i).getText();
+                    }
                     table[index] = selected;
                     list.repaint();
                     dispose();
                 }
             });
-            add(customer);
-            add(customerField);
-            add(address);
-            add(addressField);
             add(save);
             add(cancel);
-            setVisible(true);
+        }
+    }
+    private class orderWindow extends editWindow {
+        public orderWindow(String[] selected, int index) {
+            super(selected, index);
+            setTitle("Edit order");
         }
     }
 
-    private class employeeWindow extends JFrame {
-        //TODO add fields for all data
+    private class employeeWindow extends editWindow {
         public employeeWindow(String[] selected, int index) {
-            setTitle("Edit employee nr: " + (selected[0]));
-            setLayout(new GridLayout(4, 2));
-            setSize((int) (x * 0.4), (int) (y * 0.2));
-            setLocationRelativeTo(null);
-            setAlwaysOnTop(true);
-            setResizable(false);
-            JLabel name = new JLabel("Name");
-            JLabel email = new JLabel("E-mail");
-            JLabel address = new JLabel("Address");
-            JTextField nameField = new JTextField(selected[0]);
-            JTextField mailField = new JTextField(selected[1]);
-            JTextField addressField = new JTextField(selected[2]);
-            JButton save = new JButton("Save");
-            JButton cancel = new JButton("Cancel");
-            cancel.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    dispose();
-                }
-            });
-            save.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String nameText = nameField.getText();
-                    String mailText = mailField.getText();
-                    String addressText = addressField.getText();
-                    boolean updated = false;
-                    if (!(nameText.equals(selected[0]))) {
-                        if (sql.update("HCL_users", "user_name", "user_ID", selected[3], nameText)) {
-                            selected[0] = nameText;
-                            updated = true;
-                        }
-                    }
-                    if (!(mailText.equals(selected[1]))) {
-                        if (sql.update("HCL_users", "user_email", "user_ID", selected[3], mailText)) {
-                            selected[1] = mailText;
-                            updated = true;
-                        }
-                    }
-                    if (!(addressText.equals(selected[2]))) {
-                        if (sql.update("HCL_users", "user_adress", "user_ID", selected[3], addressText)) {
-                            selected[2] = addressText;
-                            updated = true;
-                        }
-                    }
-                    //"SELECT user_name, user_email, user_adress, user_ID FROM HCL_users"
-                    if (updated) {
-                        table[index] = selected;
-                        list.repaint();
-                        dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Update failed!");
-                    }
-                }
-            });
-            add(name);
-            add(nameField);
-            add(email);
-            add(mailField);
-            add(address);
-            add(addressField);
-            add(save);
-            add(cancel);
-            setVisible(true);
+            super(selected, index);
+            setTitle("Edit employee");
         }
     }
 }
