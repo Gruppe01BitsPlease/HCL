@@ -1,26 +1,19 @@
 package clientGUI;
-
 import backend.Logon;
 import backend.SQL;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import backend.*;
 
 /**
  * Created by Jens on 14.03.2016.
  */
 public class tabbedMenu extends JFrame {
-    SQL sql;
+    private SQL sql;
     //X and Y is the size of the main menu window, other windows should be scaled according to this value
-	int x;
-	int y;
+	private int x;
+	private int y;
     public tabbedMenu (int rolle, String username) throws Exception {
 		sql = new SQL(new Logon(new File()));
         setTitle("Bits Please HCL System 0.1 - " + username);
