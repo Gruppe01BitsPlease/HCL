@@ -2,7 +2,6 @@ package clientGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -11,15 +10,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import backend.*;
-import com.sun.org.apache.xpath.internal.operations.Or;
 
 class GenericList extends JPanel {
     //This is a generic list, shown in the middle of the tab where needed
-    //Use the type int to choose which edit window appears whe double clicking
     private String query;
 	private String SqlTableName;
     private String[][] table;
-    private String[] titles;
+	private String[][] searchTable;
+	private String[] titles;
 	private String[] SqlColumnNames;
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
@@ -59,22 +57,66 @@ class GenericList extends JPanel {
 				if (e.getClickCount() == 2) {
 					String[] selected = table[list.getSelectedRow()];
 					int index = list.getSelectedRow();
-					editWindow edit = new editWindow(selected, index);
+					editWindow edit = new editWindow(selected, index, false);
 				}
 			}
 		});
         JScrollPane scroll = new JScrollPane(list);
+		add(new northBar(), BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
     }
+	public void refresh() {
+		try {
+			table = sql.getStringTable(query, false);
+			SqlColumnNames = sql.getColumnNames(query);
+			System.out.println(Arrays.toString(SqlColumnNames));
+			tabModel = new DefaultTableModel(table, titles);
+			list.setModel(tabModel);
+			System.out.println("REFRESH");
+		}
+		catch (Exception e) {
+			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+	private class northBar extends JPanel {
+		public northBar() {
+			setLayout(new GridLayout(1, 5));
+			JButton refresh = new JButton("Refresh");
+			JButton newThing = new JButton("New...");
+			refresh.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					refresh();
+				}
+			});
+			newThing.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String[][] newTable = new String[table.length + 1][SqlColumnNames.length];
+					String[] selected = newTable[newTable.length - 1];
+					int index = newTable.length - 1;
+					table = newTable;
+					editWindow edit = new editWindow(selected, index, true);
+				}
+			});
+			add(newThing);
+			add(refresh);
+		}
+	}
 	class editWindow extends JFrame {
         //This class automatically adds text fields for the columns in the table.
 		private String[] selected;
 		private int index;
-        public editWindow(String[] selected, int index) {
+        public editWindow(String[] selected, int index, boolean newEntry) {
 			this.selected = selected;
 			this.index = index;
-            setTitle("Edit");
-            setLayout(new GridLayout(selected.length + 1, 2));
+			if (newEntry) {
+				setTitle("New Item");
+			}
+			else {
+				setTitle("Edit item");
+			}
+			setLayout(new GridLayout(selected.length + 1, 2));
             setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.03));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
@@ -87,7 +129,9 @@ class GenericList extends JPanel {
                 add(j);
                 add(k);
             }
-			fields.get(0).setEnabled(false);
+			if (!newEntry) {
+				fields.get(0).setEnabled(false);
+			}
             setVisible(true);
             JButton save = new JButton("Save");
             JButton cancel = new JButton("Cancel");
@@ -97,45 +141,57 @@ class GenericList extends JPanel {
                     dispose();
                 }
             });
-            save.addActionListener(new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-					String[] newValues = new String[selected.length];
-                    for (int i = 1; i < newValues.length; i++) {
-                        newValues[i] = fields.get(i).getText();
-                    }
-					for (int i = 1; i < newValues.length; i++) {
-						if (newValues[i] != null && !(newValues[i].equals(selected[i]))) {
-							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+			save.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String[] options = { "Yes", "No" };
+					int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+					if (sure == 0) {
+						String[] newValues = new String[selected.length];
+						for (int i = 0; i < newValues.length; i++) {
+							newValues[i] = fields.get(i).getText();
 						}
-					}
-					table[index] = newValues;
-					tabModel.removeRow(index);
-					tabModel.insertRow(index, newValues);
-					if (searchTableMod != null) {
-						int searchSelectedRow = searchTab.getSelectedRow();
-						if (searchSelectedRow >= 0) {
-							searchTableMod.removeRow(searchSelectedRow);
-							searchTableMod.insertRow(searchSelectedRow, newValues);
+						if (!newEntry) {
+							for (int i = 1; i < newValues.length; i++) {
+								if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
+									sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+								}
+							}
 						}
+						else if (newEntry) {
+							if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
+								for (int i = 0; i < newValues.length; i++) {
+									if (newValues[i] != null && !(newValues[i].equals(""))) {
+										sql.insert("INSERT INTO " + SqlTableName + "(" + SqlColumnNames[i] + ") VALUE " + newValues[i]);
+										System.out.println("INSERT INTO " + SqlTableName + "(" + SqlColumnNames[i] + ") VALUES " + newValues[i]);
+									}
+								}
+							}
+							else {
+								JOptionPane.showMessageDialog(null, "Entry already exists! Choose a different ID number.");
+							}
+						}
+						table[index] = newValues;
+						refresh();
+						if (searchTableMod != null) {
+							int searchSelectedRow = searchTab.getSelectedRow();
+							if (searchSelectedRow >= 0 && searchSelectedRow < searchTable.length) {
+								searchTable[searchSelectedRow] = newValues;
+								searchTableMod = new DefaultTableModel(searchTable, titles);
+								searchTab.setModel(searchTableMod);
+							}
+						}
+						dispose();
 					}
-					dispose();
 				}
-            });
+			});
             add(save);
             add(cancel);
         }
-		public String[] getEdited() {
-			return selected;
-		}
-		public int getIndex() {
-			return index;
-		}
     }
 
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
-        private String[][] searchTable;
         public GenericSearch(String query, String[] titles) {
             table = sql.getStringTable(query, false);
             setLayout(new BorderLayout());
@@ -200,7 +256,7 @@ class GenericList extends JPanel {
 							int selectedIndex = searchTab.getSelectedRow();
                             for (int i = 0; i < table.length; i++) {
                                 if (Arrays.equals(selected, table[i])) {
-                                        editWindow edit = new editWindow(table[i], i);
+                                        editWindow edit = new editWindow(table[i], i, false);
 								}
 							}
 						}

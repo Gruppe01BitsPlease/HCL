@@ -14,7 +14,14 @@ public class tabbedMenu extends JFrame {
     //X and Y is the size of the main menu window, other windows should be scaled according to this value
 	private int x;
 	private int y;
-    public tabbedMenu (int rolle, String username) throws Exception {
+	private OrderTab order;
+	private EmployeeTab emp;
+	private CeoTab CEO;
+	private CustomerTab cust;
+	private FoodTab food;
+	private IngredientTab ingr;
+	private PackageTab pack;
+	public tabbedMenu (int rolle, String username) throws Exception {
 		sql = new SQL();
         setTitle("Bits Please HCL System 0.1 - " + username);
         setLayout(new BorderLayout());
@@ -23,16 +30,25 @@ public class tabbedMenu extends JFrame {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		x = (int) (screen.width * 0.75);
 		y = (int) (screen.height * 0.75);
-        setSize(x, y);
+		setMinimumSize(new Dimension(x, y));
         setLocationRelativeTo(null);
-        setResizable(false);
+        setResizable(true);
         JTabbedPane tabs = new JTabbedPane();
 		menubar bar = new menubar();
-        tabs.addTab("Employees", new EmployeeTab(sql));
-        tabs.addTab("CEO functions", new CeoTab());
-		tabs.addTab("Orders", new OrderTab(sql));
-		tabs.addTab("Customers", new CustomerTab(sql));
-		tabs.addTab("Food", new FoodTab(sql));
+		order = new OrderTab(sql);
+		emp = new EmployeeTab(sql);
+		CEO = new CeoTab();
+		cust = new CustomerTab(sql);
+		food = new FoodTab(sql);
+		ingr = new IngredientTab(sql);
+		pack = new PackageTab(sql);
+        tabs.addTab("Employees", emp);
+        tabs.addTab("CEO functions", CEO);
+		tabs.addTab("Orders", order);
+		tabs.addTab("Customers", cust);
+		tabs.addTab("Food", food);
+		tabs.addTab("Ingredients", ingr);
+		tabs.addTab("Packages", pack);
         add(tabs, BorderLayout.CENTER);
 		add(bar, BorderLayout.NORTH);
         this.setVisible(true);
@@ -45,6 +61,7 @@ public class tabbedMenu extends JFrame {
 			JMenuItem DBsettings = new JMenuItem("Database Settings...");
 			JMenuItem logout = new JMenuItem("Log out...");
 			JMenuItem about = new JMenuItem("About...");
+			JMenuItem refresh = new JMenuItem("Refresh all");
 			Action settingspress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -64,10 +81,23 @@ public class tabbedMenu extends JFrame {
 					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
 				}
 			};
+			Action refreshpress = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					order.refresh();
+					emp.refresh();
+					cust.refresh();
+					food.refresh();
+					ingr.refresh();
+					pack.refresh();
+				}
+			};
+			refresh.addActionListener(refreshpress);
 			DBsettings.addActionListener(settingspress);
 			logout.addActionListener(logoutpress);
 			about.addActionListener(aboutpress);
 			settings.add(DBsettings);
+			file.add(refresh);
             file.add(logout);
             file.add(about);
 			add(file);
