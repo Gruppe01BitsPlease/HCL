@@ -15,7 +15,7 @@ public class tabbedMenu extends JFrame {
 	private int x;
 	private int y;
     public tabbedMenu (int rolle, String username) throws Exception {
-		sql = new SQL(new Logon(new File()));
+		sql = new SQL();
         setTitle("Bits Please HCL System 0.1 - " + username);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -28,9 +28,11 @@ public class tabbedMenu extends JFrame {
         setResizable(false);
         JTabbedPane tabs = new JTabbedPane();
 		menubar bar = new menubar();
-        tabs.addTab("Employees", new EmployeeTab());
+        tabs.addTab("Employees", new EmployeeTab(sql));
         tabs.addTab("CEO functions", new CeoTab());
-		tabs.addTab("Orders", new OrderTab());
+		tabs.addTab("Orders", new OrderTab(sql));
+		tabs.addTab("Customers", new CustomerTab(sql));
+		tabs.addTab("Food", new FoodTab(sql));
         add(tabs, BorderLayout.CENTER);
 		add(bar, BorderLayout.NORTH);
         this.setVisible(true);

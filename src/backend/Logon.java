@@ -34,10 +34,12 @@ public class Logon {
 	}
 
 	public String getUser() {
+		System.out.println(file.readLineAsBase64(1));
 		return file.readLineAsBase64(1);
 	}
 
 	public String getPassword() {
+		System.out.println(file.readLineAsBase64(2));
 		return file.readLineAsBase64(2);
 	}
 

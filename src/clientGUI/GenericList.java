@@ -28,9 +28,9 @@ class GenericList extends JPanel {
     private SQL sql;
     private int x;
     private int y;
-	public GenericList(String query, String[] titles, String SqlTableName) {
+	public GenericList(String query, String[] titles, String SqlTableName, SQL sql) {
         try {
-            this.sql = new SQL();
+            this.sql = sql;
             this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
 			System.out.println(Arrays.toString(SqlColumnNames));
@@ -53,41 +53,27 @@ class GenericList extends JPanel {
                 return false;
             }
         };
-        if (this instanceof OrderTab) {
-            list.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        String[] selected = table[list.getSelectedRow()];
-                        int index = list.getSelectedRow();
-                        orderWindow edit = new orderWindow(selected, index);
-                    }
-                }
-            });
-        }
-        else if (this instanceof EmployeeTab) {
-            list.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (e.getClickCount() == 2) {
-                        String[] selected = table[list.getSelectedRow()];
-                        int index = list.getSelectedRow();
-                        employeeWindow edit = new employeeWindow(selected, index);
-                    }
-                }
-            });
-        }
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					String[] selected = table[list.getSelectedRow()];
+					int index = list.getSelectedRow();
+					editWindow edit = new editWindow(selected, index);
+				}
+			}
+		});
         JScrollPane scroll = new JScrollPane(list);
         add(scroll, BorderLayout.CENTER);
     }
-    abstract class editWindow extends JFrame {
+	class editWindow extends JFrame {
         //This class automatically adds text fields for the columns in the table.
 		private String[] selected;
 		private int index;
         public editWindow(String[] selected, int index) {
 			this.selected = selected;
 			this.index = index;
-            setTitle("REMEMBER TO DO setTitle() IN THE SUBCLASS!");
+            setTitle("Edit");
             setLayout(new GridLayout(selected.length + 1, 2));
             setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.03));
             setLocationRelativeTo(null);
@@ -146,18 +132,7 @@ class GenericList extends JPanel {
 			return index;
 		}
     }
-    private class orderWindow extends editWindow {
-        public orderWindow(String[] selected, int index) {
-            super(selected, index);
-            setTitle("Edit order");
-        }
-    }
-    private class employeeWindow extends editWindow {
-        public employeeWindow(String[] selected, int index) {
-            super(selected, index);
-            setTitle("Edit employee");
-        }
-    }
+
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
         private String[][] searchTable;
@@ -225,16 +200,11 @@ class GenericList extends JPanel {
 							int selectedIndex = searchTab.getSelectedRow();
                             for (int i = 0; i < table.length; i++) {
                                 if (Arrays.equals(selected, table[i])) {
-                                    if (GenericList.this instanceof EmployeeTab) {
-                                        employeeWindow edit = new employeeWindow(table[i], i);
-                                    }
-                                    else if (GenericList.this instanceof OrderTab) {
-                                        orderWindow edit = new orderWindow(table[i], i);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                                        editWindow edit = new editWindow(table[i], i);
+								}
+							}
+						}
+					}
                 });
                 add(scroll, BorderLayout.CENTER);
                 setLocationRelativeTo(null);
