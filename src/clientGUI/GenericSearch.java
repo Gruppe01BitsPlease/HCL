@@ -20,6 +20,21 @@ class GenericSearch extends JPanel {
 	private SQL sql = new SQL();
 	public GenericSearch(String query, String[] titles) {
 		table = sql.getStringTable(query, false);
+		/*int longest = -1;
+		for (int i = 0; i < table.length; i++) {
+			if (table[i].length > longest) {
+				longest = table[i].length;
+			}
+		}
+		for (int i = 0; i < table.length; i++) {
+			if (table[i].length < longest) {
+				String[] newTable = new String[longest];
+				for (int j = 0; j < newTable.length; j++) {
+					newTable[j] = table[i][j];
+					table[i] = newTable;
+				}
+			}
+		}*/
 		this.titles = titles;
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		x = (int) (screen.width * 0.75);
@@ -35,6 +50,9 @@ class GenericSearch extends JPanel {
 				searchTable = new String[table.length][table[0].length];
 				for (int i = 0; i < table.length; i++) {
 					for (int j = 0; j < table[i].length; j++) {
+						if (table[i][j] == null) {
+							table[i][j] = "";
+						}
 						if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
 							int k = 0;
 							boolean added = false;

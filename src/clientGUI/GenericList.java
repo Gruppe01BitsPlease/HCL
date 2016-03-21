@@ -66,7 +66,6 @@ class GenericList extends JPanel {
     }
     abstract class editWindow extends JFrame {
         //This class automatically adds text fields for the columns in the table.
-        //Save and cancel will get messed up if there's not an even number of fields
         public editWindow(String[] selected, int index) {
             setTitle("Edit order");
             setLayout(new GridLayout(selected.length + 1, 2));
