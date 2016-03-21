@@ -20,8 +20,11 @@ public class File{ //for writing to files and stuff
 		this.filename = filename;
 		this.append = append;
 	}
-    public File()throws Exception{
-        this.filename = File.class.getResource("Database.ini").toURI().getPath();
+    public File() {
+		try {
+			this.filename = File.class.getResource("Database.ini").toURI().getPath();
+		}
+		catch (Exception e) {}
         this.append = true;
     }
     public boolean fileExists(){

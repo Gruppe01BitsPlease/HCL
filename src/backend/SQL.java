@@ -28,6 +28,18 @@ public class SQL {
         }
 	}
 
+	public SQL() {
+		Logon logon = new Logon(new File());
+		this.databasename = logon.getDatabase();
+		this.username = logon.getUser();
+		this.password = logon.getPassword();
+		this.database = databasename + username + "?user=" + username + "&password=" + password;
+		this.connection = connect();
+		if(connection != null){
+			isConnected = true;
+		}
+	}
+
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
