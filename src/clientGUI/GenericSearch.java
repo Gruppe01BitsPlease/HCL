@@ -1,15 +1,8 @@
-package clientGUI;
-
-import backend.SQL;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
 
 /**
  * Created by Jens on 20-Mar-16.
  */
+/*
 class GenericSearch extends JPanel {
 	//This is a generic search tab with button, which will show results in a popup window
 	private String[][] searchTable;
@@ -20,21 +13,6 @@ class GenericSearch extends JPanel {
 	private SQL sql = new SQL();
 	public GenericSearch(String query, String[] titles) {
 		table = sql.getStringTable(query, false);
-		/*int longest = -1;
-		for (int i = 0; i < table.length; i++) {
-			if (table[i].length > longest) {
-				longest = table[i].length;
-			}
-		}
-		for (int i = 0; i < table.length; i++) {
-			if (table[i].length < longest) {
-				String[] newTable = new String[longest];
-				for (int j = 0; j < newTable.length; j++) {
-					newTable[j] = table[i][j];
-					table[i] = newTable;
-				}
-			}
-		}*/
 		this.titles = titles;
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		x = (int) (screen.width * 0.75);
@@ -70,10 +48,7 @@ class GenericSearch extends JPanel {
 						}
 					}
 				}
-				try {
-					searchWindow window = new searchWindow();
-				}
-				catch (Exception l) {}
+				searchWindow window = new searchWindow();
 			}
 		};
 		search.addActionListener(searchPress);
@@ -83,14 +58,31 @@ class GenericSearch extends JPanel {
 	}
 
 	private class searchWindow extends JFrame {
-		public searchWindow() throws Exception {
+		public searchWindow() {
 			setSize((int) (x * 0.4), (int) (y * 0.4));
 			setTitle("Search results");
 			setAlwaysOnTop(true);
-			GenericList searchTab = new GenericList(searchTable, titles);
-			add(searchTab, BorderLayout.CENTER);
+			JTable searchTab = new JTable(searchTable, titles);
+			JScrollPane scroll = new JScrollPane(searchTab);
+			searchTab.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						String[] selected = table[searchTab.getSelectedRow()];
+						for (int i = 0; i < table.length; i++) {
+							if (selected.equals(table[i])) {
+								if (GenericSearch.this instanceof EmployeeTab.EmployeeSearch) {
+									GenericList.searchEditWindow edit = new GenericList.searchEditWindow(table[i], i);
+								}
+							}
+						}
+					}
+				}
+			});
+			add(scroll, BorderLayout.CENTER);
 			setLocationRelativeTo(null);
 			setVisible(true);
 		}
 	}
 }
+*/
