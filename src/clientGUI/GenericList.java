@@ -17,8 +17,10 @@ class GenericList extends JPanel {
     //This is a generic list, shown in the middle of the tab where needed
     //Use the type int to choose which edit window appears whe double clicking
     private String query;
+	private String SqlTableName;
     private String[][] table;
     private String[] titles;
+	private String[] SqlColumnNames;
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private JTable list;
@@ -26,14 +28,16 @@ class GenericList extends JPanel {
     private SQL sql;
     private int x;
     private int y;
-	public GenericList(String query, String[] titles) {
+	public GenericList(String query, String[] titles, String SqlTableName) {
         try {
             this.sql = new SQL();
             this.table = sql.getStringTable(query, false);
+			SqlColumnNames = sql.getStringTable(query, true)[0];
         }
         catch (Exception e) {
             System.out.println("ERROR");
         }
+		this.SqlTableName = SqlTableName;
         this.titles = titles;
         this.query = query;
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -96,6 +100,7 @@ class GenericList extends JPanel {
                 add(j);
                 add(k);
             }
+			fields.get(0).setEnabled(false);
             setVisible(true);
             JButton save = new JButton("Save");
             JButton cancel = new JButton("Cancel");
@@ -108,21 +113,27 @@ class GenericList extends JPanel {
             save.addActionListener(new AbstractAction() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    for (int i = 0; i < selected.length; i++) {
-                        selected[i] = fields.get(i).getText();
+					String[] newValues = new String[selected.length];
+                    for (int i = 1; i < newValues.length; i++) {
+                        newValues[i] = fields.get(i).getText();
                     }
-                    table[index] = selected;
+					for (int i = 1; i < newValues.length; i++) {
+						if (newValues[i] != null && !(newValues[i].equals(selected[i]))) {
+							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+						}
+					}
+					table[index] = newValues;
 					tabModel.removeRow(index);
-					tabModel.insertRow(index, selected);
+					tabModel.insertRow(index, newValues);
 					if (searchTableMod != null) {
 						int searchSelectedRow = searchTab.getSelectedRow();
 						if (searchSelectedRow >= 0) {
 							searchTableMod.removeRow(searchSelectedRow);
-							searchTableMod.insertRow(searchSelectedRow, selected);
+							searchTableMod.insertRow(searchSelectedRow, newValues);
 						}
 					}
-                    dispose();
-                }
+					dispose();
+				}
             });
             add(save);
             add(cancel);
@@ -215,9 +226,6 @@ class GenericList extends JPanel {
                                 if (Arrays.equals(selected, table[i])) {
                                     if (GenericList.this instanceof EmployeeTab) {
                                         employeeWindow edit = new employeeWindow(table[i], i);
-										//searchTableMod.removeRow(selectedIndex);
-										//searchTableMod.insertRow(selectedIndex, edit.getEdited());
-										System.out.println(Arrays.toString(edit.getEdited()));
                                     }
                                     else if (GenericList.this instanceof OrderTab) {
                                         orderWindow edit = new orderWindow(table[i], i);
