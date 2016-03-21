@@ -319,6 +319,10 @@ public class SQL {
 
 	}
 
+	//Returns only the column names from the database
+	public String[] getColumnNames(String query) {
+		return getStringTable(query, true)[0];
+	}
 	/**
 	 * Returns an array with the correct size for the specified query Returns
 	 * and null if something goes wrong

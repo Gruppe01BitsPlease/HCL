@@ -32,7 +32,8 @@ class GenericList extends JPanel {
         try {
             this.sql = new SQL();
             this.table = sql.getStringTable(query, false);
-			SqlColumnNames = sql.getStringTable(query, true)[0];
+			SqlColumnNames = sql.getColumnNames(query);
+			System.out.println(Arrays.toString(SqlColumnNames));
         }
         catch (Exception e) {
             System.out.println("ERROR");
@@ -86,9 +87,9 @@ class GenericList extends JPanel {
         public editWindow(String[] selected, int index) {
 			this.selected = selected;
 			this.index = index;
-            setTitle("");
+            setTitle("REMEMBER TO DO setTitle() IN THE SUBCLASS!");
             setLayout(new GridLayout(selected.length + 1, 2));
-            setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.05));
+            setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.03));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
