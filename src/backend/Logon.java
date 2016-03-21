@@ -30,7 +30,8 @@ public class Logon {
 	}
 
 	public String getDatabase() {
-		return  file.readLineAsBase64(0);
+        System.out.println(file.readLineAsBase64(0));
+        return  file.readLineAsBase64(0);
 	}
 
 	public String getUser() {
@@ -110,6 +111,7 @@ public class Logon {
             logon = new Logon(new File(Logon.class.getResource("Database.ini").toURI().getPath(), true));
         }
         catch (URISyntaxException e){}
+
 		System.out.println(logon.logon());
 
 		System.out.println(
