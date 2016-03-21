@@ -4,9 +4,7 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
 
-/**
- * Created by bahafeld on 17.03.2016.
- */
+
 class CeoTab extends JPanel {
     public CeoTab() {
         JButton button;

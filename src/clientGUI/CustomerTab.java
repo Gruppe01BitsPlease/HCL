@@ -5,9 +5,6 @@ import backend.SQL;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * Created by bahafeld on 17.03.2016.
- */
 class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer";
 	private static String[] titles = { "Customer ID", "Name", "E-mail", "Phone" };
