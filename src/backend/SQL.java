@@ -396,7 +396,7 @@ public class SQL {
 			System.out.println("Could not contact database @ " + logon.getDatabase());
         }
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
-        System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
+       // System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
         //System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
 	}
 }
