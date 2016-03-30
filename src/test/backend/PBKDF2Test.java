@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 /**
@@ -21,59 +23,42 @@ public class PBKDF2Test {
 
     @After
     public void tearDown() throws Exception {
-        PBKDF2 testCrypt = null;
-        byte[] salt = null;
-
+        testCrypt = null;
+        salt = null;
     }
 
     @Test
     public void authenticate() throws Exception {
-
         byte[] p = testCrypt.getEncryptedPassword("ThisIsCorrect", salt);
-        byte[] wrongsalt = testCrypt.generateSalt();
+        byte[] wrongSalt = testCrypt.generateSalt();
 
         assertTrue(testCrypt.authenticate("ThisIsCorrect", p, salt));
 
         assertFalse(testCrypt.authenticate("This is false", p, salt));
         assertFalse(testCrypt.authenticate("", p, salt));
-        assertFalse(testCrypt.authenticate("ThisIsCorrect", p, wrongsalt));
-
+        assertFalse(testCrypt.authenticate("ThisIsCorrect", p, wrongSalt));
     }
 
     @Test
     public void getEncryptedPassword() throws Exception {
-        boolean beEqual = true;
-        boolean notEqual = false;
         byte[] test1 = testCrypt.getEncryptedPassword("ThisIsAPassword", salt);
         byte[] test2 = testCrypt.getEncryptedPassword("ThisIsAPassword", salt);
         byte[] test3 = testCrypt.getEncryptedPassword("ThisIsNot", salt);
-            for (int i = 0; i < test1.length ; i++) {
-                if(test1[i] != test2[i]){
-                    beEqual = false;
-                }
-                if(test1[i] != test3[i]){
-                    notEqual = true;
-                }
-                assertTrue(beEqual);
-                assertTrue(notEqual);
-            }
+                assertTrue(Arrays.equals(test1, test2));
+                assertTrue(!Arrays.equals(test1, test3));
     }
 
     @Test
     /**
      Hard to test completely since it's a RNG, and thus should never be the same.
-     but this test should compare the byte[] 1000000 times.
+     but this test should compare the byte[] 1000000 times. Max amount of combinations should be 2^64.
+     In the end we find this testing good enough for our usecase considering the relative small number
+     of people that would be using it. In addition you also need the correct pw to break the encryption.
     */
     public void generateSalt() throws Exception {
-        boolean notEqual = false;
         for (int j = 0; j < 1000000; j++) {
             byte[] test1 = testCrypt.generateSalt();
-            for (int i = 0; i < test1.length ; i++) {
-                if(test1[i] != salt[i]){
-                    notEqual = true;
-                }
-                assertTrue(notEqual);
-            }
+            assertTrue(!Arrays.equals(salt, test1));
         }
     }
 }
