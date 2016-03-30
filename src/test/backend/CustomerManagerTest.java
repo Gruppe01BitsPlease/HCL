@@ -24,6 +24,7 @@ public class CustomerManagerTest {
     @Test
     public void generate() throws Exception {
 
+
     }
 
     @Test
