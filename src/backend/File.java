@@ -22,7 +22,7 @@ public class File{ //for writing to files and stuff
 	}
     public File() {
 		try {
-			this.filename = File.class.getResource("Database.ini").toURI().getPath();
+			this.filename = File.class.getResource("/Database.ini").toURI().getPath();
 		}
 		catch (Exception e) {}
         this.append = true;

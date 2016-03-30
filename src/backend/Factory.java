@@ -3,22 +3,43 @@ package backend;
 /**
  * Created by Faiter119 on 13.03.2016.
  * Consolidates all the other classes
+ * LinkManager should be used where needed to connect the databases
  */
 public interface Factory {
+
+    boolean editDatabase(String newDatabase,String newUsername, String newPassword);
+    // String getDatabaseInfo();
+
+    String[] getUsers();
+    String[] getCustomers();
+    String[] getFoods();
+    String[] getOrders();
+    String[] getPackages();
+    String[] getIngredients();
 
     boolean createUser(String username, String password, int role);
     boolean editUser();
     boolean deleteUser(); //False if user does not exist or something
     boolean logonUser(String username, String password);
 
-    boolean changeDatabase(String newDatabase,String newUsername, String newPassword);
-    String getDatabaseInfo();
+    boolean createCustomer();
+    boolean editCustomer();
+    boolean deleteCustomer();
 
-    String[] getUsers();
+    boolean createFood();
+    boolean editFood();
+    boolean deleteFood();
 
+    boolean createOrder();
+    boolean editOrder();
+    boolean deleteOrder();
 
-    String[][] getFinancialReport();
+    boolean createIngredient();
+    boolean editIngredient();
+    boolean deleteIngredient();
 
-    String toString();
+    //String[][] getFinancialReport();
+
+    //String toString();
 
 }
