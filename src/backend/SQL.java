@@ -83,6 +83,7 @@ public class SQL {
 	/**
 	 * @return A ResultSet object
      * Cant close the ResultSet object here; if you do, you can't do anything with the object because reasons
+	 * TODO: Prepared statements
 	 */
 	public ResultSet query(String query) {
 		if (query == null || query.trim().equals("")) {

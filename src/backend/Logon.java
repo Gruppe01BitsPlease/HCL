@@ -30,17 +30,17 @@ public class Logon {
 	}
 
 	public String getDatabase() {
-        System.out.println(file.readLineAsBase64(0));
+       // System.out.println(file.readLineAsBase64(0));
         return  file.readLineAsBase64(0);
 	}
 
 	public String getUser() {
-		System.out.println(file.readLineAsBase64(1));
+		//System.out.println(file.readLineAsBase64(1));
 		return file.readLineAsBase64(1);
 	}
 
 	public String getPassword() {
-		System.out.println(file.readLineAsBase64(2));
+		//System.out.println(file.readLineAsBase64(2));
 		return file.readLineAsBase64(2);
 	}
 

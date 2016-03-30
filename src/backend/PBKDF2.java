@@ -67,6 +67,7 @@ public class PBKDF2 {
 
 		byte[] salt = krypt.generateSalt(); // Lagre disse 2
 		byte[] encrypted = krypt.getEncryptedPassword(passord, salt);
+
 		Base64.encode(salt);
 
 		System.out.println(Arrays.toString(salt) + " AND " + Arrays.toString(encrypted));

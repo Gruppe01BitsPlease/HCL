@@ -101,11 +101,11 @@ public class File{ //for writing to files and stuff
 		String out = "";
 		String temp = "";
 		try {
-			System.out.println(rInit());
-            System.out.println(r);
+			//System.out.println(rInit());
+            //System.out.println(r);
 			for (int i = 0; i <= end; i++) {
                 temp = r.readLine();
-                System.out.println(r);
+              //  System.out.println(r);
 
 				if (i >= start && i <= end) {
 					out += temp + "\n";
