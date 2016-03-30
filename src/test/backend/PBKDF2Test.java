@@ -60,9 +60,9 @@ public class PBKDF2Test {
     }
 
     @Test
-        /*
-        Hard to test completely since it's RNG, and thus should never be the same.
-        but this test should compare the byte[] 10000 times.
+    /**
+     Hard to test completely since it's a RNG, and thus should never be the same.
+     but this test should compare the byte[] 1000000 times.
     */
     public void generateSalt() throws Exception {
         boolean notEqual = false;
