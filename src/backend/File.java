@@ -196,12 +196,13 @@ public class File{ //for writing to files and stuff
 
         File file = null;
         try {
-            file = new File(File.class.getResource("Database.ini").toURI().getPath(), true);
+			file = new File(File.class.getResource("/Database.ini").toURI().getPath(), true);
             System.out.println(file.readLineAsBase64(0));
             System.out.println(file.readLineAsBase64(1));
             System.out.println(file.readLineAsBase64(2));
         }
         catch(Exception e){}
+
         System.out.println(file.getFilename());
         System.out.println(file.fileExists());
 
