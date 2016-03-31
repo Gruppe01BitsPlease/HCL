@@ -87,7 +87,7 @@ public class CustomerManager {
         File file = null;
 
         try {
-            file = new File(CustomerManager.class.getResource("Database.ini").toURI().getPath(), true);
+            file = new File(CustomerManager.class.getResource("/Database.ini").toURI().getPath(), true);
         }
         catch (Exception e){}
 
@@ -97,6 +97,7 @@ public class CustomerManager {
 
         //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
         c.generate("Ostost","Swag@gmail.com",145678);
+
         //System.out.println(c.delete("Microsoft"));
        // System.out.println(c.edit("Cheese",10,200,""));
     }

@@ -43,7 +43,7 @@ class LogOnGUI extends JFrame{
 		});
 		Action enterpass = new AbstractAction() {
 			public void actionPerformed(ActionEvent pressed) {
-				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!!
+				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!! TODO: Remove that before release
 				String navn = user.getText();
 				String pass = password.getText();
 				int i;

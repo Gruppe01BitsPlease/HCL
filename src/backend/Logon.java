@@ -23,7 +23,7 @@ public class Logon {
 	//Should read from the file
 	public Logon() {
         try {
-            file = new File(Logon.class.getResource("Database.ini").toURI().getPath(), true);
+            file = new File(Logon.class.getResource("/Database.ini").toURI().getPath(), true);
         }
         catch (URISyntaxException e){}
         filename = file.getFilename();
