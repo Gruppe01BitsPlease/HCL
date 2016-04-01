@@ -12,6 +12,7 @@ public class Shoppinglist {
 
     public static void main(String[]args){
 
+    //TODO: Everything
 
 
     }

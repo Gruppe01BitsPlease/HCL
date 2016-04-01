@@ -215,6 +215,30 @@ public class SQL {
             return false;
         }
     }
+	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, boolean newBoolean) {
+		//UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+		if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
+				!rowExists(table,primaryKey,primaryKeyValue)){
+			return false;
+		}
+		String pString = "UPDATE "+table+" SET "+colomnName+" = ? WHERE "+primaryKey+" = ?";
+
+		try {
+			PreparedStatement prep = connection.prepareStatement(pString);
+
+			prep.setBoolean(1, newBoolean);
+			prep.setString(2, primaryKeyValue);
+
+			System.out.println(prep.toString());
+
+			prep.executeUpdate();
+			return true;
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 
     /**
      *@return True if the searched value "primaryKeyValue" exists in the colomn "primaryKey" in the specified table
