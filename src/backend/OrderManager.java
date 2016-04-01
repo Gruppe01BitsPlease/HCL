@@ -13,8 +13,15 @@ public class OrderManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_order";
+    public static final String CURRENT_TABLE_LINK_FOOD = "HCL_order_food";
+    public static final String CURRENT_TABLE_LINK_PACKAGE = "HCL_order_package";
+
+
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
     public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(order_id)";
+    public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(order_id, food_id, number)";
+    public static final String CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS = "(order_id, package_id)";
+
 
     public OrderManager(SQL sql){
         this.sql = sql;
@@ -68,12 +75,115 @@ public class OrderManager {
         }
         catch (SQLException e){return -2;}
     }
+    /**
+     *
+     * @return
+     * 1: OK
+     * -1: Already exist
+     * -2: SQL Exception
+     * -3: Wrong Parameters
+     * -4: File not found
+     */
+    public int addFood(int order_id, int food_id, int number){
+        // Init
+        File file = null;
+        try {
+            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
+        }
+        catch (Exception e){}
+        if (file == null) return -4;
+        Logon logon = new Logon(file);
+        SQL sql = new SQL(logon);
+        LinkManager link = new LinkManager(sql);
+        // End Init
+
+        if(food_id <0 || order_id <0 || number <0 )return -3;
+        if(sql.rowExists(CURRENT_TABLE_LINK_FOOD, "order_id","food_id",order_id,food_id)) return -1;
+
+        String prepString = "Insert into "+CURRENT_TABLE_LINK_FOOD+CURRENT_TABLE_ADD_FOOD_ARGUMENTS+" values(?,?,?)";
+        try {
+            sql.connection.setAutoCommit(false);
+
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,order_id);
+            prep.setInt(2,food_id);
+            prep.setInt(3,number);
+
+            prep.executeUpdate();
+
+            sql.connection.commit();
+            sql.connection.setAutoCommit(true);
+
+            return 1;
+        }
+        catch (SQLException e){
+            try{
+                sql.connection.rollback();
+            }
+            catch (SQLException f){return -2;};
+            return -2;
+        }
+    }
+    /**
+     *
+     * @return
+     * 1: OK
+     * -1: Already exist
+     * -2: SQL Exception
+     * -3: Wrong Parameters
+     * -4: File not found
+     */
+    public int addPackage(int order_id, int package_id){
+        // Init
+        File file = null;
+        try {
+            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
+        }
+        catch (Exception e){}
+        if (file == null) return -4;
+        Logon logon = new Logon(file);
+        SQL sql = new SQL(logon);
+        LinkManager link = new LinkManager(sql);
+        // End Init
+
+        if(package_id <0 || order_id <0 )return -3;
+        if(sql.rowExists(CURRENT_TABLE_LINK_PACKAGE, "order_id","package_id",order_id,package_id)) return -1;
+
+        String prepString = "Insert into "+CURRENT_TABLE_LINK_PACKAGE+CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS+" values(?,?)";
+        try {
+            sql.connection.setAutoCommit(false);
+
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,order_id);
+            prep.setInt(2,package_id);
+
+            prep.executeUpdate();
+
+            sql.connection.commit();
+            sql.connection.setAutoCommit(true);
+
+            return 1;
+        }
+        catch (SQLException e){
+            try{
+                sql.connection.rollback();
+            }
+            catch (SQLException f){
+                f.printStackTrace();
+                return -2;
+            }
+            e.printStackTrace();
+            return -2;
+        }
+    }
 
     public static void main(String[]args){
         File file = null;
 
         try {
-            file = new File(OrderManager.class.getResource("Database.ini").toURI().getPath(), true);
+            file = new File(OrderManager.class.getResource("/Database.ini").toURI().getPath(), true);
         }
         catch (Exception e){}
 
@@ -82,8 +192,10 @@ public class OrderManager {
         OrderManager order = new OrderManager(sql);
 
         //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
-
-        order.delete(3);
+        //order.addFood(2,200,5);
+        int p = order.addPackage(2,1);
+        System.out.println(p);
+       // order.delete(3);
        // order.delete("Ost");
     }
 }

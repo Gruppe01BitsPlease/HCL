@@ -87,8 +87,8 @@ public class FoodManager {
         LinkManager link = new LinkManager(sql);
         // End Init
 
-        if(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",food_id,ingredient_id)) return -1;
         if(food_id <0 || ingredient_id <0 || gram <0 )return -3;
+        if(sql.rowExists(CURRENT_TABLE_LINK,"food_id","ingredient_id",food_id,ingredient_id)) return -1;
 
         String prepString = "Insert into "+CURRENT_TABLE_LINK+CURRENT_TABLE_ADD_INGREDIENTS_ARGUMENTS+" values(?,?,?)";
         try {
@@ -106,7 +106,6 @@ public class FoodManager {
             sql.connection.setAutoCommit(true);
 
             return 1;
-
         }
         catch (SQLException e){
             try{
@@ -115,10 +114,6 @@ public class FoodManager {
             catch (SQLException f){return -2;};
             return -2;
         }
-
-
-
-
     }
 
     public static void main(String[]args){

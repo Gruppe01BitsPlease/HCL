@@ -82,7 +82,6 @@ public class File{ //for writing to files and stuff
 		}
 		catch (FileNotFoundException e) {
 		}
-
 	}
 
 	public boolean writeLine(String in) {
@@ -160,21 +159,6 @@ public class File{ //for writing to files and stuff
         String base64 = Base64.encode(bytes);
         return writeLine(new StringBuilder(base64).reverse().toString());//In reverse 'cause that's much safer they'll never know
     }
-
-	public boolean writeObject(Object o) {
-		boolean ok = false;
-
-		try {
-			wInit();
-			PrintWriter print = new PrintWriter(new FileWriter(filename));
-			//print.wr
-		}
-		catch (Exception e) {
-		}
-
-		wEnd();
-		return ok;
-	}
 
 	public static void main(String[] args) {
 		//File file = new File(System.getProperty("user.dir")+"/src/backend/Database.ini", true);
