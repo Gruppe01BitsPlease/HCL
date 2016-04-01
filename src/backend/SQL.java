@@ -58,6 +58,7 @@ public class SQL {
 			return connection;
 		}
 		catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -76,6 +77,7 @@ public class SQL {
 			return true;
 		}
 		catch (SQLException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -98,7 +100,7 @@ public class SQL {
 
 		}
 		catch (SQLException e) {
-            System.out.println("Error: "+e.toString());
+			e.printStackTrace();
 			return null;
 		}
     }
@@ -120,6 +122,7 @@ public class SQL {
 				return true;
 			}
 			catch (SQLException e) {
+				e.printStackTrace();
 				return false;
 			}
 			finally {
@@ -127,6 +130,7 @@ public class SQL {
 					sentence.close();
 				}
 				catch (SQLException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -157,7 +161,8 @@ public class SQL {
             return true;
         }
         catch(SQLException e){
-            return false;
+			e.printStackTrace();
+			return false;
         }
 	}
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, int newValue) {
@@ -182,7 +187,8 @@ public class SQL {
             return true;
         }
         catch(SQLException e){
-            return false;
+			e.printStackTrace();
+			return false;
         }
     }
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, Date newDate) {
@@ -205,6 +211,7 @@ public class SQL {
             return true;
         }
         catch(SQLException e){
+			e.printStackTrace();
             return false;
         }
     }
@@ -235,7 +242,7 @@ public class SQL {
             }
         }
         catch (SQLException e){
-            System.out.println(e.toString());
+            e.printStackTrace();
             return false;}
 
         return false;
@@ -263,11 +270,40 @@ public class SQL {
             }
         }
         catch (SQLException e){
-            System.out.println(e.toString());
+			e.printStackTrace();
             return false;}
 
         return false;
     }
+	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
+		if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+			return false;
+		}
+
+		try {
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ?";
+
+			PreparedStatement prep = connection.prepareStatement(sqlPrep);
+
+			//  prep.setString(1, primaryKey);
+			prep.setInt(1, v1);
+			prep.setInt(2, v2);
+
+			ResultSet res = prep.executeQuery();
+
+			//System.out.println(prep.toString()+"\n"+res.toString());
+
+
+			if(res.next()){ // At least 1 line in the result
+				return true;
+			}
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return false;}
+
+		return false;
+	}
 
 	/**
      * Note: Very prone to SQL injection (v.v)
@@ -316,7 +352,7 @@ public class SQL {
 			}
 		}
 		catch (SQLException e) {
-            System.out.println("Error: "+e.toString());
+			e.printStackTrace();
 			return null;
 		}
 
@@ -350,6 +386,7 @@ public class SQL {
 			return out;
 		}
 		catch (SQLException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}

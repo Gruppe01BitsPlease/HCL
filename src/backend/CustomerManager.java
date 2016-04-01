@@ -70,6 +70,7 @@ public class CustomerManager {
      */
     public int delete(String name) {
         try {
+
             String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setString(1,name);

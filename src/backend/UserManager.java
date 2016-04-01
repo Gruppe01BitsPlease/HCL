@@ -126,7 +126,7 @@ public class UserManager{
     /**
      * @return 1: OK
      * -1: Already exists
-     * -2: SQL Exception
+     * -2: Encryption Exception
      * -3: Wrong Old Password
      */
     public int changePassword(String username, String oldpass, String newpass){
@@ -135,22 +135,6 @@ public class UserManager{
 
         if(logon(username,oldpass) >= 0){
 
-            String insertTableSQL = "Select user_salt, user_pass from HCL_users where user_name = ?;";
-
-            String userSalt = "";
-            String userPass = "";
-            try {
-                PreparedStatement prep  = sql.connection.prepareStatement(insertTableSQL);
-                prep.setString(1, username);
-                ResultSet res  = prep.executeQuery();
-                if(res.next()) {
-                    userSalt = res.getString(1);
-                    userPass = res.getString(2);
-                }
-            }
-            catch(SQLException e){
-                return -2;
-            }
             String newSalt2 = "";
             String newPass2 = "";
             try{
@@ -213,6 +197,17 @@ public class UserManager{
 		return -1;
 	}
 
+    /**
+     * Abstractation of SQL.getStringTable,
+     */
+    public String[][] get(boolean titles){
+
+        String[][] out = sql.getStringTable("Select * from "+CURRENT_TABLE,titles);
+
+        return out;
+
+    }
+
 
 	public static void main(String[] args) {
 
@@ -229,15 +224,18 @@ public class UserManager{
         //Logon logon = new Logon(User.class.getResource("Database.ini").getPath());
         Logon logon = null;
         try{
-        logon = new Logon(new File(UserManager.class.getResource("Database.ini").toURI().getPath(),true));
+        logon = new Logon(new File(UserManager.class.getResource("/Database.ini").toURI().getPath(),true));
         }
         catch (URISyntaxException e){}
         SQL sql = new SQL(logon);
         UserManager u = new UserManager(sql);
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
+        u.changePassword("olavhus","ostost","faiter119");
 
 		System.out.println(u.logon("olavhus", "ostost"));
+        System.out.println(u.logon("olavhus", "faiter119"));
+
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
       //  u.deleteUser("testteswt");

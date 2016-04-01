@@ -10,8 +10,11 @@ public class FoodManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_food";
+    public static final String CURRENT_TABLE_LINK= "HCL_food_ingredient";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name,price)";
     public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name)";
+    public static final String CURRENT_TABLE_ADD_INGREDIENTS_ARGUMENTS = "(food_id, ingredient_id, gram)";
+
 
 
     public FoodManager(SQL sql){
@@ -62,11 +65,67 @@ public class FoodManager {
         catch (SQLException e){return -2;}
     }
 
+    /**
+     *
+     * @return
+     * 1: OK
+     * -1: Already exist
+     * -2: SQL Exception
+     * -3: Wrong Parameters
+     * -4: File not found
+     */
+    public int addIngredient(int food_id, int ingredient_id, int gram){
+        // Init
+        File file = null;
+        try {
+            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
+        }
+        catch (Exception e){}
+        if (file == null) return -4;
+        Logon logon = new Logon(file);
+        SQL sql = new SQL(logon);
+        LinkManager link = new LinkManager(sql);
+        // End Init
+
+        if(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",food_id,ingredient_id)) return -1;
+        if(food_id <0 || ingredient_id <0 || gram <0 )return -3;
+
+        String prepString = "Insert into "+CURRENT_TABLE_LINK+CURRENT_TABLE_ADD_INGREDIENTS_ARGUMENTS+" values(?,?,?)";
+        try {
+            sql.connection.setAutoCommit(false);
+
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,food_id);
+            prep.setInt(2,ingredient_id);
+            prep.setInt(3,gram);
+
+            prep.executeUpdate();
+
+            sql.connection.commit();
+            sql.connection.setAutoCommit(true);
+
+            return 1;
+
+        }
+        catch (SQLException e){
+            try{
+                sql.connection.rollback();
+            }
+            catch (SQLException f){return -2;};
+            return -2;
+        }
+
+
+
+
+    }
+
     public static void main(String[]args){
         File file = null;
 
         try {
-            file = new File(FoodManager.class.getResource("Database.ini").toURI().getPath(), true);
+            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
         }
         catch (Exception e){}
 
@@ -74,7 +133,7 @@ public class FoodManager {
         SQL sql = new SQL(logon);
         FoodManager food = new FoodManager(sql);
 
-       System.out.println( food.generate("Ost",10));
-        System.out.println(food.delete("Ost"));
+       System.out.println(food.addIngredient(200,1,200));
+
     }
 }
