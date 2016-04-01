@@ -8,8 +8,9 @@ import java.awt.*;
 class PackageTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_package";
 	private static String[] titles = { "Package ID", "Name", "Price" };
+	private static String[] dataTypes = { "int", "string", "int" };
 	public PackageTab(SQL sql) {
-		super(query, titles, "HCL_package", sql);
+		super(query, titles, "HCL_package", dataTypes, sql);
 		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
 	}
 }
