@@ -27,12 +27,15 @@ class GenericList extends JPanel {
     private SQL sql;
     private int x;
     private int y;
+	private boolean searchEnabled = false;
+	private Action searchPress;
 	public GenericList(String query, String[] titles, String SqlTableName, String[] dataTypes, SQL sql) {
         try {
             this.sql = sql;
             this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
 			System.out.println(Arrays.toString(SqlColumnNames));
+			fillTable();
         }
         catch (Exception e) {
             System.out.println("ERROR");
@@ -57,9 +60,16 @@ class GenericList extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					String[] selected = table[list.getSelectedRow()];
-					int index = list.getSelectedRow();
-					editWindow edit = new editWindow(selected, index, false);
+					if (!searchEnabled) {
+						String[] selected = table[list.getSelectedRow()];
+						int index = list.getSelectedRow();
+						editWindow edit = new editWindow(selected, index, false);
+					}
+					else if (searchEnabled) {
+						String[] selected = searchTable[list.getSelectedRow()];
+						int index = list.getSelectedRow();
+						editWindow edit = new editWindow(selected, index, false);
+					}
 				}
 			}
 		});
@@ -70,14 +80,28 @@ class GenericList extends JPanel {
 	public void refresh() {
 		try {
 			table = sql.getStringTable(query, false);
+			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
 			System.out.println(Arrays.toString(SqlColumnNames));
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
 			System.out.println("REFRESH");
+			if (searchEnabled) {
+				ActionEvent act = new ActionEvent(this, 0, "");
+				searchPress.actionPerformed(act);
+			}
 		}
 		catch (Exception e) {
 			System.out.println("ERROR: " + e.getMessage());
+		}
+	}
+	public void fillTable() {
+		for (int i = 0; i < table.length; i++) {
+			for (int j = 0; j < SqlColumnNames.length; j++) {
+				if (table[i][j] == null) {
+					table[i][j] = "";
+				}
+			}
 		}
 	}
 	public int generate(String[] arguments) {
@@ -99,9 +123,15 @@ class GenericList extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					String[][] newTable = new String[table.length + 1][SqlColumnNames.length];
+					for (int i = 0; i < table.length; i++) {
+						for (int j = 0; j < SqlColumnNames.length; j++) {
+							newTable[i][j] = table[i][j];
+						}
+					}
 					String[] selected = newTable[newTable.length - 1];
 					int index = newTable.length - 1;
 					table = newTable;
+					fillTable();
 					editWindow edit = new editWindow(selected, index, true);
 				}
 			});
@@ -116,7 +146,7 @@ class GenericList extends JPanel {
 		public datePane(String date) {
 			//2014-01-01
 			setLayout(new GridLayout(1, 3));
-			if (date != null) {
+			if (date != null && !(date.equals(""))) {
 				year = new JTextField(date.substring(0, 4));
 				month = new JTextField(date.substring(5, 7));
 				day = new JTextField(date.substring(8, 10));
@@ -145,11 +175,7 @@ class GenericList extends JPanel {
 	}
 	class editWindow extends JFrame {
         //This class automatically adds text fields for the columns in the table.
-		private String[] selected;
-		private int index;
         public editWindow(String[] selected, int index, boolean newEntry) {
-			this.selected = selected;
-			this.index = index;
 			if (newEntry) {
 				setTitle("New Item");
 			}
@@ -169,7 +195,7 @@ class GenericList extends JPanel {
 				if (dataTypes[i].equals("boolean")) {
 					JLabel j = new JLabel(titles[i]);
 					JCheckBox k = new JCheckBox();
-					if (selected[i].equals("1")) {
+					if (selected[i] != null && selected[i].equals("1")) {
 						k.setSelected(true);
 					}
 					fields.add(k);
@@ -288,80 +314,70 @@ class GenericList extends JPanel {
 
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
+		private JTextField search;
         public GenericSearch(String query, String[] titles) {
+			buttonPanel panel = new buttonPanel();
             table = sql.getStringTable(query, false);
             setLayout(new BorderLayout());
-            JTextField search = new JTextField();
-            JButton searcher = new JButton("Search");
-            searcher.setToolTipText("Search for any entry and display all matches in a separate window.");
-            Action searchPress = new AbstractAction() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    ArrayList<Integer> rowAdded = new ArrayList<Integer>();
-                    searchTable = new String[table.length][table[0].length];
-                    for (int i = 0; i < table.length; i++) {
-                        for (int j = 0; j < table[i].length; j++) {
-                            if (table[i][j] == null) {
-                                table[i][j] = "";
-                            }
-                            if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
-                                int k = 0;
-                                boolean added = false;
-                                for (int l = 0; l < searchTable.length; l++) {
-                                    while (!added && k < searchTable[0].length) {
-                                        if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
-                                            searchTable[k] = table[i];
-                                            added = true;
-                                            rowAdded.add(i);
-                                        } else {
-                                            k++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    searchWindow window = new searchWindow();
-                }
-            };
+            search = new JTextField();
             search.addActionListener(searchPress);
-            searcher.addActionListener(searchPress);
             add(search, BorderLayout.CENTER);
-            add(searcher, BorderLayout.EAST);
+			add(panel, BorderLayout.EAST);
         }
-
-        private class searchWindow extends JFrame {
-            public searchWindow() {
-                setSize((int) (x * 0.4), (int) (y * 0.4));
-                setTitle("Search results");
-                setAlwaysOnTop(true);
-				searchTableMod = new DefaultTableModel(searchTable, titles);
-                searchTab = new JTable(searchTableMod) {
-                    private static final long serialVersionUID = 1L;
-
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                };
-                JScrollPane scroll = new JScrollPane(searchTab);
-                searchTab.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseClicked(MouseEvent e) {
-                        if (e.getClickCount() == 2) {
-                            String[] selected = searchTable[searchTab.getSelectedRow()];
-							int selectedIndex = searchTab.getSelectedRow();
-                            for (int i = 0; i < table.length; i++) {
-                                if (Arrays.equals(selected, table[i])) {
-                                        editWindow edit = new editWindow(table[i], i, false);
+		private class buttonPanel extends JPanel {
+			Action toggleSearch;
+			public buttonPanel() {
+				setLayout(new GridLayout(1, 2));
+				JButton searcher = new JButton("Search");
+				JButton closeSearch = new JButton("Close search");
+				searcher.setToolTipText("Search for any entry and display all matches in a separate window.");
+				searchPress = new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						ArrayList<Integer> rowAdded = new ArrayList<Integer>();
+						searchTable = new String[table.length][table[0].length];
+						for (int i = 0; i < table.length; i++) {
+							for (int j = 0; j < table[i].length; j++) {
+								if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
+									int k = 0;
+									boolean added = false;
+									for (int l = 0; l < searchTable.length; l++) {
+										while (!added && k < searchTable[0].length) {
+											if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
+												searchTable[k] = table[i];
+												added = true;
+												rowAdded.add(i);
+											} else {
+												k++;
+											}
+										}
+									}
 								}
 							}
 						}
+						//searchWindow window = new searchWindow();
+						tabModel = new DefaultTableModel(searchTable, titles);
+						list.setModel(tabModel);
+						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
-                });
-                add(scroll, BorderLayout.CENTER);
-                setLocationRelativeTo(null);
-                setVisible(true);
-            }
-        }
+				};
+				toggleSearch = new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (searchEnabled) {
+							searchEnabled = false;
+							remove(closeSearch);
+						}
+						else if (!searchEnabled) {
+							searchEnabled = true;
+							add(closeSearch);
+						}
+					}
+				};
+				closeSearch.addActionListener(toggleSearch);
+				searcher.addActionListener(searchPress);
+				add(searcher);
+			}
+		}
     }
 }
