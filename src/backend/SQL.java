@@ -273,7 +273,9 @@ public class SQL {
      * Note: Very prone to SQL injection (v.v)
 	 * @return The query as a handy-dandy String[][], titles of columbs are in the
 	 *         first row, data in the others
-     *
+	 * @param
+	 * query Literally the query that will be sent to the DB, use with caution.
+	 * @param header if true [0] will be titles else [0] will be first line of data
 	 */
 	public String[][] getStringTable(String query, boolean header){
 		if (query == null || query.trim().equals("")) {

@@ -80,6 +80,7 @@ public class LinkManager {
             file = new File(LinkManager.class.getResource("Database.ini").toURI().getPath(), true);
         }
         catch (URISyntaxException e){}
+
         Logon logon = new Logon(file);
         SQL sql = new SQL(logon);
         LinkManager link = new LinkManager(sql);

@@ -11,14 +11,19 @@ import static org.junit.Assert.*;
  */
 public class CustomerManagerTest {
 
+    CustomerManager manager;
+
+
     @Before
     public void setUp() throws Exception {
+
+        manager = new CustomerManager(new SQL(new Logon(new File())));
 
     }
 
     @After
     public void tearDown() throws Exception {
-
+        manager = null;
     }
 
     @Test
