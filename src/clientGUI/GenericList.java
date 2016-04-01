@@ -360,7 +360,7 @@ class GenericList extends JPanel {
 						list.setModel(tabModel);
 						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
-				};
+				};//LOL
 				toggleSearch = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
