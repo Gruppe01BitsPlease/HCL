@@ -227,7 +227,7 @@ public class UserManager{
         logon = new Logon(new File(UserManager.class.getResource("/Database.ini").toURI().getPath(),true));
         }
         catch (URISyntaxException e){}
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         UserManager u = new UserManager(sql);
 
 		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO

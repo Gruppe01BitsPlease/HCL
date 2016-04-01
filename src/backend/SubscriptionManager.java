@@ -95,7 +95,7 @@ public class SubscriptionManager {
         catch (Exception e){}
         if (file == null) return -4;
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
         Date date1 = null;
@@ -187,7 +187,7 @@ public class SubscriptionManager {
         catch (Exception e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
 
         SubscriptionManager manager = new SubscriptionManager(sql);
 

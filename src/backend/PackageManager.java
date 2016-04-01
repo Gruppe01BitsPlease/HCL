@@ -86,7 +86,7 @@ public class PackageManager {
         catch (Exception e){}
         if (file == null) return -4;
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
 
@@ -128,7 +128,7 @@ public class PackageManager {
         catch (Exception e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         PackageManager manager = new PackageManager(sql);
 
         //manager.generate("Soup-Package",1000);

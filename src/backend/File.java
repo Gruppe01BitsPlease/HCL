@@ -8,7 +8,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.net.URL;
 import java.util.Arrays;
 
-
+@Deprecated
 public class File{ //for writing to files and stuff
 
 	private String filename;

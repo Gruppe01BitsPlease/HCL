@@ -82,7 +82,7 @@ public class LinkManager {
         catch (URISyntaxException e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
 
         int i =  link.generate("HCL_food_ingredient","food_id","ingredient_id",2,3); //TODO: Integrate this into the UI somehow via some lists mby

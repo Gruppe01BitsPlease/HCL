@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
  * Im sure posting my SQL username and password on github / giving it to all the customers is a GREAT idea.
  * EDIT: Fixed it so the file uses Reverse-Base64 so at least it's not plaintext
  */
+@Deprecated
 public class Logon {
 
 	private backend.File file;
@@ -50,9 +51,9 @@ public class Logon {
      */
     public boolean logon() {
 
-		sql = new SQL(this);
+		sql = new SQL();
 
-		return sql.isConnected; // True if the database, usename, password, and JDBC drivers are all correct, and the servers are online
+		return sql.isConnected; // True if the database, username, password, and JDBC drivers are all correct, and the servers are online
 
 	}
 

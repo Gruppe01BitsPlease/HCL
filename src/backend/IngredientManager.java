@@ -101,7 +101,7 @@ public class IngredientManager {
         catch (Exception e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         IngredientManager ingredient = new IngredientManager(sql);
 
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));

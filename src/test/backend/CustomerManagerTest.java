@@ -17,7 +17,7 @@ public class CustomerManagerTest {
     @Before
     public void setUp() throws Exception {
 
-        manager = new CustomerManager(new SQL(new Logon(new File())));
+
 
     }
 

@@ -83,7 +83,7 @@ public class FoodManager {
         catch (Exception e){}
         if (file == null) return -4;
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
 
@@ -125,7 +125,7 @@ public class FoodManager {
         catch (Exception e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         FoodManager food = new FoodManager(sql);
 
        System.out.println(food.addIngredient(200,1,200));

@@ -93,7 +93,7 @@ public class OrderManager {
         catch (Exception e){}
         if (file == null) return -4;
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
 
@@ -143,7 +143,7 @@ public class OrderManager {
         catch (Exception e){}
         if (file == null) return -4;
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
 
@@ -188,7 +188,7 @@ public class OrderManager {
         catch (Exception e){}
 
         Logon logon = new Logon(file);
-        SQL sql = new SQL(logon);
+        SQL sql = new SQL();
         OrderManager order = new OrderManager(sql);
 
         //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");

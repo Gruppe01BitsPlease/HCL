@@ -17,10 +17,10 @@ public class SQL {
 
 	public static int colomns = 0;
 
-	public SQL(Logon logon) {
-		this.databasename = logon.getDatabase();
-		this.username = logon.getUser();
-		this.password = logon.getPassword();
+	public SQL(SettingsFile db) {
+		this.databasename = db.getPropValue("database");
+		this.username = db.getPropValue("user");
+		this.password = db.getPropValue("password");
 		this.database = databasename + username + "?user=" + username + "&password=" + password;
         this.connection = connect();
         if(connection != null){
@@ -441,13 +441,11 @@ public class SQL {
 
 	public static void main(String[] args) throws Exception {
 
-        Logon logon = null;
-        try {
-            logon = new Logon(new File(SQL.class.getResource("Database.ini").toURI().getPath(),true));
-        }
-        catch (URISyntaxException e){}
+        SettingsFile db = new SettingsFile();
 
-		SQL sql = new SQL(logon);
+
+
+		SQL sql = new SQL(db);
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
 		if (sql.isConnected) {
@@ -457,7 +455,7 @@ public class SQL {
             sql.print2dArray(tabell);
 		}
 		else {
-			System.out.println("Could not contact database @ " + logon.getDatabase());
+			System.out.println("Could not contact database @ " + db.getPropValue("database"));
         }
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
        // System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
