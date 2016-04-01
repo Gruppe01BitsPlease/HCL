@@ -109,6 +109,40 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
+	class datePane extends JPanel {
+		JTextField year;
+		JTextField month;
+		JTextField day;
+		public datePane(String date) {
+			//2014-01-01
+			setLayout(new GridLayout(1, 3));
+			if (date != null) {
+				year = new JTextField(date.substring(0, 4));
+				month = new JTextField(date.substring(5, 7));
+				day = new JTextField(date.substring(8, 10));
+			}
+			else {
+				year = new JTextField("");
+				month = new JTextField("");
+				day = new JTextField("");
+			}
+			add(year);
+			add(month);
+			add(day);
+		}
+		public datePane() {
+			setLayout(new GridLayout(1, 3));
+			year = new JTextField("");
+			month = new JTextField("");
+			day = new JTextField("");
+			add(year);
+			add(month);
+			add(day);
+		}
+		public String getDate() {
+			return year.getText() + "-" + month.getText() + "-" + day.getText();
+		}
+	}
 	class editWindow extends JFrame {
         //This class automatically adds text fields for the columns in the table.
 		private String[] selected;
@@ -144,7 +178,7 @@ class GenericList extends JPanel {
 				}
 				else if (dataTypes[i].equals("date")) {
 					JLabel j = new JLabel(titles[i]);
-					JTextField k = new JTextField(selected[i]);
+					datePane k = new datePane(selected[i]);
 					fields.add(k);
 					add(j);
 					add(k);
@@ -188,13 +222,26 @@ class GenericList extends JPanel {
 									newValues[i] = "false";
 								}
 							}
+							else if (fields.get(i) instanceof datePane) {
+								datePane dtp = (datePane) fields.get(i);
+								newValues[i] = dtp.getDate();
+							}
 						}
 						if (!newEntry) {
 							for (int i = 1; i < newValues.length; i++) {
 								if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
 									if (dataTypes[i].equals("boolean")) {
-										boolean update = Boolean.getBoolean(newValues[i]);
-										sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+										if (newValues[i].equals("true")) {
+											boolean update = true;
+											sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+										}
+										else if (newValues[i].equals("false")) {
+											boolean update = false;
+											sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+										}
+										else {
+											System.out.println("ERROR NO BOOLEAN VALUE");
+										}
 									}
 									else {
 										sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
