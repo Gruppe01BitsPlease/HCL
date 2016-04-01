@@ -19,6 +19,7 @@ class GenericList extends JPanel {
 	private String[][] searchTable;
 	private String[] titles;
 	private String[] SqlColumnNames;
+	private String[] dataTypes;
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private JTable list;
@@ -26,7 +27,7 @@ class GenericList extends JPanel {
     private SQL sql;
     private int x;
     private int y;
-	public GenericList(String query, String[] titles, String SqlTableName, SQL sql) {
+	public GenericList(String query, String[] titles, String SqlTableName, String[] dataTypes, SQL sql) {
         try {
             this.sql = sql;
             this.table = sql.getStringTable(query, false);
@@ -36,6 +37,7 @@ class GenericList extends JPanel {
         catch (Exception e) {
             System.out.println("ERROR");
         }
+		this.dataTypes = dataTypes;
 		this.SqlTableName = SqlTableName;
         this.titles = titles;
         this.query = query;
@@ -78,6 +80,10 @@ class GenericList extends JPanel {
 			System.out.println("ERROR: " + e.getMessage());
 		}
 	}
+	public int generate(String[] arguments) {
+		return -4;
+	}
+
 	private class northBar extends JPanel {
 		public northBar() {
 			setLayout(new GridLayout(1, 5));
@@ -114,24 +120,44 @@ class GenericList extends JPanel {
 				setTitle("New Item");
 			}
 			else {
-				setTitle("Edit item");
+				setTitle("Edit Item");
 			}
 			setLayout(new GridLayout(selected.length + 1, 2));
             setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.03));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
-            ArrayList<JTextField> fields = new ArrayList<>();
-            for (int i = 0; i < titles.length; i++) {
-                JLabel j = new JLabel(titles[i]);
-                JTextField k = new JTextField(selected[i]);
-                fields.add(k);
-                add(j);
-                add(k);
-            }
-			if (!newEntry) {
-				fields.get(0).setEnabled(false);
+            ArrayList<JComponent> fields = new ArrayList<>();
+			if (dataTypes.length != selected.length) {
+				System.out.println("The data type array is not the correct size!");
 			}
+            for (int i = 0; i < dataTypes.length; i++) {
+				if (dataTypes[i].equals("boolean")) {
+					JLabel j = new JLabel(titles[i]);
+					JCheckBox k = new JCheckBox();
+					if (selected[i].equals("1")) {
+						k.setSelected(true);
+					}
+					fields.add(k);
+					add(j);
+					add(k);
+				}
+				else if (dataTypes[i].equals("date")) {
+					JLabel j = new JLabel(titles[i]);
+					JTextField k = new JTextField(selected[i]);
+					fields.add(k);
+					add(j);
+					add(k);
+				}
+				else {
+					JLabel j = new JLabel(titles[i]);
+					JTextField k = new JTextField(selected[i]);
+					fields.add(k);
+					add(j);
+					add(k);
+				}
+            }
+			fields.get(0).setEnabled(false);
             setVisible(true);
             JButton save = new JButton("Save");
             JButton cancel = new JButton("Cancel");
@@ -149,26 +175,49 @@ class GenericList extends JPanel {
 					if (sure == 0) {
 						String[] newValues = new String[selected.length];
 						for (int i = 0; i < newValues.length; i++) {
-							newValues[i] = fields.get(i).getText();
+							if (fields.get(i) instanceof JTextField) {
+								JTextField field = (JTextField) fields.get(i);
+								newValues[i] = field.getText();
+							}
+							else if (fields.get(i) instanceof JCheckBox) {
+								JCheckBox chk = (JCheckBox) fields.get(i);
+								if (chk.isSelected()) {
+									newValues[i] = "true";
+								}
+								else if (!(chk.isSelected())) {
+									newValues[i] = "false";
+								}
+							}
 						}
 						if (!newEntry) {
 							for (int i = 1; i < newValues.length; i++) {
 								if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
-									sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+									if (dataTypes[i].equals("boolean")) {
+										boolean update = Boolean.getBoolean(newValues[i]);
+										sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+									}
+									else {
+										sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+									}
 								}
 							}
 						}
 						else if (newEntry) {
 							if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
-								for (int i = 0; i < newValues.length; i++) {
-									if (newValues[i] != null && !(newValues[i].equals(""))) {
-										sql.insert("INSERT INTO " + SqlTableName + "(" + SqlColumnNames[i] + ") VALUE " + newValues[i]);
-										System.out.println("INSERT INTO " + SqlTableName + "(" + SqlColumnNames[i] + ") VALUES " + newValues[i]);
-									}
+								int res = GenericList.this.generate(newValues);
+								if (res == -2) {
+									JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
 								}
+								else if (res == -3) {
+									JOptionPane.showMessageDialog(editWindow.this, "There is a problem with one of the parameters.");
+								}
+								else if (res == -4) {
+									JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
+								}
+								System.out.println(res);
 							}
 							else {
-								JOptionPane.showMessageDialog(null, "Entry already exists! Choose a different ID number.");
+								JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 							}
 						}
 						table[index] = newValues;

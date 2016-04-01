@@ -1,10 +1,8 @@
 package clientGUI;
-import backend.Logon;
 import backend.SQL;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import backend.*;
 
 /**
  * Created by Jens on 14.03.2016.
