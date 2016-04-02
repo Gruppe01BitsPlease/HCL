@@ -1,97 +1,83 @@
 package backend;
 
+
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import java.io.*;
 import java.util.Properties;
-
+/**
+ * Created by bahafeld on 01.04.2016.
+ */
 public class SettingsFile {
-    private FileInputStream fileInn;
-    private FileOutputStream fileOut;
-    private String propPath = "./db.properties";
+    private final String propPath = "./db.properties";
 
     public SettingsFile() {
         java.io.File f = new java.io.File(propPath);
         if(!f.exists() || f.isDirectory()){
-            try{
-                    //Get default template from resources folder
-                    InputStream in = this.getClass().getClassLoader().getResourceAsStream("default.properties");
-                    Properties prop = new Properties();
-                    prop.load(in);
-                    in.close();
+            createDefaultFile();
+        }
+    }
+    /**
+     * Creates a prop file from default.prop in resources
+     * Returns false for any IOerror reading from resources (unlikely) or writing the copy (more likely)
+     * or can't close streams.
+     * TODO: Clean and Errorhandling #DONE
+     */
+    private boolean createDefaultFile(){
+        try(FileOutputStream fileOut = new FileOutputStream(propPath)) {
+            //Get default template from resources folder
+            Properties prop = readDefaultTemplate();
+            //write new config file at root
+            prop.store(fileOut, null);
+            return true;
+        }catch (IOException e){
+            return false;
+        }
+    }
 
-                    //write new config file at root
-                    fileOut = new FileOutputStream(propPath);
-                    prop.store(fileOut, "test");
-
-            }catch(IOException e){
-                System.out.println("Default file not found \n"+ e);
-            }finally {
-                try {
-                    fileOut.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    private Properties readDefaultTemplate() throws IOException{
+        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("default.properties")){
+            Properties prop = new Properties();
+            prop.load(in);
+            return prop;
         }
     }
 
     /**
      * Returns the value of provided property - host,database,user,password
-     * Returns null if not found
-     * TODO: Clean and Errorhandling
+     * Returns null if not found or IOexception happens
+     * TODO: Clean and Errorhandling #DONE
      */
     String getPropValue(String key){
-        try {
-
+        try (FileInputStream fileInn = new FileInputStream(propPath)){
             Properties prop = new Properties();
-            fileInn = new FileInputStream(propPath);
             prop.load(fileInn);
             return readLineAsBase64(prop.getProperty(key));
         } catch (IOException e) {
-            System.out.println("Property file '" + propPath + "' not found at root folder \n" + " Exception: " + e);
-        } finally {
-            try {
-                fileInn.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return null;
         }
-        return null;
     }
 
     /**
-     * Saves the value of provided property - host,database,user,password
+     * Saves the value of provided property - ex host,database,user,password
      * Returns false if not saved
+     * !!!!if values set to null it will delete all info!!!!
      * TODO: Clean and Errorhandling
      */
     boolean setPropValue(String key, String value)  {
-
-        try {
+        if(value == null || key == null) return false;
+        try (FileInputStream fileInn = new FileInputStream(propPath)
+            ) {
             Properties prop = new Properties();
-            fileInn = new FileInputStream(propPath);
             prop.load(fileInn);
-
-            fileOut = new FileOutputStream(propPath);
-            prop.setProperty(key, writeLineAsBase64(value));
-            prop.store(fileOut, null);
-
-            return true;
+            fileInn.close();
+            try (FileOutputStream fileOut = new FileOutputStream(propPath)){
+                prop.setProperty(key, writeLineAsBase64(value));
+                prop.store(fileOut, null);
+                return true;
+            }
         } catch (IOException e) {
-            System.out.println("Property file '" + propPath + "' not found at root folder \n" + " Exception: " + e);
-        } finally {
-            try {
-                fileInn.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                fileOut.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            return false;
         }
-        return false;
     }
 
 
