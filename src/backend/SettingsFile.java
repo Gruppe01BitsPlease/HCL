@@ -6,14 +6,15 @@ import java.io.*;
 import java.util.Properties;
 /**
  * Created by bahafeld on 01.04.2016.
+ * Every methos uses try-with-resources, no need to close them manually.
  */
 public class SettingsFile {
-    private final String propPath = "./db.properties";
+    private final String propPath = "./config.properties";
 
-    public SettingsFile() {
+    public SettingsFile() throws FileNotFoundException {
         java.io.File f = new java.io.File(propPath);
         if(!f.exists() || f.isDirectory()){
-            createDefaultFile();
+            if(!createDefaultFile()) throw new FileNotFoundException();
         }
     }
     /**
@@ -24,14 +25,10 @@ public class SettingsFile {
      */
     private boolean createDefaultFile(){
         try(FileOutputStream fileOut = new FileOutputStream(propPath)) {
-            //Get default template from resources folder
             Properties prop = readDefaultTemplate();
-            //write new config file at root
             prop.store(fileOut, null);
             return true;
-        }catch (IOException e){
-            return false;
-        }
+        }catch (IOException e){return false;}
     }
 
     private Properties readDefaultTemplate() throws IOException{
@@ -48,25 +45,27 @@ public class SettingsFile {
      * TODO: Clean and Errorhandling #DONE
      */
     String getPropValue(String key){
+        if (key == null) return "Invalid input";
         try (FileInputStream fileInn = new FileInputStream(propPath)){
             Properties prop = new Properties();
             prop.load(fileInn);
-            return readLineAsBase64(prop.getProperty(key));
-        } catch (IOException e) {
-            return null;
-        }
+            String value = prop.getProperty(key);
+            if (value == null) return null;
+            return readLineAsBase64(value);
+        } catch (IOException e) {return "Could not access " + propPath;}
     }
 
     /**
      * Saves the value of provided property - ex host,database,user,password
      * Returns false if not saved
-     * !!!!if values set to null it will delete all info!!!!
-     * TODO: Clean and Errorhandling
+     * Can save boolean with string "1" or "0", saved in plaintext.
+     * Sending inn empty value will clear field.
+     * If it's unable to find key, it will make that key.
+     * TODO: Clean and Errorhandling #DONE
      */
     boolean setPropValue(String key, String value)  {
         if(value == null || key == null) return false;
-        try (FileInputStream fileInn = new FileInputStream(propPath)
-            ) {
+        try (FileInputStream fileInn = new FileInputStream(propPath)) {
             Properties prop = new Properties();
             prop.load(fileInn);
             fileInn.close();
@@ -74,26 +73,24 @@ public class SettingsFile {
                 prop.setProperty(key, writeLineAsBase64(value));
                 prop.store(fileOut, null);
                 return true;
-            }
-        } catch (IOException e) {
-            return false;
-        }
+            }catch (IOException e) {return false;}
+        } catch (IOException e) {return false;}
     }
 
 
     /**
      * Technically it reads *reverse* Base64, so it's actually useless for reading Base64 V(^.^)V
+     * Support for boolean values, which will be saved in plaintext! Anything else should be encrypted
      */
     private String readLineAsBase64(String line){
+        if(line.trim().equals("1") || line.trim().equals("0")) return line;
         String read = new StringBuilder(line).reverse().toString();
         byte[] decoded = Base64.decode(read);
         return new String(decoded);
     }
 
-    /**
-     * Because plaintext 2utrygt4me
-     */
     private String writeLineAsBase64(String line){
+        if(line.trim().equals("1") || line.trim().equals("0")) return line;
         byte[] bytes = line.getBytes();
         String base64 = Base64.encode(bytes);
         return new StringBuilder(base64).reverse().toString();//In reverse 'cause that's much safer they'll never know
@@ -106,10 +103,12 @@ public class SettingsFile {
         System.out.println(test.getPropValue("database"));
         System.out.println(test.getPropValue("user"));
         System.out.println(test.getPropValue("password"));
+        System.out.println(test.getPropValue("test"));
 
         test.setPropValue("database", "jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
         test.setPropValue("user", "olavhus");
         test.setPropValue("password", "CmrXjoQn");
+        test.setPropValue("firsttime", "1");
 
         System.out.println("---CHANGED---");
         System.out.println(test.getPropValue("database"));
