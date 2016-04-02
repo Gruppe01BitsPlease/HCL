@@ -1,10 +1,11 @@
 package backend;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.sql.*;
 
 public class SQL {
-
+	private SettingsFile settings;
 	private String username;
 	private String password;
 	private String databasedriver = "com.mysql.jdbc.Driver";
@@ -17,27 +18,17 @@ public class SQL {
 
 	public static int colomns = 0;
 
-	public SQL(SettingsFile db) {
-		this.databasename = db.getPropValue("database");
-		this.username = db.getPropValue("user");
-		this.password = db.getPropValue("password");
+	public SQL() {
+		try {this.settings = new SettingsFile();}
+		catch (FileNotFoundException e){ System.out.println("Database settings could not be found" + e);}
+		this.databasename = settings.getPropValue("database");
+		this.username = settings.getPropValue("user");
+		this.password = settings.getPropValue("password");
 		this.database = databasename + username + "?user=" + username + "&password=" + password;
         this.connection = connect();
         if(connection != null){
             isConnected = true;
         }
-	}
-
-	public SQL() {
-		Logon logon = new Logon(new File());
-		this.databasename = logon.getDatabase();
-		this.username = logon.getUser();
-		this.password = logon.getPassword();
-		this.database = databasename + username + "?user=" + username + "&password=" + password;
-		this.connection = connect();
-		if(connection != null){
-			isConnected = true;
-		}
 	}
 
 	/**
@@ -445,7 +436,7 @@ public class SQL {
 
 
 
-		SQL sql = new SQL(db);
+		SQL sql = new SQL();
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
 		if (sql.isConnected) {

@@ -48,7 +48,7 @@ class LogOnGUI extends JFrame{
 				String pass = password.getText();
 				int i;
 				try {
-					UserManager u = new UserManager(new SQL(new SettingsFile()));
+					UserManager u = new UserManager(new SQL());
 					if (navn.equals("admin") && pass.equals("admin")) {
 						i = 0;
 					} else {
