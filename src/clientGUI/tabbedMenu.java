@@ -22,6 +22,8 @@ public class tabbedMenu extends JFrame {
 	public tabbedMenu (int rolle, String username) throws Exception {
 		sql = new SQL();
         setTitle("Bits Please HCL System 0.1 - " + username);
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
+		setIconImage(image);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//Dynamic size based on screen resolution bitches

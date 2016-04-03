@@ -12,6 +12,8 @@ public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
 		//window parameters
 		setTitle("Log in");
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
+		setIconImage(image);
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
