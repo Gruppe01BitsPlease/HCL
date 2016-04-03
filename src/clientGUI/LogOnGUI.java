@@ -8,8 +8,8 @@ import java.awt.event.KeyEvent;
 import backend.*;
 
 @SuppressWarnings("serial")
-class LogOnGUI extends JFrame{
-	protected LogOnGUI () {
+public class LogOnGUI extends JFrame{
+	public LogOnGUI () {
 		//window parameters
 		setTitle("Log in");
 		setLayout(new GridLayout(5, 1));

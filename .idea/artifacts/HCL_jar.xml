@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact name="HCL:jar">
+  <artifact build-on-make="true" name="HCL:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/HCL_jar</output-path>
     <root id="root">
       <element id="archive" name="HCL.jar">

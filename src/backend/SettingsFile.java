@@ -6,11 +6,15 @@ import java.io.*;
 import java.util.Properties;
 /**
  * Created by bahafeld on 01.04.2016.
- * Every methos uses try-with-resources, no need to close them manually.
+ * Every method uses try-with-resources, no need to close them manually.
  */
 public class SettingsFile {
-    private final String propPath = "./config.properties";
+    private final String propPath = "./configdev.properties";
 
+    /**
+     * Checks if file is there, will throw Exeception if it can not be found and a default can't be created.
+     * @throws FileNotFoundException
+     */
     public SettingsFile() throws FileNotFoundException {
         java.io.File f = new java.io.File(propPath);
         if(!f.exists() || f.isDirectory()){
@@ -32,7 +36,7 @@ public class SettingsFile {
     }
 
     private Properties readDefaultTemplate() throws IOException{
-        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("default.properties")){
+        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("defaultdev.properties")){
             Properties prop = new Properties();
             prop.load(in);
             return prop;
@@ -41,10 +45,11 @@ public class SettingsFile {
 
     /**
      * Returns the value of provided property - host,database,user,password
+     * This value can be an empty string!
      * Returns null if not found or IOexception happens
      * TODO: Clean and Errorhandling #DONE
      */
-    String getPropValue(String key){
+    public String getPropValue(String key){
         if (key == null) return "Invalid input";
         try (FileInputStream fileInn = new FileInputStream(propPath)){
             Properties prop = new Properties();
@@ -63,7 +68,7 @@ public class SettingsFile {
      * If it's unable to find key, it will make that key.
      * TODO: Clean and Errorhandling #DONE
      */
-    boolean setPropValue(String key, String value)  {
+    public boolean setPropValue(String key, String value)  {
         if(value == null || key == null) return false;
         try (FileInputStream fileInn = new FileInputStream(propPath)) {
             Properties prop = new Properties();
@@ -100,15 +105,15 @@ public class SettingsFile {
 
         System.out.println("---ORIGINAL---");
         SettingsFile test = new SettingsFile();
+        System.out.println(test.getPropValue("host"));
         System.out.println(test.getPropValue("database"));
         System.out.println(test.getPropValue("user"));
         System.out.println(test.getPropValue("password"));
-        System.out.println(test.getPropValue("test"));
+        System.out.println(test.getPropValue("firsttime"));
 
-        test.setPropValue("database", "jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
-        test.setPropValue("user", "olavhus");
-        test.setPropValue("password", "CmrXjoQn");
-        test.setPropValue("firsttime", "1");
+        test.setPropValue("this is a new setting", "this is a new value");
+        System.out.println(test.getPropValue("this is a new setting"));
+
 
         System.out.println("---CHANGED---");
         System.out.println(test.getPropValue("database"));

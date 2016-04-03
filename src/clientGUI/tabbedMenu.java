@@ -63,7 +63,7 @@ public class tabbedMenu extends JFrame {
 			Action settingspress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					settingsMenu meny = new settingsMenu();
+					new SettingsGUI();
 				}
 			};
 			Action logoutpress = new AbstractAction() {

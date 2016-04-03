@@ -9,7 +9,7 @@ public class SQL {
 	private String username;
 	private String password;
 	private String databasedriver = "com.mysql.jdbc.Driver";
-	private String databasename;
+	private String host;
 	private String database;
 	public  Connection connection;
 	private Statement sentence;
@@ -26,25 +26,51 @@ public class SQL {
 	public SQL() {
 		try {this.settings = new SettingsFile();}
 		catch (FileNotFoundException e){ System.out.println("Database settings could not be found" + e);}
-		this.databasename = settings.getPropValue("database");
+		this.host = settings.getPropValue("host");
+		this.database = settings.getPropValue("database");
 		this.username = settings.getPropValue("user");
 		this.password = settings.getPropValue("password");
-		this.database = databasename + username + "?user=" + username + "&password=" + password;
+		this.database = host + database + "?user=" + username + "&password=" + password;
         this.connection = connect();
 
 	}
+
+	public SQL(String host, String database, String username, String password) {
+		try {this.settings = new SettingsFile();}
+		catch (FileNotFoundException e){ System.out.println("Database settings could not be found" + e);}
+		this.host = host;
+		this.database = database;
+		this.username = username;
+		this.password = password;
+		this.database = host + database + "?user=" + username + "&password=" + password;
+		this.connection = connect();
+		}
+
+
 	public boolean isConnected(){
 		boolean isValid;
 		try{
-			isValid = connection.isValid(3);
+			if(connection != null) {  //Fikk nullpointexception fordi det er jo ikke noe connection om man har feil innstillinger!
+				isValid = connection.isValid(3);
+				return isValid;
+			}else{
+				return false;
+			}
 		}
 		catch (SQLException e){
 			return false;
 		}
-		isConnected = isValid;
-		return isValid;
+
 
 	}
+	/**For testing SQLconnection based on input from end user
+	 *
+	 * @param host
+	 * @param database
+	 * @param username
+     * @param password
+     */
+
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
@@ -62,10 +88,12 @@ public class SQL {
 			//setning = forbindelse.createStatement();
 			return connection;
 		}
+
 		catch (SQLException e) {
-			e.printStackTrace();
+			//e.printStackTrace(); Better not to print, because wrong password on db will give exception
 			return null;
 		}
+
 	}
 
 
