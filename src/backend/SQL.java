@@ -14,6 +14,11 @@ public class SQL {
 	public  Connection connection;
 	private Statement sentence;
 	private ResultSet res;
+	@Deprecated
+	/**
+	 * Use method isConnected() instead
+	 * Still works but is worse
+	 */
     public boolean isConnected = false;
 
 	public static int colomns = 0;
@@ -26,11 +31,20 @@ public class SQL {
 		this.password = settings.getPropValue("password");
 		this.database = databasename + username + "?user=" + username + "&password=" + password;
         this.connection = connect();
-        if(connection != null){
-            isConnected = true;
-        }
-	}
 
+	}
+	public boolean isConnected(){
+		boolean isValid;
+		try{
+			isValid = connection.isValid(3);
+		}
+		catch (SQLException e){
+			return false;
+		}
+		isConnected = isValid;
+		return isValid;
+
+	}
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
@@ -434,12 +448,11 @@ public class SQL {
 
         SettingsFile db = new SettingsFile();
 
-
-
 		SQL sql = new SQL();
 		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
-		if (sql.isConnected) {
+		System.out.println("SQL is connected? : "+sql.isConnected());
+		if (sql.isConnected()) {
 
 			String[][] tabell = sql.getStringTable("Select * from HCL_users", true);
 			//System.out.println("End: " + sql.end());
