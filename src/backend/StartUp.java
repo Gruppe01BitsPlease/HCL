@@ -44,11 +44,11 @@ public class StartUp {
                             JOptionPane.ERROR_MESSAGE);
                 }
                 //todo make not shit as olav says.. trouble calling validateDBConnection LOTS OF CLEANUP
-                new LogOnGUI();
+
                 new SettingsGUI();
 
             }
-
+        new LogOnGUI();
     }
 
     /**
