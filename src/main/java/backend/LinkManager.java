@@ -63,10 +63,9 @@ public class LinkManager {
             prep.setInt(2,value1);
             prep.setString(3,PK2);
             prep.setInt(4,value2);
-            System.out.println(prep.toString());
+            //System.out.println(prep.toString());
             boolean i =  prep.execute();
-            System.out.println(i);
-
+            //System.out.println(i);
 
             return 1;
         }
@@ -75,13 +74,6 @@ public class LinkManager {
 
     public static void main(String[]args){
 
-        File file = null;
-        try {
-            file = new File(LinkManager.class.getResource("Database.ini").toURI().getPath(), true);
-        }
-        catch (URISyntaxException e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
 

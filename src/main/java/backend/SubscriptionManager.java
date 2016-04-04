@@ -36,24 +36,15 @@ public class SubscriptionManager {
 
         try {
 
-            sql.connection.setAutoCommit(false);
-
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES (?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
             prep.setInt(1,order_id);
             prep.executeUpdate();
 
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
             return 1;
         }
         catch (SQLException e){
-            try {
-                sql.connection.rollback();
-            }
-            catch (SQLException f){return -2;}
             return -2;}
     }
 
@@ -83,22 +74,14 @@ public class SubscriptionManager {
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     * -4: File not found
      * -5: Wrong date formatting
      */
     public int addDate(int order_id, String date){
         // Init
-        File file = null;
-        try {
-            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-        if (file == null) return -4;
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
-        Date date1 = null;
+        Date date1;
         try {
             date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(date).getTime());
         }
@@ -108,8 +91,6 @@ public class SubscriptionManager {
 
         String prepString = "Insert into "+CURRENT_TABLE_LINK_DATE+CURRENT_TABLE_ADD_DATE_ARGUMENTS+" values(?,?)";
         try {
-            sql.connection.setAutoCommit(false);
-
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
             prep.setInt(1,order_id);
@@ -117,16 +98,9 @@ public class SubscriptionManager {
 
             prep.executeUpdate();
 
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
             return 1;
         }
         catch (SQLException e){
-            try{
-                sql.connection.rollback();
-            }
-            catch (SQLException f){return -2;};
             return -2;
         }
     }
@@ -138,14 +112,13 @@ public class SubscriptionManager {
      * -1: Does not exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     * -4: File not found
      * -5: Wrong date formatting
      */
     public int removeDate(int order_id, String date){
 
         if(order_id < 0 || date.equals("")) return -3;
 
-        Date date1 = null;
+        Date date1;
         try {
             date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(date).getTime());
         }
@@ -153,7 +126,6 @@ public class SubscriptionManager {
 
         String prepString = "Delete from "+CURRENT_TABLE_LINK_DATE+" where order_id = ? AND dato = ?";
         try {
-            sql.connection.setAutoCommit(false);
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
@@ -162,31 +134,15 @@ public class SubscriptionManager {
 
             prep.executeUpdate();
 
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
             return 1;
         }
         catch (SQLException e){
-            try{
-                sql.connection.rollback();
-            }
-            catch (SQLException f){return -2;};
             return -2;
         }
-
-
     }
 
     public static void main(String[]args){
-        File file = null;
 
-        try {
-            file = new File(OrderManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
 
         SubscriptionManager manager = new SubscriptionManager(sql);

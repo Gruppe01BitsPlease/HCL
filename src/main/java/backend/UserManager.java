@@ -79,28 +79,35 @@ public class UserManager{
 
         if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
 
+        try {
 
-        if(!firstname.trim().equals(""))
-            sql.update("HCL_users","user_firstname","user_name",username,firstname);
-        if(role >= -1)
-            sql. update("HCL_users","user_role","user_name",username,role);
-        if(!lastname.trim().equals(""))
-            sql.update("HCL_users","user_lastname","user_name",username,lastname);
-        if(!email.trim().equals(""))
-            sql.update("HCL_users","user_email","user_name",username,email);
-        if(tlf > 0 )
-            sql.update("HCL_users","user_tlf","user_name",username,tlf);
-        if(!adress.trim().equals(""))
-            sql.update("HCL_users","user_adress","user_name",username,adress);
-        if(postnr > 0)
-            sql.update("HCL_users","user_postnr","user_name",username,postnr);
-        if(start != null) {
-            try {
-                Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
-                sql.update("HCL_users", "user_start", "user_name", username, date);
-            } catch (Exception e) {}
+            sql.connection.setAutoCommit(false);
+
+            if (!firstname.trim().equals("")) sql.update("HCL_users", "user_firstname", "user_name", username, firstname);
+            if (role >= -1) sql.update("HCL_users", "user_role", "user_name", username, role);
+            if (!lastname.trim().equals("")) sql.update("HCL_users", "user_lastname", "user_name", username, lastname);
+            if (!email.trim().equals("")) sql.update("HCL_users", "user_email", "user_name", username, email);
+            if (tlf > 0) sql.update("HCL_users", "user_tlf", "user_name", username, tlf);
+            if (!adress.trim().equals("")) sql.update("HCL_users", "user_adress", "user_name", username, adress);
+            if (postnr > 0) sql.update("HCL_users", "user_postnr", "user_name", username, postnr);
+            if (start != null) {
+                try {
+                    Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
+                    sql.update("HCL_users", "user_start", "user_name", username, date);
+                }
+                catch (Exception e) {}
+            }
+
+            sql.connection.commit();
+            return 1;
         }
-        return 1;
+        catch (SQLException e){return -2;}
+        finally {
+            try {
+                sql.connection.setAutoCommit(true);
+            }
+            catch (SQLException f){}
+        }
     }
 
     /**
@@ -135,8 +142,8 @@ public class UserManager{
 
         if(logon(username,oldpass) >= 0){
 
-            String newSalt2 = "";
-            String newPass2 = "";
+            String newSalt2;
+            String newPass2;
             try{
                 byte[] newSalt = crypt.generateSalt();
                 byte[] newPass = crypt.getEncryptedPassword(newpass,newSalt);
@@ -158,7 +165,7 @@ public class UserManager{
 	 */
 	public int logon(String username, String password) {
 
-		if (!sql.isConnected)
+		if (!sql.isConnected())
 			return -2;
 
         String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
@@ -222,11 +229,6 @@ public class UserManager{
         System.out.println(url.getPath());*/
 
         //Logon logon = new Logon(User.class.getResource("Database.ini").getPath());
-        Logon logon = null;
-        try{
-        logon = new Logon(new File(UserManager.class.getResource("/Database.ini").toURI().getPath(),true));
-        }
-        catch (URISyntaxException e){}
         SQL sql = new SQL();
         UserManager u = new UserManager(sql);
 

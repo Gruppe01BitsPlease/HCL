@@ -75,17 +75,9 @@ public class PackageManager {
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     * -4: File not found
      */
     public int addFood(int package_id, int food_id, int number){
         // Init
-        File file = null;
-        try {
-            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-        if (file == null) return -4;
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
@@ -120,14 +112,7 @@ public class PackageManager {
     }
 
     public static void main(String[]args){
-        File file = null;
 
-        try {
-            file = new File(OrderManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         PackageManager manager = new PackageManager(sql);
 

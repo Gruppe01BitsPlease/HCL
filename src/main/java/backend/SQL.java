@@ -308,6 +308,9 @@ public class SQL {
         return false;
     }
 
+	/**
+	 * Used where the value is an int
+     */
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
         if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
             // System.out.println("Ostost");
@@ -335,6 +338,10 @@ public class SQL {
 
         return false;
     }
+
+	/**
+	 * Used for link-tables
+     */
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
 		if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
 			return false;
@@ -418,9 +425,13 @@ public class SQL {
 
 	}
 
-	//Returns only the column names from the database
+	/**
+	 * Returns only the column names from the database
+     */
 	public String[] getColumnNames(String query) {
+
 		return getStringTable(query, true)[0];
+
 	}
 	/**
 	 * Returns an array with the correct size for the specified query Returns

@@ -61,15 +61,32 @@ public class IngredientManager {
      * -3: Wrong parameters
      */
     public int edit(String name, int newStock,int newPurchase_price, String newOther){
-        if(name.trim().equals("")) return -3;
 
-        if(newStock >= 0)
-            sql.update(CURRENT_TABLE,"stock","name",name,newStock);
-        if(newPurchase_price >= 0)
-            sql.update(CURRENT_TABLE,"purchase_price","name",name,newPurchase_price);
-        if(!newOther.trim().equals(""))
-            sql.update(CURRENT_TABLE,"other","name",name,newOther);
-        return 1;
+        if (name.trim().equals("")) return -3;
+
+        try {
+            sql.connection.setAutoCommit(false);
+
+            if (newStock >= 0) sql.update(CURRENT_TABLE, "stock", "name", name, newStock);
+            if (newPurchase_price >= 0) sql.update(CURRENT_TABLE, "purchase_price", "name", name, newPurchase_price);
+            if (!newOther.trim().equals("")) sql.update(CURRENT_TABLE, "other", "name", name, newOther);
+
+            sql.connection.commit();
+            return 1;
+        }
+        catch (SQLException e){
+            try {
+                sql.connection.rollback();
+                return -2;
+            }
+            catch (SQLException f){return -2;}
+        }
+        finally {
+            try {
+                sql.connection.setAutoCommit(true);
+            }
+            catch (SQLException f){return -2;}
+        }
     }
 
     /**
@@ -93,19 +110,12 @@ public class IngredientManager {
     }
 
     public static void main(String[]args){
-        File file = null;
 
-        try {
-            file = new File(IngredientManager.class.getResource("Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         IngredientManager ingredient = new IngredientManager(sql);
 
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
         System.out.println(ingredient.delete("Ost"));
-       // System.out.println(ingredient.edit("Cheese",10,200,""));
+        System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
     }
 }

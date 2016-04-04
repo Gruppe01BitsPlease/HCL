@@ -53,13 +53,33 @@ public class CustomerManager {
      * -3: Wrong parameters
      */
     public int edit(String name, String nyEpost, int nyTlf){
+        try {
+            sql.connection.setAutoCommit(false);
 
-        if(!sql.rowExists(CURRENT_TABLE,"name",name))return -1;
-        if(name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
+            if (!sql.rowExists(CURRENT_TABLE, "name", name)) return -1;
+            if (name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
 
-        sql.update(CURRENT_TABLE,"epost","name",name,nyEpost);
-        sql.update(CURRENT_TABLE,"tlf","name",name,nyTlf);
-        return 1;
+            sql.update(CURRENT_TABLE, "epost", "name", name, nyEpost);
+            sql.update(CURRENT_TABLE, "tlf", "name", name, nyTlf);
+
+            sql.connection.commit();
+            return 1;
+        }
+        catch (SQLException e){
+            try {
+                sql.connection.rollback();
+            }
+            catch (SQLException a){
+                return -2;
+            }
+            return -2;
+        }
+        finally {
+            try {
+                sql.connection.setAutoCommit(true);
+            }
+            catch (SQLException e){}
+        }
     }
 
     /**
@@ -85,14 +105,7 @@ public class CustomerManager {
     }
 
     public static void main(String[]args){
-        File file = null;
 
-        try {
-            file = new File(CustomerManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         CustomerManager c = new CustomerManager(sql);
 
