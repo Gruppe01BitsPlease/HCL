@@ -4,6 +4,7 @@ import clientGUI.SettingsGUI;
 import clientGUI.LogOnGUI;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.FileNotFoundException;
 
 
@@ -23,9 +24,17 @@ public class StartUp {
 
     public StartUp(){
 
+       new LogOnGUI();
 
 
+    }
 
+    /**
+     *
+     * @return boolean
+     */
+
+    public void init(){
         try {
             this.settings = new SettingsFile();
 
@@ -34,37 +43,26 @@ public class StartUp {
                     "Settingsfile could not be located nor recovered, please contact systemadmin.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE);
-            System.exit(-1);
-
         }
 
-            if(isFirstTime() || validateSettings()!=1 || !validateDBConnection()){
-                if(!validateDBConnection()){
-                    JOptionPane.showMessageDialog(null,
-                            "Unable to reach server, please check server settings",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE);
-                }
-                //todo make not shit as olav says.. trouble calling validateDBConnection LOTS OF CLEANUP
-
-                new SettingsGUI();
-
+        while(isFirstTime() || validateSettings()!=1 || !validateDBConnection()){
+            if(!validateDBConnection()){
+                JOptionPane.showMessageDialog(null,
+                        "Unable to reach server, please check server settings",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
-        new LogOnGUI();
-    }
+            //todo make not shit as olav says.. trouble calling validateDBConnection LOTS OF CLEANUP
 
-    /**
-     *
-     * @return boolean
-     */
+            new SettingsGUI();
+        }
+
+    }
 
 
     public boolean isFirstTime(){
         String firsttime = settings.getPropValue("firsttime");
-        if (firsttime == null || firsttime.trim().equals("1") || firsttime.trim().equals("")){
-            return true;
-        }
-        return false;
+        return firsttime == null || firsttime.trim().equals("1") || firsttime.trim().equals("");
     }
 
     /**
@@ -105,10 +103,28 @@ public class StartUp {
 
     }
 
-    public static void main(String[] args){
-            new StartUp();
-    }
+    public static void main(String[] args) {
 
+        try {
+            UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                new StartUp();
+            }
+        });
+    }
 
 }
 

@@ -21,7 +21,7 @@ public class tabbedMenu extends JFrame {
 	private PackageTab pack;
 	public tabbedMenu (int rolle, String username) throws Exception {
 		sql = new SQL();
-        setTitle("Bits Please HCL System 0.1 - " + username);
+        setTitle("Bits Please HCL System 0.5 - " + username);
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
 		setIconImage(image);
         setLayout(new BorderLayout());
@@ -34,7 +34,7 @@ public class tabbedMenu extends JFrame {
         setLocationRelativeTo(null);
         setResizable(true);
         JTabbedPane tabs = new JTabbedPane();
-		menubar bar = new menubar();
+		menubar bar = new menubar(rolle);
 		order = new OrderTab(sql);
 		emp = new EmployeeTab(sql);
 		CEO = new CeoTab();
@@ -42,22 +42,43 @@ public class tabbedMenu extends JFrame {
 		food = new FoodTab(sql);
 		ingr = new IngredientTab(sql);
 		pack = new PackageTab(sql);
-        tabs.addTab("Employees", emp);
-        tabs.addTab("CEO functions", CEO);
-		tabs.addTab("Orders", order);
-		tabs.addTab("Customers", cust);
-		tabs.addTab("Food", food);
-		tabs.addTab("Ingredients", ingr);
-		tabs.addTab("Packages", pack);
+
+
+
+
         add(tabs, BorderLayout.CENTER);
 		add(bar, BorderLayout.NORTH);
+       // 1 salg, 2 chef, 3 driver, 0 ceo
+            if(rolle == 0){
+                tabs.addTab("Employees", emp);
+                tabs.addTab("CEO functions", CEO);
+            }
+            if(rolle == 1 || rolle == 0){
+                tabs.addTab("Orders", order);
+                tabs.addTab("Customers", cust);
+
+
+            }
+            if(rolle == 2 || rolle == 0){
+                tabs.addTab("Food", food);
+                tabs.addTab("Ingredients", ingr);
+
+            }
+            if(rolle == 3 || rolle == 0){
+                tabs.addTab("Packages", pack);
+
+            }
+
         this.setVisible(true);
     }
 
 	private class menubar extends JMenuBar {
-		public menubar() {
+		public menubar(int rolle) {
 			JMenu file = new JMenu("File");
             JMenu settings = new JMenu("Settings");
+            if (rolle != 0) {
+                settings.setEnabled(false);
+            }
 			JMenuItem DBsettings = new JMenuItem("Database Settings...");
 			JMenuItem logout = new JMenuItem("Log out...");
 			JMenuItem about = new JMenuItem("About...");
@@ -96,7 +117,7 @@ public class tabbedMenu extends JFrame {
 			DBsettings.addActionListener(settingspress);
 			logout.addActionListener(logoutpress);
 			about.addActionListener(aboutpress);
-			settings.add(DBsettings);
+            settings.add(DBsettings);
 			file.add(refresh);
             file.add(logout);
             file.add(about);
@@ -124,10 +145,10 @@ public class tabbedMenu extends JFrame {
 				setVisible(true);
 			}
 		}
+
 	}
-}
-class test {
-    public static void main(String[] args) throws Exception {
-        tabbedMenu menu = new tabbedMenu(1, "test");
-    }
+	public static void main(String[] args) throws Exception {
+		tabbedMenu menu = new tabbedMenu(0, "CEO");
+        tabbedMenu menu2 = new tabbedMenu(1, "Sales");
+	}
 }
