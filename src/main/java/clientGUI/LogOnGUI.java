@@ -1,16 +1,21 @@
 package clientGUI;
 
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import backend.*;
+import com.seaglasslookandfeel.*;
 
 @SuppressWarnings("serial")
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
 		//window parameters
+
+
+
 		setTitle("Log in");
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
 		setIconImage(image);
