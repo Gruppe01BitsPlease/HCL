@@ -82,17 +82,9 @@ public class OrderManager {
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     * -4: File not found
      */
     public int addFood(int order_id, int food_id, int number){
         // Init
-        File file = null;
-        try {
-            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-        if (file == null) return -4;
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
@@ -102,7 +94,6 @@ public class OrderManager {
 
         String prepString = "Insert into "+CURRENT_TABLE_LINK_FOOD+CURRENT_TABLE_ADD_FOOD_ARGUMENTS+" values(?,?,?)";
         try {
-            sql.connection.setAutoCommit(false);
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
@@ -112,16 +103,9 @@ public class OrderManager {
 
             prep.executeUpdate();
 
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
             return 1;
         }
         catch (SQLException e){
-            try{
-                sql.connection.rollback();
-            }
-            catch (SQLException f){return -2;};
             return -2;
         }
     }
@@ -132,17 +116,10 @@ public class OrderManager {
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     * -4: File not found
      */
     public int addPackage(int order_id, int package_id){
         // Init
-        File file = null;
-        try {
-            file = new File(FoodManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-        if (file == null) return -4;
-        Logon logon = new Logon(file);
+
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
         // End Init
@@ -152,8 +129,6 @@ public class OrderManager {
 
         String prepString = "Insert into "+CURRENT_TABLE_LINK_PACKAGE+CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS+" values(?,?)";
         try {
-            sql.connection.setAutoCommit(false);
-
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
             prep.setInt(1,order_id);
@@ -161,33 +136,16 @@ public class OrderManager {
 
             prep.executeUpdate();
 
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
             return 1;
         }
         catch (SQLException e){
-            try{
-                sql.connection.rollback();
-            }
-            catch (SQLException f){
-                f.printStackTrace();
-                return -2;
-            }
             e.printStackTrace();
             return -2;
         }
     }
 
     public static void main(String[]args){
-        File file = null;
 
-        try {
-            file = new File(OrderManager.class.getResource("/Database.ini").toURI().getPath(), true);
-        }
-        catch (Exception e){}
-
-        Logon logon = new Logon(file);
         SQL sql = new SQL();
         OrderManager order = new OrderManager(sql);
 
