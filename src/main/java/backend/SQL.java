@@ -35,6 +35,15 @@ public class SQL {
 
 	}
 
+	/**For testing SQLconnection based on input from end user
+	 * aerierjasiperjpaesjripase
+	 * @throws throws nothing
+	 * @returns returns nothing
+	 * @param host url for host, should be
+	 * @param database
+	 * @param username
+	 * @param password
+	 */
 	public SQL(String host, String database, String username, String password) {
 		try {this.settings = new SettingsFile();}
 		catch (FileNotFoundException e){ System.out.println("Database settings could not be found" + e);}
@@ -63,13 +72,7 @@ public class SQL {
 
 
 	}
-	/**For testing SQLconnection based on input from end user
-	 *
-	 * @param host
-	 * @param database
-	 * @param username
-     * @param password
-     */
+
 
 	/**
 	 * True if it managed to connect to specified database, false otherwise

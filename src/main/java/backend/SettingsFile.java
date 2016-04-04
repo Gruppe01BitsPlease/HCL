@@ -69,16 +69,16 @@ public class SettingsFile {
      * TODO: Clean and Errorhandling #DONE
      */
     public boolean setPropValue(String key, String value)  {
-        if(value == null || key == null) return false;
+        if(key == null || key.trim().equals("") || value == null) return false;
         try (FileInputStream fileInn = new FileInputStream(propPath)) {
             Properties prop = new Properties();
             prop.load(fileInn);
             fileInn.close();
-            try (FileOutputStream fileOut = new FileOutputStream(propPath)){
+            try (FileOutputStream fileOut = new FileOutputStream(propPath)) {
                 prop.setProperty(key, writeLineAsBase64(value));
                 prop.store(fileOut, null);
                 return true;
-            }catch (IOException e) {return false;}
+            }
         } catch (IOException e) {return false;}
     }
 
@@ -111,7 +111,7 @@ public class SettingsFile {
         System.out.println(test.getPropValue("password"));
         System.out.println(test.getPropValue("firsttime"));
 
-        test.setPropValue("this is a new setting", "this is a new value");
+
         System.out.println(test.getPropValue("this is a new setting"));
 
 
