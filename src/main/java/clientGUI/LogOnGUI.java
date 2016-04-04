@@ -13,17 +13,14 @@ import com.seaglasslookandfeel.*;
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
 		//window parameters
-
-
-
 		setTitle("Log in");
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
-		setIconImage(image);
+		setIconImage(image); // Put your own image instead of null
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		double x = (double) screen.width * 0.25;
-		double y = (double) screen.height * 0.25;
+		double y = (double) screen.height * 0.3;
 		setSize((int) x, (int) y);
 		setLocationRelativeTo(null);
 		setResizable(false);
@@ -89,6 +86,16 @@ public class LogOnGUI extends JFrame{
 	public static void main(String[] args) throws Exception {
 		//	User u = new User();
 		//	u.generateUser("jens", "1234", 0);
+		try {
+			UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+			try {
+				UIManager.setLookAndFeel(
+						UIManager.getSystemLookAndFeelClassName());
+			} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e1) {
+				e1.printStackTrace();
+			}
+		}
 		LogOnGUI test = new LogOnGUI();
 	}
 }
