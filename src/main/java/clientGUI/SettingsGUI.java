@@ -150,7 +150,7 @@ public class SettingsGUI extends JFrame {
             return false;
         }
         helpText.setDisabledTextColor(new Color(0,102,0));
-        helpText.setText("Everything looks good");
+        helpText.setText("Everything looks good, settings saved");
         setSettings(addJDBCFormat(host.getText()), database.getText(), user.getText(), password.getText());
         return true;
     }
