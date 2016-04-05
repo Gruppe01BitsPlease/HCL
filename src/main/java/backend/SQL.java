@@ -56,7 +56,9 @@ public class SQL {
 		this.connection = connect();
 		}
 
-
+	/**
+	 * @return True if connected to the internet and the database
+     */
 	public boolean isConnected(){
 		boolean isValid;
 		try{
@@ -390,7 +392,7 @@ public class SQL {
 			ResultSetMetaData meta = res.getMetaData();
 			colomns = meta.getColumnCount();
 
-			String[][] out = null;
+			String[][] out;
 
 			if(header){
 				out = arrayWithCorrectSize(query, true);
@@ -502,7 +504,6 @@ public class SQL {
         SettingsFile db = new SettingsFile();
 
 		SQL sql = new SQL();
-		//SQL sql = new SQL("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/","olavhus","CmrXjoQn");
 		//System.out.println(sql.connect());
 		System.out.println("SQL is connected? : "+sql.isConnected());
 		if (sql.isConnected()) {
