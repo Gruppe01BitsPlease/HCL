@@ -183,7 +183,7 @@ class GenericList extends JPanel {
 				setTitle("Edit Item");
 			}
 			setLayout(new GridLayout(selected.length + 1, 2));
-            setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.03));
+            setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.05));
             setLocationRelativeTo(null);
             setAlwaysOnTop(true);
             setResizable(false);
@@ -205,6 +205,16 @@ class GenericList extends JPanel {
 				else if (dataTypes[i].equals("date")) {
 					JLabel j = new JLabel(titles[i]);
 					datePane k = new datePane(selected[i]);
+					fields.add(k);
+					add(j);
+					add(k);
+				}
+				else if (dataTypes[i].contains("SELECT")) {
+					JLabel j = new JLabel(titles[i]);
+					String[] choices = sql.getColumn(dataTypes[i]);
+					System.out.println(Arrays.toString(choices));
+					JComboBox k = new JComboBox(choices);
+					k.setSelectedItem(selected[i]);
 					fields.add(k);
 					add(j);
 					add(k);
@@ -251,6 +261,10 @@ class GenericList extends JPanel {
 							else if (fields.get(i) instanceof datePane) {
 								datePane dtp = (datePane) fields.get(i);
 								newValues[i] = dtp.getDate();
+							}
+							else if (fields.get(i) instanceof JComboBox) {
+								JComboBox cmb = (JComboBox) fields.get(i);
+								newValues[i] = (String) cmb.getSelectedItem();
 							}
 						}
 						if (!newEntry) {

@@ -3,6 +3,7 @@ package backend;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.Arrays;
 
 public class SQL {
 	private SettingsFile settings;
@@ -432,6 +433,16 @@ public class SQL {
 
 		return getStringTable(query, true)[0];
 
+	}
+
+	public String[] getColumn(String query) {
+		String[][] ans = getStringTable(query, false);
+		//System.out.println(Arrays.toString(ans[0]));
+		String[] foo = new String[ans.length];
+		for (int i = 0; i < ans.length; i++) {
+			foo[i] = ans[i][0];
+		}
+		return foo;
 	}
 	/**
 	 * Returns an array with the correct size for the specified query Returns
