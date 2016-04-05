@@ -13,7 +13,7 @@ class EmployeeTab extends GenericList {
 	private static String[] dataTypes = { "int", "string", "string", "string", "string", "string", "int" };
 	private SQL sql;
 	public EmployeeTab(SQL sql) {
-		super(query, titles, "HCL_users", dataTypes, sql);
+		super(query, titles, "HCL_users", dataTypes, null, sql);
 		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
 	}
 	/*public int generate(String[] args) {
