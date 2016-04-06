@@ -12,8 +12,15 @@ public class Shoppinglist {
 
     public static void main(String[]args){
 
-    //TODO: Everything
+        //
+        int lowestStock = 5;
 
+        SQL sql = new SQL();
+
+        String[][] list = sql.getStringTable("Select * from HCL_food NATURAL JOIN HCL_food_ingredient NATURAL JOIN " +
+                "HCL_ingredient", false);
+
+        sql.print2dArray(list);
 
     }
 

@@ -13,7 +13,7 @@ public class FoodManager {
     public static final String CURRENT_TABLE_LINK= "HCL_food_ingredient";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name,price)";
     public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name)";
-    public static final String CURRENT_TABLE_ADD_INGREDIENTS_ARGUMENTS = "(food_id, ingredient_id, gram)";
+    public static final String CURRENT_TABLE_ADD_INGREDIENTS_ARGUMENTS = "(food_id, ingredient_id, number)";
 
 
 
@@ -96,6 +96,7 @@ public class FoodManager {
             return 1;
         }
         catch (SQLException e){
+            System.out.println(e.toString());
             return -2;
         }
     }
@@ -105,7 +106,10 @@ public class FoodManager {
         SQL sql = new SQL();
         FoodManager food = new FoodManager(sql);
 
-       System.out.println(food.addIngredient(200,1,200));
+        System.out.println(food.addIngredient(201,2,1));
+        System.out.println(food.addIngredient(201,3,1));
+        System.out.println(food.addIngredient(201,1,1));
+
 
     }
 }
