@@ -42,7 +42,24 @@ public class LinkManager {
             return 1;
         }
         catch (SQLException e){return -2;} //Error in syntax
+    }
+    public int generate(String table, String PK1, String PK2, int value1, int value2, int amount){
 
+        //  if(sql.rowExists(table,PK1,value1) && sql.rowExists(table,PK2,value2)) return -1;
+        if(table.trim().equals("") || PK1.trim().equals("") || PK2.trim().equals("") || value1 <0 || value2 <0) return -3;
+        String sqlPrep = "Insert into "+table+"("+PK1+", "+PK2+",number) values(?,?,?)";
+
+        try {
+            PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
+            // prep.setString(1,PK1);
+            //prep.setString(2,PK2);
+            prep.setInt(1,value1);
+            prep.setInt(2,value2);
+            prep.setInt(3,amount);
+            prep.execute();
+            return 1;
+        }
+        catch (SQLException e){return -2;} //Error in syntax
     }
     /**
      * @return 1: OK
