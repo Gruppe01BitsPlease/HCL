@@ -105,13 +105,16 @@ public class StartUp {
 
     public static void main(String[] args) {
 
-        try {
-            UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
-        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+
+        if(!System.getProperty("os.name").equalsIgnoreCase("mac")){
             try {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e1) {
-                e1.printStackTrace();
+                UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
+            } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
 
