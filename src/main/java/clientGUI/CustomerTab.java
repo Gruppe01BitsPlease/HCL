@@ -14,8 +14,8 @@ class CustomerTab extends GenericList {
 	private static String[] dataTypes = { "int", "string", "string", "int" };
 	private SQL sql;
 	public CustomerTab(SQL sql) {
-		super(query, titles, "HCL_customer", dataTypes, sql);
-		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+		super(query, titles, "HCL_customer", dataTypes, null, sql);
+		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
 	public int generate(String[] args) {

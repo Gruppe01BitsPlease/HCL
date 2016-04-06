@@ -12,8 +12,8 @@ class PackageTab extends GenericList {
 	private static String[] dataTypes = { "int", "string", "int" };
 	private SQL sql;
 	public PackageTab(SQL sql) {
-		super(query, titles, "HCL_package", dataTypes, sql);
-		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+		super(query, titles, "HCL_package", dataTypes, null, sql);
+		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
 	public int generate(String[] args) {

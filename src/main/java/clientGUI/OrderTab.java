@@ -11,11 +11,11 @@ import java.util.Arrays;
 class OrderTab extends GenericList {
     private static String query = "SELECT * FROM HCL_order ORDER BY delivery_date ASC";
     private static String[] titles = { "Order", "Customer", "Price", "Adress", "ZIP-code", "Date Ordered", "Delivery Date" };
-    private static String[] dataTypes = { "int", "string", "int", "int", "string", "date", "date" };
+    private static String[] dataTypes = { "int", "SELECT customer_id FROM HCL_customer", "int", "int", "string", "date", "date" };
     private SQL sql;
     public OrderTab(SQL sql) {
-        super(query, titles, "HCL_order", dataTypes, sql);
-        add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+        super(query, titles, "HCL_order", dataTypes, null, sql);
+        add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }
     public int generate(String[] args) {
