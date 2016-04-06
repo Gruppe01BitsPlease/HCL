@@ -10,11 +10,10 @@ import java.util.Arrays;
 
 class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer";
-	private static String[] titles = { "Customer ID", "Name", "E-mail", "Phone" };
 	private static String[] dataTypes = { "int", "string", "string", "int" };
 	private SQL sql;
 	public CustomerTab(SQL sql) {
-		super(query, titles, "HCL_customer", dataTypes, null, sql);
+		super(query, "HCL_customer", dataTypes, null, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}

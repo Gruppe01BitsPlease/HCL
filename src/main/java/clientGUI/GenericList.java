@@ -30,7 +30,7 @@ class GenericList extends JPanel {
     private int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String[] titles, String SqlTableName, String[] dataTypes, String[][] linkTables, SQL sql) {
+	public GenericList(String query, String SqlTableName, String[] dataTypes, String[][] linkTables, SQL sql) {
         try {
             this.sql = sql;
             this.table = sql.getStringTable(query, false);
@@ -43,7 +43,7 @@ class GenericList extends JPanel {
         }
 		this.dataTypes = dataTypes;
 		this.SqlTableName = SqlTableName;
-        this.titles = titles;
+        this.titles = ColumnNamer.getNames(SqlTableName);
         this.query = query;
 		this.linkTables = linkTables;
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -199,7 +199,7 @@ class GenericList extends JPanel {
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
 					System.out.println(linkTables[i][1]);
-					String link = "SELECT " + linkTables[i][1] + " FROM " + linkTables[i][2] +
+					String link = "SELECT * FROM " + linkTables[i][2] +
 							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
 					tabs.addTab(linkTables[i][0], new linkTab(link, i));
 				}
@@ -340,9 +340,11 @@ class GenericList extends JPanel {
 			private int index;
 			public linkTab(String link, int index) {
 				this.index = index;
-				String[] data = sql.getColumn(link);
+				String[][] data = sql.getStringTable(link, false);
+				String[] columns = sql.getColumnNames(link);
 				System.out.println(Arrays.toString(data));
-				JList<String> list = new JList<>(data);
+				JTable list = new JTable(data, columns);
+				JScrollPane scroll = new JScrollPane(list);
 				JButton neue = new JButton("New");
 				neue.addActionListener(new AbstractAction() {
 					@Override
@@ -350,7 +352,7 @@ class GenericList extends JPanel {
 						inputBox input = new inputBox();
 					}
 				});
-				add(list, BorderLayout.CENTER);
+				add(scroll, BorderLayout.CENTER);
 				add(neue, BorderLayout.SOUTH);
 			}
 			class inputBox extends JFrame {
@@ -378,7 +380,7 @@ class GenericList extends JPanel {
 							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 							if (sure == 0) {
 								LinkManager link = new LinkManager(sql);
-								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(input.getText()));
+								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(input.getText()), Integer.parseInt(amount.getText()));
 							}
 							else if (sure == 1) {
 								dispose();

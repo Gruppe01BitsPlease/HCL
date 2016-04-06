@@ -8,14 +8,13 @@ import java.awt.*;
 
 class FoodTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_food";
-	private static String[] titles = { "Food ID", "Name", "Price" };
 	private static String[] dataTypes = { "int", "string", "int" };
 	private static SQL sql;
 	private static String[][] linkTables = {{ "Ingredients", "ingredient_ID", "HCL_food_ingredient" },
 			{ "Orders", "order_id", "HCL_order_food" },
 			{ "Packages", "package_id", "HCL_package_food" }};
 	public FoodTab(SQL sql) {
-		super(query, titles, "HCL_food", dataTypes, linkTables, sql);
+		super(query, "HCL_food", dataTypes, linkTables, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
