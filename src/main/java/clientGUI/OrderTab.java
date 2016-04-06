@@ -14,8 +14,8 @@ class OrderTab extends GenericList {
     private static String[] dataTypes = { "int", "SELECT customer_id FROM HCL_customer", "int", "int", "string", "date", "date" };
     private SQL sql;
     public OrderTab(SQL sql) {
-        super(query, titles, "HCL_order", dataTypes, sql);
-        add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+        super(query, titles, "HCL_order", dataTypes, null, sql);
+        add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }
     public int generate(String[] args) {
