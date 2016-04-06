@@ -86,16 +86,6 @@ public class LogOnGUI extends JFrame{
 	public static void main(String[] args) throws Exception {
 		//	User u = new User();
 		//	u.generateUser("jens", "1234", 0);
-		try {
-			UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
-			try {
-				UIManager.setLookAndFeel(
-						UIManager.getSystemLookAndFeelClassName());
-			} catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e1) {
-				e1.printStackTrace();
-			}
-		}
 		LogOnGUI test = new LogOnGUI();
 	}
 }

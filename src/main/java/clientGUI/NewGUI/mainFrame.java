@@ -32,21 +32,7 @@ public class mainFrame {
 
 
     public static void main (String[] args){
-        mainFrame toolkit = new mainFrame();
-        JFrame parent = toolkit.buildFrame();
 
 
-        LogOnPanel test = new LogOnPanel();
-        parent.add(test.getPanel());
-
-
-        parent.pack();
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        double x = (double) screen.width * 0.25;
-        double y = (double) screen.height * 0.3;
-        parent.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        parent.setSize((int) x, (int) y);
-        parent.setLocationRelativeTo(null);
-        parent.setVisible(true);
     }
 }
