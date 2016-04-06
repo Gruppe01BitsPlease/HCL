@@ -14,7 +14,7 @@ class EmployeeTab extends GenericList {
 	private SQL sql;
 	public EmployeeTab(SQL sql) {
 		super(query, titles, "HCL_users", dataTypes, null, sql);
-		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+		add(new GenericSearch(), BorderLayout.SOUTH);
 	}
 	/*public int generate(String[] args) {
 		UserManager mng = new UserManager(sql);

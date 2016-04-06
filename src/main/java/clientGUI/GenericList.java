@@ -198,9 +198,10 @@ class GenericList extends JPanel {
 			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					linkTables[i][1] += selected[0];
 					System.out.println(linkTables[i][1]);
-					tabs.addTab(linkTables[i][0], new linkTab(linkTables[i][1]));
+					String link = "SELECT " + linkTables[i][1] + " FROM " + linkTables[i][2] +
+							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
+					tabs.addTab(linkTables[i][0], new linkTab(link, i));
 				}
 				add(tabs, BorderLayout.CENTER);
 			}
@@ -336,20 +337,71 @@ class GenericList extends JPanel {
 		}
 		//This class automatically adds text fields for the columns in the table.
 		class linkTab extends JPanel {
-			public linkTab(String link) {
+			private int index;
+			public linkTab(String link, int index) {
+				this.index = index;
 				String[] data = sql.getColumn(link);
 				System.out.println(Arrays.toString(data));
 				JList<String> list = new JList<>(data);
+				JButton neue = new JButton("New");
+				neue.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						inputBox input = new inputBox();
+					}
+				});
 				add(list, BorderLayout.CENTER);
+				add(neue, BorderLayout.SOUTH);
+			}
+			class inputBox extends JFrame {
+				public inputBox() {
+					setSize((int) (x * 0.3), (int) (y * 0.1));
+					setLayout(new GridLayout(3, 2));
+					setLocationRelativeTo(null);
+					setAlwaysOnTop(true);
+					JLabel label = new JLabel("Input ID:");
+					JLabel amountLabel = new JLabel("Amount");
+					JTextField input = new JTextField();
+					JTextField amount = new JTextField();
+					JButton save = new JButton("Save");
+					JButton cancel = new JButton("Cancel");
+					cancel.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							dispose();
+						}
+					});
+					save.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							String[] options = {"Yes", "No"};
+							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+							if (sure == 0) {
+								LinkManager link = new LinkManager(sql);
+								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(input.getText()));
+							}
+							else if (sure == 1) {
+								dispose();
+							}
+						}
+					});
+					add(label);
+					add(input);
+					add(amountLabel);
+					add(amount);
+					add(save);
+					add(cancel);
+					setVisible(true);
+				}
 			}
 		}
 	}
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;
-        public GenericSearch(String query, String[] titles) {
+        public GenericSearch() {
 			buttonPanel panel = new buttonPanel();
-            table = sql.getStringTable(query, false);
+			refresh();
             setLayout(new BorderLayout());
             search = new JTextField();
             search.addActionListener(searchPress);
@@ -392,7 +444,7 @@ class GenericList extends JPanel {
 						list.setModel(tabModel);
 						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
-				};//LOL
+				};
 				toggleSearch = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {

@@ -15,7 +15,7 @@ class OrderTab extends GenericList {
     private SQL sql;
     public OrderTab(SQL sql) {
         super(query, titles, "HCL_order", dataTypes, null, sql);
-        add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+        add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }
     public int generate(String[] args) {

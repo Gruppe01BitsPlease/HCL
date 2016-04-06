@@ -15,7 +15,7 @@ class IngredientTab extends GenericList {
 	private static String[] dataTypes = { "int", "string", "int", "int", "boolean", "boolean", "boolean", "string", "date", "date" };
 	public IngredientTab(SQL sql) {
 		super(query, titles, "HCL_ingredient", dataTypes, null, sql);
-		add(new GenericSearch(query, titles), BorderLayout.SOUTH);
+		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
 	public int generate(String[] args) {
