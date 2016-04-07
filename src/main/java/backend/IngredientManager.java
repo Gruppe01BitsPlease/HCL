@@ -2,6 +2,7 @@ package backend;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,6 +88,43 @@ public class IngredientManager {
             }
             catch (SQLException f){return -2;}
         }
+    }
+    public int edit(String dato, int ingredient_id,int addStock){
+
+        if (dato == null || dato.trim().equals("")) return -3;
+
+        try {
+            sql.connection.setAutoCommit(false);
+
+            String prepString = "Select stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_data = ?";
+            Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dato).getTime());
+
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+            prep.setInt(1,ingredient_id);
+            prep.setDate(2,date1);
+
+            ResultSet res = prep.executeQuery();
+
+            res.next();
+            int currentStock = res.getInt(1);
+
+            sql.update(CURRENT_TABLE,"stock","ingredient_id",Integer.toString(ingredient_id),currentStock+addStock);
+            sql.connection.commit();
+            return 1;
+        }
+        catch (Exception e){
+            try {
+                sql.connection.rollback();
+            }catch (SQLException i){}
+            return -2;
+
+        }
+        finally {
+            try {
+                sql.connection.setAutoCommit(true);
+            }catch (SQLException i){}
+        }
+
     }
 
     /**
