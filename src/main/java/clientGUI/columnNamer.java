@@ -61,6 +61,12 @@ abstract class ColumnNamer {
 	public static String[] getNames(String query, SQL sql) {
 		return getNamesFromArray(sql.getColumnNames(query));
 	}
+	public static String[][] getNamesWithOriginals(String query, SQL sql) {
+		String[] one = sql.getColumnNames(query);
+		String[] two = getNames(query, sql);
+		String[][] ret = { one, two };
+		return ret;
+	}
 	public static String[] getNamesFromArray(String[] sqlNames){
 		String[] ret = new String[sqlNames.length];
 		for (int i = 0; i < sqlNames.length; i++) {
