@@ -43,7 +43,7 @@ class GenericList extends JPanel {
         }
 		this.dataTypes = dataTypes;
 		this.SqlTableName = SqlTableName;
-        this.titles = ColumnNamer.getNames(SqlTableName);
+        this.titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
         this.query = query;
 		this.linkTables = linkTables;
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -190,7 +190,7 @@ class GenericList extends JPanel {
 			} else {
 				setTitle("View Item");
 			}
-			setSize((int) (x * 0.4), (int) (y * (titles.length + 2) * 0.05));
+			setSize((int) (x * 0.5), (int) (y * 0.5));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setResizable(false);
@@ -198,9 +198,7 @@ class GenericList extends JPanel {
 			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					//linkTables: "Ingredients", "ingredient_ID", "HCL_food_ingredient", "HCL_ingredient"
-					String link = "SELECT " + SqlColumnNames[0] + ", " + linkTables[i][1] + ", " + linkTables[i][4] +
-					", number FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
+					String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
 					System.out.println(link);
 					tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
@@ -344,25 +342,47 @@ class GenericList extends JPanel {
 			private JTable list;
 			private String link;
 			private String[] columns;
+			private LinkManager linkMng = new LinkManager(sql);
 			public linkTab(String link, int index, String tableName) {
 				setLayout(new BorderLayout());
 				this.index = index;
 				this.link = link;
 				data = sql.getStringTable(link, false);
-				columns = ColumnNamer.getNames(tableName);
+				columns = ColumnNamer.getNames(link, sql);
 				tableModel = new DefaultTableModel(data, columns);
 				System.out.println(Arrays.toString(data));
 				list = new JTable(tableModel);
 				JScrollPane scroll = new JScrollPane(list);
-				JButton neue = new JButton("New");
-				neue.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						inputBox input = new inputBox();
-					}
-				});
+				lowerButtons lower = new lowerButtons();
 				add(scroll, BorderLayout.CENTER);
-				add(neue, BorderLayout.SOUTH);
+				add(lower, BorderLayout.SOUTH);
+			}
+			class lowerButtons extends JPanel {
+				public lowerButtons() {
+					setLayout(new GridLayout(1, 2));
+					JButton neue = new JButton("New");
+					neue.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							inputBox input = new inputBox();
+						}
+					});
+					JButton delete = new JButton("Delete");
+					delete.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int pk2 = Integer.parseInt(data[list.getSelectedRow()][1]);
+							System.out.println(selected[0] + " " + pk2);
+							linkMng.delete(linkTables[index][2], SqlColumnNames[0], linkTables[index][1],
+									Integer.parseInt(selected[0]), pk2);
+							data = sql.getStringTable(link, false);
+							tableModel = new DefaultTableModel(data, columns);
+							list.setModel(tableModel);
+						}
+					});
+					add(neue);
+					add(delete);
+				}
 			}
 			class inputBox extends JFrame {
 				public inputBox() {
@@ -370,7 +390,7 @@ class GenericList extends JPanel {
 					setLayout(new GridLayout(3, 2));
 					setLocationRelativeTo(null);
 					setAlwaysOnTop(true);
-					JLabel label = new JLabel("Input ID:");
+					JLabel label = new JLabel("Select ID:");
 					JLabel amountLabel = new JLabel("Amount");
 					String choiceQuery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
 					String[] choices = sql.getColumn(choiceQuery, 0);
@@ -390,8 +410,7 @@ class GenericList extends JPanel {
 							String[] options = {"Yes", "No"};
 							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 							if (sure == 0) {
-								LinkManager link = new LinkManager(sql);
-								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt((String) input.getSelectedItem()), Integer.parseInt(amount.getText()));
+								linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt((String) input.getSelectedItem()), Integer.parseInt(amount.getText()));
 							}
 							else if (sure == 1) {
 								dispose();
