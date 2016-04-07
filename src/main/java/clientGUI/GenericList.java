@@ -198,10 +198,12 @@ class GenericList extends JPanel {
 			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					System.out.println(linkTables[i][1]);
-					String link = "SELECT * FROM " + linkTables[i][2] +
+					//linkTables: "Ingredients", "ingredient_ID", "HCL_food_ingredient", "HCL_ingredient"
+					String link = "SELECT " + SqlColumnNames[0] + ", " + linkTables[i][1] + ", " + linkTables[i][4] +
+					", number FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
-					tabs.addTab(linkTables[i][0], new linkTab(link, i));
+					System.out.println(link);
+					tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
 				}
 				add(tabs, BorderLayout.CENTER);
 			}
@@ -233,7 +235,7 @@ class GenericList extends JPanel {
 						add(k);
 					} else if (dataTypes[i].contains("SELECT")) {
 						JLabel j = new JLabel(titles[i]);
-						String[] choices = sql.getColumn(dataTypes[i]);
+						String[] choices = sql.getColumn(dataTypes[i], 0);
 						System.out.println(Arrays.toString(choices));
 						JComboBox k = new JComboBox(choices);
 						k.setSelectedItem(selected[i]);
@@ -335,15 +337,22 @@ class GenericList extends JPanel {
 				add(cancel);
 			}
 		}
-		//This class automatically adds text fields for the columns in the table.
 		class linkTab extends JPanel {
 			private int index;
-			public linkTab(String link, int index) {
+			private DefaultTableModel tableModel;
+			private String[][] data;
+			private JTable list;
+			private String link;
+			private String[] columns;
+			public linkTab(String link, int index, String tableName) {
+				setLayout(new BorderLayout());
 				this.index = index;
-				String[][] data = sql.getStringTable(link, false);
-				String[] columns = sql.getColumnNames(link);
+				this.link = link;
+				data = sql.getStringTable(link, false);
+				columns = ColumnNamer.getNames(tableName);
+				tableModel = new DefaultTableModel(data, columns);
 				System.out.println(Arrays.toString(data));
-				JTable list = new JTable(data, columns);
+				list = new JTable(tableModel);
 				JScrollPane scroll = new JScrollPane(list);
 				JButton neue = new JButton("New");
 				neue.addActionListener(new AbstractAction() {
@@ -357,13 +366,15 @@ class GenericList extends JPanel {
 			}
 			class inputBox extends JFrame {
 				public inputBox() {
-					setSize((int) (x * 0.3), (int) (y * 0.1));
+					setSize((int) (x * 0.3), (int) (y * 0.2));
 					setLayout(new GridLayout(3, 2));
 					setLocationRelativeTo(null);
 					setAlwaysOnTop(true);
 					JLabel label = new JLabel("Input ID:");
 					JLabel amountLabel = new JLabel("Amount");
-					JTextField input = new JTextField();
+					String choiceQuery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
+					String[] choices = sql.getColumn(choiceQuery, 0);
+					JComboBox input = new JComboBox(choices);
 					JTextField amount = new JTextField();
 					JButton save = new JButton("Save");
 					JButton cancel = new JButton("Cancel");
@@ -380,11 +391,14 @@ class GenericList extends JPanel {
 							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 							if (sure == 0) {
 								LinkManager link = new LinkManager(sql);
-								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(input.getText()), Integer.parseInt(amount.getText()));
+								link.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt((String) input.getSelectedItem()), Integer.parseInt(amount.getText()));
 							}
 							else if (sure == 1) {
 								dispose();
 							}
+							data = sql.getStringTable(link, false);
+							tableModel = new DefaultTableModel(data, columns);
+							list.setModel(tableModel);
 						}
 					});
 					add(label);

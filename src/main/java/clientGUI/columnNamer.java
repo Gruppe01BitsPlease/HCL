@@ -6,19 +6,19 @@ package clientGUI;
 abstract class ColumnNamer {
 	public static String[] getNames(String sqlName) {
 		if (sqlName.equals("HCL_food_ingredient")) {
-			String[] ret = { "Food ID", "Ingredient ID", "Amount" };
+			String[] ret = { "Food ID", "Ingredient ID", "Ingredient name", "Amount" };
 			return ret;
 		}
 		if (sqlName.equals("HCL_order_food")) {
-			String[] ret = { "Order ID", "Food ID" , "Amount" };
+			String[] ret = { "Order ID", "Food ID" , "Address", "Amount" };
 			return ret;
 		}
 		if (sqlName.equals("HCL_order_package")) {
-			String[] ret = { "Order ID", "Package ID" };
+			String[] ret = { "Order ID", "Package ID", "Package name" };
 			return ret;
 		}
 		if (sqlName.equals("HCL_package_food")) {
-			String[] ret = { "Package ID", "Food ID", "Amount" };
+			String[] ret = { "Package ID", "Food ID", "Amount", "Name" };
 			return ret;
 		}
 		if (sqlName.equals("HCL_subscription_date")) {
