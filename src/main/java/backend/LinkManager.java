@@ -76,17 +76,20 @@ public class LinkManager {
         String sqlPrep = "Delete from "+table+" where "+PK1+" = ? AND "+PK2+" = ?";
         try {
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
-            prep.setString(1,PK1);
-            prep.setInt(2,value1);
-            prep.setString(3,PK2);
-            prep.setInt(4,value2);
-            //System.out.println(prep.toString());
+            //prep.setString(1,PK1);
+            prep.setInt(1,value1);
+            //prep.setString(3,PK2);
+            prep.setInt(2,value2);
+            System.out.println(prep.toString());
             boolean i =  prep.execute();
             //System.out.println(i);
 
             return 1;
         }
-        catch (SQLException e){return -2;}
+        catch (SQLException e) {
+            System.out.println(e.toString());
+            return -2;
+        }
     }
 
     public static void main(String[]args){

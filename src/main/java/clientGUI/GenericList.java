@@ -35,7 +35,7 @@ class GenericList extends JPanel {
             this.sql = sql;
             this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
-			System.out.println(Arrays.toString(SqlColumnNames));
+			//System.out.println(Arrays.toString(SqlColumnNames));
 			fillTable();
         }
         catch (Exception e) {
@@ -84,10 +84,10 @@ class GenericList extends JPanel {
 			table = sql.getStringTable(query, false);
 			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
-			System.out.println(Arrays.toString(SqlColumnNames));
+			//System.out.println(Arrays.toString(SqlColumnNames));
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
-			System.out.println("REFRESH");
+			//System.out.println("REFRESH");
 			if (searchEnabled) {
 				ActionEvent act = new ActionEvent(this, 0, "");
 				searchPress.actionPerformed(act);
@@ -200,7 +200,7 @@ class GenericList extends JPanel {
 				for (int i = 0; i < linkTables.length; i++) {
 					String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
-					System.out.println(link);
+					//System.out.println(link);
 					tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
 				}
 				add(tabs, BorderLayout.CENTER);
@@ -234,7 +234,7 @@ class GenericList extends JPanel {
 					} else if (dataTypes[i].contains("SELECT")) {
 						JLabel j = new JLabel(titles[i]);
 						String[] choices = sql.getColumn(dataTypes[i], 0);
-						System.out.println(Arrays.toString(choices));
+						//System.out.println(Arrays.toString(choices));
 						JComboBox k = new JComboBox(choices);
 						k.setSelectedItem(selected[i]);
 						fields.add(k);
@@ -312,7 +312,7 @@ class GenericList extends JPanel {
 									} else if (res == -4) {
 										JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
 									}
-									System.out.println(res);
+									//System.out.println(res);
 								} else {
 									JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 								}
@@ -341,17 +341,22 @@ class GenericList extends JPanel {
 			private String[][] data;
 			private JTable list;
 			private String link;
-			private String[] columns;
+			private String[][] columns;
 			private LinkManager linkMng = new LinkManager(sql);
 			public linkTab(String link, int index, String tableName) {
 				setLayout(new BorderLayout());
 				this.index = index;
 				this.link = link;
 				data = sql.getStringTable(link, false);
-				columns = ColumnNamer.getNames(link, sql);
-				tableModel = new DefaultTableModel(data, columns);
-				System.out.println(Arrays.toString(data));
-				list = new JTable(tableModel);
+				columns = ColumnNamer.getNamesWithOriginals(link, sql);
+				tableModel = new DefaultTableModel(data, columns[1]);
+				//System.out.println(Arrays.toString(data));
+				list = new JTable(tableModel) {
+					private static final long serialVersionUID = 1L;
+					public boolean isCellEditable(int row, int column) {
+						return false;
+					}
+				};
 				JScrollPane scroll = new JScrollPane(list);
 				lowerButtons lower = new lowerButtons();
 				add(scroll, BorderLayout.CENTER);
@@ -371,13 +376,25 @@ class GenericList extends JPanel {
 					delete.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							int pk2 = Integer.parseInt(data[list.getSelectedRow()][1]);
-							System.out.println(selected[0] + " " + pk2);
-							linkMng.delete(linkTables[index][2], SqlColumnNames[0], linkTables[index][1],
-									Integer.parseInt(selected[0]), pk2);
-							data = sql.getStringTable(link, false);
-							tableModel = new DefaultTableModel(data, columns);
-							list.setModel(tableModel);
+							String[] options = {"Yes", "No"};
+							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Delete", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+							if (sure == 0) {
+								int num = -1;
+								String[] sel = data[list.getSelectedRow()];
+								for (int i = 0; i < columns[0].length; i++) {
+									if (columns[0][i].equals(linkTables[index][1])) {
+										num = i;
+									}
+								}
+								System.out.println(linkTables[index][2] + " " + SqlColumnNames[0] + " " + linkTables[index][1] + " " +
+										Integer.parseInt(selected[0]) + " " + Integer.parseInt(sel[num]));
+								int foo = linkMng.delete(linkTables[index][2], SqlColumnNames[0], linkTables[index][1],
+										Integer.parseInt(selected[0]), Integer.parseInt(sel[num]));
+								System.out.println(foo);
+								data = sql.getStringTable(link, false);
+								tableModel = new DefaultTableModel(data, columns[1]);
+								list.setModel(tableModel);
+							}
 						}
 					});
 					add(neue);
