@@ -2,6 +2,8 @@ package backend;
 
 import javax.xml.transform.Result;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -58,7 +60,16 @@ public class Shoppinglist {
             return null;
         }
     }
+    public int addShoppinglist(int interval){
 
+        String[][] list = getShoppinglist(interval);
+        IngredientManager manager = new IngredientManager(sql);
+
+        for(String[] row : list){
+            manager.edit(row[0],Integer.parseInt(row[1]),Integer.parseInt(row[3]));
+        }
+        return 1;
+     }
 
     public static void main(String[]args){
 
