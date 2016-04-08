@@ -2,6 +2,7 @@ package clientGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -31,25 +32,25 @@ class GenericList extends JPanel {
 	private boolean searchEnabled = false;
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[] dataTypes, String[][] linkTables, SQL sql) {
-        try {
-            this.sql = sql;
-            this.table = sql.getStringTable(query, false);
+		try {
+			this.sql = sql;
+			this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
 			fillTable();
-        }
-        catch (Exception e) {
-            System.out.println("ERROR");
-        }
+		}
+		catch (Exception e) {
+			System.out.println("ERROR");
+		}
 		this.dataTypes = dataTypes;
 		this.SqlTableName = SqlTableName;
-        this.titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
-        this.query = query;
+		this.titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
+		this.query = query;
 		this.linkTables = linkTables;
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        x = (int) (screen.width * 0.75);
-        y = (int) (screen.height * 0.75);
-        setLayout(new BorderLayout());
-        tabModel = new DefaultTableModel(table, titles);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		x = (int) (screen.width * 0.75);
+		y = (int) (screen.height * 0.75);
+		setLayout(new BorderLayout());
+		tabModel = new DefaultTableModel(table, titles);
         list = new JTable(tabModel) {
             private static final long serialVersionUID = 1L;
             public boolean isCellEditable(int row, int column) {
@@ -73,27 +74,47 @@ class GenericList extends JPanel {
 				}
 			}
 		});
+		list.setAutoCreateRowSorter(true);
         JScrollPane scroll = new JScrollPane(list);
 		add(new northBar(), BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
+		//removePK();
     }
 	public void refresh() {
 		try {
 			table = sql.getStringTable(query, false);
 			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
-			//System.out.println(Arrays.toString(SqlColumnNames));
+			titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
+			System.out.println(Arrays.toString(SqlColumnNames));
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
-			//System.out.println("REFRESH");
+			System.out.println("REFRESH");
 			if (searchEnabled) {
 				ActionEvent act = new ActionEvent(this, 0, "");
 				searchPress.actionPerformed(act);
 			}
+			//removePK();
 		}
 		catch (Exception e) {
-			System.out.println("ERROR: " + e.getMessage());
+			System.out.println("ERROR: " + e.toString());
 		}
+	}
+	public void removePK() {
+		fillTable();
+		String[][] noPK = new String[table.length][];
+		for (int i = 0; i < table.length; i++) {
+			for (int j = 0; j < table[i].length - 1; j++) {
+				noPK[i][j] = table[i][j + 1];
+			}
+		}
+		String[] titlesNoPK = new String[SqlColumnNames.length - 1];
+		for (int i = 0; i < SqlColumnNames.length - 1; i++) {
+			titlesNoPK[i] = SqlColumnNames[i + 1];
+		}
+		titlesNoPK = ColumnNamer.getNamesFromArray(titlesNoPK);
+		tabModel = new DefaultTableModel(noPK, titlesNoPK);
+		list.setModel(tabModel);
 	}
 	public void fillTable() {
 		for (int i = 0; i < table.length; i++) {
@@ -176,9 +197,10 @@ class GenericList extends JPanel {
 	class editWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
+		private ArrayList<String[]> addedLinks = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-
+		private boolean linkTableChanged;
 		public editWindow(String[] selected, int index, boolean newEntry) {
 			this.newEntry = newEntry;
 			this.selected = selected;
@@ -196,10 +218,18 @@ class GenericList extends JPanel {
 			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
-							" WHERE " + SqlColumnNames[0] + " = " + selected[0];
-					//System.out.println(link);
-					tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
+					if (selected[0] != null && !(selected[0].equals(""))) {
+						String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
+								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
+						System.out.println(link);
+						tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
+					}
+					else {
+						String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
+								" WHERE " + SqlColumnNames[0] + " = -1";
+						System.out.println(link);
+						tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
+					}
 				}
 				add(tabs, BorderLayout.CENTER);
 			}
@@ -207,47 +237,13 @@ class GenericList extends JPanel {
 				System.out.println("WARNING The data type array is not the correct size!");
 			}
 			add(tabs, BorderLayout.CENTER);
+			add(new saveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-
-		class editFields extends JPanel {
-			public editFields() {
-				setLayout(new GridLayout(selected.length + 1, 2));
-				for (int i = 0; i < dataTypes.length; i++) {
-					if (dataTypes[i].equals("boolean")) {
-						JLabel j = new JLabel(titles[i]);
-						JCheckBox k = new JCheckBox();
-						if (selected[i] != null && selected[i].equals("1")) {
-							k.setSelected(true);
-						}
-						fields.add(k);
-						add(j);
-						add(k);
-					} else if (dataTypes[i].equals("date")) {
-						JLabel j = new JLabel(titles[i]);
-						datePane k = new datePane(selected[i]);
-						fields.add(k);
-						add(j);
-						add(k);
-					} else if (dataTypes[i].contains("SELECT")) {
-						JLabel j = new JLabel(titles[i]);
-						String[] choices = sql.getColumn(dataTypes[i], 0);
-						//System.out.println(Arrays.toString(choices));
-						JComboBox k = new JComboBox(choices);
-						k.setSelectedItem(selected[i]);
-						fields.add(k);
-						add(j);
-						add(k);
-					} else {
-						JLabel j = new JLabel(titles[i]);
-						JTextField k = new JTextField(selected[i]);
-						fields.add(k);
-						add(j);
-						add(k);
-					}
-				}
-				fields.get(0).setEnabled(false);
-				setVisible(true);
+		String[] comboBoxChoices;
+		class saveCancelButtons extends JPanel {
+			public saveCancelButtons() {
+				setLayout(new GridLayout(1, 2));
 				JButton save = new JButton("Save");
 				JButton cancel = new JButton("Cancel");
 				cancel.addActionListener(new AbstractAction() {
@@ -262,6 +258,10 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
+							if (linkTableChanged) {
+								//LinkManager linkMng = new LinkManager(sql);
+								//linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()));
+							}
 							String[] newValues = new String[selected.length];
 							for (int i = 0; i < newValues.length; i++) {
 								if (fields.get(i) instanceof JTextField) {
@@ -279,7 +279,10 @@ class GenericList extends JPanel {
 									newValues[i] = dtp.getDate();
 								} else if (fields.get(i) instanceof JComboBox) {
 									JComboBox cmb = (JComboBox) fields.get(i);
-									newValues[i] = (String) cmb.getSelectedItem();
+									String sel = (String) cmb.getSelectedItem();
+									String[] chosen = sel.split(",");
+									newValues[i] = chosen[0];
+									System.out.println(newValues[i]);
 								}
 							}
 							if (!newEntry) {
@@ -333,6 +336,56 @@ class GenericList extends JPanel {
 				add(cancel);
 			}
 		}
+		class editFields extends JPanel {
+			public editFields() {
+				setLayout(new GridLayout(selected.length + 1, 2));
+				for (int i = 0; i < dataTypes.length; i++) {
+					if (dataTypes[i].equals("boolean")) {
+						JLabel j = new JLabel(titles[i]);
+						JCheckBox k = new JCheckBox();
+						if (selected[i] != null && selected[i].equals("1")) {
+							k.setSelected(true);
+						}
+						fields.add(k);
+						add(j);
+						add(k);
+					} else if (dataTypes[i].equals("date")) {
+						JLabel j = new JLabel(titles[i]);
+						datePane k = new datePane(selected[i]);
+						fields.add(k);
+						add(j);
+						add(k);
+					} else if (dataTypes[i].contains("SELECT")) {
+						JLabel j = new JLabel(titles[i]);
+						String[][] choices = { sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1) };
+
+						//String[][] choices = sql.getStringTable(dataTypes[i], false);
+						String[] displayed = new String[choices[0].length];
+						int selItem = 0;
+						for (int l = 0; l < displayed.length; l++) {
+							displayed[l] = choices[0][l] + ", " + choices[1][l];
+							if (choices[0][l].equals(selected[i])) {
+								selItem = l;
+							}
+						}
+						//System.out.println(Arrays.toString(choices));
+						JComboBox<String> k = new JComboBox<>(displayed);
+						k.setSelectedIndex(selItem);
+						fields.add(k);
+						add(j);
+						add(k);
+					} else {
+						JLabel j = new JLabel(titles[i]);
+						JTextField k = new JTextField(selected[i]);
+						fields.add(k);
+						add(j);
+						add(k);
+					}
+				}
+				fields.get(0).setEnabled(false);
+				setVisible(true);
+			}
+		}
 		class linkTab extends JPanel {
 			private int index;
 			private DefaultTableModel tableModel;
@@ -359,6 +412,7 @@ class GenericList extends JPanel {
 				lowerButtons lower = new lowerButtons();
 				add(scroll, BorderLayout.CENTER);
 				add(lower, BorderLayout.SOUTH);
+				list.setAutoCreateRowSorter(true);
 			}
 			class lowerButtons extends JPanel {
 				public lowerButtons() {
@@ -413,10 +467,9 @@ class GenericList extends JPanel {
 					for (int i = 0; i < choices.length; i++) {
 						choice[i] = choices[i][0] + ", " + choices[i][1];
 					}
-					String IDquery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
-					final String[] choiceID = sql.getColumn(IDquery, 0);
-					System.out.println(Arrays.toString(choiceID));
-					JComboBox input = new JComboBox(choice);
+
+					//System.out.println(Arrays.toString(choiceID));
+					JComboBox<String> input = new JComboBox<>(choice);
 					JTextField amount = new JTextField();
 					JButton save = new JButton("Save");
 					JButton cancel = new JButton("Cancel");
@@ -432,12 +485,23 @@ class GenericList extends JPanel {
 							String[] options = {"Yes", "No"};
 							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 							if (sure == 0) {
-								linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()));
+								String IDquery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
+								String[] choiceID = sql.getColumn(IDquery, 0);
+								System.out.println(Arrays.toString(choiceID));
+								linkTableChanged = true;
+								String[] addedLink = sql.getRow("SELECT * FROM " + linkTables[index][3] + " WHERE " + linkTables[index][1] + " = " + choiceID[input.getSelectedIndex()]);
+								System.out.println(Arrays.toString(addedLink));
+								addedLinks.add(addedLink);
+								String[][] newData = new String[data.length + 1][];
+								for (int i = 0; i < data.length; i++) {
+									newData[i] = data[i];
+								}
+								newData[data.length] = addedLink;
+								data = newData;
 							}
 							else if (sure == 1) {
 								dispose();
 							}
-							data = sql.getStringTable(link, false);
 							tableModel = new DefaultTableModel(data, columns[1]);
 							list.setModel(tableModel);
 						}
@@ -458,7 +522,7 @@ class GenericList extends JPanel {
 		private JTextField search;
         public GenericSearch() {
 			buttonPanel panel = new buttonPanel();
-			refresh();
+			//refresh();
             setLayout(new BorderLayout());
             search = new JTextField();
             search.addActionListener(searchPress);

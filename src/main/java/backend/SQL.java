@@ -446,6 +446,12 @@ public class SQL {
 		}
 		return foo;
 	}
+
+	public String[] getRow(String query) {
+		String[][] one = getStringTable(query, false);
+		String[] ret = one[0];
+		return ret;
+	}
 	/**
 	 * Returns an array with the correct size for the specified query Returns
 	 * and null if something goes wrong
