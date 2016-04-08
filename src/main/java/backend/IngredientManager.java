@@ -89,15 +89,27 @@ public class IngredientManager {
             catch (SQLException f){return -2;}
         }
     }
-    public int edit(String dato, int ingredient_id,int addStock){
+    /**
+     * ADDS to the current stock!!
+     *
+     * @return 1: OK
+     * -1: Does not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     * -4: Wrong date format: Try yyyy-MM-dd
+     */
+    public int addStock(String dato, int ingredient_id,int addStock){
 
-        if (dato == null || dato.trim().equals("")) return -3;
-
+        if (dato == null || dato.trim().equals("") || ingredient_id <0 || addStock <=0) return -3;
+        if(!sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
+        Date date1;
+        try{
+            date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dato).getTime());
+        }catch (ParseException e){return -4;}
         try {
             sql.connection.setAutoCommit(false);
 
-            String prepString = "Select stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_data = ?";
-            Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dato).getTime());
+            String prepString = "Select stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_date = ?";
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
             prep.setInt(1,ingredient_id);
@@ -153,7 +165,10 @@ public class IngredientManager {
         IngredientManager ingredient = new IngredientManager(sql);
 
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
-        System.out.println(ingredient.delete("Ost"));
-        System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
+      //  System.out.println(ingredient.delete("Ost"));
+        //System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
+        System.out.println(ingredient.addStock("2017-02-15",1,5));
+
+        // Comment color: 63,155,155 rgb
     }
 }

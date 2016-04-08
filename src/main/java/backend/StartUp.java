@@ -5,6 +5,8 @@ import clientGUI.LogOnGUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 
 
@@ -19,14 +21,13 @@ import java.io.FileNotFoundException;
     // check dbconnection
 
 public class StartUp {
+    LogOnGUI logon;
     SettingsFile settings;
+    SettingsGUI window;
     SQL sql;
 
     public StartUp(){
-
-       new LogOnGUI();
-
-
+    init();
     }
 
     /**
@@ -34,30 +35,46 @@ public class StartUp {
      * @return boolean
      */
 
-    public void init(){
-        try {
-            this.settings = new SettingsFile();
-
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null,
-                    "Settingsfile could not be located nor recovered, please contact systemadmin.",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-
-        while(isFirstTime() || validateSettings()!=1 || !validateDBConnection()){
-            if(!validateDBConnection()){
+    public void init() {
+        if (settings == null) {
+            try {
+                this.settings = new SettingsFile();
+            } catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(null,
-                        "Unable to reach server, please check server settings",
+                        "Settingsfile could not be located nor recovered, please contact systemadmin.",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
+                System.exit(-1);
             }
-            //todo make not shit as olav says.. trouble calling validateDBConnection LOTS OF CLEANUP
-
-            new SettingsGUI();
         }
 
+        if (validateSettings() != 1 || validateDBConnection()) {
+            JOptionPane.showMessageDialog(null,
+                    "Unable to reach server, please check server settings or internet connection",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            window = new SettingsGUI();
+            while(window.isDisplayable()){
+                try {
+                    Thread.sleep(100000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }
     }
+
+    public boolean isWindowClosed(){
+        if(!window.isDisplayable()){
+            init();
+            new LogOnGUI();
+            return true;
+        }
+        return false;
+    }
+
 
 
     public boolean isFirstTime(){

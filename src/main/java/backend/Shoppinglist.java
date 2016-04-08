@@ -60,19 +60,24 @@ public class Shoppinglist {
             return null;
         }
     }
+
+    /**
+     * Adds all the stock required from the shopping list to the stock.
+     */
     public int addShoppinglist(int interval){
 
         String[][] list = getShoppinglist(interval);
         IngredientManager manager = new IngredientManager(sql);
+        int out = 1;
 
         for(String[] row : list){
-            manager.edit(row[0],Integer.parseInt(row[1]),Integer.parseInt(row[3]));
+            out = manager.addStock(row[0],Integer.parseInt(row[1]),Integer.parseInt(row[3]));
+            if(out < 0) return out;
         }
-        return 1;
+        return out;
      }
 
     public static void main(String[]args){
-
 
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist();
@@ -86,8 +91,8 @@ public class Shoppinglist {
             for(String colomn : row){
                 System.out.print(colomn+" ");
             }
-
         }
+        //list.addShoppinglist(365);
 
     }
 

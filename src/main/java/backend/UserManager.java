@@ -18,7 +18,6 @@ public class UserManager{
     public final static String CURRENT_TABLE_GENERATE_ARGUMENTS = "(user_name, user_role, user_salt, user_pass)";
     public final static String CURRENT_TABLE_DELETE_ARGUMENTS = "user_name";
 	private PBKDF2 crypt = new PBKDF2();
-    private Logon logon;
     private SQL sql;
 
     /**
