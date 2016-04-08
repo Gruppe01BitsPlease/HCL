@@ -101,7 +101,7 @@ public class IngredientManager {
     public int addStock(String dato, int ingredient_id,int addStock){
 
         if (dato == null || dato.trim().equals("") || ingredient_id <0 || addStock <=0) return -3;
-        if(sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
         Date date1;
         try{
             date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dato).getTime());
@@ -165,8 +165,9 @@ public class IngredientManager {
         IngredientManager ingredient = new IngredientManager(sql);
 
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
-        System.out.println(ingredient.delete("Ost"));
-        System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
+      //  System.out.println(ingredient.delete("Ost"));
+        //System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
+        System.out.println(ingredient.addStock("2017-02-15",1,5));
 
         // Comment color: 63,155,155 rgb
     }

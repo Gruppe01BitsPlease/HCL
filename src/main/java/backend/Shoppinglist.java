@@ -91,8 +91,8 @@ public class Shoppinglist {
             for(String colomn : row){
                 System.out.print(colomn+" ");
             }
-
         }
+        //list.addShoppinglist(365);
 
     }
 
