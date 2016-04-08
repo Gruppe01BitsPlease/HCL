@@ -19,7 +19,10 @@ public class tabbedMenu extends JFrame {
 	private FoodTab food;
 	private IngredientTab ingr;
 	private PackageTab pack;
+	private static JTabbedPane tabs;
+	private static boolean searchAdded;
 	public tabbedMenu (int rolle, String username) throws Exception {
+		searchAdded = false;
 		sql = new SQL();
         setTitle("Bits Please HCL System 0.5 - " + username);
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
@@ -33,7 +36,7 @@ public class tabbedMenu extends JFrame {
 		setMinimumSize(new Dimension(x, y));
         setLocationRelativeTo(null);
         setResizable(true);
-        JTabbedPane tabs = new JTabbedPane();
+        tabs = new JTabbedPane();
 		menubar bar = new menubar(rolle);
 		order = new OrderTab(sql);
 		emp = new EmployeeTab(sql);
@@ -71,7 +74,6 @@ public class tabbedMenu extends JFrame {
 
         this.setVisible(true);
     }
-
 	private class menubar extends JMenuBar {
 		public menubar(int rolle) {
 			JMenu file = new JMenu("File");

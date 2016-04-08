@@ -35,7 +35,6 @@ class GenericList extends JPanel {
             this.sql = sql;
             this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
-			//System.out.println(Arrays.toString(SqlColumnNames));
 			fillTable();
         }
         catch (Exception e) {
@@ -53,7 +52,6 @@ class GenericList extends JPanel {
         tabModel = new DefaultTableModel(table, titles);
         list = new JTable(tabModel) {
             private static final long serialVersionUID = 1L;
-
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -409,9 +407,16 @@ class GenericList extends JPanel {
 					setAlwaysOnTop(true);
 					JLabel label = new JLabel("Select ID:");
 					JLabel amountLabel = new JLabel("Amount");
-					String choiceQuery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
-					String[] choices = sql.getColumn(choiceQuery, 0);
-					JComboBox input = new JComboBox(choices);
+					String choiceQuery = "SELECT " + linkTables[index][1] + ", " + linkTables[index][4] + " FROM " + linkTables[index][3];
+					String[][] choices = sql.getStringTable(choiceQuery, false);
+					String[] choice = new String[choices.length];
+					for (int i = 0; i < choices.length; i++) {
+						choice[i] = choices[i][0] + ", " + choices[i][1];
+					}
+					String IDquery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
+					final String[] choiceID = sql.getColumn(IDquery, 0);
+					System.out.println(Arrays.toString(choiceID));
+					JComboBox input = new JComboBox(choice);
 					JTextField amount = new JTextField();
 					JButton save = new JButton("Save");
 					JButton cancel = new JButton("Cancel");
@@ -427,13 +432,13 @@ class GenericList extends JPanel {
 							String[] options = {"Yes", "No"};
 							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 							if (sure == 0) {
-								linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt((String) input.getSelectedItem()), Integer.parseInt(amount.getText()));
+								linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()));
 							}
 							else if (sure == 1) {
 								dispose();
 							}
 							data = sql.getStringTable(link, false);
-							tableModel = new DefaultTableModel(data, columns);
+							tableModel = new DefaultTableModel(data, columns[1]);
 							list.setModel(tableModel);
 						}
 					});
