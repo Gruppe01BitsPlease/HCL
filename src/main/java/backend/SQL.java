@@ -437,12 +437,12 @@ public class SQL {
 
 	}
 
-	public String[] getColumn(String query) {
+	public String[] getColumn(String query, int column) {
 		String[][] ans = getStringTable(query, false);
 		//System.out.println(Arrays.toString(ans[0]));
 		String[] foo = new String[ans.length];
 		for (int i = 0; i < ans.length; i++) {
-			foo[i] = ans[i][0];
+			foo[i] = ans[i][column];
 		}
 		return foo;
 	}

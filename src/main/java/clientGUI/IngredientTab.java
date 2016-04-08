@@ -11,8 +11,10 @@ class IngredientTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_ingredient";
 	private SQL sql;
 	private static String[] dataTypes = { "int", "string", "int", "int", "boolean", "boolean", "boolean", "string", "date", "date" };
+	//Tab name, foreign PK, link table name, other table name, foreign identifier
+	private static String[][] linkTables = {{ "Foods", "food_id", "HCL_food_ingredient", "HCL_food", "name" }};
 	public IngredientTab(SQL sql) {
-		super(query, "HCL_ingredient", dataTypes, null, sql);
+		super(query, "HCL_ingredient", dataTypes, linkTables, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
