@@ -1,6 +1,3 @@
-# HCL
-Healthy Catering Limited
-
 Generel Diskusjon / Todos / Ønsker / Kommentarer
 
 - Lage JUnit tester

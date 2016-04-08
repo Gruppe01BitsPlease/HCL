@@ -151,6 +151,6 @@ public class tabbedMenu extends JFrame {
 	}
 	public static void main(String[] args) throws Exception {
 		tabbedMenu menu = new tabbedMenu(0, "CEO");
-        //tabbedMenu menu2 = new tabbedMenu(1, "Sales");
+        tabbedMenu menu2 = new tabbedMenu(1, "Sales");
 	}
 }
