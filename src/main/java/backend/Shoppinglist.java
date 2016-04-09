@@ -24,8 +24,11 @@ public class Shoppinglist {
      */
     public String[][] getShoppinglist(int interval){
 
-        String prepString = "SELECT * FROM ingredients_to_buy_over_zero WHERE delivery_date BETWEEN CURDATE() AND CURDATE() + INTERVAL ? DAY;";
-        ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
+        String prepString = "SELECT ingredient_id,`Ingredient Name`,sum(`Total to buy this date`)-Stock FROM " +
+                "ingredients_to_buy_summed WHERE `Total to buy this date`-Stock > 0 AND delivery_date " +
+                "BETWEEN CURDATE() AND CURDATE() + INTERVAL ? DAY GROUP BY ingredient_id;";
+
+                ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 
         try {
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
@@ -69,10 +72,30 @@ public class Shoppinglist {
         String[][] list = getShoppinglist(interval);
         IngredientManager manager = new IngredientManager(sql);
         int out = 1;
+        try {
+            sql.connection.setAutoCommit(false);
 
-        for(String[] row : list){
-            out = manager.addStock(row[0],Integer.parseInt(row[1]),Integer.parseInt(row[3]));
-            if(out < 0) return out;
+            for (String[] row : list) {
+                out = manager.addStock(row[0], Integer.parseInt(row[1]), Integer.parseInt(row[3]));
+                // Might want to update after each time you add?
+                // However this kills the performance
+                if (out < 0) return out;
+            }
+            sql.connection.commit();
+            return out;
+        }
+        catch (SQLException e){
+            try {
+                sql.connection.rollback();
+                return -2;
+            }
+            catch (SQLException f){}
+        }
+        finally {
+            try{
+                sql.connection.setAutoCommit(true);
+            }
+            catch (SQLException g){}
         }
         return out;
      }
@@ -82,7 +105,7 @@ public class Shoppinglist {
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist();
 
-        String[][] array = list.getShoppinglist(365);
+        String[][] array = list.getShoppinglist(30);
 
         System.out.println(Arrays.deepToString(array));
 

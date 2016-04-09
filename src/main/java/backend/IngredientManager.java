@@ -109,7 +109,7 @@ public class IngredientManager {
         try {
             sql.connection.setAutoCommit(false);
 
-            String prepString = "Select stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_date = ?";
+            String prepString = "Select HCL_ingredients.stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_date = ?";
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
             prep.setInt(1,ingredient_id);
