@@ -21,3 +21,6 @@ GUI
 - Forslag: Enklere måte å legge til / dra ifra ingredienser, kanskje en knapp ala
 	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Se hvilke mat/pakker som er i order
+
+Database
+- Ordne on update cascade / on delete cascade
