@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 class OrderTab extends GenericList {
     private static String query = "SELECT * FROM HCL_order ORDER BY delivery_date ASC";
-    private static String[] dataTypes = { "int", "SELECT customer_id FROM HCL_customer", "int", "int", "string", "date", "date" };
+    private static String[] dataTypes = { "int", "SELECT customer_id, name FROM HCL_customer", "int", "int", "string", "date", "date" };
     //Tab name, foreign PK, link table name, other table name, foreign identifier
     private static String[][] linkTables = {{ "Foods", "food_id", "HCL_order_food", "HCL_food", "name" },
             { "Packages", "package_id", "HCL_order_package", "HCL_package", "name" }};
