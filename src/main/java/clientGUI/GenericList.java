@@ -2,7 +2,6 @@ package clientGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -24,8 +23,8 @@ class GenericList extends JPanel {
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private String[][] linkTables;
-	private JTable list;
-	private JTable searchTab;
+	private JTableHCL list;
+	private JTableHCL searchTab;
     private SQL sql;
     private int x;
     private int y;
@@ -51,12 +50,7 @@ class GenericList extends JPanel {
 		y = (int) (screen.height * 0.75);
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
-        list = new JTable(tabModel) {
-            private static final long serialVersionUID = 1L;
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        list = new JTableHCL(tabModel);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -74,7 +68,6 @@ class GenericList extends JPanel {
 				}
 			}
 		});
-		list.setAutoCreateRowSorter(true);
         JScrollPane scroll = new JScrollPane(list);
 		add(new northBar(), BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
@@ -100,23 +93,8 @@ class GenericList extends JPanel {
 			System.out.println("ERROR: " + e.toString());
 		}
 	}
-	public void removePK() {
-		fillTable();
-		String[][] noPK = new String[table.length][];
-		for (int i = 0; i < table.length; i++) {
-			for (int j = 0; j < table[i].length - 1; j++) {
-				noPK[i][j] = table[i][j + 1];
-			}
-		}
-		String[] titlesNoPK = new String[SqlColumnNames.length - 1];
-		for (int i = 0; i < SqlColumnNames.length - 1; i++) {
-			titlesNoPK[i] = SqlColumnNames[i + 1];
-		}
-		titlesNoPK = ColumnNamer.getNamesFromArray(titlesNoPK);
-		tabModel = new DefaultTableModel(noPK, titlesNoPK);
-		list.setModel(tabModel);
-	}
-	public void fillTable() {
+
+	private void fillTable() {
 		for (int i = 0; i < table.length; i++) {
 			for (int j = 0; j < SqlColumnNames.length; j++) {
 				if (table[i][j] == null) {
@@ -160,7 +138,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class datePane extends JPanel {
+	private class datePane extends JPanel {
 		JTextField year;
 		JTextField month;
 		JTextField day;
@@ -338,7 +316,14 @@ class GenericList extends JPanel {
 		}
 		class editFields extends JPanel {
 			public editFields() {
-				setLayout(new GridLayout(selected.length + 1, 2));
+				int length = selected.length + 1;
+				for (int i = 0; i < titles.length; i++) {
+					if (titles[i].equals("x")) {
+						length--;
+					}
+				}
+				setLayout(new GridLayout(length, 2));
+				//setSize((int) (x * 0.5), (int) (length * 0.01));
 				for (int i = 0; i < dataTypes.length; i++) {
 					if (dataTypes[i].equals("boolean")) {
 						JLabel j = new JLabel(titles[i]);
@@ -357,7 +342,7 @@ class GenericList extends JPanel {
 						add(k);
 					} else if (dataTypes[i].contains("SELECT")) {
 						JLabel j = new JLabel(titles[i]);
-						String[][] choices = { sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1) };
+						String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 
 						//String[][] choices = sql.getStringTable(dataTypes[i], false);
 						String[] displayed = new String[choices[0].length];
@@ -374,6 +359,10 @@ class GenericList extends JPanel {
 						fields.add(k);
 						add(j);
 						add(k);
+					}
+					else if (dataTypes[i].equals("primary")) {
+						JTextField k = new JTextField(selected[i]);
+						fields.add(k);
 					} else {
 						JLabel j = new JLabel(titles[i]);
 						JTextField k = new JTextField(selected[i]);
@@ -390,7 +379,7 @@ class GenericList extends JPanel {
 			private int index;
 			private DefaultTableModel tableModel;
 			private String[][] data;
-			private JTable list;
+			private JTableHCL list;
 			private String link;
 			private String[][] columns;
 			private LinkManager linkMng = new LinkManager(sql);
@@ -402,17 +391,11 @@ class GenericList extends JPanel {
 				columns = ColumnNamer.getNamesWithOriginals(link, sql);
 				tableModel = new DefaultTableModel(data, columns[1]);
 				//System.out.println(Arrays.toString(data));
-				list = new JTable(tableModel) {
-					private static final long serialVersionUID = 1L;
-					public boolean isCellEditable(int row, int column) {
-						return false;
-					}
-				};
+				list = new JTableHCL(tableModel);
 				JScrollPane scroll = new JScrollPane(list);
 				lowerButtons lower = new lowerButtons();
 				add(scroll, BorderLayout.CENTER);
 				add(lower, BorderLayout.SOUTH);
-				list.setAutoCreateRowSorter(true);
 			}
 			class lowerButtons extends JPanel {
 				public lowerButtons() {
