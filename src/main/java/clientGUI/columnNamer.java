@@ -117,6 +117,9 @@ abstract class ColumnNamer {
 			else if (sqlNames[i].equals("postnr")) {
 				ret[i] = "Post code";
 			}
+			else if (sqlNames[i].equals("delivered")) {
+				ret[i] = "Delivered";
+			}
 			else {
 				System.out.println(sqlNames[i]);
 				ret[i] = "ERROR " + sqlNames[i];

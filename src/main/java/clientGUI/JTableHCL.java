@@ -9,18 +9,23 @@ import javax.swing.table.TableModel;
  * Created by Jens on 10.04.2016.
  */
 public class JTableHCL extends JTable {
+	private TableModel tabModel;
+	private TableColumnModel mod;
 	public JTableHCL(TableModel model) {
 		super(model);
-		TableModel tabModel = this.getModel();
-		TableColumnModel mod = this.getColumnModel();
+		tabModel = this.getModel();
+		mod = this.getColumnModel();
+		removeIDs();
+		this.setAutoCreateRowSorter(true);
+	}
+	public boolean isCellEditable(int row, int column) {
+		return false;
+	}
+	public void removeIDs() {
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
 			if (tabModel.getColumnName(i).contains("ID")) {
 				mod.removeColumn(mod.getColumn(i));
 			}
 		}
-		this.setAutoCreateRowSorter(true);
-	}
-	public boolean isCellEditable(int row, int column) {
-		return false;
 	}
 }
