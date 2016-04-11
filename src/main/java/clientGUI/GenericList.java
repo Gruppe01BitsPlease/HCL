@@ -2,7 +2,6 @@ package clientGUI;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -24,8 +23,8 @@ class GenericList extends JPanel {
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private String[][] linkTables;
-	private JTable list;
-	private JTable searchTab;
+	private JTableHCL list;
+	private JTableHCL searchTab;
     private SQL sql;
     private int x;
     private int y;
@@ -51,12 +50,7 @@ class GenericList extends JPanel {
 		y = (int) (screen.height * 0.75);
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
-        list = new JTable(tabModel) {
-            private static final long serialVersionUID = 1L;
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
+        list = new JTableHCL(tabModel);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -74,7 +68,6 @@ class GenericList extends JPanel {
 				}
 			}
 		});
-		list.setAutoCreateRowSorter(true);
         JScrollPane scroll = new JScrollPane(list);
 		add(new northBar(), BorderLayout.NORTH);
         add(scroll, BorderLayout.CENTER);
@@ -94,29 +87,14 @@ class GenericList extends JPanel {
 				ActionEvent act = new ActionEvent(this, 0, "");
 				searchPress.actionPerformed(act);
 			}
-			//removePK();
+			list.removeIDs();
 		}
 		catch (Exception e) {
 			System.out.println("ERROR: " + e.toString());
 		}
 	}
-	public void removePK() {
-		fillTable();
-		String[][] noPK = new String[table.length][];
-		for (int i = 0; i < table.length; i++) {
-			for (int j = 0; j < table[i].length - 1; j++) {
-				noPK[i][j] = table[i][j + 1];
-			}
-		}
-		String[] titlesNoPK = new String[SqlColumnNames.length - 1];
-		for (int i = 0; i < SqlColumnNames.length - 1; i++) {
-			titlesNoPK[i] = SqlColumnNames[i + 1];
-		}
-		titlesNoPK = ColumnNamer.getNamesFromArray(titlesNoPK);
-		tabModel = new DefaultTableModel(noPK, titlesNoPK);
-		list.setModel(tabModel);
-	}
-	public void fillTable() {
+
+	private void fillTable() {
 		for (int i = 0; i < table.length; i++) {
 			for (int j = 0; j < SqlColumnNames.length; j++) {
 				if (table[i][j] == null) {
@@ -160,7 +138,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class datePane extends JPanel {
+	private class datePane extends JPanel {
 		JTextField year;
 		JTextField month;
 		JTextField day;
@@ -198,9 +176,9 @@ class GenericList extends JPanel {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		private ArrayList<String[]> addedLinks = new ArrayList<>();
+		private ArrayList<int[]> createLinks = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-		private boolean linkTableChanged;
 		public editWindow(String[] selected, int index, boolean newEntry) {
 			this.newEntry = newEntry;
 			this.selected = selected;
@@ -222,13 +200,13 @@ class GenericList extends JPanel {
 						String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
 						System.out.println(link);
-						tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
+						tabs.addTab(linkTables[i][0], new linkTab(link, i));
 					}
 					else {
 						String link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 								" WHERE " + SqlColumnNames[0] + " = -1";
 						System.out.println(link);
-						tabs.addTab(linkTables[i][0], new linkTab(link, i, linkTables[i][2]));
+						tabs.addTab(linkTables[i][0], new linkTab(link, i));
 					}
 				}
 				add(tabs, BorderLayout.CENTER);
@@ -258,8 +236,11 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
-							if (linkTableChanged) {
-								//LinkManager linkMng = new LinkManager(sql);
+							if (createLinks.size() > 0) {
+								LinkManager linkMng = new LinkManager(sql);
+								for (int[] i : createLinks) {
+									linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[0], i[1]);
+								}
 								//linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()));
 							}
 							String[] newValues = new String[selected.length];
@@ -338,7 +319,14 @@ class GenericList extends JPanel {
 		}
 		class editFields extends JPanel {
 			public editFields() {
-				setLayout(new GridLayout(selected.length + 1, 2));
+				int length = selected.length + 1;
+				for (int i = 0; i < titles.length; i++) {
+					if (titles[i].equals("x")) {
+						length--;
+					}
+				}
+				setLayout(new GridLayout(length, 2));
+				//setSize((int) (x * 0.5), (int) (length * 0.01));
 				for (int i = 0; i < dataTypes.length; i++) {
 					if (dataTypes[i].equals("boolean")) {
 						JLabel j = new JLabel(titles[i]);
@@ -357,7 +345,7 @@ class GenericList extends JPanel {
 						add(k);
 					} else if (dataTypes[i].contains("SELECT")) {
 						JLabel j = new JLabel(titles[i]);
-						String[][] choices = { sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1) };
+						String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 
 						//String[][] choices = sql.getStringTable(dataTypes[i], false);
 						String[] displayed = new String[choices[0].length];
@@ -374,6 +362,10 @@ class GenericList extends JPanel {
 						fields.add(k);
 						add(j);
 						add(k);
+					}
+					else if (dataTypes[i].equals("primary")) {
+						JTextField k = new JTextField(selected[i]);
+						fields.add(k);
 					} else {
 						JLabel j = new JLabel(titles[i]);
 						JTextField k = new JTextField(selected[i]);
@@ -382,37 +374,31 @@ class GenericList extends JPanel {
 						add(k);
 					}
 				}
-				fields.get(0).setEnabled(false);
+				//fields.get(0).setEnabled(false);
 				setVisible(true);
 			}
 		}
 		class linkTab extends JPanel {
-			private int index;
 			private DefaultTableModel tableModel;
 			private String[][] data;
-			private JTable list;
+			private JTableHCL list;
 			private String link;
 			private String[][] columns;
+			private int linkIndex;
 			private LinkManager linkMng = new LinkManager(sql);
-			public linkTab(String link, int index, String tableName) {
+			public linkTab(String link, int linkIndex) {
 				setLayout(new BorderLayout());
-				this.index = index;
+				this.linkIndex = linkIndex;
 				this.link = link;
 				data = sql.getStringTable(link, false);
 				columns = ColumnNamer.getNamesWithOriginals(link, sql);
 				tableModel = new DefaultTableModel(data, columns[1]);
 				//System.out.println(Arrays.toString(data));
-				list = new JTable(tableModel) {
-					private static final long serialVersionUID = 1L;
-					public boolean isCellEditable(int row, int column) {
-						return false;
-					}
-				};
+				list = new JTableHCL(tableModel);
 				JScrollPane scroll = new JScrollPane(list);
 				lowerButtons lower = new lowerButtons();
 				add(scroll, BorderLayout.CENTER);
 				add(lower, BorderLayout.SOUTH);
-				list.setAutoCreateRowSorter(true);
 			}
 			class lowerButtons extends JPanel {
 				public lowerButtons() {
@@ -434,13 +420,13 @@ class GenericList extends JPanel {
 								int num = -1;
 								String[] sel = data[list.getSelectedRow()];
 								for (int i = 0; i < columns[0].length; i++) {
-									if (columns[0][i].equals(linkTables[index][1])) {
+									if (columns[0][i].equals(linkTables[linkIndex][1])) {
 										num = i;
 									}
 								}
-								System.out.println(linkTables[index][2] + " " + SqlColumnNames[0] + " " + linkTables[index][1] + " " +
+								System.out.println(linkTables[linkIndex][2] + " " + SqlColumnNames[0] + " " + linkTables[linkIndex][1] + " " +
 										Integer.parseInt(selected[0]) + " " + Integer.parseInt(sel[num]));
-								int foo = linkMng.delete(linkTables[index][2], SqlColumnNames[0], linkTables[index][1],
+								int foo = linkMng.delete(linkTables[linkIndex][2], SqlColumnNames[0], linkTables[linkIndex][1],
 										Integer.parseInt(selected[0]), Integer.parseInt(sel[num]));
 								System.out.println(foo);
 								data = sql.getStringTable(link, false);
@@ -459,16 +445,12 @@ class GenericList extends JPanel {
 					setLayout(new GridLayout(3, 2));
 					setLocationRelativeTo(null);
 					setAlwaysOnTop(true);
-					JLabel label = new JLabel("Select ID:");
+					JLabel label = new JLabel("Item");
 					JLabel amountLabel = new JLabel("Amount");
-					String choiceQuery = "SELECT " + linkTables[index][1] + ", " + linkTables[index][4] + " FROM " + linkTables[index][3];
-					String[][] choices = sql.getStringTable(choiceQuery, false);
-					String[] choice = new String[choices.length];
-					for (int i = 0; i < choices.length; i++) {
-						choice[i] = choices[i][0] + ", " + choices[i][1];
-					}
-
-					//System.out.println(Arrays.toString(choiceID));
+					System.out.println(linkIndex);
+					String choiceQuery = "SELECT " + linkTables[linkIndex][4] + " FROM " + linkTables[linkIndex][3];
+					String[] choice = sql.getColumn(choiceQuery, 0);
+					System.out.println(Arrays.toString(choice));
 					JComboBox<String> input = new JComboBox<>(choice);
 					JTextField amount = new JTextField();
 					JButton save = new JButton("Save");
@@ -482,28 +464,30 @@ class GenericList extends JPanel {
 					save.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							String[] options = {"Yes", "No"};
-							int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-							if (sure == 0) {
-								String IDquery = "SELECT " + linkTables[index][1] + " FROM " + linkTables[index][3];
-								String[] choiceID = sql.getColumn(IDquery, 0);
-								System.out.println(Arrays.toString(choiceID));
-								linkTableChanged = true;
-								String[] addedLink = sql.getRow("SELECT * FROM " + linkTables[index][3] + " WHERE " + linkTables[index][1] + " = " + choiceID[input.getSelectedIndex()]);
-								System.out.println(Arrays.toString(addedLink));
-								addedLinks.add(addedLink);
-								String[][] newData = new String[data.length + 1][];
-								for (int i = 0; i < data.length; i++) {
-									newData[i] = data[i];
-								}
-								newData[data.length] = addedLink;
-								data = newData;
+							String IDquery = "SELECT " + linkTables[linkIndex][1] + " FROM " + linkTables[linkIndex][3];
+							String[] choiceID = sql.getColumn(IDquery, 0);
+							System.out.println(Arrays.toString(choiceID));
+							String[] addedLink = sql.getRow("SELECT * FROM " + linkTables[linkIndex][3] + " WHERE " + linkTables[linkIndex][1] + " = " + choiceID[input.getSelectedIndex()]);
+							String[] ba = new String[addedLink.length + 1];
+							ba[0] = "";
+							ba[1] = amount.getText();
+							for (int i = 2; i < ba.length; i++) {
+								ba[i] = addedLink[i - 1];
 							}
-							else if (sure == 1) {
-								dispose();
+							addedLink = ba;
+							System.out.println(Arrays.toString(addedLink));
+							addedLinks.add(addedLink);
+							int[] inputTable = { linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()) };
+							createLinks.add(inputTable);
+							String[][] newData = new String[data.length + 1][];
+							for (int i = 0; i < data.length; i++) {
+								newData[i] = data[i];
 							}
+							newData[data.length] = addedLink;
+							data = newData;
 							tableModel = new DefaultTableModel(data, columns[1]);
 							list.setModel(tableModel);
+							list.removeIDs();
 						}
 					});
 					add(label);
@@ -561,7 +545,7 @@ class GenericList extends JPanel {
 							}
 						}
 						//searchWindow window = new searchWindow();
-						tabModel = new DefaultTableModel(searchTable, titles);
+						DefaultTableModel searchTM = new DefaultTableModel(searchTable, titles);
 						list.setModel(tabModel);
 						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
