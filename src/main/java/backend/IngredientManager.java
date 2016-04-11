@@ -99,13 +99,14 @@ public class IngredientManager {
      */
     public int addStock(int ingredient_id,int addStock){
 
-        if (ingredient_id <0 || addStock <=0) return -3;
+        if(addStock == 0 || ingredient_id <0) return -3;
         if(!sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
+
 
         try {
             sql.connection.setAutoCommit(false);
 
-            String prepString = "Select stock from "+CURRENT_TABLE+" where ingredient__id = ?";
+            String prepString = "Select stock from HCL_ingredient where ingredient_id = ?;";
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
             prep.setInt(1,ingredient_id);
@@ -124,6 +125,7 @@ public class IngredientManager {
             try {
                 sql.connection.rollback();
             }catch (SQLException i){}
+            System.out.println(e.toString());
             return -2;
 
         }
@@ -133,6 +135,27 @@ public class IngredientManager {
             }catch (SQLException i){}
         }
 
+    }
+
+    /**
+     * Reverses the amount and uses addStock ^v^
+     * @return
+     *  1: OK
+     * -1: Does not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int removeStock(int ingredient_id, int amount){
+
+        if(amount == 0) return -3;
+
+        int out;
+        if(amount > 0) {
+            out = addStock(ingredient_id, -amount);
+        }
+        else out = addStock(ingredient_id, amount);
+
+        return out;
     }
 
     /**
@@ -163,7 +186,7 @@ public class IngredientManager {
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
       //  System.out.println(ingredient.delete("Ost"));
         //System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
-        System.out.println(ingredient.addStock(1,5));
+        //System.out.println(ingredient.addStock(1,5));
 
         // Comment color: 63,155,155 rgb
     }

@@ -144,14 +144,14 @@ public class Shoppinglist {
 
         String[][] array = list.getShoppinglist(30);
 
-        System.out.println(Arrays.deepToString(array));
+        sql.print2dArray(array);
 
-        for(String[] row : array){
-            System.out.println();
-            for(String colomn : row){
-                System.out.print(colomn+" ");
-            }
-        }
+        int add = list.add(array,0);
+        System.out.println(add);
+
+        String[][] array2 = list.getShoppinglist(30);
+        sql.print2dArray(array2);
+
         //list.addShoppinglist(365); // Adds the contents of the spesified shopping list to the database
     }
 }

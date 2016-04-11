@@ -485,16 +485,16 @@ public class SQL {
 	 * Prints a generic [][] array. Neat Can take all types off arrays cuz fancy
 	 */
 	public <T> void print2dArray(T[][] array) {
-		if (array != null) {
+		if (array != null && array.length != 0) {
 			System.out.println();
-			for (int i = 0; i < colomns; i++) {
+			for (int i = 0; i < array[0].length; i++) {
 				System.out.printf("%20s", array[0][i]);
 			}
 			System.out.println();
 			System.out.println();
 			for (int i = 1; i < array.length; i++) {
 
-				for (int j = 0; j < colomns; j++) {
+				for (int j = 0; j < array[i].length; j++) {
 
 					System.out.printf("%20s", array[i][j]);
 
