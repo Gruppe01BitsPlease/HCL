@@ -66,20 +66,23 @@ public class Shoppinglist {
 
     /**
      * Adds all the stock required from the shopping list to the stock.
+     * @return
+     *  1: OK
+     * -1: Does not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
      */
-    public int addShoppinglist(int interval){
+    public int addShoppinglist(String[][] shoppinglist){
 
-        String[][] list = getShoppinglist(interval);
+        String[][] list = shoppinglist.clone();
         IngredientManager manager = new IngredientManager(sql);
         int out = 1;
         try {
             sql.connection.setAutoCommit(false);
 
             for (String[] row : list) {
-                out = manager.addStock(row[0], Integer.parseInt(row[1]), Integer.parseInt(row[3]));
-                // Might want to update after each time you add?
-                // However this kills the performance
-                if (out < 0) return out;
+                out = manager.addStock(Integer.parseInt(row[0]), Integer.parseInt(row[2]));
+                if (out < 0) return out; // Hvis vi får en feilkode
             }
             sql.connection.commit();
             return out;
@@ -91,6 +94,13 @@ public class Shoppinglist {
             }
             catch (SQLException f){}
         }
+        catch (NumberFormatException f){
+            try {
+                sql.connection.rollback();
+                return -3;
+            }
+            catch (SQLException d){}
+        }
         finally {
             try{
                 sql.connection.setAutoCommit(true);
@@ -99,6 +109,33 @@ public class Shoppinglist {
         }
         return out;
      }
+
+    /**
+     * Adds the spesified amount from that index to the DB
+     * If you update the table it will be different!
+     *
+     * @return
+     *  1: OK
+     * -1: Does not exists
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int add(String[][] shoppinglist, int index){
+
+        String[] table = shoppinglist[index];
+
+        try {
+            int ingredient_id = Integer.parseInt(table[0]);
+            int amount = Integer.parseInt(table[2]);
+
+            IngredientManager manager = new IngredientManager(sql);
+
+            return manager.addStock(ingredient_id, amount);
+
+        }
+        catch (NumberFormatException e){return -3;}
+
+    }
 
     public static void main(String[]args){
 
@@ -115,8 +152,6 @@ public class Shoppinglist {
                 System.out.print(colomn+" ");
             }
         }
-        //list.addShoppinglist(365);
-
+        //list.addShoppinglist(365); // Adds the contents of the spesified shopping list to the database
     }
-
 }

@@ -96,24 +96,19 @@ public class IngredientManager {
      * -1: Does not exists
      * -2: SQL Exception
      * -3: Wrong parameters
-     * -4: Wrong date format: Try yyyy-MM-dd
      */
-    public int addStock(String dato, int ingredient_id,int addStock){
+    public int addStock(int ingredient_id,int addStock){
 
-        if (dato == null || dato.trim().equals("") || ingredient_id <0 || addStock <=0) return -3;
+        if (ingredient_id <0 || addStock <=0) return -3;
         if(!sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
-        Date date1;
-        try{
-            date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dato).getTime());
-        }catch (ParseException e){return -4;}
+
         try {
             sql.connection.setAutoCommit(false);
 
-            String prepString = "Select HCL_ingredients.stock from ingredients_to_buy_over_zero where ingredient__id = ? AND delivery_date = ?";
+            String prepString = "Select stock from "+CURRENT_TABLE+" where ingredient__id = ?";
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
             prep.setInt(1,ingredient_id);
-            prep.setDate(2,date1);
 
             ResultSet res = prep.executeQuery();
 
@@ -121,6 +116,7 @@ public class IngredientManager {
             int currentStock = res.getInt(1);
 
             sql.update(CURRENT_TABLE,"stock","ingredient_id",Integer.toString(ingredient_id),currentStock+addStock);
+
             sql.connection.commit();
             return 1;
         }
@@ -167,7 +163,7 @@ public class IngredientManager {
       //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
       //  System.out.println(ingredient.delete("Ost"));
         //System.out.println(ingredient.edit("Cheese",5,100,"Dropped it on the floor"));
-        System.out.println(ingredient.addStock("2017-02-15",1,5));
+        System.out.println(ingredient.addStock(1,5));
 
         // Comment color: 63,155,155 rgb
     }
