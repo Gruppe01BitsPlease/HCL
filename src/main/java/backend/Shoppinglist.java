@@ -142,15 +142,15 @@ public class Shoppinglist {
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist();
 
-        String[][] array = list.getShoppinglist(30);
+        String[][] array = list.getShoppinglist(2000);
 
         sql.print2dArray(array);
 
-        int add = list.add(array,0);
+        /*int add = list.addShoppinglist(array);
         System.out.println(add);
 
         String[][] array2 = list.getShoppinglist(30);
-        sql.print2dArray(array2);
+        sql.print2dArray(array2);*/
 
         //list.addShoppinglist(365); // Adds the contents of the spesified shopping list to the database
     }
