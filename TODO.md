@@ -24,5 +24,12 @@ GUI
 - Dato-greier prefilled med dags-dato?
 
 Database
-- Ordne on update cascade / on delete cascade
+- Ordne on update cascade / on delete cascade // nvm
 - Legge til "Active" boolean søyle over alt
+
+Trine:
+- Legg til "Active" boolean søyle i alle nødvendige tabeller, ingenting skal slettes; bare settes inactive
+- Fixe at dags-dato er ferdig-fyllt i UI der det trengs
+- Lage statistikk
+- Lage tester
+- Lage driver-rute-greier?
