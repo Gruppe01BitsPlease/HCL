@@ -237,11 +237,12 @@ class GenericList extends JPanel {
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							if (createLinks.size() > 0) {
+								//Saves to link tables if links have been created
 								LinkManager linkMng = new LinkManager(sql);
+								System.out.println(Arrays.toString(createLinks.get(0)));
 								for (int[] i : createLinks) {
-									linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[0], i[1]);
+									linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1], i[2]);
 								}
-								//linkMng.generate(linkTables[index][2], SqlColumnNames[0], linkTables[index][1], Integer.parseInt(selected[0]), Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()));
 							}
 							String[] newValues = new String[selected.length];
 							for (int i = 0; i < newValues.length; i++) {
@@ -467,15 +468,22 @@ class GenericList extends JPanel {
 							String IDquery = "SELECT " + linkTables[linkIndex][1] + " FROM " + linkTables[linkIndex][3];
 							String[] choiceID = sql.getColumn(IDquery, 0);
 							System.out.println(Arrays.toString(choiceID));
-							String[] addedLink = sql.getRow("SELECT * FROM " + linkTables[linkIndex][3] + " WHERE " + linkTables[linkIndex][1] + " = " + choiceID[input.getSelectedIndex()]);
-							String[] ba = new String[addedLink.length + 1];
-							ba[0] = "";
-							ba[1] = amount.getText();
-							for (int i = 2; i < ba.length; i++) {
-								ba[i] = addedLink[i - 1];
+							String[]addedLink = new String[tableModel.getColumnCount()];
+							addedLink[tableModel.findColumn("Amount")] = "<html><b>" + amount.getText() + "</b></html>";
+							System.out.println(input.getSelectedIndex());
+							String linkQuery = "SELECT * FROM " + linkTables[linkIndex][3] + " WHERE " + linkTables[linkIndex][1] + " = " + choiceID[input.getSelectedIndex()];
+							String[] link = sql.getRow(linkQuery);
+							//System.out.println(Arrays.toString(link));
+							String[] clm = ColumnNamer.getNames(linkQuery, sql);
+							//System.out.println(Arrays.toString(clm));
+							for (int i = 0; i < tableModel.getColumnCount(); i++) {
+								for (int j = 0; j < clm.length; j++) {
+									if (tableModel.getColumnName(i).equals(clm[j])) {
+										addedLink[i] = "<html><b>" + link[j] + "</b></html>";
+									}
+								}
 							}
-							addedLink = ba;
-							System.out.println(Arrays.toString(addedLink));
+							//System.out.println(Arrays.toString(addedLink));
 							addedLinks.add(addedLink);
 							int[] inputTable = { linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText()) };
 							createLinks.add(inputTable);
@@ -488,6 +496,7 @@ class GenericList extends JPanel {
 							tableModel = new DefaultTableModel(data, columns[1]);
 							list.setModel(tableModel);
 							list.removeIDs();
+							dispose();
 						}
 					});
 					add(label);
