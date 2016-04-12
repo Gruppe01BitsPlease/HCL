@@ -25,3 +25,4 @@ GUI
 
 Database
 - Ordne on update cascade / on delete cascade
+- Legge til "Active" boolean søyle over alt
