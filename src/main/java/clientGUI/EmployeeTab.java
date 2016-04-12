@@ -9,10 +9,9 @@ import java.awt.*;
 
 class EmployeeTab extends GenericList {
 	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, user_adress, user_postnr FROM HCL_users";
-	private static String[] dataTypes = { "primary", "string", "string", "string", "string", "int", "string", "int" };
 	private SQL sql;
 	public EmployeeTab(SQL sql) {
-		super(query, "HCL_users", dataTypes, null, sql);
+		super(query, "HCL_users", null, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 	}
 	/*public int generate(String[] args) {
