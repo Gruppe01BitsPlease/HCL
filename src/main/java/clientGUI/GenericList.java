@@ -8,6 +8,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import backend.*;
 
@@ -449,8 +450,38 @@ class GenericList extends JPanel {
 					JLabel label = new JLabel("Item");
 					JLabel amountLabel = new JLabel("Amount");
 					System.out.println(linkIndex);
+					String IDquery = "SELECT " + linkTables[linkIndex][1] + " FROM " + linkTables[linkIndex][3];
 					String choiceQuery = "SELECT " + linkTables[linkIndex][4] + " FROM " + linkTables[linkIndex][3];
+					String existsQuery = "SELECT " + linkTables[linkIndex][1] + " FROM "
+							+ linkTables[linkIndex][2] + " WHERE " + SqlColumnNames[0] + " = " + selected[0];
+					String[] choiceID1 = sql.getColumn(IDquery, 0);
 					String[] choice = sql.getColumn(choiceQuery, 0);
+					String[] exists = sql.getColumn(existsQuery, 0);
+					//"Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
+					System.out.println(existsQuery);
+					System.out.println(Arrays.toString(exists));
+					ArrayList<String> choices = new ArrayList<>();
+					ArrayList<String> choicesID = new ArrayList<>();
+					for (int i = 0; i < choice.length; i++) {
+						choices.add(choice[i]);
+						choicesID.add(choiceID1[i]);
+					}
+					for (int i = 0; i < choiceID1.length; i++) {
+						for (int j = 0; j < exists.length; j++) {
+							if (exists[j].equals(choiceID1[i])) {
+								choices.remove(choice[i]);
+								choicesID.remove(choiceID1[i]);
+							}
+						}
+					}
+					String[] foo = new String[choices.size()];
+					String[] foo2 = new String[choicesID.size()];
+					for (int i = 0; i < foo.length; i++) {
+						foo[i] = choices.get(i);
+						foo2[i] = choicesID.get(i);
+					}
+					choice = foo;
+					final String[] choiceID = foo2;
 					System.out.println(Arrays.toString(choice));
 					JComboBox<String> input = new JComboBox<>(choice);
 					JTextField amount = new JTextField();
@@ -465,8 +496,6 @@ class GenericList extends JPanel {
 					save.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							String IDquery = "SELECT " + linkTables[linkIndex][1] + " FROM " + linkTables[linkIndex][3];
-							String[] choiceID = sql.getColumn(IDquery, 0);
 							System.out.println(Arrays.toString(choiceID));
 							String[]addedLink = new String[tableModel.getColumnCount()];
 							addedLink[tableModel.findColumn("Amount")] = "<html><b>" + amount.getText() + "</b></html>";
