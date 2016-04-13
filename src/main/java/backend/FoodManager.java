@@ -29,7 +29,7 @@ public class FoodManager {
      */
     public int generate(String name, int price) {
 
-        if(!(name.trim().length() > 0) &&!(price >= 0)) return -3;
+        if(!(name.trim().length() > 0) && !(price >= 0)) {return -3;}
 
         if(sql.rowExists(CURRENT_TABLE,"name",name)) return -1;
 

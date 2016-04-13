@@ -1,25 +1,23 @@
 package backend;
 
-/**
- * Testklasse for klassen FoodManager
- * Created by trineliseolsen on 13.04.2016.
- */
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+/**
+ * Created by trineliseolsen on 13.04.2016.
+ */
 
-public class FoodManagerTest {
+public class IngredientManagerTest {
 
-    FoodManager manager;
+    IngredientManager manager;
     SQL sql = new SQL();
 
 
     @Before
     public void setUp() throws Exception {
-        manager = new FoodManager(sql);
+        manager = new IngredientManager(sql);
     }
 
 
@@ -31,23 +29,21 @@ public class FoodManagerTest {
     @Test
     public void generate() {
 
-        manager.generate("Bløtkake", 75);
-        manager.generate("Sirupssnipp", 75);
+        manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "20160404", "20170506");
+        //assertTrue(sql.rowExists("HCL_ingredient", "name", "Brunost"));
+        assertFalse(sql.rowExists("HCL_ingredient", "name", "vlu"));
 
-        //Tester om foodobjektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_food", "name", "Bløtkake"));
-        assertTrue(sql.rowExists("HCL_food", "name", "Sirupssnipp"));
-        assertFalse(sql.rowExists("HCL_food", "name", "Mølje"));
 
-        //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(manager.generate(" ", 1), -1); //Feil! burde returnet -3
-        assertEquals(manager.generate("Pultost", 0), -1); //Feil! burde returnet -3
-        manager.generate("Fiskepudding", 75);
-        assertEquals(manager.generate("Fiskepudding", 75), -1); //Riktig
+        //Prøver å lage ukorrekte ingrediensobjekter, og sjekker om generate() sender riktig feilmelding
+        assertEquals(manager.generate(" ", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -3);
+        //assertEquals(manager.generate("Kyllingvinge ", 0, 40, false, false, true, "mac er best", "20160404", "20170506"), -3);
+
+        manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506");
+        //assertEquals(manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -1); //Riktig
 
     }
 
-    @Test
+   /* @Test
     public void delete() {
         //Lager testobjekter som kan slettes
         manager.generate("Klubb", 60);
@@ -70,6 +66,9 @@ public class FoodManagerTest {
         manager.generate("Lunsj", 75);
 
         //manager.addIngredient(int food_id, int ingredient_id, int gram)
-    }
+    }*/
 
 }
+
+
+

@@ -29,7 +29,8 @@ public class IngredientManager {
      */
     public int generate(String name, int stock, int purchase_price, boolean nuts, boolean gluten, boolean lactose, String other, String purchase_date, String expiration_date) {
 
-        if(!(name.trim().length() > 0) || !(stock >= 0) ) return -3;
+        if(!(name.trim().length() > 0) || !(stock >= 0) || !(purchase_price>=0) ) return -3;
+        if(sql.rowExists(CURRENT_TABLE,"name",name)) return -1;
 
         try {
             Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(purchase_date).getTime());
