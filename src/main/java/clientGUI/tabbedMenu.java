@@ -137,7 +137,7 @@ public class tabbedMenu extends JFrame {
 	private class menubar extends JMenuBar {
 		private JMenu newTab;
 		public menubar(int rolle) {
-			newTab = new JMenu("Open");
+			newTab = new JMenu("View");
 			JMenu file = new JMenu("File");
             JMenu settings = new JMenu("Settings");
 			if (rolle != 0) {
@@ -200,7 +200,7 @@ public class tabbedMenu extends JFrame {
 		}
 		private void addTabButtons() {
 			newTab.removeAll();
-			JMenuItem orig = new JMenuItem("Default tabs");
+			JMenuItem orig = new JMenuItem("Default");
 			orig.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -210,7 +210,7 @@ public class tabbedMenu extends JFrame {
 			newTab.add(orig);
 			if(rolle == 3 || rolle == 0) {
 				if (tabs.indexOfTab(packName) == -1) {
-					JMenuItem pack = new JMenuItem("Package tab");
+					JMenuItem pack = new JMenuItem(packName);
 					pack.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -219,10 +219,15 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(pack);
 				}
+				else {
+					JMenuItem pack = new JMenuItem(packName);
+					pack.setEnabled(false);
+					newTab.add(pack);
+				}
 			}
 			if (rolle == 2 || rolle == 0) {
 				if (tabs.indexOfTab(foodName) == -1) {
-					JMenuItem food = new JMenuItem("Food tab");
+					JMenuItem food = new JMenuItem(foodName);
 					food.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -231,8 +236,13 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(food);
 				}
+				else {
+					JMenuItem food = new JMenuItem(foodName);
+					food.setEnabled(false);
+					newTab.add(food);
+				}
 				if (tabs.indexOfTab(ingrName) == -1) {
-					JMenuItem ingr = new JMenuItem("Ingredient tab");
+					JMenuItem ingr = new JMenuItem(ingrName);
 					ingr.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -241,10 +251,15 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(ingr);
 				}
+				else {
+					JMenuItem ingr = new JMenuItem(ingrName);
+					ingr.setEnabled(false);
+					newTab.add(ingr);
+				}
 			}
 			if (rolle == 1 || rolle == 0) {
 				if (tabs.indexOfTab(ordrName) == -1) {
-					JMenuItem order = new JMenuItem("Order tab");
+					JMenuItem order = new JMenuItem(ordrName);
 					order.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -253,8 +268,13 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(order);
 				}
+				else {
+					JMenuItem order = new JMenuItem(ordrName);
+					order.setEnabled(false);
+					newTab.add(order);
+				}
 				if (tabs.indexOfTab(custName) == -1) {
-					JMenuItem cust = new JMenuItem("Customer tab");
+					JMenuItem cust = new JMenuItem(custName);
 					cust.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -263,10 +283,15 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(cust);
 				}
+				else {
+					JMenuItem cust = new JMenuItem(custName);
+					cust.setEnabled(false);
+					newTab.add(cust);
+				}
 			}
 			if (rolle == 0) {
 				if (tabs.indexOfTab(empName) == -1) {
-					JMenuItem emp = new JMenuItem("Employee tab");
+					JMenuItem emp = new JMenuItem(empName);
 					emp.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
@@ -275,14 +300,24 @@ public class tabbedMenu extends JFrame {
 					});
 					newTab.add(emp);
 				}
+				else {
+					JMenuItem emp = new JMenuItem(empName);
+					emp.setEnabled(false);
+					newTab.add(emp);
+				}
 				if (tabs.indexOfTab(ceoName) == -1) {
-					JMenuItem ceo = new JMenuItem("CEO tab");
+					JMenuItem ceo = new JMenuItem(ceoName);
 					ceo.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
 							addTab(new CeoTab());
 						}
 					});
+					newTab.add(ceo);
+				}
+				else {
+					JMenuItem ceo = new JMenuItem(ceoName);
+					ceo.setEnabled(false);
 					newTab.add(ceo);
 				}
 			}
