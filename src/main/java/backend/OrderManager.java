@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 
 /**
  * Created by Faiter119 on 15.03.2016.
@@ -34,12 +36,12 @@ public class OrderManager {
      */
     public int generate(int customer_id, int price, String adress, int postnr, String order_date, String delivery_date) {
 
-        if(!(order_date.trim().length() > 0) || !(price >= 0) || !(customer_id >=0)) return -3;
+        if(price < 0 || customer_id < 0) return -3;
 
         try {
 
-            Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(order_date).getTime());
-            Date date2 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(delivery_date).getTime());
+            LocalDate date1 = LocalDate.parse(order_date);
+            LocalDate date2 = LocalDate.parse(delivery_date);
 
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
@@ -48,13 +50,14 @@ public class OrderManager {
             prep.setInt(2,price);
             prep.setString(3,adress);
             prep.setInt(4,postnr);
-            prep.setDate(5,date1);
-            prep.setDate(6,date2);
+            prep.setDate(5,Date.valueOf(date1));
+            prep.setDate(6,Date.valueOf(date2));
             prep.executeUpdate();
-            return 1;
+
+            return sql.getLastID();
         }
         catch (SQLException e){return -2;}
-        catch (ParseException e){return -2;}
+        catch (DateTimeParseException e){return -3;}
     }
 
     /**
@@ -63,10 +66,12 @@ public class OrderManager {
      * -2: SQL Exception
      */
     public int delete(int nr) {
-        try {
-            if(!sql.rowExists(CURRENT_TABLE,"customer_id",nr)) return -1;
 
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK ,nr)) return -1;
+
+        try {
+
+            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,nr);
             prep.executeUpdate();
@@ -77,16 +82,14 @@ public class OrderManager {
     /**
      *
      * @return
-     * 1: OK
+     *  1: OK
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
      */
     public int addFood(int order_id, int food_id, int number){
-        // Init
-        SQL sql = new SQL();
+
         LinkManager link = new LinkManager(sql);
-        // End Init
 
         if(food_id <0 || order_id <0 || number <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_FOOD, "order_id","food_id",order_id,food_id)) return -1;
@@ -117,11 +120,8 @@ public class OrderManager {
      * -3: Wrong Parameters
      */
     public int addPackage(int order_id, int package_id){
-        // Init
 
-        SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
-        // End Init
 
         if(package_id <0 || order_id <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_PACKAGE, "order_id","package_id",order_id,package_id)) return -1;
