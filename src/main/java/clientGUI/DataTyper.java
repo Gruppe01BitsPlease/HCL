@@ -23,8 +23,11 @@ abstract class DataTyper {
 	public static String[] getDataTypes(String[] UINames) {
 		String[] ret = new String[UINames.length];
 		for (int i = 0; i < UINames.length; i++) {
-			if (UINames[i].equals("Customer ID")) {
+			if (UINames[i].equals("Customer")) {
 				ret[i] = "id";
+			}
+			else if (UINames[i].equals("Customer name")) {
+				ret[i] = "string";
 			}
 			else if (UINames[i].equals("Name")) {
 				ret[i] = "string";
@@ -66,7 +69,7 @@ abstract class DataTyper {
 				ret[i] = "string";
 			}
 			else if (UINames[i].equals("Purchase date")) {
-				ret[i] = "date";
+				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Expiration date")) {
 				ret[i] = "date";
@@ -78,7 +81,7 @@ abstract class DataTyper {
 				ret[i] = "string";
 			}
 			else if (UINames[i].equals("Order date")) {
-				ret[i] = "date";
+				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Delivery date")) {
 				ret[i] = "date";
@@ -124,6 +127,9 @@ abstract class DataTyper {
 			}
 			else if (UINames[i].equals("Delivered")) {
 				ret[i] = "boolean";
+			}
+			else if (UINames[i].equals("Active")) {
+				ret[i] = "id";
 			}
 			else {
 				System.out.println("ERROR no data type found: " + UINames[i]);

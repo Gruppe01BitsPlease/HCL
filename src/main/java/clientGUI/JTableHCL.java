@@ -24,6 +24,7 @@ public class JTableHCL extends JTable {
 		return false;
 	}
 	public void removeIDs() {
+		//mod.removeColumn(mod.getColumn(0));
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
 			if (DataTyper.getDataType(tabModel.getColumnName(i)).equals("id")) {
 				mod.removeColumn(mod.getColumn(i));
