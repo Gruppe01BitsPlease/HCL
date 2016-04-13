@@ -12,7 +12,7 @@ class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer";
 	private SQL sql;
 	public CustomerTab(SQL sql) {
-		super(query, "HCL_customer", null, sql);
+		super(query, "HCL_customer", null, null, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}
