@@ -14,7 +14,7 @@ public class CustomerManager {
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_customer";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, epost, tlf)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name)";
+    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(customer_id)";
 
     public CustomerManager(SQL sql){
         this.sql = sql;
@@ -28,7 +28,6 @@ public class CustomerManager {
      */
     public int generate(String name, String epost, int tlf) {
 
-        if(sql.rowExists(CURRENT_TABLE, "name",name)) return -1;
         if(!(name.trim().length() > 0) || !(tlf >= 0) || epost.trim().equals("")) return -3; //invalid parameters
 
         try {
@@ -41,26 +40,30 @@ public class CustomerManager {
             prep.setInt(3,tlf);
 
             prep.executeUpdate();
-            return 1;
+
+            return sql.getLastID();
         }
-        catch (SQLException e){return -2;}
+        catch (SQLException e){
+            System.out.println(e.toString());
+            return -2;}
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Already exists
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int edit(String name, String nyEpost, int nyTlf){
+    public int edit(int id, String name, String nyEpost, int nyTlf){
         try {
             sql.connection.setAutoCommit(false);
 
-            if (!sql.rowExists(CURRENT_TABLE, "name", name)) return -1;
+            if (!sql.rowExists(CURRENT_TABLE, "customer_id", id)) return -1;
             if (name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
 
-            sql.update(CURRENT_TABLE, "epost", "name", name, nyEpost);
-            sql.update(CURRENT_TABLE, "tlf", "name", name, nyTlf);
+            sql.update(CURRENT_TABLE, "epost", "customer_id", Integer.toString(id), nyEpost);
+            sql.update(CURRENT_TABLE, "tlf", "customer_id", Integer.toString(id), nyTlf);
 
             sql.connection.commit();
             return 1;
@@ -88,12 +91,13 @@ public class CustomerManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int delete(String name) {
+    public int delete(int name) {
         try {
 
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+            //String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
-            prep.setString(1,name);
+            prep.setInt(1,name);
             int row = prep.executeUpdate();
 
             if(row == 0)
@@ -109,10 +113,13 @@ public class CustomerManager {
         SQL sql = new SQL();
         CustomerManager c = new CustomerManager(sql);
 
+        // c.edit(1,"Grandma","Grandma@gmail.com",34567656);
         //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
-        c.generate("Ostost","Swag@gmail.com",145678);
-
+        //c.generate("Ostost","Swag@gmail.com",145678);
+        // c.delete("Grandma");
         //System.out.println(c.delete("Microsoft"));
        // System.out.println(c.edit("Cheese",10,200,""));
+        int i = c.generate("Per","olavh96@gmail.com",93240605);
+        System.out.println(i);
     }
 }

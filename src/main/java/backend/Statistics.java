@@ -175,10 +175,10 @@ public class Statistics {
     }
     public int getAllTimePopularFood(){
 
-        String[][] results = sql.getStringTable("SELECT ingredient_id,`Ingredient Name`,sum(`Food Items`*Ingredients) " +
-                "FROM orders_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
+        String[][] results = sql.getStringTable("SELECT delivery_date, food_id, `Food Name`, sum(`Food Items`) FROM orders_foods " +
+                "GROUP BY food_id ORDER BY sum(`Food Items`) DESC;",false);
         try {
-            return Integer.parseInt(results[0][0]);
+            return Integer.parseInt(results[0][1]);
         }
         catch (NumberFormatException e){return -1;}
 
@@ -200,16 +200,16 @@ public class Statistics {
         System.out.println("Avg Orders Per Month This Year: "+stats.getAvgOrdersPerMonthThisYear());
         System.out.println("Orders 2016-04: "+stats.getOrdersAt(2016,4));
 
-        System.out.println("All Time Top Ingrexdient: "+stats.getAllTimePopularIngredient());
+        System.out.println("All Time Top Ingredient: "+stats.getAllTimePopularIngredient());
         System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
 
         System.out.println("All Time Popular Food: "+stats.getAllTimePopularFood());
-        System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
+       // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
 
 
       /*  LocalDate date = LocalDate.now();
         //System.out.println(date.getDayOfWeek().ordinal());
-        System.out.println(date.toString());*/
+        System.out.println(date.toString());*/ // JFreeChart
 
 
     }
