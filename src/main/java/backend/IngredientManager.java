@@ -15,7 +15,7 @@ public class IngredientManager {
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_ingredient";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, stock, purchase_price, nuts, gluten, lactose, other, purchase_date, expiration_date)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(name)";
+    public static final String CURRENT_TABLE_PK = "(ingredient_id)";
 
     public IngredientManager(SQL sql){
         this.sql = sql;
@@ -49,7 +49,7 @@ public class IngredientManager {
             prep.setDate(9,date2);
 
             prep.executeUpdate();
-            return 1;
+            return sql.getLastID();
         }
         catch (SQLException e){return -2;}
         catch (ParseException e){return -3;}
@@ -57,20 +57,20 @@ public class IngredientManager {
 
     /**
      * @return 1: OK
-     * -1: Already exists
+     * -1: Does not exist
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int edit(String name, int newStock,int newPurchase_price, String newOther){
+    public int edit(int id, String newName, int newStock,int newPurchase_price, String newOther){
 
-        if (name.trim().equals("")) return -3;
+        if (!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK, id)) return -1;
 
         try {
             sql.connection.setAutoCommit(false);
 
-            if (newStock >= 0) sql.update(CURRENT_TABLE, "stock", "name", name, newStock);
-            if (newPurchase_price >= 0) sql.update(CURRENT_TABLE, "purchase_price", "name", name, newPurchase_price);
-            if (!newOther.trim().equals("")) sql.update(CURRENT_TABLE, "other", "name", name, newOther);
+            if (newStock >= 0) sql.update(CURRENT_TABLE, "stock", CURRENT_TABLE_PK, Integer.toString(id), newStock);
+            if (newPurchase_price >= 0) sql.update(CURRENT_TABLE, "purchase_price", CURRENT_TABLE_PK, Integer.toString(id), newPurchase_price);
+            if (!newOther.trim().equals("")) sql.update(CURRENT_TABLE, "other", CURRENT_TABLE_PK, Integer.toString(id), newOther);
 
             sql.connection.commit();
             return 1;
@@ -86,22 +86,21 @@ public class IngredientManager {
             try {
                 sql.connection.setAutoCommit(true);
             }
-            catch (SQLException f){return -2;}
+            catch (SQLException f){}
         }
     }
     /**
      * ADDS to the current stock!!
      *
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Does not exists
      * -2: SQL Exception
      * -3: Wrong parameters
      */
     public int addStock(int ingredient_id,int addStock){
 
-        if(addStock == 0 || ingredient_id <0) return -3;
-        if(!sql.rowExists(CURRENT_TABLE,"ingredient_id",ingredient_id)) return -1;
-
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,ingredient_id)) return -1;
 
         try {
             sql.connection.setAutoCommit(false);
@@ -112,12 +111,10 @@ public class IngredientManager {
             prep.setInt(1,ingredient_id);
 
             ResultSet res = prep.executeQuery();
-
             res.next();
             int currentStock = res.getInt(1);
 
-            sql.update(CURRENT_TABLE,"stock","ingredient_id",Integer.toString(ingredient_id),currentStock+addStock);
-
+            sql.update(CURRENT_TABLE,"stock",CURRENT_TABLE_PK, Integer.toString(ingredient_id),currentStock+addStock);
             sql.connection.commit();
             return 1;
         }
@@ -147,8 +144,6 @@ public class IngredientManager {
      */
     public int removeStock(int ingredient_id, int amount){
 
-        if(amount == 0) return -3;
-
         int out;
         if(amount > 0) {
             out = addStock(ingredient_id, -amount);
@@ -164,11 +159,11 @@ public class IngredientManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int delete(String name) {
+    public int delete(int id) {
         try {
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
-            prep.setString(1,name);
+            prep.setInt(1,id);
             int row = prep.executeUpdate();
             if(row == 0)
                 return -1;

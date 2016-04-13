@@ -21,6 +21,9 @@ abstract class ColumnNamer {
 			if (sqlNames[i].equals("customer_id")) {
 				ret[i] = "Customer";
 			}
+			else if (sqlNames[i].equals("customer_name")) {
+				ret[i] = "Customer name";
+			}
 			else if (sqlNames[i].equals("name")) {
 				ret[i] = "Name";
 			}

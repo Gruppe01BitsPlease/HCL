@@ -26,6 +26,9 @@ abstract class DataTyper {
 			if (UINames[i].equals("Customer")) {
 				ret[i] = "id";
 			}
+			else if (UINames[i].equals("Customer name")) {
+				ret[i] = "string";
+			}
 			else if (UINames[i].equals("Name")) {
 				ret[i] = "string";
 			}
