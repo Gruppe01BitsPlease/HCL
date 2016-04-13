@@ -5,6 +5,8 @@ import backend.SettingsFile;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 
 /**
@@ -19,6 +21,7 @@ public class SettingsGUI extends JFrame {
     private final JTextField user = new JTextField();
     private final JTextField password = new JPasswordField();
     private final JTextPane helpText = new JTextPane();
+    public boolean isValid = false;
 
 
     public SettingsGUI(){
@@ -98,17 +101,18 @@ public class SettingsGUI extends JFrame {
 
 
         //buttons and their action
-        JButton exitButton = new JButton("Exit");
+        //JButton exitButton = new JButton("Exit");
         JButton saveButton = new JButton("Save");
 
         saveButton.addActionListener((pressed) -> validateInput());
 
-        exitButton.addActionListener((pressed) -> dispose());
+        //exitButton.addActionListener((pressed) -> dispose());
+
 
         //adding buttons to panel and panel to frame
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
-        buttonPanel.add(exitButton);
+        //buttonPanel.add(exitButton);
         buttonPanel.add(saveButton);
             add(buttonPanel);
 
@@ -121,6 +125,7 @@ public class SettingsGUI extends JFrame {
     }
 
     private String remJDBCFormat(String urlJDBC){
+        if(urlJDBC == null || urlJDBC.length() < 1) return "";
         String url = urlJDBC.substring(13);
         url =  url.substring(0, url.length()-1);
         return url;
@@ -150,7 +155,8 @@ public class SettingsGUI extends JFrame {
             return false;
         }
         helpText.setDisabledTextColor(new Color(0,102,0));
-        helpText.setText("Everything looks good, settings saved");
+        helpText.setText("Everything looks like it's working, settings are saved");
+        isValid = true;
         setSettings(addJDBCFormat(host.getText()), database.getText(), user.getText(), password.getText());
         return true;
     }
