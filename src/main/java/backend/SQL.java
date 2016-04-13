@@ -176,7 +176,7 @@ public class SQL {
 	}
 
 	/**
-	 * Updates a value in a table
+	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
      * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
      *                        primaryKeyValue: The value of the primary key
 	 */
@@ -427,6 +427,19 @@ public class SQL {
 		}
 
 	}
+
+	/**
+	 * @return ID last inserted, or -1 if no result
+     */
+	public int getLastID(){
+		ResultSet res = query("SELECT LAST_INSERT_ID();");
+		try {
+			res.next();
+			return res.getInt(1);
+		}
+		catch (SQLException e){return -1;}
+	}
+
 
 	/**
 	 * Returns only the column names from the database

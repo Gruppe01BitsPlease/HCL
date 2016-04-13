@@ -1,6 +1,6 @@
 package backend;
 
-import java.sql.Array;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -129,32 +129,59 @@ public class Statistics {
                 // System.out.println(sum+1);
                 sum++;
             }
-
-
         }
 
         return (double) sum / 12;
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public String getAllTimePopularIngredient(){
+    /**
+     * @return ID of all time most sold ingredient, -1 if no results
+     */
+    public int getAllTimePopularIngredient(){
 
-        String[][] results = sql.getStringTable("SELECT `Ingredient Name`,sum(`Food Items`*Ingredients) " +
-                "FROM orders_ingredients GROUP BY `Ingredient Name` ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
-
-        return results[0][0];
+        String[][] results = sql.getStringTable("SELECT ingredient_id,`Ingredient Name`,sum(`Food Items`*Ingredients) " +
+                "FROM orders_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
+        try {
+            return Integer.parseInt(results[0][0]);
+        }
+        catch (NumberFormatException e){return -1;}
     }
-    public int getMonthlyPopularIngredient(int month){
+    /**
+     * @return ID of most sold ingredient in specified month and year, -1 if no results
+     */
+    public int getMonthlyPopularIngredient(int year, int month){
 
-        ArrayList<String[]> ingredients = getIngredientsInAllOrders(); // Contains Date, Name, and amount
+        String prepString = "SELECT ingredient_id,`Ingredient Name`,Sum(Amount) FROM orders_dates_ingredients WHERE delivery_date BETWEEN ? AND ? GROUP BY ingredient_id ORDER BY sum(Amount) desc;";
+        LocalDate startDate = LocalDate.of(year,month,1);
+        LocalDate endDate;
+        if(month != 12) {
+            endDate = LocalDate.of(year, month + 1, 1);
+        }
+        else endDate = LocalDate.of(year+1, 1, 1);
 
+        try{
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+            prep.setDate(1, Date.valueOf(startDate));
+            prep.setDate(2, Date.valueOf(endDate));
 
-        // String[][] results = sql.getStringTable()
+            ResultSet res = prep.executeQuery();
+            res.next();
+            return res.getInt(1);
 
-        return 0;
+        }
+        catch (SQLException e){return -1;}
+
     }
-    public int getPopularFood(){
-        return 0;
+    public int getAllTimePopularFood(){
+
+        String[][] results = sql.getStringTable("SELECT delivery_date, food_id, `Food Name`, sum(`Food Items`) FROM orders_foods " +
+                "GROUP BY food_id ORDER BY sum(`Food Items`) DESC;",false);
+        try {
+            return Integer.parseInt(results[0][1]);
+        }
+        catch (NumberFormatException e){return -1;}
+
     }
 
     public static void main(String[]args){
@@ -173,13 +200,16 @@ public class Statistics {
         System.out.println("Avg Orders Per Month This Year: "+stats.getAvgOrdersPerMonthThisYear());
         System.out.println("Orders 2016-04: "+stats.getOrdersAt(2016,4));
 
-        System.out.println("All Time Top Ingrexdient: "+stats.getAllTimePopularIngredient());
+        System.out.println("All Time Top Ingredient: "+stats.getAllTimePopularIngredient());
+        System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
 
-        System.out.println(stats.getIngredientsInAllOrders());
+        System.out.println("All Time Popular Food: "+stats.getAllTimePopularFood());
+       // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
+
 
       /*  LocalDate date = LocalDate.now();
         //System.out.println(date.getDayOfWeek().ordinal());
-        System.out.println(date.toString());*/
+        System.out.println(date.toString());*/ // JFreeChart
 
 
     }

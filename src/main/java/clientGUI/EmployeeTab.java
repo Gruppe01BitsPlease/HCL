@@ -11,7 +11,7 @@ class EmployeeTab extends GenericList {
 	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, user_adress, user_postnr FROM HCL_users";
 	private SQL sql;
 	public EmployeeTab(SQL sql) {
-		super(query, "HCL_users", null, sql);
+		super(query, "HCL_users", null, null, sql);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 	}
 	/*public int generate(String[] args) {

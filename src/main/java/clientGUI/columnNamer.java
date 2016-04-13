@@ -19,7 +19,10 @@ abstract class ColumnNamer {
 		String[] ret = new String[sqlNames.length];
 		for (int i = 0; i < sqlNames.length; i++) {
 			if (sqlNames[i].equals("customer_id")) {
-				ret[i] = "Customer ID";
+				ret[i] = "Customer";
+			}
+			else if (sqlNames[i].equals("customer_name")) {
+				ret[i] = "Customer name";
 			}
 			else if (sqlNames[i].equals("name")) {
 				ret[i] = "Name";
@@ -119,6 +122,9 @@ abstract class ColumnNamer {
 			}
 			else if (sqlNames[i].equals("delivered")) {
 				ret[i] = "Delivered";
+			}
+			else if (sqlNames[i].equals("active")) {
+				ret[i] = "Active";
 			}
 			else {
 				System.out.println(sqlNames[i]);
