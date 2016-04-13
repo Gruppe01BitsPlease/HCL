@@ -92,18 +92,43 @@ public class LinkManager {
         }
     }
 
+    /**
+     * @return 1: OK
+     * -1: Does not exist
+     * -2: SQL Exception
+     * -3: Wrong parameters
+     */
+    public int editNumber(String table, String primaryKey1, String primaryKey2, int pk1, int pk2, int newNumber){
+
+        String prepString = "UPDATE "+table+" SET number = ? WHERE "+primaryKey1+" = ? AND "+primaryKey2+" = ?;";
+
+        try{
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,newNumber);
+            prep.setInt(2,pk1);
+            prep.setInt(3,pk2);
+
+            return prep.executeUpdate();
+
+        }
+        catch (SQLException e){return -2;}
+
+    }
+
     public static void main(String[]args){
 
         SQL sql = new SQL();
         LinkManager link = new LinkManager(sql);
-
+/*
         int i =  link.generate("HCL_food_ingredient","food_id","ingredient_id",2,3); //TODO: Integrate this into the UI somehow via some lists mby
-        System.out.println(i);
-        link.delete("HCL_food_ingredient","food_id","ingredient_id",1,3);
+        System.out.println(i);*/
+        // link.delete("HCL_food_ingredient","food_id","ingredient_id",1,3);
         //DELETE FROM HCL_food_ingredient WHERE food_id = 1 AND ingredient_id = 2
 
         //link.delete("HCL_food_ingredient","food_id","ingredient_id",3,3);
         //link.generate();
+        link.editNumber("HCL_food_ingredient","food_id","ingredient_id",200,1,5);
 
     }
 }
