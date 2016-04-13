@@ -16,9 +16,8 @@ public class OrderManager {
     public static final String CURRENT_TABLE_LINK_FOOD = "HCL_order_food";
     public static final String CURRENT_TABLE_LINK_PACKAGE = "HCL_order_package";
 
-
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(order_id)";
+    public static final String CURRENT_TABLE_PK = "(order_id)";
     public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(order_id, food_id, number)";
     public static final String CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS = "(order_id, package_id)";
 
@@ -67,7 +66,7 @@ public class OrderManager {
         try {
             if(!sql.rowExists(CURRENT_TABLE,"customer_id",nr)) return -1;
 
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,nr);
             prep.executeUpdate();
