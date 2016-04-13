@@ -28,6 +28,7 @@ class GenericList extends JPanel {
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private String[][] linkTables;
+	private String[][] FKs;
 	private JTableHCL list;
 	private JTableHCL searchTab;
     private SQL sql;
@@ -36,6 +37,7 @@ class GenericList extends JPanel {
 	private boolean searchEnabled = false;
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql) {
+		this.FKs = FKs;
 		try {
 			this.sql = sql;
 			this.table = sql.getStringTable(query, false);
@@ -90,6 +92,12 @@ class GenericList extends JPanel {
 			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
 			titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
+			dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
+			if (FKs != null) {
+				for (int i = 0; i < FKs.length; i++) {
+					dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
+				}
+			}
 			System.out.println(Arrays.toString(SqlColumnNames));
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
@@ -104,7 +112,6 @@ class GenericList extends JPanel {
 			System.out.println("ERROR: " + e.toString());
 		}
 	}
-
 	private void fillTable() {
 		for (int i = 0; i < table.length; i++) {
 			for (int j = 0; j < SqlColumnNames.length; j++) {
@@ -117,11 +124,27 @@ class GenericList extends JPanel {
 	public int generate(String[] arguments) {
 		return -4;
 	}
+	public int delete(int nr) {
+		return -4;
+	}
 	private class northBar extends JPanel {
 		public northBar() {
 			setLayout(new GridLayout(1, 5));
 			JButton refresh = new JButton("Refresh");
 			JButton newThing = new JButton("New...");
+			JButton delete = new JButton("Delete");
+			delete.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					String[] options = {"Yes", "No"};
+					int sure = JOptionPane.showOptionDialog(GenericList.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+					if (sure == 0) {
+						int args = Integer.parseInt(table[list.getSelectedRow()][0]);
+						GenericList.this.delete(args);
+						refresh();
+					}
+				}
+			});
 			refresh.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -145,6 +168,7 @@ class GenericList extends JPanel {
 				}
 			});
 			add(newThing);
+			add(delete);
 			add(refresh);
 		}
 	}
