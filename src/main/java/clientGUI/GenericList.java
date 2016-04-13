@@ -384,11 +384,7 @@ class GenericList extends JPanel {
 						datePane k = new datePane(selected[i]);
 						if (newEntry) {
 							LocalDate now = LocalDate.now();
-							int year = now.getYear();
-							int month = now.getMonthValue();
-							int day = now.getDayOfMonth();
-							String date = year + "-" + month + "-" + day;
-							System.out.println(date);
+							String date = now.toString();
 							k = new datePane(date);
 						}
 						fields.add(k);
