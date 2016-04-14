@@ -19,19 +19,21 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
-public class MyJFreeChart extends ApplicationFrame {
+import javax.swing.*;
+
+public class MyJFreeChart extends JPanel {
 
     private CategoryDataset dataset;
     private JFreeChart chart;
     private ChartPanel chartPanel;
 
     private MyJFreeChart(Builder builder) {
-        super(builder.title);
+        //super(builder.title);
 
         JFreeChart chart = createChart(builder.dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
-        setContentPane(chartPanel);
+       // setContentPane(chartPanel);
     }
 
     /*
@@ -85,7 +87,7 @@ public class MyJFreeChart extends ApplicationFrame {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createBarChart(
-                getTitle(),         // chart title
+                "",         // chart title
                 "",               // x axis label
                 "",                  // y axis label
                 dataset,                  // data
@@ -152,18 +154,17 @@ public class MyJFreeChart extends ApplicationFrame {
 
         MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
 
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
+       // demo.pack();
+      //  RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
-
         //
 
-        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
+      /*  String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
         double[] data2 = stats.getOrdersPerMonth();
 
         MyJFreeChart demo2 = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
         demo2.pack();
         RefineryUtilities.centerFrameOnScreen(demo2);
-        demo2.setVisible(true);
+        demo2.setVisible(true);*/
     }
 }

@@ -167,8 +167,7 @@ public class SubscriptionManager {
             counter++;
 
             if(contains(dates,cur.getDayOfMonth())){
-                System.out.println("Adding: "+cur);
-                addDate(order_id,cur.toString());
+                if( addDate(order_id,cur.toString()) == 1){  System.out.println("Adding: "+cur);}
             }
 
         }
@@ -181,12 +180,12 @@ public class SubscriptionManager {
 
         SubscriptionManager manager = new SubscriptionManager(sql);
 
-        //manager.generate(4);
+        // manager.generate(4);
 
-        manager.addDate(4,"2011-04-03");
+        // manager.addDate(4,"2011-04-03");
 
         LocalDate first = LocalDate.now();
-        manager.addDates(4,first,15,30);
+        manager.addDates(5,first,15,30);
 
     }
 }
