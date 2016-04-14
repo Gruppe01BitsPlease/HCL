@@ -4,7 +4,7 @@ Generel Diskusjon / Todos / Ønsker / Kommentarer
 - Lage noe slags ruteplanlegger (Trenger ikke være sånn op javascript GoogleMaps implementasjon -.-')
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
 
-- Konfigureringsvindu når du åpner programmet første gang?
+- Konfigureringsvindu når du åpner programmet første gang? #Bjørn A
 
 - Ny order: Exception hvis kunde ikke finns, bruk drop-down
 
