@@ -29,7 +29,7 @@ public class IngredientManager {
      */
     public int generate(String name, int stock, int purchase_price, boolean nuts, boolean gluten, boolean lactose, String other, String purchase_date, String expiration_date) {
 
-        if(!(name.trim().length() > 0) || !(stock >= 0) ) return -3;
+        if(name.trim().length() <= 0 || stock < 0 ) return -3;
 
         try {
             Date date1 = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(purchase_date).getTime());
@@ -49,6 +49,7 @@ public class IngredientManager {
             prep.setDate(9,date2);
 
             prep.executeUpdate();
+
             return sql.getLastID();
         }
         catch (SQLException e){return -2;}
@@ -56,7 +57,8 @@ public class IngredientManager {
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Does not exist
      * -2: SQL Exception
      * -3: Wrong parameters
@@ -105,7 +107,7 @@ public class IngredientManager {
         try {
             sql.connection.setAutoCommit(false);
 
-            String prepString = "Select stock from HCL_ingredient where ingredient_id = ?;";
+            String prepString = "Select stock from HCL_ingredient where ingredient_id = ?";
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
             prep.setInt(1,ingredient_id);
@@ -154,12 +156,16 @@ public class IngredientManager {
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Did not exists
      * -2: SQL Exception
      * -3: Wrong parameters
      */
     public int delete(int id) {
+
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,id)) return -1;
+
         try {
             String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);

@@ -58,8 +58,8 @@ public class CustomerManager {
         try {
             sql.connection.setAutoCommit(false);
 
-            sql.update(CURRENT_TABLE, "epost", "customer_id", Integer.toString(id), nyEpost);
-            sql.update(CURRENT_TABLE, "tlf", "customer_id", Integer.toString(id), nyTlf);
+            sql.update(CURRENT_TABLE, "epost", CURRENT_TABLE_PK, Integer.toString(id), nyEpost);
+            sql.update(CURRENT_TABLE, "tlf", CURRENT_TABLE_PK, Integer.toString(id), nyTlf);
 
             sql.connection.commit();
             return 1;
