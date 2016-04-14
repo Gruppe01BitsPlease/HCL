@@ -390,6 +390,7 @@ public class SQL {
 		return false;
 	}
 
+
 	/**
      * Note: Very prone to SQL injection (v.v)
 	 * @return The query as a handy-dandy String[][], titles of columbs are in the
@@ -532,6 +533,7 @@ public class SQL {
 			System.out.println();
 		}
 	}
+	
 
 	public static void main(String[] args) throws Exception {
 

@@ -51,25 +51,35 @@ public class FoodManagerTest {
     public void delete() {
         //Lager testobjekter som kan slettes
         manager.generate("Klubb", 60);
+        int idKlubb = sql.getLastID();
         manager.generate("Møsbrømslfse", 75);
+        int idMøs = sql.getLastID();
 
         //Sjekker at Klubb finnes, sletter klubb, og forsikrer seg om at Klubb er slettet
         assertTrue(sql.rowExists("HCL_food", "name", "Klubb"));
-        manager.delete("Klubb");
+        manager.delete(idKlubb);
         assertFalse(sql.rowExists("HCL_food", "name", "Klubb"));
 
         //Sjekker at sletting gir riktig return.
-        assertEquals(manager.delete("Møsbrømlefse"), 1); //Finnes, riktig
-        assertEquals(manager.delete("Fuglefrø"), -1); //Finnes ikke, riktig
+        assertEquals(manager.delete(idMøs), 1); //Finnes, riktig
+        assertEquals(manager.delete(379), -1); //Finnes ikke, riktig
 
     }
 
     @Test
     public void addIngredient(){
-        manager.generate("Julegrøt", 60);
-        manager.generate("Lunsj", 75);
+        IngredientManager iManager = new IngredientManager(sql);
+        iManager.generate("Mandel", 5, 56, false, false, true, "kun en", "20160404", "20170506");
+        int mandelID = sql.getLastID();
 
-        //manager.addIngredient(int food_id, int ingredient_id, int gram)
+        manager.generate("Julegrøt", 60);
+        int grøtID = sql.getLastID();
+        manager.addIngredient(grøtID,mandelID,10);
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
+        assertEquals(manager.addIngredient(grøtID, 379, 40), -3);
+        assertEquals(manager.addIngredient(379, mandelID, 40), -3);
+        assertEquals(manager.addIngredient(grøtID, mandelID, 0), -3);
+
     }
 
 }
