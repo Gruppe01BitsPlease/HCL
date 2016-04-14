@@ -295,6 +295,21 @@ public class tabbedMenu extends JFrame {
 					cust.setEnabled(false);
 					newTab.add(cust);
 				}
+				if (tabs.indexOfTab(subscrName) == -1) {
+					JMenuItem subscr = new JMenuItem(subscrName);
+					subscr.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							addTab(new SubscriptionTab(sql));
+						}
+					});
+					newTab.add(subscr);
+				}
+				else {
+					JMenuItem subscr = new JMenuItem(subscrName);
+					subscr.setEnabled(false);
+					newTab.add(subscr);
+				}
 			}
 			if (rolle == 0) {
 				if (tabs.indexOfTab(empName) == -1) {
