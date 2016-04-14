@@ -204,6 +204,11 @@ public class SQL {
 			return false;
         }
 	}
+	/**
+	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
+	 * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
+	 *                        primaryKeyValue: The value of the primary key
+	 */
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, int newValue) {
         //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE/=  'Mat'
 
@@ -230,6 +235,11 @@ public class SQL {
 			return false;
         }
     }
+	/**
+	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
+	 * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
+	 *                        primaryKeyValue: The value of the primary key
+	 */
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, Date newDate) {
         //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
         if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
@@ -254,6 +264,11 @@ public class SQL {
             return false;
         }
     }
+	/**
+	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
+	 * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
+	 *                        primaryKeyValue: The value of the primary key
+	 */
 	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, boolean newBoolean) {
 		//UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
 		if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
@@ -290,7 +305,7 @@ public class SQL {
         }
 
         try {
-            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
           //  prep.setString(1, primaryKey);
@@ -321,7 +336,7 @@ public class SQL {
         }
 
         try {
-            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
             //  prep.setString(1, primaryKey);
@@ -351,7 +366,7 @@ public class SQL {
 		}
 
 		try {
-			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ?";
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1";
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
@@ -495,7 +510,7 @@ public class SQL {
 	}
 
 	/**
-	 * Prints a generic [][] array. Neat Can take all types off arrays cuz fancy
+	 * Prints a generic [][] array. Can take all types off arrays cuz fancy
 	 */
 	public <T> void print2dArray(T[][] array) {
 		if (array != null && array.length != 0) {

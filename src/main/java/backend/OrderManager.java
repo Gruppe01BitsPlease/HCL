@@ -94,27 +94,12 @@ public class OrderManager {
         if(food_id <0 || order_id <0 || number <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_FOOD, "order_id","food_id",order_id,food_id)) return -1;
 
-        String prepString = "Insert into "+CURRENT_TABLE_LINK_FOOD+CURRENT_TABLE_ADD_FOOD_ARGUMENTS+" values(?,?,?)";
-        try {
+        return link.generate(CURRENT_TABLE_LINK_FOOD,"order_id","food_id",order_id,food_id,number);
 
-            PreparedStatement prep = sql.connection.prepareStatement(prepString);
-
-            prep.setInt(1,order_id);
-            prep.setInt(2,food_id);
-            prep.setInt(3,number);
-
-            prep.executeUpdate();
-
-            return 1;
-        }
-        catch (SQLException e){
-            return -2;
-        }
     }
     /**
-     *
      * @return
-     * 1: OK
+     *  1: OK
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
@@ -126,21 +111,8 @@ public class OrderManager {
         if(package_id <0 || order_id <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_PACKAGE, "order_id","package_id",order_id,package_id)) return -1;
 
-        String prepString = "Insert into "+CURRENT_TABLE_LINK_PACKAGE+CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS+" values(?,?)";
-        try {
-            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+        return link.generate(CURRENT_TABLE_LINK_PACKAGE,"order_id","package_id",order_id,package_id,1);
 
-            prep.setInt(1,order_id);
-            prep.setInt(2,package_id);
-
-            prep.executeUpdate();
-
-            return 1;
-        }
-        catch (SQLException e){
-            e.printStackTrace();
-            return -2;
-        }
     }
 
     public static void main(String[]args){
@@ -150,8 +122,8 @@ public class OrderManager {
 
         //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
         //order.addFood(2,200,5);
-        int p = order.addPackage(2,1);
-        System.out.println(p);
+        /*int p = order.addPackage(2,1);
+        System.out.println(p);*/
        // order.delete(3);
        // order.delete("Ost");
     }

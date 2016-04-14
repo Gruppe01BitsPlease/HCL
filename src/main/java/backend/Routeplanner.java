@@ -14,7 +14,7 @@ public class Routeplanner {
     }
 
     public String[][] getRoute(){
-        String[][] ordersToday = sql.getStringTable("SELECT postnr, adress FROM HCL_order WHERE delivery_date = CURDATE() ORDER BY postnr desc;",false);
+        String[][] ordersToday = sql.getStringTable("SELECT postnr, adress FROM HCL_order WHERE delivery_date = CURDATE() AND active = 1 ORDER BY postnr desc;",false);
 
         return ordersToday;
     }
