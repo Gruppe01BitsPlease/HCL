@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 class IngredientTab extends GenericList {
-	private static String query = "SELECT * FROM HCL_ingredient";
+	private static String query = "SELECT * FROM HCL_ingredient WHERE active = 1";
 	private SQL sql;
 	//Tab name, foreign PK, link table name, other table name, foreign identifier
 	private static String[][] linkTables = {{ "Foods", "food_id", "HCL_food_ingredient", "HCL_food", "name" }};
@@ -36,6 +36,12 @@ class IngredientTab extends GenericList {
 		}
 		int res = mng.generate(args[1], stock, pprice, nuts, gluten, lactose, args[7], args[8], args[9]);
 		return res;
+	}
+	public int delete(int nr) {
+		IngredientManager mng = new IngredientManager(sql);
+		int ret = mng.delete(nr);
+		System.out.println("Delete code" + ret);
+		return ret;
 	}
 }
 

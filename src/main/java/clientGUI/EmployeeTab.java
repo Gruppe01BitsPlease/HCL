@@ -8,7 +8,8 @@ import java.awt.*;
 
 
 class EmployeeTab extends GenericList {
-	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, user_adress, user_postnr FROM HCL_users";
+	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, " +
+			"user_adress, user_postnr FROM HCL_users  WHERE active = 1";
 	private SQL sql;
 	public EmployeeTab(SQL sql) {
 		super(query, "HCL_users", null, null, sql);
