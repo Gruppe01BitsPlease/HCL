@@ -1,11 +1,7 @@
 package backend;
 
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
 /**
  * Created by Faiter119 on 15.03.2016.
  */
@@ -13,7 +9,7 @@ public class CustomerManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_customer";
-    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, epost, tlf)";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_name, epost, tlf)";
     public static final String CURRENT_TABLE_PK = "(customer_id)";
 
     public CustomerManager(SQL sql){
@@ -21,14 +17,14 @@ public class CustomerManager {
     }
 
     /**
-     * @return 1: OK
-     * -1: Already exists
+     * @return
+     *  OK - ID of added element
      * -2: SQL Exception
      * -3: Wrong parameters
      */
     public int generate(String name, String epost, int tlf) {
 
-        if(!(name.trim().length() > 0) || !(tlf >= 0) || epost.trim().equals("")) return -3; //invalid parameters
+        if(name.trim().length() <= 0 || tlf <= 0 || epost.trim().equals("")) return -3; //invalid parameters
 
         try {
 
@@ -50,7 +46,7 @@ public class CustomerManager {
     /**
      * @return
      *  1: OK
-     * -1: Already exists
+     * -1: Does not exists
      * -2: SQL Exception
      * -3: Wrong parameters
      */
@@ -62,8 +58,8 @@ public class CustomerManager {
         try {
             sql.connection.setAutoCommit(false);
 
-            sql.update(CURRENT_TABLE, "epost", "customer_id", Integer.toString(id), nyEpost);
-            sql.update(CURRENT_TABLE, "tlf", "customer_id", Integer.toString(id), nyTlf);
+            sql.update(CURRENT_TABLE, "epost", CURRENT_TABLE_PK, Integer.toString(id), nyEpost);
+            sql.update(CURRENT_TABLE, "tlf", CURRENT_TABLE_PK, Integer.toString(id), nyTlf);
 
             sql.connection.commit();
             return 1;
