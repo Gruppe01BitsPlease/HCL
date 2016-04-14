@@ -11,10 +11,11 @@ import java.sql.SQLException;
 public class LinkManager {
 
     private SQL sql;
-    private String food_ingredient = "HCL_food_ingredient";
-    private String order_food = "HCL_order_food";
-    private String order_package = "HCL_order_pacakge";
-    private String subscription_dates = "HCL_subscription_dates";
+
+    public static String food_ingredient = "HCL_food_ingredient";
+    public static String order_food = "HCL_order_food";
+    public static String order_package = "HCL_order_pacakge";
+    public static String subscription_dates = "HCL_subscription_dates";
 
     public LinkManager(SQL sql) {
         this.sql = sql;

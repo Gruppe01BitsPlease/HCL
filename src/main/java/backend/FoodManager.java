@@ -29,7 +29,7 @@ public class FoodManager {
      */
     public int generate(String name, int price) {
 
-        if(!(name.trim().length() > 0) && !(price >= 0)) {return -3;}
+        if(name.trim().length() <= 0 && price < 0) {return -3;}
 
         try {
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?)";
@@ -94,14 +94,15 @@ public class FoodManager {
         SQL sql = new SQL();
         FoodManager food = new FoodManager(sql);
 
-        System.out.println(food.addIngredient(216,1,3));
+        //System.out.println(food.addIngredient(216,1,3));
 /*
         System.out.println(food.addIngredient(201,2,1));
         System.out.println(food.addIngredient(201,3,1));
         System.out.println(food.addIngredient(201,1,1));*/
 
         // System.out.println(food.delete(229));
-
+        String test = " ";
+        System.out.println(test.trim().length());
 
     }
 }

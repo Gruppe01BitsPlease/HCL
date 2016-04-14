@@ -76,9 +76,9 @@ public class FoodManagerTest {
         int grøtID = sql.getLastID();
         manager.addIngredient(grøtID,mandelID,10);
         assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
-        assertEquals(manager.addIngredient(grøtID, 379, 40), -3);
-        assertEquals(manager.addIngredient(379, mandelID, 40), -3);
-        assertEquals(manager.addIngredient(grøtID, mandelID, 0), -3);
+        assertEquals(manager.addIngredient(grøtID, 379, 40), -4);
+        assertEquals(manager.addIngredient(379, mandelID, 40), -4);
+        assertEquals(manager.addIngredient(grøtID, mandelID, 0), -4);
 
     }
 
