@@ -72,9 +72,9 @@ public class Statistics {
      * Table of which days get the deliverables
      * @return int[]: 0 = monday, 6 = sunday etc
      */
-    public int[] getOrdersPerDay(){
+    public double[] getOrdersPerDay(){
 
-        int[] days = new int[7];
+        double[] days = new double[7];
 
         ArrayList<LocalDate> dates = getDeliveryDates(); // Gets delivery dates for all orders
 
