@@ -13,7 +13,7 @@ public class CustomerManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_customer";
-    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, epost, tlf)";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_name, epost, tlf)";
     public static final String CURRENT_TABLE_PK = "(customer_id)";
 
     public CustomerManager(SQL sql){

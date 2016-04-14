@@ -150,8 +150,8 @@ public class OrderManager {
 
         //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
         //order.addFood(2,200,5);
-        int p = order.addPackage(2,1);
-        System.out.println(p);
+        /*int p = order.addPackage(2,1);
+        System.out.println(p);*/
        // order.delete(3);
        // order.delete("Ost");
     }

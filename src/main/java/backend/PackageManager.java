@@ -17,7 +17,7 @@ public class PackageManager {
 
 
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, price)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(package_id)";
+    public static final String CURRENT_TABLE_PK = "(package_id)";
     public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(package_id, food_id, number)";
 
 
@@ -26,7 +26,8 @@ public class PackageManager {
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Already exists
      * -2: SQL Exception
      * -3: Wrong parameters
@@ -43,7 +44,7 @@ public class PackageManager {
             prep.setString(1,name);
             prep.setInt(2,price);
             prep.executeUpdate();
-            return 1;
+            return sql.getLastID();
         }
         catch (SQLException e){return -2;}
     }
@@ -54,10 +55,12 @@ public class PackageManager {
      * -2: SQL Exception
      */
     public int delete(int package_id) {
-        try {
-            if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_DELETE_ARGUMENTS,package_id)) return -1;
 
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,package_id)) return -1;
+
+        try {
+
+            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,package_id);
             prep.executeUpdate();
@@ -69,7 +72,7 @@ public class PackageManager {
         }
     }
     /**
-     *
+     * TODO: Linkmanager
      * @return
      * 1: OK
      * -1: Already exist
@@ -77,10 +80,8 @@ public class PackageManager {
      * -3: Wrong Parameters
      */
     public int addFood(int package_id, int food_id, int number){
-        // Init
-        SQL sql = new SQL();
+
         LinkManager link = new LinkManager(sql);
-        // End Init
 
         if(food_id <0 || package_id <0 || number <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_FOOD, "package_id","food_id",package_id,food_id)) return -1;

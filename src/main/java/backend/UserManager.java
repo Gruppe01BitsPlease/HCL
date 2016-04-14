@@ -16,7 +16,8 @@ public class UserManager{
 
     public final static String CURRENT_TABLE = "HCL_users";
     public final static String CURRENT_TABLE_GENERATE_ARGUMENTS = "(user_name, user_role, user_salt, user_pass)";
-    public final static String CURRENT_TABLE_DELETE_ARGUMENTS = "user_name";
+    public final static String CURRENT_TABLE_PK = "user_name";
+
 	private PBKDF2 crypt = new PBKDF2();
     private SQL sql;
 
@@ -30,9 +31,10 @@ public class UserManager{
 	/**
 	 * Makes and inserts an user into the database
      * Now uses prepared statements, hopefully safe
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Already exists
-     * -2: SQL Exception
+     * -2: SQL Exception / CryptoException
 	 */
 	public int generate(String username, String password, int role) {
 
@@ -52,7 +54,7 @@ public class UserManager{
                 prep.setString(1, username);
                 prep.setInt(2, role);
                 prep.executeUpdate();
-                return 1;
+                return sql.getLastID();
             }
             catch(SQLException e){
                 return -2;
@@ -70,13 +72,13 @@ public class UserManager{
      * Edits any of the information in the Users-table
      * @return
      *  1: OK
-     * -1: Already exists
+     * -1: Does not exists
      * -2: SQL Exception
      */
     public int edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
 
-        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
+        if(!(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username))) return -1; //if the user does not exist
 
         try {
 
@@ -116,9 +118,9 @@ public class UserManager{
      */
     public int delete(String username){
 
-        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
+        if(!(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username))) return -1; //if the user does not exist
 
-        String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+        String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
 
         try {
             PreparedStatement prep = sql.connection.prepareStatement(insertTableSQL);
@@ -126,20 +128,21 @@ public class UserManager{
             prep.execute();
             return 1;
         }
-        catch (Exception e){return -2;}
+        catch (SQLException e){return -2;}
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  1: OK
      * -1: Already exists
      * -2: Encryption Exception
      * -3: Wrong Old Password
      */
     public int changePassword(String username, String oldpass, String newpass){
 
-        if(!(sql.rowExists(CURRENT_TABLE,"user_name",username))) return -1; //if the user does not exist
+        if(!(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username))) return -1; //if the user does not exist
 
-        if(logon(username,oldpass) >= 0){
+        if(logon(username,oldpass) >= 0){ // Old pass is valid
 
             String newSalt2;
             String newPass2;
@@ -151,9 +154,10 @@ public class UserManager{
             }
             catch (Exception e){return -2;}
 
-            sql.update("HCL_users","user_pass","user_name",username,newPass2);
-            sql.update("HCL_users","user_salt","user_name",username,newSalt2);
-            return 1;
+            boolean pass = sql.update("HCL_users","user_pass","user_name",username,newPass2);
+            boolean salt = sql.update("HCL_users","user_salt","user_name",username,newSalt2);
+
+            return pass && salt ? 1 : -2;
         }
         return -3;
     }
@@ -164,8 +168,7 @@ public class UserManager{
 	 */
 	public int logon(String username, String password) {
 
-		if (!sql.isConnected())
-			return -2;
+		if (!sql.isConnected()) return -2;
 
         String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
 
@@ -208,9 +211,7 @@ public class UserManager{
      */
     public String[][] get(boolean titles){
 
-        String[][] out = sql.getStringTable("Select * from "+CURRENT_TABLE,titles);
-
-        return out;
+        return sql.getStringTable("Select * from "+CURRENT_TABLE,titles);
 
     }
 
