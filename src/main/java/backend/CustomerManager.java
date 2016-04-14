@@ -14,7 +14,7 @@ public class CustomerManager {
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_customer";
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(name, epost, tlf)";
-    public static final String CURRENT_TABLE_DELETE_ARGUMENTS = "(customer_id)";
+    public static final String CURRENT_TABLE_PK = "(customer_id)";
 
     public CustomerManager(SQL sql){
         this.sql = sql;
@@ -44,7 +44,6 @@ public class CustomerManager {
             return sql.getLastID();
         }
         catch (SQLException e){
-            System.out.println(e.toString());
             return -2;}
     }
 
@@ -56,11 +55,12 @@ public class CustomerManager {
      * -3: Wrong parameters
      */
     public int edit(int id, String name, String nyEpost, int nyTlf){
+
+        if (!sql.rowExists(CURRENT_TABLE, CURRENT_TABLE_PK, id)) return -1;
+        if (name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
+
         try {
             sql.connection.setAutoCommit(false);
-
-            if (!sql.rowExists(CURRENT_TABLE, "customer_id", id)) return -1;
-            if (name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
 
             sql.update(CURRENT_TABLE, "epost", "customer_id", Integer.toString(id), nyEpost);
             sql.update(CURRENT_TABLE, "tlf", "customer_id", Integer.toString(id), nyTlf);
@@ -86,18 +86,20 @@ public class CustomerManager {
     }
 
     /**
-     * @return 1: OK
-     * -1: Already exists
+     * @return
+     *  1: OK
+     * -1: Exists / Does not exist
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int delete(int name) {
+    public int delete(int id) {
+        if(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,id)) return -1;
         try {
 
             //String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
-            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";
+            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
-            prep.setInt(1,name);
+            prep.setInt(1,id);
             int row = prep.executeUpdate();
 
             if(row == 0)
@@ -119,7 +121,8 @@ public class CustomerManager {
         // c.delete("Grandma");
         //System.out.println(c.delete("Microsoft"));
        // System.out.println(c.edit("Cheese",10,200,""));
-        int i = c.generate("Per","olavh96@gmail.com",93240605);
+        int i = c.generate("Test","test@gmail.com",86132139);
         System.out.println(i);
+        System.out.println(c.delete(i));
     }
 }

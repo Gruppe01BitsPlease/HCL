@@ -41,7 +41,7 @@ public class StartUp {
                 this.settings = new SettingsFile();
             } catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(null,
-                        "Settingsfile could not be located nor recovered, please contact systemadmin.",
+                        "Settingsfile could not be located nor recovered, please contact your system administrator.",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
                 System.exit(-1);
@@ -49,31 +49,38 @@ public class StartUp {
         }
 
         if (validateSettings() != 1 || validateDBConnection()) {
-            JOptionPane.showMessageDialog(null,
-                    "Unable to reach server, please check server settings or internet connection",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
-            window = new SettingsGUI();
-            while(window.isDisplayable()){
-                try {
-                    Thread.sleep(100000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            if(isFirstTime()){
+                JOptionPane.showMessageDialog(null,
+                        "This looks like the first time you are running this application, please configure your database settings",
+                        "Welcome",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(null,
+                        "Unable to reach server, please check server settings and your internet connection",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
             }
-
-
+            window = new SettingsGUI();
+            window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            window.addWindowListener(new WindowAdapter() {
+                public void windowClosing(WindowEvent windowEvent){
+                    if(window.isValid){
+                        window.dispose();
+                        new LogOnGUI();
+                    }else{
+                        int reply = JOptionPane.showConfirmDialog(null,
+                                    "Settings are still not verified, program will exit!",
+                                    "Settings not saved!",
+                                    JOptionPane.OK_CANCEL_OPTION);
+                        if(reply == JOptionPane.OK_OPTION){
+                            System.exit(0);
+                        }
+                    }
+                }
+            });
         }
     }
 
-    public boolean isWindowClosed(){
-        if(!window.isDisplayable()){
-            init();
-            new LogOnGUI();
-            return true;
-        }
-        return false;
-    }
 
 
 
@@ -112,12 +119,6 @@ public class StartUp {
             }
         }
         return 1;
-    }
-
-    public void FirstTimeSetup(String host, String database, String user, String password){
-
-
-
     }
 
     public static void main(String[] args) {
