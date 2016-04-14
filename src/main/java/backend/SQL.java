@@ -290,7 +290,7 @@ public class SQL {
         }
 
         try {
-            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
           //  prep.setString(1, primaryKey);
@@ -321,7 +321,7 @@ public class SQL {
         }
 
         try {
-            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ?";
+            String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
             PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
             //  prep.setString(1, primaryKey);
@@ -351,7 +351,7 @@ public class SQL {
 		}
 
 		try {
-			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ?";
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1";
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
