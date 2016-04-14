@@ -75,16 +75,15 @@ public class SubscriptionManager {
      *@param date Formatted as yyyy-MM-dd
      * @return
      * 1: OK
-     * -1: Already exist
+     * -1: Does not exist
      * -2: SQL Exception
      * -3: Wrong Parameters
      * -5: Wrong date formatting
      */
     public int addDate(int order_id, String date){
 
-        LinkManager link = new LinkManager(sql);
-
         if(order_id <0 || date.equals("") )return -3;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
 
         String prepString = "Insert into "+CURRENT_TABLE_LINK_DATE+CURRENT_TABLE_ADD_DATE_ARGUMENTS+" values(?,?)";
         try {
@@ -117,7 +116,7 @@ public class SubscriptionManager {
         if(order_id < 0 || date== null || date.equals("")) return -3;
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
 
-        String prepString = "Delete from "+CURRENT_TABLE_LINK_DATE+" where order_id = ? AND dato = ?";
+        String prepString = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND dato = ?";
 
         try {
 

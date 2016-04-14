@@ -120,7 +120,7 @@ public class UserManager{
 
         if(!(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username))) return -1; //if the user does not exist
 
-        String insertTableSQL = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
+        String insertTableSQL = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
 
         try {
             PreparedStatement prep = sql.connection.prepareStatement(insertTableSQL);
@@ -168,7 +168,8 @@ public class UserManager{
 	 */
 	public int logon(String username, String password) {
 
-		if (!sql.isConnected()) return -2;
+		if(!sql.isConnected()) return -2;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username)) return -1;
 
         String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
 

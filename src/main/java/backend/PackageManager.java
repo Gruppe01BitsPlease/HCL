@@ -60,7 +60,8 @@ public class PackageManager {
 
         try {
 
-            String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_PK+" = ?";
+            String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
+
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,package_id);
             prep.executeUpdate();
@@ -86,30 +87,8 @@ public class PackageManager {
         if(food_id <0 || package_id <0 || number <0 )return -3;
         if(sql.rowExists(CURRENT_TABLE_LINK_FOOD, "package_id","food_id",package_id,food_id)) return -1;
 
-        String prepString = "Insert into "+CURRENT_TABLE_LINK_FOOD+CURRENT_TABLE_ADD_FOOD_ARGUMENTS+" values(?,?,?)";
-        try {
-            sql.connection.setAutoCommit(false);
+        return link.generate(CURRENT_TABLE_LINK_FOOD,"package_id","food_id",package_id,food_id,number);
 
-            PreparedStatement prep = sql.connection.prepareStatement(prepString);
-
-            prep.setInt(1,package_id);
-            prep.setInt(2,food_id);
-            prep.setInt(3,number);
-
-            prep.executeUpdate();
-
-            sql.connection.commit();
-            sql.connection.setAutoCommit(true);
-
-            return 1;
-        }
-        catch (SQLException e){
-            try{
-                sql.connection.rollback();
-            }
-            catch (SQLException f){return -2;};
-            return -2;
-        }
     }
 
     public static void main(String[]args){
