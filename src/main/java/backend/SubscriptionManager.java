@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Period;
 import java.time.format.DateTimeParseException;
 
 /**
@@ -137,6 +140,40 @@ public class SubscriptionManager {
             return -5;
         }
     }
+    private boolean contains(int[] dates, int date){
+
+        for(int value : dates){
+            if(value == date) return true;
+        }
+        return false;
+    }
+    /**
+     * -1 Invalid dates
+     */
+    public int addDates(int order_id, LocalDate start, int ... dates){
+
+        for(int date : dates){
+
+            if(date > 31 )return -1;
+        }
+        // dates contains dates in the month after the startdate to be added to the dates-list
+        // 1 Year subscription
+
+        LocalDate cur = LocalDate.parse(start.toString()); // Deep copy
+        int counter = 0;
+        while(counter < 365){
+
+            cur = cur.plusDays(1);
+            counter++;
+
+            if(contains(dates,cur.getDayOfMonth())){
+                System.out.println("Adding: "+cur);
+                addDate(order_id,cur.toString());
+            }
+
+        }
+        return 1;
+    }
 
     public static void main(String[]args){
 
@@ -144,9 +181,12 @@ public class SubscriptionManager {
 
         SubscriptionManager manager = new SubscriptionManager(sql);
 
-        manager.generate(4);
+        //manager.generate(4);
 
         manager.addDate(4,"2011-04-03");
+
+        LocalDate first = LocalDate.now();
+        manager.addDates(4,first,15,30);
 
     }
 }

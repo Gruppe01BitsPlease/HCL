@@ -87,8 +87,8 @@ public class Statistics {
     /**
      * @return int[] with deliverables per months, 0 = January, 11 = Desember etc, over all years
      */
-    public int[] getOrdersPerMonth(){
-        int[] months = new int[12];
+    public double[] getOrdersPerMonth(){
+        double[] months = new double[12];
 
         ArrayList<LocalDate> dates = getDeliveryDates();
 

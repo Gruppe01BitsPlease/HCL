@@ -3,6 +3,7 @@ package backend;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
+import java.util.Arrays;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -142,16 +143,27 @@ public class MyJFreeChart extends ApplicationFrame {
 
     public static void main(final String[] args) {
 
+        // http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
 
         Statistics stats = new Statistics();
 
         double[] data = stats.getOrdersPerDay();
         String[] days = {"Mon","Tue","Wed","Thurs","Fri","Sat","Sun"};
 
-        MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Days",days,data).build();
+        MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
 
         demo.pack();
         RefineryUtilities.centerFrameOnScreen(demo);
         demo.setVisible(true);
+
+        //
+
+        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
+        double[] data2 = stats.getOrdersPerMonth();
+
+        MyJFreeChart demo2 = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
+        demo2.pack();
+        RefineryUtilities.centerFrameOnScreen(demo2);
+        demo2.setVisible(true);
     }
 }
