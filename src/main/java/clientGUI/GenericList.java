@@ -34,15 +34,15 @@ class GenericList extends JPanel {
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql) {
 		this.FKs = FKs;
-		try {
+		//try {
 			this.sql = sql;
 			this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
 			fillTable();
-		}
+		/*}
 		catch (Exception e) {
 			System.out.println("ERROR");
-		}
+		}*/
 
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (FKs != null) {
@@ -750,9 +750,12 @@ class GenericList extends JPanel {
 			subTable = new JTableHCL(subModel);
 			JScrollPane subScroll = new JScrollPane(subTable);
 			add(subScroll, BorderLayout.CENTER);
+			add(new lowerButtons(), BorderLayout.SOUTH);
+			setLocationRelativeTo(null);
+			subTable.removeIDs();
 			setVisible(true);
 		}
-		class lowerButtons {
+		class lowerButtons extends JPanel {
 			public lowerButtons() {
 				JButton neue = new JButton("New...");
 				JButton del = new JButton("Delete");
@@ -763,16 +766,23 @@ class GenericList extends JPanel {
 						editBox edit = new editBox();
 					}
 				});
+				add(neue);
+				add(del);
 			}
 		}
-		class editBox {
+		class editBox extends JFrame {
 			private datePane pane;
 			public editBox() {
 				setLayout(new GridLayout(2, 1));
 				pane = new datePane();
 				saveCancel buts = new saveCancel();
+				add(pane);
+				add(buts);
+				setSize((int) (x * 0.2), (int) (y * 0.2));
+				setLocationRelativeTo(null);
+				setVisible(true);
 			}
-			class saveCancel {
+			class saveCancel extends JPanel {
 				public saveCancel() {
 					JButton save = new JButton("Save");
 					JButton cancel = new JButton("Cancel");
@@ -786,13 +796,26 @@ class GenericList extends JPanel {
 								for (int i = 0; i < dateArray.length; i++) {
 									newArray[i] = dateArray[i];
 								}
+								newArray[dateArray.length] = new String[subTitles.length];
+								System.out.println(Arrays.toString(dateArray[0]));
 								newArray[dateArray.length][2] = newDate;
 								dateArray = newArray;
 								subModel = new DefaultTableModel(dateArray, subTitles);
 								subTable.setModel(subModel);
 							}
+							else {
+								JOptionPane.showMessageDialog(null, "Enter a valid date");
+							}
 						}
 					});
+					cancel.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							dispose();
+						}
+					});
+					add(save);
+					add(cancel);
 				}
 			}
 		}
