@@ -12,7 +12,21 @@ abstract class Stuff {
 				ret = i;
 			}
 		}
-		System.out.println("Selected row index: " + ret);
+		if (ret == -1) {
+			System.out.println("Not found");
+		}
+		else {
+			System.out.println("Selected row index: " + ret);
+		}
+		return ret;
+	}
+	public static int findIndexOf(String[] searchArray, String search) {
+		int ret = -1;
+		for (int i = 0; i < searchArray.length; i++) {
+			if (searchArray[i].equals(search)) {
+				ret = i;
+			}
+		}
 		return ret;
 	}
 	public static String setBold() {

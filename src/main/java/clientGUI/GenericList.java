@@ -28,21 +28,21 @@ class GenericList extends JPanel {
 	private JTableHCL list;
 	private JTableHCL searchTab;
     private SQL sql;
-    private int x;
-    private int y;
+    public int x;
+    public int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql) {
 		this.FKs = FKs;
-		try {
+		//try {
 			this.sql = sql;
 			this.table = sql.getStringTable(query, false);
 			SqlColumnNames = sql.getColumnNames(query);
 			fillTable();
-		}
+		/*}
 		catch (Exception e) {
 			System.out.println("ERROR");
-		}
+		}*/
 
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (FKs != null) {
@@ -64,22 +64,11 @@ class GenericList extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					if (GenericList.this instanceof SubscriptionTab) {
-						int id = Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]);
-						subscriptionEditWindow edit = new subscriptionEditWindow(id, false);
+					if (list.getSelectedRow() == -1) {
+						edit(-1, true);
 					}
 					else {
-						if (!searchEnabled) {
-							System.out.println(list.getValueAt(list.getSelectedRow(), 0));
-							String[] selected = table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)];
-							int index = Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0);
-							editWindow edit = new editWindow(selected, index, false);
-						}
-						else if (searchEnabled) {
-							String[] selected = searchTable[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)];
-							int index = Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0);
-							editWindow edit = new editWindow(selected, index, false);
-						}
+						edit(Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]), false);
 					}
 				}
 			}
@@ -133,6 +122,9 @@ class GenericList extends JPanel {
 	public int delete(int nr) {
 		return -4;
 	}
+	public void edit(int ID, boolean newItem) {
+		editWindow edit = new editWindow(newItem);
+	}
 	private class northBar extends JPanel {
 		public northBar() {
 			setLayout(new GridLayout(1, 5));
@@ -171,7 +163,7 @@ class GenericList extends JPanel {
 			newThing.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					String[][] newTable = new String[table.length + 1][SqlColumnNames.length];
+					/*String[][] newTable = new String[table.length + 1][SqlColumnNames.length];
 					for (int i = 0; i < table.length; i++) {
 						for (int j = 0; j < SqlColumnNames.length; j++) {
 							newTable[i][j] = table[i][j];
@@ -180,8 +172,8 @@ class GenericList extends JPanel {
 					String[] selected = newTable[newTable.length - 1];
 					int index = newTable.length - 1;
 					table = newTable;
-					fillTable();
-					editWindow edit = new editWindow(selected, index, true);
+					fillTable();*/
+					editWindow edit = new editWindow(true);
 				}
 			});
 			add(newThing);
@@ -189,7 +181,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	private class datePane extends JPanel {
+	class datePane extends JPanel {
 		JTextField year;
 		JTextField month;
 		JTextField day;
@@ -242,22 +234,22 @@ class GenericList extends JPanel {
 		}
 	}
 	class editWindow extends JFrame {
-
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		private ArrayList<String[]> addedLinks = new ArrayList<>();
 		private ArrayList<int[]> changeLinks = new ArrayList<>();
 		private ArrayList<int[]> createLinks = new ArrayList<>();
 		private ArrayList<int[]> removeLinks = new ArrayList<>();
-		private ArrayList<String[]> subscriptionAddDates = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
 		private ArrayList<JTableHCL> linkJTables = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-		public editWindow(String[] selected, int index, boolean newEntry) {
+		public editWindow(boolean newEntry) {
 			this.newEntry = newEntry;
-			this.selected = selected;
-			this.index = index;
+			if (!newEntry) {
+				selected = table[Stuff.findIndexOf(table, (String) tabModel.getValueAt(list.getSelectedRow(), 0), 0)];
+				index = Stuff.findIndexOf(table, (String) tabModel.getValueAt(list.getSelectedRow(), 0), 0);
+			}
 			if (newEntry) {
 				setTitle("New Item");
 			} else {
@@ -268,17 +260,11 @@ class GenericList extends JPanel {
 			setAlwaysOnTop(true);
 			setResizable(false);
 			JTabbedPane tabs = new JTabbedPane();
-			if (!(GenericList.this instanceof SubscriptionTab)) {
-				tabs.addTab("Info", new editFields());
-			}
+			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
 					String link = "";
-					if (GenericList.this instanceof SubscriptionTab) {
-						link = "SELECT * FROM " + linkTables[i][2] +
-								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
-					}
-					else if (selected[0] != null && !(selected[0].equals(""))) {
+					if (selected[0] != null && !(selected[0].equals(""))) {
 						link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
 								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
 
@@ -318,17 +304,6 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
-							if (GenericList.this instanceof SubscriptionTab) {
-								if (subscriptionAddDates.size() > 0) {
-									SubscriptionManager s = new SubscriptionManager(sql);
-									for (String[] i : subscriptionAddDates) {
-										System.out.println("Adding date: " + Arrays.toString(i));
-										s.addDate(Integer.parseInt(i[0]), i[1]);
-									}
-								}
-								dispose();
-							}
-							else {
 								String[] newValues = new String[selected.length];
 								for (int i = 0; i < newValues.length; i++) {
 									if (fields.get(i) instanceof JTextField) {
@@ -445,7 +420,6 @@ class GenericList extends JPanel {
 									}
 								}
 								dispose();
-							}
 						}
 					}
 				});
@@ -456,11 +430,6 @@ class GenericList extends JPanel {
 		class editFields extends JPanel {
 			public editFields() {
 				int length = selected.length + 1;
-				for (int i = 0; i < titles.length; i++) {
-					if (titles[i].equals("x")) {
-						length--;
-					}
-				}
 				setLayout(new GridLayout(length, 2));
 				//setSize((int) (x * 0.5), (int) (length * 0.01));
 				for (int i = 0; i < dataTypes.length; i++) {
@@ -493,17 +462,11 @@ class GenericList extends JPanel {
 					} else if (dataTypes[i].contains("SELECT")) {
 						JLabel j = new JLabel(titles[i]);
 						String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
-						//String[][] choices = sql.getStringTable(dataTypes[i], false);
-						String[] displayed = choices[1];
-						int selItem = 0;
-						for (int l = 0; l < displayed.length; l++) {
-							if (choices[0][l].equals(selected[i])) {
-								selItem = l;
-							}
+						JComboBox<String> k = new JComboBox<>(choices[1]);
+						if (!newEntry) {
+							k.setSelectedItem(choices[1][Stuff.findIndexOf(choices[1], selected[i])]);
+							k.setEnabled(false);
 						}
-						//System.out.println(Arrays.toString(choices));
-						JComboBox<String> k = new JComboBox<>(displayed);
-						k.setSelectedIndex(selItem);
 						fields.add(k);
 						add(j);
 						add(k);
@@ -523,6 +486,7 @@ class GenericList extends JPanel {
 				setVisible(true);
 			}
 		}
+
 		class linkTab extends JPanel {
 			private String[][] linkTableData;
 			private DefaultTableModel linkTableModel;
@@ -536,6 +500,7 @@ class GenericList extends JPanel {
 				setLayout(new BorderLayout());
 				this.linkIndex = linkIndex;
 				linkTableData = sql.getStringTable(link, false);
+				//System.out.println("Link table data: " + Arrays.toString(linkTableData[0]));
 				columns = ColumnNamer.getNamesWithOriginals(link, sql);
 				linkTableModel = new DefaultTableModel(linkTableData, columns[1]);
 				linkTable = new JTableHCL(linkTableModel);
@@ -556,9 +521,7 @@ class GenericList extends JPanel {
 							}
 							String[] selected = linkTableData[linkTable.getSelectedRow()];
 							System.out.println("Selected line: " + Arrays.toString(selected));
-							if (!(GenericList.this instanceof SubscriptionTab)) {
-								inputBox edit = new inputBox(selected, false);
-							}
+							inputBox edit = new inputBox(selected, false);
 						}
 					}
 				});
@@ -728,87 +691,8 @@ class GenericList extends JPanel {
 
 		}
 	}
-	class subscriptionEditWindow extends JFrame {
-		DefaultTableModel subModel;
-		JTableHCL subTable;
-		String[][] dateArray;
-		String[] subTitles;
-		public subscriptionEditWindow(int id, boolean newSubscription) {
-			setSize((int) (x * 0.3), (int) (y * 0.3));
-			setTitle("Subscription");
-			setLayout(new BorderLayout());
-			String getDateQuery = "SELECT * FROM HCL_subscription_date WHERE order_id = " + id;
-			dateArray = new String[0][];
-			if (!newSubscription) {
-				dateArray = sql.getStringTable(getDateQuery, false);
-				subTitles = ColumnNamer.getNames(getDateQuery, sql);
-			}
-			else {
-				subTitles = ColumnNamer.getNames("SELECT * FROM HCL_subscription", sql);
-			}
-			subModel = new DefaultTableModel(dateArray, subTitles);
-			subTable = new JTableHCL(subModel);
-			JScrollPane subScroll = new JScrollPane(subTable);
-			add(subScroll, BorderLayout.CENTER);
-			setVisible(true);
-		}
-		class lowerButtons {
-			public lowerButtons() {
-				JButton neue = new JButton("New...");
-				JButton del = new JButton("Delete");
-				setLayout(new GridLayout(1, 2));
-				neue.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						editBox edit = new editBox();
-					}
-				});
-			}
-		}
-		class editBox {
-			private datePane pane;
-			public editBox() {
-				setLayout(new GridLayout(2, 1));
-				pane = new datePane();
-				saveCancel buts = new saveCancel();
-			}
-			class saveCancel {
-				public saveCancel() {
-					JButton save = new JButton("Save");
-					JButton cancel = new JButton("Cancel");
-					setLayout(new GridLayout(1, 2));
-					save.addActionListener(new AbstractAction() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							if (!(pane.getDate().equals(""))) {
-								String newDate = Stuff.setBold() + pane.getDate() + Stuff.endBold();
-								String[][] newArray = new String[dateArray.length + 1][];
-								for (int i = 0; i < dateArray.length; i++) {
-									newArray[i] = dateArray[i];
-								}
-								newArray[dateArray.length][2] = newDate;
-								dateArray = newArray;
-								subModel = new DefaultTableModel(dateArray, subTitles);
-								subTable.setModel(subModel);
-							}
-						}
-					});
-				}
-			}
-		}
-	}
-	class employeeEditWindow extends JFrame {
-		public employeeEditWindow(int id, boolean newEmployee) {
-			setSize((int) (x * 0.3), (int) (y * 0.3));
-			setTitle("Employee");
-			String[] selectedEmployee = sql.getRow("SELECT * FROM HCL_users WHERE user_id = " + id);
-			System.out.println(Arrays.toString(selectedEmployee));
-			JLabel username = new JLabel("User name:");
-			JLabel nameRead = new JLabel(selectedEmployee[1]);
-			JLabel role = new JLabel();
-			//if (selectedEmployee)
-		}
-	}
+
+
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;

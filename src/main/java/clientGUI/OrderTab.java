@@ -22,14 +22,12 @@ class OrderTab extends GenericList {
         add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }
-    @Override
     public int delete(int nr) {
         OrderManager mng = new OrderManager(sql);
         int ret = mng.delete(nr);
         System.out.println("Delete code" + ret);
         return ret;
     }
-    @Override
     public int generate(String[] args) {
         System.out.println(Arrays.toString(args));
         OrderManager mng = new OrderManager(sql);
