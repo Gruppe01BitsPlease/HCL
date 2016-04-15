@@ -296,7 +296,7 @@ class GenericList extends JPanel {
 								if (fields.get(i) instanceof JTextField) {
 									JTextField field = (JTextField) fields.get(i);
 									newValues[i] = field.getText();
-								} else if (fields.get(i) instanceof JCheckBox) {
+									} else if (fields.get(i) instanceof JCheckBox) {
 									JCheckBox chk = (JCheckBox) fields.get(i);
 									if (chk.isSelected()) {
 										newValues[i] = "true";
