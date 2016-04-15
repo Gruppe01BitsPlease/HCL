@@ -24,7 +24,7 @@ public class tabbedMenu extends JFrame {
 		sql = new SQL();
 		this.rolle = rolle;
         setTitle("Bits Please HCL System 0.5 - " + username);
-		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
