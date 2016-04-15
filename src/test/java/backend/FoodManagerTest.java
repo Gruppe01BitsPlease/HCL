@@ -69,13 +69,13 @@ public class FoodManagerTest {
     public void addIngredient(){
         //Lager ny ingrediens, henter ID
         IngredientManager iManager = new IngredientManager(sql);
-        iManager.generate("Mandel", 5, 56, false, false, true, "kun en", "20160404", "20170506");
-        int mandelID = sql.getLastID();
-
+        int mandelID = iManager.generate("Mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
         //Lager mat-objekt og henter ID, samt legger mandel i grøten.
-        manager.generate("Julegrøt", 60);
-        int grøtID = sql.getLastID();
+        int grøtID =  manager.generate("Julegrøt", 60);
         manager.addIngredient(grøtID,mandelID,10);
+
+        System.out.println(mandelID+" - "+grøtID);
+
         assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
         assertEquals(-4, manager.addIngredient(grøtID, 379, 40));
         assertEquals(-4, manager.addIngredient(379, mandelID, 40));
