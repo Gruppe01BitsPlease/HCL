@@ -361,7 +361,7 @@ public class SQL {
 	 * Used for link-tables
      */
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
-		if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+		if(!(table.split(" \"\':;").length > 1)){ //Prevents sql-injection
 			return false;
 		}
 

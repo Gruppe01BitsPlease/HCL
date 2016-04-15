@@ -22,7 +22,7 @@ public class IngredientManager {
     }
 
     /**
-     * @return 1: OK
+     * @return ID: OK
      * -1: Already exists
      * -2: SQL Exception
      * -3: Wrong parameters / Wrong Date format yyyy-MM-dd
