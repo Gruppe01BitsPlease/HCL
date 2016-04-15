@@ -12,9 +12,9 @@ import com.seaglasslookandfeel.*;
 @SuppressWarnings("serial")
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
-		//window parameters
+		//window pa	parameters
 		setTitle("Log in");
-		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/titleIcon.png"));
+		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image); // Put your own image instead of null
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

@@ -36,7 +36,7 @@ public class SettingsFile {
     }
 
     private Properties readDefaultTemplate() throws IOException{
-        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("defaultdev.properties")){
+        try(InputStream in = this.getClass().getClassLoader().getResourceAsStream("defaults/defaultdev.properties")){
             Properties prop = new Properties();
             prop.load(in);
             return prop;

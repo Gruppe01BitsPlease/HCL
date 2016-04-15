@@ -45,6 +45,7 @@ public class SettingsGUI extends JFrame {
             setSize((int) x, (int) y);
             setLocationRelativeTo(null);
             setResizable(false);
+            //this.setModalityType(ModalityType.APPLICATION_MODAL);
 
             //Create label, textfield and center their text.
 
@@ -155,7 +156,7 @@ public class SettingsGUI extends JFrame {
             return false;
         }
         helpText.setDisabledTextColor(new Color(0,102,0));
-        helpText.setText("Everything looks like it's working, settings are saved");
+        helpText.setText("Settings saved successfully, please close this window in the upper right corner.");
         isValid = true;
         setSettings(addJDBCFormat(host.getText()), database.getText(), user.getText(), password.getText());
         return true;
