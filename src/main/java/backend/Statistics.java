@@ -138,19 +138,19 @@ public class Statistics {
     /**
      * @return ID of all time most sold ingredient, -1 if no results
      */
-    public int getAllTimePopularIngredient(){
+    public String getAllTimePopularIngredient(){
 
         String[][] results = sql.getStringTable("SELECT ingredient_id,`Ingredient Name`,sum(`Food Items`*Ingredients) " +
                 "FROM orders_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
         try {
-            return Integer.parseInt(results[0][0]);
+            return results[0][1];
         }
-        catch (NumberFormatException e){return -1;}
+        catch (NumberFormatException e){return "";}
     }
     /**
      * @return ID of most sold ingredient in specified month and year, -1 if no results
      */
-    public int getMonthlyPopularIngredient(int year, int month){
+    public String getMonthlyPopularIngredient(int year, int month){
 
         String prepString = "SELECT ingredient_id,`Ingredient Name`,Sum(Amount) FROM orders_dates_ingredients WHERE delivery_date BETWEEN ? AND ? GROUP BY ingredient_id ORDER BY sum(Amount) desc;";
         LocalDate startDate = LocalDate.of(year,month,1);
@@ -167,20 +167,20 @@ public class Statistics {
 
             ResultSet res = prep.executeQuery();
             res.next();
-            return res.getInt(1);
+            return res.getString(2);
 
         }
-        catch (SQLException e){return -1;}
+        catch (SQLException e){return "";}
 
     }
-    public int getAllTimePopularFood(){
+    public String getAllTimePopularFood(){
 
         String[][] results = sql.getStringTable("SELECT delivery_date, food_id, `Food Name`, sum(`Food Items`) FROM orders_foods " +
                 "GROUP BY food_id ORDER BY sum(`Food Items`) DESC;",false);
         try {
-            return Integer.parseInt(results[0][1]);
+            return results[0][2];
         }
-        catch (NumberFormatException e){return -1;}
+        catch (NumberFormatException e){return "";}
 
     }
 

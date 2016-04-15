@@ -50,10 +50,10 @@ public class CustomerManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int edit(int id, String name, String nyEpost, int nyTlf){
+    public int edit(int id, String nyEpost, int nyTlf){
 
         if (!sql.rowExists(CURRENT_TABLE, CURRENT_TABLE_PK, id)) return -1;
-        if (name.trim().equals("") || nyEpost.trim().equals("") || nyTlf < 0) return -3;
+        if ( nyEpost.trim().equals("") || nyTlf <= 0) return -3;
 
         try {
             sql.connection.setAutoCommit(false);
@@ -84,12 +84,11 @@ public class CustomerManager {
     /**
      * @return
      *  1: OK
-     * -1: Exists / Does not exist
+     * -1: Does not exist/Wrong parameter
      * -2: SQL Exception
-     * -3: Wrong parameters
      */
     public int delete(int id) {
-        if(sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,id)) return -1;
         try {
 
             //String sqlPrep = "DELETE FROM "+CURRENT_TABLE+" WHERE "+CURRENT_TABLE_DELETE_ARGUMENTS+" = ?";

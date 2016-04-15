@@ -29,14 +29,15 @@ public class IngredientManagerTest {
     @Test
     public void generate() {
 
-        manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "20160404", "20170506");
-        //assertTrue(sql.rowExists("HCL_ingredient", "name", "Brunost"));
-        assertFalse(sql.rowExists("HCL_ingredient", "name", "vlu"));
+        assertEquals(1,manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "20160404", "20170506"));
+        int brunostID = sql.getLastID();
+        assertTrue(sql.rowExists("HCL_ingredient", "ingredient_id", brunostID));
+        assertFalse(sql.rowExists("HCL_ingredient", "ingredient_id", 001));
 
 
         //Prøver å lage ukorrekte ingrediensobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(manager.generate(" ", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -3);
-        //assertEquals(manager.generate("Kyllingvinge ", 0, 40, false, false, true, "mac er best", "20160404", "20170506"), -3);
+        assertEquals(-3,manager.generate (" ", 5, 56, false, false, true, "mac er best", "20160404", "20170506"));
+        assertEquals(manager.generate("Kyllingvinge ", 0, 40, false, false, true, "mac er best", "20160404", "20170506"), -3);
 
         manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506");
         //assertEquals(manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -1); //Riktig

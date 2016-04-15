@@ -31,20 +31,19 @@ public class FoodManagerTest {
     @Test
     public void generate() {
 
+        //lager food-objekter
         manager.generate("Bløtkake", 75);
         manager.generate("Sirupssnipp", 75);
 
         //Tester om foodobjektene faktisk ble laget.
         assertTrue(sql.rowExists("HCL_food", "name", "Bløtkake"));
         assertTrue(sql.rowExists("HCL_food", "name", "Sirupssnipp"));
+        //Sjekker at uekte food-objekt ikke eksisterer
         assertFalse(sql.rowExists("HCL_food", "name", "Mølje"));
 
         //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(manager.generate(" ", 1), -1); //Feil! burde returnet -3
-        assertEquals(manager.generate("Pultost", 0), -1); //Feil! burde returnet -3
-        manager.generate("Fiskepudding", 75);
-        assertEquals(manager.generate("Fiskepudding", 75), -1); //Riktig
-
+        assertEquals(-3, manager.generate("", 1));
+        assertEquals(-3, manager.generate("Pultost",-1));
     }
 
     @Test
@@ -61,24 +60,26 @@ public class FoodManagerTest {
         assertFalse(sql.rowExists("HCL_food", "name", "Klubb"));
 
         //Sjekker at sletting gir riktig return.
-        assertEquals(manager.delete(idMøs), 1); //Finnes, riktig
-        assertEquals(manager.delete(379), -1); //Finnes ikke, riktig
+        assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
+        assertEquals(-1, manager.delete(379)); //Finnes ikke, riktig
 
     }
 
     @Test
     public void addIngredient(){
+        //Lager ny ingrediens, henter ID
         IngredientManager iManager = new IngredientManager(sql);
-        iManager.generate("Mandel", 5, 56, false, false, true, "kun en", "20160404", "20170506");
-        int mandelID = sql.getLastID();
-
-        manager.generate("Julegrøt", 60);
-        int grøtID = sql.getLastID();
+        int mandelID = iManager.generate("Mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
+        //Lager mat-objekt og henter ID, samt legger mandel i grøten.
+        int grøtID =  manager.generate("Julegrøt", 60);
         manager.addIngredient(grøtID,mandelID,10);
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
-        assertEquals(manager.addIngredient(grøtID, 379, 40), -4);
-        assertEquals(manager.addIngredient(379, mandelID, 40), -4);
-        assertEquals(manager.addIngredient(grøtID, mandelID, 0), -4);
+
+        System.out.println(mandelID+" - "+grøtID);
+
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
+        assertEquals(-4, manager.addIngredient(grøtID, 379, 40));
+        assertEquals(-4, manager.addIngredient(379, mandelID, 40));
+        assertEquals(-4, manager.addIngredient(grøtID, mandelID, 0));
 
     }
 
