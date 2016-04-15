@@ -4,7 +4,7 @@ Generel Diskusjon / Todos / Ønsker / Kommentarer
 - Lage noe slags ruteplanlegger (Trenger ikke være sånn op javascript GoogleMaps implementasjon -.-')
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
 
-- Konfigureringsvindu når du åpner programmet første gang?
+- Konfigureringsvindu når du åpner programmet første gang? #Bjørn A
 
 - Ny order: Exception hvis kunde ikke finns, bruk drop-down
 
@@ -22,6 +22,8 @@ GUI
 	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Se hvilke mat/pakker som er i order
 - Dato-greier prefilled med dags-dato?
+- Størrelse på inputfelter i editvindu
+- Dato i subscr må lagres i DB
 
 Database
 - Ordne on update cascade / on delete cascade // nvm
