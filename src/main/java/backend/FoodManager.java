@@ -29,7 +29,7 @@ public class FoodManager {
      */
     public int generate(String name, int price) {
 
-        if(name.trim().length() <= 0 && price < 0) {return -3;}
+        if(name.trim().length() <= 0 || price < 0) {return -3;}
 
         try {
             String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?)";

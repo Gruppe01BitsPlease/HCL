@@ -40,10 +40,8 @@ public class FoodManagerTest {
         assertFalse(sql.rowExists("HCL_food", "name", "Mølje"));
 
         //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(manager.generate(" ", 1), -1); //Feil! burde returnet -3
-        assertEquals(manager.generate("Pultost", 0), -1); //Feil! burde returnet -3
-        manager.generate("Fiskepudding", 75);
-        assertEquals(manager.generate("Fiskepudding", 75), -1); //Riktig
+        assertEquals(-3, manager.generate("", 1)); //Feil! burde returnet -3
+        assertEquals(-3, manager.generate("Pultost",-1)); //Feil! burde returnet -3
 
     }
 
@@ -61,8 +59,8 @@ public class FoodManagerTest {
         assertFalse(sql.rowExists("HCL_food", "name", "Klubb"));
 
         //Sjekker at sletting gir riktig return.
-        assertEquals(manager.delete(idMøs), 1); //Finnes, riktig
-        assertEquals(manager.delete(379), -1); //Finnes ikke, riktig
+        assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
+        assertEquals(-1, manager.delete(379)); //Finnes ikke, riktig
 
     }
 
@@ -76,9 +74,9 @@ public class FoodManagerTest {
         int grøtID = sql.getLastID();
         manager.addIngredient(grøtID,mandelID,10);
         assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID)); //feil!!!!!
-        assertEquals(manager.addIngredient(grøtID, 379, 40), -4);
-        assertEquals(manager.addIngredient(379, mandelID, 40), -4);
-        assertEquals(manager.addIngredient(grøtID, mandelID, 0), -4);
+        assertEquals(-4, manager.addIngredient(grøtID, 379, 40));
+        assertEquals(-4, manager.addIngredient(379, mandelID, 40));
+        assertEquals(-4, manager.addIngredient(grøtID, mandelID, 0));
 
     }
 
