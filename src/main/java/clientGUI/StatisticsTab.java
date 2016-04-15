@@ -13,23 +13,17 @@ public class StatisticsTab extends JPanel{
 
     public StatisticsTab(){
 
-        setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        boolean shouldFill = false;
-        boolean shouldWeightX = true;
-        if (shouldFill) {
-            //natural height, maximum width
-            c.fill = GridBagConstraints.HORIZONTAL;
-        }
+        BorderLayout layout = new BorderLayout();
+        setLayout(layout);
 
+        // Center graph
         Statistics stats = new Statistics();
         double[] data = stats.getOrdersPerDay();
         String[] days = {"Mon","Tue","Wed","Thurs","Fri","Sat","Sun"};
+        MyJFreeChart chart = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
+        add(chart, BorderLayout.CENTER);
+        // Center graph
 
-        setLayout(new GridLayout());
-
-        add(new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build());
 
     }
-
 }

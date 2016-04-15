@@ -1,8 +1,6 @@
 package backend;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
+import java.awt.*;
 import java.util.Arrays;
 
 import org.jfree.chart.ChartFactory;
@@ -21,7 +19,7 @@ import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 
-public class MyJFreeChart extends JPanel {
+public class MyJFreeChart extends /*JFrame*/JPanel {
 
     private CategoryDataset dataset;
     private JFreeChart chart;
@@ -30,10 +28,14 @@ public class MyJFreeChart extends JPanel {
     private MyJFreeChart(Builder builder) {
         //super(builder.title);
 
-        JFreeChart chart = createChart(builder.dataset);
+        JFreeChart chart = createChart(builder.dataset, builder.title);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
-       // setContentPane(chartPanel);
+
+        add(chartPanel);
+        setVisible(true);
+
+        // setContentPane(chartPanel);
     }
 
     /*
@@ -83,11 +85,11 @@ public class MyJFreeChart extends JPanel {
      *
      * @return The chart.
      */
-    private JFreeChart createChart(CategoryDataset dataset) {
+    private JFreeChart createChart(CategoryDataset dataset, String title) {
 
         // create the chart...
         final JFreeChart chart = ChartFactory.createBarChart(
-                "",         // chart title
+                title,         // chart title
                 "",               // x axis label
                 "",                  // y axis label
                 dataset,                  // data
@@ -149,22 +151,29 @@ public class MyJFreeChart extends JPanel {
 
         Statistics stats = new Statistics();
 
-        double[] data = stats.getOrdersPerDay();
+       /* double[] data = stats.getOrdersPerDay();
         String[] days = {"Mon","Tue","Wed","Thurs","Fri","Sat","Sun"};
 
-        MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
+        MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();*/
+
+
+
+
 
        // demo.pack();
       //  RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
+       // demo.setVisible(true);
         //
 
-      /*  String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
+        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
         double[] data2 = stats.getOrdersPerMonth();
 
         MyJFreeChart demo2 = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
-        demo2.pack();
-        RefineryUtilities.centerFrameOnScreen(demo2);
-        demo2.setVisible(true);*/
+        demo2.setVisible(true);
+        JFrame frame = new JFrame();
+        frame.add(demo2);
+
+        frame.pack();
+        frame.setVisible(true);
     }
 }
