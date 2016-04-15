@@ -23,7 +23,7 @@ public class tabbedMenu extends JFrame {
 		searchAdded = false;
 		sql = new SQL();
 		this.rolle = rolle;
-        setTitle("Bits Please HCL System 0.5 - " + username);
+        setTitle("Bits Please HCL System 0.5 - User: " + username);
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image);
         setLayout(new BorderLayout());
@@ -124,8 +124,11 @@ public class tabbedMenu extends JFrame {
 			setLayout(layout);
 			setOpaque(false);
 			JLabel tit = new JLabel(title);
-			Icon icon = UIManager.getIcon("InternalFrame.closeIcon");
+			ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/delete.png")));
 			JButton close = new JButton(icon);
+
+			close.setContentAreaFilled(false);
+			close.setBorderPainted(false);
 			Dimension size = new Dimension(icon.getIconWidth(), icon.getIconHeight());
 			close.setPreferredSize(size);
 			close.addActionListener(new AbstractAction() {
