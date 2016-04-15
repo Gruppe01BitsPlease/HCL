@@ -129,6 +129,9 @@ abstract class DataTyper {
 				ret[i] = "boolean";
 			}
 			else if (UINames[i].equals("Active")) {
+				ret[i] = "active";
+			}
+			else if (UINames[i].equals("ID")) {
 				ret[i] = "id";
 			}
 			else {

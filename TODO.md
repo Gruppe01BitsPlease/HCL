@@ -23,7 +23,6 @@ GUI
 - Se hvilke mat/pakker som er i order
 - Dato-greier prefilled med dags-dato?
 - Størrelse på inputfelter i editvindu
-- Dato i subscr må lagres i DB
 
 Database
 - Ordne on update cascade / on delete cascade // nvm

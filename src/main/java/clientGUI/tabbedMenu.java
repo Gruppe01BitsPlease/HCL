@@ -46,11 +46,11 @@ public class tabbedMenu extends JFrame {
 		if (rolle == 0) {
 			addTab(new EmployeeTab(sql));
 			addTab(new CeoTab());
-			addTab(new StatisticsTab());
 		}
 		if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql));
 			addTab(new CustomerTab(sql));
+			addTab(new SubscriptionTab(sql));
 		}
 		if (rolle == 2 || rolle == 0) {
 			addTab(new FoodTab(sql));
@@ -67,7 +67,7 @@ public class tabbedMenu extends JFrame {
 	private String ingrName = "Ingredients";
 	private String ordrName = "Orders";
 	private String packName = "Packages";
-	private String stats = "Statistics";
+	private String subscrName = "Subscriptions";
 
 	private void addTab(JPanel tab) {
 
@@ -106,9 +106,9 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(packName, tab);
 			}
 		}
-		else if (tab instanceof StatisticsTab) {
-			if (tabs.indexOfTab(stats) == -1) {
-				tabs.addTab(stats, tab);
+		else if (tab instanceof SubscriptionTab) {
+			if (tabs.indexOfTab(subscrName) == -1) {
+				tabs.addTab(subscrName, tab);
 			}
 		}
 		addCloseButtons();
@@ -294,6 +294,21 @@ public class tabbedMenu extends JFrame {
 					JMenuItem cust = new JMenuItem(custName);
 					cust.setEnabled(false);
 					newTab.add(cust);
+				}
+				if (tabs.indexOfTab(subscrName) == -1) {
+					JMenuItem subscr = new JMenuItem(subscrName);
+					subscr.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							addTab(new SubscriptionTab(sql));
+						}
+					});
+					newTab.add(subscr);
+				}
+				else {
+					JMenuItem subscr = new JMenuItem(subscrName);
+					subscr.setEnabled(false);
+					newTab.add(subscr);
 				}
 			}
 			if (rolle == 0) {

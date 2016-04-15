@@ -19,7 +19,7 @@ abstract class ColumnNamer {
 		String[] ret = new String[sqlNames.length];
 		for (int i = 0; i < sqlNames.length; i++) {
 			if (sqlNames[i].equals("customer_id")) {
-				ret[i] = "Customer";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("customer_name")) {
 				ret[i] = "Customer name";
@@ -34,13 +34,13 @@ abstract class ColumnNamer {
 				ret[i] = "Telephone";
 			}
 			else if (sqlNames[i].equals("food_id")) {
-				ret[i] = "Food ID";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("price")) {
 				ret[i] = "Price";
 			}
 			else if (sqlNames[i].equals("ingredient_id")) {
-				ret[i] = "Ingredient ID";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("number")) {
 				ret[i] = "Amount";
@@ -70,7 +70,7 @@ abstract class ColumnNamer {
 				ret[i] = "Expiration date";
 			}
 			else if (sqlNames[i].equals("order_id")) {
-				ret[i] = "Order ID";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("adress")) {
 				ret[i] = "Address";
@@ -85,13 +85,13 @@ abstract class ColumnNamer {
 				ret[i] = "Package ID";
 			}
 			else if (sqlNames[i].equals("date_id")) {
-				ret[i] = "Date ID";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("dato")) {
 				ret[i] = "Date";
 			}
 			else if (sqlNames[i].equals("user_id")) {
-				ret[i] = "User ID";
+				ret[i] = "ID";
 			}
 			else if (sqlNames[i].equals("user_name")) {
 				ret[i] = "User name";
