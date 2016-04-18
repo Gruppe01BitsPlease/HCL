@@ -106,7 +106,6 @@ public class SubscriptionManager {
     }
     /**
      * Possible to add several deliveries on the same day
-     *@param date Formatted as yyyy-MM-dd
      * @return
      *  1: OK
      * -1: Does not exist
@@ -114,20 +113,20 @@ public class SubscriptionManager {
      * -3: Wrong Parameters
      * -5: Wrong date formatting
      */
-    public int removeDate(int order_id, String date){
+    public int removeDate(int order_id, int date_id){
 
-        if(order_id < 0 || date== null || date.equals("")) return -3;
+        if(order_id < 0 || date_id < 0  ) return -3;
+
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
 
-        String prepString = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND dato = ?";
+        String prepString = "UPDATE "+CURRENT_TABLE+"_date"+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND date_id = ?";
 
         try {
 
-            LocalDate date1 = LocalDate.parse(date);
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
             prep.setInt(1,order_id);
-            prep.setDate(2,Date.valueOf(date1));
+            prep.setInt(2,date_id);
 
             prep.executeUpdate();
 
@@ -183,9 +182,10 @@ public class SubscriptionManager {
         // manager.generate(4);
 
         // manager.addDate(4,"2011-04-03");
-
+/*
         LocalDate first = LocalDate.now();
-        manager.addDates(5,first,15,30);
+        manager.addDates(5,first,15,30);*/
+        System.out.println(manager.removeDate(4,3008));
 
     }
 }
