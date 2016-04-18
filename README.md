@@ -61,7 +61,7 @@ Contents
    5. After settings are validated a config.properties should be created in the root folder.
       Steps 3-5 need to be repeated if settings get corrupted.
    6. Log with: user 'admin', password 'admin'.
-   7. This password should be changed because this is the only account that got
+   7. This password should be changed because this is the only account got
       full access to every function of the software.
 
 5. Support
