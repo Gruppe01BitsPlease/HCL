@@ -2,7 +2,7 @@
   <artifact type="jar" name="HCL:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/HCL_jar</output-path>
     <root id="archive" name="HCL.jar">
-      <element id="module-output" name="HCL" />
+      <element id="module-output" name="FoodPlease" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/seaglasslookandfeel/seaglasslookandfeel/0.2.1/seaglasslookandfeel-0.2.1.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.38/mysql-connector-java-5.1.38.jar" path-in-jar="/" />

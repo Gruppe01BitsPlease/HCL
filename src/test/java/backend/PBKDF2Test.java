@@ -8,9 +8,6 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-/**
- * Created by bahafeld on 30.03.2016...
- */
 public class PBKDF2Test {
     private PBKDF2 testCrypt;
     private byte[] salt;
