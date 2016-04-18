@@ -114,6 +114,31 @@ public class OrderManager {
         return link.generate(CURRENT_TABLE_LINK_PACKAGE,"order_id","package_id",order_id,package_id,1);
 
     }
+    /**
+     * @return
+     *  1: OK
+     * -1: Already exist
+     * -2: SQL Exception
+     * -3: Wrong Parameters
+     * -4: Is a subscription, can't be delivered
+     */
+    public int deliver(int order_id){
+
+        if(sql.rowExists("HCL_subscription","order_id",order_id)) return -4;
+
+        String prepString = "Update "+CURRENT_TABLE+" SET active = false WHERE order_id = ?;";
+
+        try{
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,order_id);
+
+            prep.executeUpdate();
+            return 1;
+        }
+        catch (SQLException e){return -2;}
+
+    }
 
     public static void main(String[]args){
 
