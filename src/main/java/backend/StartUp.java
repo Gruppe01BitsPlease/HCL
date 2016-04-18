@@ -1,5 +1,6 @@
 package backend;
 
+import clientGUI.DatabaseResetGUI;
 import clientGUI.SettingsGUI;
 import clientGUI.LogOnGUI;
 
@@ -48,7 +49,7 @@ public class StartUp {
             }
         }
 
-        if (validateSettings() != 1 || validateDBConnection()) {
+        if (validateSettings() != 1 || !validateDBConnection()) {
             if(isFirstTime()){
                 JOptionPane.showMessageDialog(null,
                         "This looks like the first time you are running this application, please configure your database settings",
@@ -64,9 +65,22 @@ public class StartUp {
             window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             window.addWindowListener(new WindowAdapter() {
                 public void windowClosing(WindowEvent windowEvent){
-                    if(window.isValid){
-                        window.dispose();
-                        new LogOnGUI();
+                    if(window.isValid) {
+                        int reply = JOptionPane.showConfirmDialog(null,
+                                "Do you want to changes to the structure of this database?",
+                                "Please make a selection",
+                                JOptionPane.YES_NO_OPTION);
+                        if (reply == JOptionPane.NO_OPTION) {
+                            window.dispose();
+                            new LogOnGUI();
+                        }
+                        if (reply == JOptionPane.YES_OPTION) {
+                            window.dispose();
+                            new LogOnGUI();
+                            DatabaseResetGUI DBsetting = new DatabaseResetGUI();
+                            DBsetting.setLocationRelativeTo(null);
+                            DBsetting.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+                        }
                     }else{
                         int reply = JOptionPane.showConfirmDialog(null,
                                     "Settings are still not verified, program will exit!",
@@ -78,6 +92,8 @@ public class StartUp {
                     }
                 }
             });
+        }else{
+            new LogOnGUI();
         }
     }
 

@@ -3,9 +3,7 @@ Generel Diskusjon / Todos / Ønsker / Kommentarer
 - Lage JUnit tester
 - Lage noe slags ruteplanlegger (Trenger ikke være sånn op javascript GoogleMaps implementasjon -.-')
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
-
-- Konfigureringsvindu når du åpner programmet første gang? #Bjørn A
-
+- Javadoc i alle backend klasser, trenger vi så mye javadoc i GUI?
 - Ny order: Exception hvis kunde ikke finns, bruk drop-down
 
 - Legg til UseCase: Endre Settings elns
@@ -23,7 +21,6 @@ GUI
 - Se hvilke mat/pakker som er i order
 - Dato-greier prefilled med dags-dato?
 - Størrelse på inputfelter i editvindu
-- Dato i subscr må lagres i DB
 
 Database
 - Ordne on update cascade / on delete cascade // nvm
