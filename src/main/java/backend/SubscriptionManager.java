@@ -119,7 +119,7 @@ public class SubscriptionManager {
 
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
 
-        String prepString = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND date_id = ?";
+        String prepString = "UPDATE "+CURRENT_TABLE+"_date"+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND date_id = ?";
 
         try {
 
@@ -182,9 +182,10 @@ public class SubscriptionManager {
         // manager.generate(4);
 
         // manager.addDate(4,"2011-04-03");
-
+/*
         LocalDate first = LocalDate.now();
-        manager.addDates(5,first,15,30);
+        manager.addDates(5,first,15,30);*/
+        System.out.println(manager.removeDate(4,3008));
 
     }
 }
