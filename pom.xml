@@ -6,7 +6,7 @@
 
     <!-- The Basics -->
     <groupId>com.bitsplease.clients.cms</groupId>
-    <artifactId>cathering-management-system</artifactId>
+    <artifactId>foodplease</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 

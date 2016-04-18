@@ -16,7 +16,7 @@ class FoodTab extends GenericList {
 	public FoodTab(SQL sql, int role) {
 		super(query, "HCL_food", linkTables, null, sql, role);
 		add(new GenericSearch(), BorderLayout.SOUTH);
-		this.sql = sql;
+		FoodTab.sql = sql;
 	}
 	public int generate(String[] args) {
 		FoodManager mng = new FoodManager(sql);

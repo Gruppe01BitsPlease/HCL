@@ -1,11 +1,10 @@
 package backend;
 
-import javax.xml.transform.Result;
-import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Faiter119 on 01.04.2016.
@@ -142,7 +141,7 @@ public class Shoppinglist {
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist();
 
-        String[][] array = list.getShoppinglist(2000);
+        String[][] array = list.getShoppinglist(5);
 
         sql.print2dArray(array);
 
