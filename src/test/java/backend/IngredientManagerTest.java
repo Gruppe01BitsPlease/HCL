@@ -24,6 +24,7 @@ public class IngredientManagerTest {
     @After
     public void tearDown() throws Exception {
         manager = null;
+        sql.end();
     }
 
     @Test
@@ -43,8 +44,8 @@ public class IngredientManagerTest {
         //assertEquals(manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -1); //Riktig
 
     }
-
-   /* @Test
+/*
+   @Test
     public void delete() {
         //Lager testobjekter som kan slettes
         manager.generate("Klubb", 60);
