@@ -19,31 +19,20 @@ import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
 
-public class MyJFreeChart extends /*JFrame*/JPanel {
+public class MyJFreeChart extends JPanel {
 
     private CategoryDataset dataset;
     private JFreeChart chart;
     private ChartPanel chartPanel;
 
     private MyJFreeChart(Builder builder) {
-        //super(builder.title);
 
         JFreeChart chart = createChart(builder.dataset, builder.title);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
 
         add(chartPanel);
-        setVisible(true);
-
-        // setContentPane(chartPanel);
     }
-
-    /*
-        JFreeChart chart = createChart(dataset);
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setPreferredSize(new Dimension(500, 270));
-        setContentPane(chartPanel);
-     */
 
     public static class Builder{
 
@@ -78,15 +67,8 @@ public class MyJFreeChart extends /*JFrame*/JPanel {
         }
     }
 
-    /**
-     * Creates a sample chart.
-     *
-     * @param dataset  the dataset.
-     *
-     * @return The chart.
-     */
+    /**Creates a JPanel chart with the dataset*/
     private JFreeChart createChart(CategoryDataset dataset, String title) {
-
         // create the chart...
         final JFreeChart chart = ChartFactory.createBarChart(
                 title,         // chart title
@@ -98,51 +80,21 @@ public class MyJFreeChart extends /*JFrame*/JPanel {
                 true,                     // tooltips?
                 false                     // URLs?
         );
-
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
-        // set the background color for the chart...
-        chart.setBackgroundPaint(Color.white);
-
-        // get a reference to the plot for further customisation...
-        CategoryPlot plot = chart.getCategoryPlot();
-        plot.setBackgroundPaint(Color.lightGray);
-        plot.setDomainGridlinePaint(Color.white);
-        plot.setRangeGridlinePaint(Color.white);
-
-        // set the range axis to display integers only...
-        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-
-        // disable bar outlines...
-        BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setDrawBarOutline(false);
-
-        // set up gradient paints for series...
-        GradientPaint gp0 = new GradientPaint(
-                0.0f, 0.0f, Color.blue,
-                0.0f, 0.0f, Color.lightGray
-        );
-        GradientPaint gp1 = new GradientPaint(
-                0.0f, 0.0f, Color.green,
-                0.0f, 0.0f, Color.lightGray
-        );
-        GradientPaint gp2 = new GradientPaint(
-                0.0f, 0.0f, Color.red,
-                0.0f, 0.0f, Color.lightGray
-        );
-        renderer.setSeriesPaint(0, gp0);
-        renderer.setSeriesPaint(1, gp1);
-        renderer.setSeriesPaint(2, gp2);
-
-        CategoryAxis domainAxis = plot.getDomainAxis();
-        domainAxis.setCategoryLabelPositions(
-                CategoryLabelPositions.createUpRotationLabelPositions(Math.PI / 6.0)
-        );
-        // OPTIONAL CUSTOMISATION COMPLETED.
-
         return chart;
+    }
+    public static JPanel getOrdersByDayChart(){
+        Statistics stats = new Statistics();
+        double[] data = stats.getOrdersPerDay();
+        String[] days = {"Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"};
 
+        return new MyJFreeChart.Builder().title("Orders per day").dataset("Orders", days, data).build();
+    }
+    public static JPanel getOrdersByMonthChart(){
+        Statistics stats = new Statistics();
+        String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
+        double[] data2 = stats.getOrdersPerMonth();
+
+        return new MyJFreeChart.Builder().title("Orders per month").dataset("Orders", months, data2).build();
     }
 
     public static void main(final String[] args) {
@@ -156,10 +108,6 @@ public class MyJFreeChart extends /*JFrame*/JPanel {
 
         MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();*/
 
-
-
-
-
        // demo.pack();
       //  RefineryUtilities.centerFrameOnScreen(demo);
        // demo.setVisible(true);
@@ -167,13 +115,35 @@ public class MyJFreeChart extends /*JFrame*/JPanel {
 
         String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
         double[] data2 = stats.getOrdersPerMonth();
+        MyJFreeChart ordersChart = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
 
-        MyJFreeChart demo2 = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
-        demo2.setVisible(true);
+
+        String[] graphs = {"Orders by Day","Orders by Month"};
+        JComboBox<String> dropdown = new JComboBox<>(graphs);
+
         JFrame frame = new JFrame();
-        frame.add(demo2);
+        JPanel panel = new JPanel();
+        panel.setLayout(new BorderLayout());
 
+        panel.add(ordersChart, BorderLayout.CENTER);
+
+        JPanel dropdownPanel = new JPanel();
+        dropdownPanel.add(dropdown);
+        dropdown.addItemListener(e ->
+                ordersChart.setGraph(panel,dropdown.getSelectedIndex())
+        );
+
+        panel.add(dropdownPanel, BorderLayout.SOUTH);
+
+        frame.add(panel);
         frame.pack();
         frame.setVisible(true);
+
+    }
+    private void setGraph(JPanel panel, int index){
+
+        if(index == 0) {panel.add(MyJFreeChart.getOrdersByDayChart());}
+        if(index == 1) {panel.add(MyJFreeChart.getOrdersByMonthChart());}
+        panel.repaint();
     }
 }

@@ -70,7 +70,7 @@ public class SQL {
 			}
 		}
 		catch (SQLException e){
-			return false;
+		 	return false;
 		}
 
 
@@ -104,20 +104,21 @@ public class SQL {
 
 
 	/**
-	 * Attemts to end the link with the database
-     * TODO: Make this not shit
+	 * Ends all connections with the database. Closes Connection and ResultSet
 	 */
-	public boolean end() {
+	public void end() {
 
-		try {
-            res.close();
-            connection.close();
-			//setning.close();
-			return true;
+		if(res != null){
+			try{
+				res.close();
+			}
+			catch (SQLException e){}
 		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+		if(connection != null){
+			try {
+				connection.close();
+			}
+			catch (SQLException e){}
 		}
 	}
 

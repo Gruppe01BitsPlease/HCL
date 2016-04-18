@@ -120,11 +120,11 @@ public class SettingsFile {
         System.out.println(test.getPropValue("user"));
         System.out.println(test.getPropValue("password"));
 
-        System.out.println("---KRYPTCHECK---");
+       /* System.out.println("---KRYPTCHECK---");
         String inn = "test";
         String out = test.writeLineAsBase64(inn);
         System.out.println(test.writeLineAsBase64(inn));
-        System.out.println(test.readLineAsBase64(out));
+        System.out.println(test.readLineAsBase64(out));*/
 
 
 
