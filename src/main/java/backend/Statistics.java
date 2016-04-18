@@ -184,6 +184,14 @@ public class Statistics {
 
     }
 
+    public int getGrossIncome(){
+
+        String[][] results = sql.getStringTable("SELECT delivered_subscriptions.`Sum(price)`+" +
+                "delivered_orders.`sum(price)`'Gross' FROM delivered_subscriptions, delivered_orders;\n",false);
+
+        return Integer.parseInt(results[0][0]);
+
+    }
     public static void main(String[]args){
 
         Statistics stats = new Statistics();
@@ -204,7 +212,10 @@ public class Statistics {
         System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
 
         System.out.println("All Time Popular Food: "+stats.getAllTimePopularFood());
-       // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
+        System.out.println("Gross Income: "+stats.getGrossIncome());
+
+
+        // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
 
 
       /*  LocalDate date = LocalDate.now();
