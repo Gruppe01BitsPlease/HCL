@@ -212,6 +212,6 @@ public class SubscriptionManager {
         manager.addDates(5,first,15,30);*/
         //System.out.println(manager.removeDate(4,3008));
 
-        System.out.println(manager.deliver(3009));
+        System.out.println(manager.deliver(3010));
     }
 }
