@@ -173,6 +173,31 @@ public class SubscriptionManager {
         return 1;
     }
 
+    /**
+     * @return
+     *  1: OK
+     * -1: Does not exist
+     * -2: SQL Exception
+     * -3: Wrong Parameters
+     */
+    public int deliver(int date_id){
+
+        if(!sql.rowExists(CURRENT_TABLE,"date_id",date_id)) return -1;
+
+        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE date_id = ?;";
+
+        try{
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,date_id);
+
+            prep.executeUpdate();
+            return 1;
+        }
+        catch (SQLException e){return -2;}
+
+    }
+
     public static void main(String[]args){
 
         SQL sql = new SQL();

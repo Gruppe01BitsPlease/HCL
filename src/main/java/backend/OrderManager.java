@@ -126,7 +126,7 @@ public class OrderManager {
 
         if(sql.rowExists("HCL_subscription","order_id",order_id)) return -4;
 
-        String prepString = "Update "+CURRENT_TABLE+" SET active = false WHERE order_id = ?;";
+        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE order_id = ?;";
 
         try{
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
