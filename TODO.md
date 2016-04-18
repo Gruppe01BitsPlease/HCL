@@ -24,6 +24,7 @@
 
 **BUGS**:
 - Legge til en link og så fjerne den uten å lukke vindu mellom
+- Kan søke i IDnummer
 
 **Database**
 - Ordne on update cascade / on delete cascade // nvm
