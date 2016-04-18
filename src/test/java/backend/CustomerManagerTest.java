@@ -69,7 +69,6 @@ public class CustomerManagerTest {
                 } //Skriver ut "LillePer, jobbmail@hotmail.com, 75584789
 
         //Tester at ikke metoden kan bli brukt med feil
-        manager.edit(lilleperID, "", 75584789);
         assertEquals(-1, manager.edit(000, "mailadresse@mail.com", 75584788));
         assertEquals(-3, manager.edit(storeperID, "", 75584788));
         assertEquals(-3, manager.edit(storeperID, "mailadresse@mail.com", 0));

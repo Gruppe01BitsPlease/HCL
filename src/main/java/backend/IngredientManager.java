@@ -62,15 +62,16 @@ public class IngredientManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int edit(int id, String newName, int newStock,int newPurchase_price, String newOther){
+    public int edit(int id, int newStock,int newPurchase_price, String newOther){
 
         if (!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK, id)) return -1;
+        if (!(newStock >= 0)|| !(newPurchase_price >= 0) || (newOther.trim().equals(""))){return -3;};
 
         try {
             sql.connection.setAutoCommit(false);
 
-            if (newStock >= 0) sql.update(CURRENT_TABLE, "stock", CURRENT_TABLE_PK, Integer.toString(id), newStock);
-            if (newPurchase_price >= 0) sql.update(CURRENT_TABLE, "purchase_price", CURRENT_TABLE_PK, Integer.toString(id), newPurchase_price);
+            if ((newStock >= 0)) sql.update(CURRENT_TABLE, "stock", CURRENT_TABLE_PK, Integer.toString(id), newStock);
+            if ((newPurchase_price >= 0)) sql.update(CURRENT_TABLE, "purchase_price", CURRENT_TABLE_PK, Integer.toString(id), newPurchase_price);
             if (!newOther.trim().equals("")) sql.update(CURRENT_TABLE, "other", CURRENT_TABLE_PK, Integer.toString(id), newOther);
 
             sql.connection.commit();

@@ -23,27 +23,66 @@ public class IngredientManagerTest {
 
     @After
     public void tearDown() throws Exception {
+        //sql.end();
         manager = null;
-        sql.end();
     }
 
     @Test
     public void generate() {
 
-        assertEquals(1,manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "20160404", "20170506"));
-        int brunostID = sql.getLastID();
+        //Lager ingrediens, sjekker at den finnes, sjekker at ingrediens med falsk id ikke eksisterer
+        int brunostID = manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
         assertTrue(sql.rowExists("HCL_ingredient", "ingredient_id", brunostID));
         assertFalse(sql.rowExists("HCL_ingredient", "ingredient_id", 001));
 
 
         //Prøver å lage ukorrekte ingrediensobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(-3,manager.generate (" ", 5, 56, false, false, true, "mac er best", "20160404", "20170506"));
-        assertEquals(manager.generate("Kyllingvinge ", 0, 40, false, false, true, "mac er best", "20160404", "20170506"), -3);
+        assertEquals(-3,manager.generate (" ", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
+        assertEquals(-3, manager.generate("Kyllingvinge ", -1, 40, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
 
-        manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506");
-        //assertEquals(manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "20160404", "20170506"), -1); //Riktig
+        //Sjekker at et objekt ikke kan bli laget to ganger
+        int ostID = manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06");
+        assertEquals(-1, manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
+
+        manager.delete(brunostID);
+        manager.delete(ostID);
 
     }
+
+    @Test
+    //Lager ingredient-objekter og henter ID
+    public void edit() throws Exception {
+        int vinID = manager.generate("riesling cabinett", 1, 104, false, true, false, "hei", "2017-06-06", "2018-06-06");
+        int ølID = manager.generate("nordlands", 1, 32, false, true, false, "hei", "2017-06-06", "2018-06-06");
+
+        //henter informasjon om vinen før og etter edit.
+        String førSetning = "SELECT * from HCL_ingredient where ingredient_id = " + vinID;
+        String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
+        for(int i = 0; i < utskrift1[0].length; i++){
+            System.out.println(utskrift1[0][i]);
+        } //Skriver ut "68, riesling cabinett, 1, 104, 0, 1, 0, hei, 2017-06-06, 2018-06-06"
+
+
+            manager.edit(vinID, 2,99, "god vin!");
+
+            String etterSetning = "SELECT * from HCL_ingredient where ingredient_id = " + vinID;
+            String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
+            for(int i = 0; i < utskrift2[0].length; i++){
+                System.out.println(utskrift2[0][i]);
+            } //Skriver ut "68, riesling cabinett, 2, 99, 0, 1, 0, god vin!, 2017-06-06, 2018-06-06"
+
+            //Tester at ikke metoden kan bli brukt med feil
+            assertEquals(-1, manager.edit(000, 10, 80, "hallo"));
+            assertEquals(-3, manager.edit(ølID, -1, 80, "hallo" ));
+            assertEquals(-3, manager.edit(ølID, 10, -1, "hallo" ));
+            assertEquals(-3, manager.edit(ølID, 10, 80, "" ));
+
+
+            manager.delete(ølID);
+            manager.delete(vinID);
+        }
+
+
 /*
    @Test
     public void delete() {
