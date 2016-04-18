@@ -238,6 +238,7 @@ public class UserManager{
 
 		System.out.println(u.logon("olavhus", "ostost"));
         System.out.println(u.logon("olavhus", "faiter119"));
+        u.generate("admin", "admin", 0);
 
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
