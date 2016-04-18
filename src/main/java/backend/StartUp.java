@@ -10,24 +10,20 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 
-
 /**
- * Created by bahafeld on 02.04.2016...
+ * Class for the startup logic. Checks if settings file is valid, connection to db is successful
  */
-
-//initialize and configure Settings
-    // main
-    // rebuild database?
-    // check settingfile for error
-    // check dbconnection
-
-public class StartUp {
-    LogOnGUI logon;
-    SettingsFile settings;
-    SettingsGUI window;
+public class StartUp
+{
+    private SettingsFile settings;
+    private SettingsGUI window;
     SQL sql;
 
-    public StartUp(){
+    /**
+     *
+     * @return boolean
+     */
+    private StartUp(){
     init();
     }
 
@@ -35,8 +31,7 @@ public class StartUp {
      *
      * @return boolean
      */
-
-    public void init() {
+    private void init() {
         if (settings == null) {
             try {
                 this.settings = new SettingsFile();
@@ -100,7 +95,7 @@ public class StartUp {
 
 
 
-    public boolean isFirstTime(){
+    private boolean isFirstTime(){
         String firsttime = settings.getPropValue("firsttime");
         return firsttime == null || firsttime.trim().equals("1") || firsttime.trim().equals("");
     }
@@ -108,7 +103,7 @@ public class StartUp {
     /**
      * Returns true if the stars align
      */
-    public boolean validateDBConnection() {
+    private boolean validateDBConnection() {
         sql = new SQL();
         System.out.println(sql.isConnected());
         return sql.isConnected(); // True if the database, username, password, and JDBC drivers are all correct, and the servers are online
@@ -121,7 +116,7 @@ public class StartUp {
      *   1 everything seems fine. <br>
      *       @return int -1, 0 or 1
      */
-    public int validateSettings() {
+    private int validateSettings() {
         //add settings to be validated here
         String[] validateTable = {
                 settings.getPropValue("host"),
@@ -138,8 +133,6 @@ public class StartUp {
     }
 
     public static void main(String[] args) {
-
-
         if(!System.getProperty("os.name").equalsIgnoreCase("mac os x")){
             try {
                 UIManager.setLookAndFeel("com.seaglasslookandfeel.SeaGlassLookAndFeel");
@@ -151,16 +144,8 @@ public class StartUp {
                 }
             }
         }
-
-        EventQueue.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                new StartUp();
-            }
-        });
+        EventQueue.invokeLater(StartUp::new);
     }
-
 }
 
 
