@@ -63,7 +63,7 @@ public class LogOnGUI extends JFrame{
 						JOptionPane.showMessageDialog(null, "Could not connect to the database.");
 					}
 				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, "Could not locate the settings file.");
+					JOptionPane.showMessageDialog(null, "Something went wrong!");
 					e.printStackTrace();
 				}
 			}

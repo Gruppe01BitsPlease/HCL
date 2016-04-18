@@ -13,14 +13,7 @@ public class SQL {
 	private String host;
 	private String database;
 	public  Connection connection;
-	@Deprecated
-	/**
-	 * Use method isConnected() instead
-	 * Still works but is worse
-	 */
-    public boolean isConnected = false;
-
-	public static int colomns = 0;
+	private static int colomns = 0;
 
 	public SQL() {
 		try {this.settings = new SettingsFile();}
@@ -52,13 +45,8 @@ public class SQL {
 	 * @return True if connected to the internet and the database
      */
 	public boolean isConnected(){
-		try{
-			if(connection != null) {
-				return connection.isValid(3);
-			}
-			else{
-				return false;
-			}
+		try {
+			return connection != null && connection.isValid(3);
 		}
 		catch (SQLException e){
 		 	return false;
@@ -94,7 +82,7 @@ public class SQL {
 	public void end() {
 
 		if(connection != null){
-			try { connection.close();} catch (SQLException e){}
+			try { connection.close();} catch (SQLException ignored){}
 		}
 	}
 
@@ -107,11 +95,9 @@ public class SQL {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
-        ResultSet out;
 		try { //Can't use try-with, because you cant do stuff with a closed ResultSet object
             Statement setning = connection.createStatement();
-            ResultSet res = setning.executeQuery(query);
-            return res;
+			return setning.executeQuery(query);
 
 		}
 		catch (SQLException e) {
@@ -421,7 +407,7 @@ public class SQL {
 	 * Returns an array with the correct size for the specified query
 	 * and null if something goes wrong
 	 */
-	public String[][] arrayWithCorrectSize(String query, boolean header) {
+	private String[][] arrayWithCorrectSize(String query, boolean header) {
 
 		try {
 			ResultSet res = query(query);
@@ -449,7 +435,7 @@ public class SQL {
 	/**
 	 * Prints a generic [][] array. Can take all types off arrays cuz fancy
 	 */
-	public <T> void print2dArray(T[][] array) {
+	<T> void print2dArray(T[][] array) {
 		if (array != null && array.length != 0) {
 			System.out.println();
 			for (int i = 0; i < array[0].length; i++) {
