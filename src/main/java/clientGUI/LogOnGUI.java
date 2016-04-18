@@ -53,11 +53,7 @@ public class LogOnGUI extends JFrame{
 				int i;
 				try {
 					UserManager u = new UserManager(new SQL());
-					if (navn.equals("admin") && pass.equals("admin")) {
-						i = 0;
-					} else {
-						i = u.logon(navn, pass);
-					}
+					i = u.logon(navn, pass);
 					if (i >= 0) {
 						tabbedMenu main = new tabbedMenu(i, navn);
 						dispose();
@@ -68,6 +64,7 @@ public class LogOnGUI extends JFrame{
 					}
 				} catch (Exception e) {
 					JOptionPane.showMessageDialog(null, "Could not locate the settings file.");
+					e.printStackTrace();
 				}
 			}
 		};
