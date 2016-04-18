@@ -47,6 +47,8 @@ Contents
 
 4. Installation
    -------
+   We also have a lot of tooltips to help you out in this program.
+   Hover over any item you are unsure of.
 
    1. Extract archive to preferred installation path.
        1. NOTE!: only the jar file and libs folder are required to run this software.

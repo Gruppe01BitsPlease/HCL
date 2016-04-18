@@ -22,7 +22,7 @@ public class SubscriptionTab extends GenericList {
 	private static String[][] linkTables = {{ "Dates", "date_id", "HCL_subscription_date", "HCL_subscription_date", "dato"}};
 	public SubscriptionTab(SQL sql) {
 		super(query, sqlTableName, linkTables, null, sql);
-		this.sql = sql;
+		SubscriptionTab.sql = sql;
 	}
 	public int delete(int nr) {
 		SubscriptionManager mng = new SubscriptionManager(sql);
