@@ -64,6 +64,7 @@ public class tabbedMenu extends JFrame {
     }
 	private void addTabs() {
 		if (rolle == 0) {
+			addTab(new StatisticsTab());
 			addTab(new EmployeeTab(sql));
 			addTab(new CeoTab());
 		}
@@ -88,6 +89,7 @@ public class tabbedMenu extends JFrame {
 	private String ordrName = "Orders";
 	private String packName = "Packages";
 	private String subscrName = "Subscriptions";
+	private String statsName = "Statistics";
 
 	private void addTab(JPanel tab) {
 
@@ -129,6 +131,11 @@ public class tabbedMenu extends JFrame {
 		else if (tab instanceof SubscriptionTab) {
 			if (tabs.indexOfTab(subscrName) == -1) {
 				tabs.addTab(subscrName, tab);
+			}
+		}
+		else if (tab instanceof StatisticsTab) {
+			if (tabs.indexOfTab(statsName) == -1) {
+				tabs.addTab(statsName, tab);
 			}
 		}
 		addCloseButtons();

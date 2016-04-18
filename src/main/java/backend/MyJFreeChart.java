@@ -139,9 +139,6 @@ public class MyJFreeChart extends JPanel {
         cards.add(ordersByMonthChart,MONTHS);
 
 
-
-
-
         // Dropdown Panel
         JPanel dropdownPanel = new JPanel();
 
@@ -158,25 +155,20 @@ public class MyJFreeChart extends JPanel {
         //
         JFrame frame = new JFrame();  // The frame itself
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel(new BorderLayout());  // The main panel in the frame
+        JPanel panel = new JPanel();  // The main panel in the frame
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-        JPanel southPanel = new JPanel();
-        JPanel northPanel = new JPanel();
         JPanel westPanel = new JPanel();
-        JPanel eastPanel = new JPanel();
         //
 
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
 
         westPanel.add(getStats());
+        westPanel.setPreferredSize(new Dimension(500,122));
         //
         panel.add(westPanel,BorderLayout.WEST);
         panel.add(centerPanel,BorderLayout.CENTER);
-      /*  panel.add(southPanel,BorderLayout.SOUTH);
-        panel.add(northPanel,BorderLayout.NORTH);*/
-        /*panel.add(eastPanel,BorderLayout.EAST);*/
 
         frame.add(panel);
         frame.pack();
