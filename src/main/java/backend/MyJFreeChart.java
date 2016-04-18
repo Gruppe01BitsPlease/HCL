@@ -3,6 +3,7 @@ package backend;
 import java.awt.*;
 import java.util.Arrays;
 
+import clientGUI.JTableHCL;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -18,6 +19,7 @@ import org.jfree.ui.ApplicationFrame;
 import org.jfree.ui.RefineryUtilities;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class MyJFreeChart extends JPanel {
 
@@ -96,54 +98,88 @@ public class MyJFreeChart extends JPanel {
 
         return new MyJFreeChart.Builder().title("Orders per month").dataset("Orders", months, data2).build();
     }
+    public static JScrollPane getStats(){
+        Statistics stats = new Statistics();
 
-    public static void main(final String[] args) {
+        String[] names = {"Statistic","Value"};
 
-        // http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
+        String[][] statTable = {
+                {"Gross Income",Integer.toString(stats.getGrossIncome())+"kr"},
+                {"Total Orders",Integer.toString(stats.getTotalOrders())},
+                {"Total Subscriptions",Integer.toString(stats.getTotalSubscriptions())},
+                {"Average Orders Per Month This Year",String.format("%.5s",Double.toString(stats.getAvgOrdersPerMonthThisYear()))},
+                {"Popular Food All Time",stats.getAllTimePopularFood()},
+                {"Popular Ingredient All Time ",stats.getAllTimePopularIngredient()}
+        };
+        // 2 Stats til, der du må skrive inn
+
+        DefaultTableModel model = new DefaultTableModel(statTable,names);
+
+        return new JScrollPane(new JTableHCL(model));
+    }
+
+    public static void main(final String[] args) { // http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
 
         Statistics stats = new Statistics();
 
-       /* double[] data = stats.getOrdersPerDay();
+        final String DAYS = "Orders By Day";
+        final String MONTHS = "Orders By Month";
+
+        double[] data = stats.getOrdersPerDay();
         String[] days = {"Mon","Tue","Wed","Thurs","Fri","Sat","Sun"};
+        MyJFreeChart ordersByDayChart = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
 
-        MyJFreeChart demo = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();*/
+        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
+        double[] data2 = stats.getOrdersPerMonth();
+        MyJFreeChart ordersByMonthChart = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
 
-       // demo.pack();
-      //  RefineryUtilities.centerFrameOnScreen(demo);
-       // demo.setVisible(true);
+        // Add the charts here
+        JPanel cards = new JPanel(new CardLayout());
+        cards.add(ordersByDayChart,DAYS);
+        cards.add(ordersByMonthChart,MONTHS);
+
+
+
+
+
+        // Dropdown Panel
+        JPanel dropdownPanel = new JPanel();
+
+        String[] graphs = {DAYS,MONTHS};
+        JComboBox<String> dropdown = new JComboBox<>(graphs);
+        dropdown.addItemListener(e -> {
+            CardLayout cl = (CardLayout)(cards.getLayout());
+            cl.show(cards, (String)e.getItem());
+        });
+
+        dropdownPanel.add(dropdown,BorderLayout.NORTH);
+        // Dropdown Panel
+
+        //
+        JFrame frame = new JFrame();  // The frame itself
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JPanel panel = new JPanel(new BorderLayout());  // The main panel in the frame
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel southPanel = new JPanel();
+        JPanel northPanel = new JPanel();
+        JPanel westPanel = new JPanel();
+        JPanel eastPanel = new JPanel();
         //
 
-        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sept","Oct","Nov","Dec"};
-        double[] data2 = stats.getOrdersPerMonth();
-        MyJFreeChart ordersChart = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
+        centerPanel.add(cards,BorderLayout.CENTER);
+        centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
 
-
-        String[] graphs = {"Orders by Day","Orders by Month"};
-        JComboBox<String> dropdown = new JComboBox<>(graphs);
-
-        JFrame frame = new JFrame();
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-
-        panel.add(ordersChart, BorderLayout.CENTER);
-
-        JPanel dropdownPanel = new JPanel();
-        dropdownPanel.add(dropdown);
-        dropdown.addItemListener(e ->
-                ordersChart.setGraph(panel,dropdown.getSelectedIndex())
-        );
-
-        panel.add(dropdownPanel, BorderLayout.SOUTH);
+        westPanel.add(getStats());
+        //
+        panel.add(westPanel,BorderLayout.WEST);
+        panel.add(centerPanel,BorderLayout.CENTER);
+      /*  panel.add(southPanel,BorderLayout.SOUTH);
+        panel.add(northPanel,BorderLayout.NORTH);*/
+        /*panel.add(eastPanel,BorderLayout.EAST);*/
 
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);
-
-    }
-    private void setGraph(JPanel panel, int index){
-
-        if(index == 0) {panel.add(MyJFreeChart.getOrdersByDayChart());}
-        if(index == 1) {panel.add(MyJFreeChart.getOrdersByMonthChart());}
-        panel.repaint();
     }
 }

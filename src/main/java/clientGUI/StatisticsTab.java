@@ -31,7 +31,6 @@ public class StatisticsTab extends JPanel{
             JComboBox<String> dropdown = new JComboBox<>(graphs);
             centerPanel.add(dropdown, BorderLayout.SOUTH);
 
-            setGraph(centerPanel,dropdown);
             // TODO: FIX
             dropdown.addItemListener(new ItemListener() {
                 public void itemStateChanged(ItemEvent e) {
@@ -82,25 +81,5 @@ public class StatisticsTab extends JPanel{
         add(westPanel,BorderLayout.WEST);
 
 
-    }
-    private void setGraph(JPanel panel, JComboBox<String> box){
-
-        int selection = box.getSelectedIndex();
-
-        if(selection == 0) {
-            double[] data = stats.getOrdersPerDay();
-            String[] days = {"Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"};
-            MyJFreeChart chart = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders", days, data).build();
-            panel.add(chart, BorderLayout.CENTER);
-        }
-        // Orders by Day
-
-        if(selection == 1) {
-            String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
-            double[] data2 = stats.getOrdersPerMonth();
-            MyJFreeChart chart2 = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders", months, data2).build();
-            panel.add(chart2, BorderLayout.CENTER);
-        }
-        panel.repaint();
     }
 }
