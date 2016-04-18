@@ -182,9 +182,9 @@ public class SubscriptionManager {
      */
     public int deliver(int date_id){
 
-        if(!sql.rowExists(CURRENT_TABLE,"date_id",date_id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE_LINK_DATE,"date_id",date_id)) return -1;
 
-        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE date_id = ?;";
+        String prepString = "Update "+CURRENT_TABLE_LINK_DATE+" SET delivered = true WHERE date_id = ?;";
 
         try{
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
@@ -210,7 +210,8 @@ public class SubscriptionManager {
 /*
         LocalDate first = LocalDate.now();
         manager.addDates(5,first,15,30);*/
-        System.out.println(manager.removeDate(4,3008));
+        //System.out.println(manager.removeDate(4,3008));
 
+        System.out.println(manager.deliver(3009));
     }
 }
