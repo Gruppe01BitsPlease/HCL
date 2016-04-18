@@ -22,6 +22,9 @@ GUI
 - Dato-greier prefilled med dags-dato?
 - Størrelse på inputfelter i editvindu
 
+BUGS:
+- Legge til en link og så fjerne den uten å lukke vindu mellom
+
 Database
 - Ordne on update cascade / on delete cascade // nvm
 - Legge til "Active" boolean søyle over alt

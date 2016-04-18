@@ -691,8 +691,6 @@ class GenericList extends JPanel {
 
 		}
 	}
-
-
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;
@@ -738,7 +736,8 @@ class GenericList extends JPanel {
 						}
 						//searchWindow window = new searchWindow();
 						DefaultTableModel searchTM = new DefaultTableModel(searchTable, titles);
-						list.setModel(tabModel);
+						list.setModel(searchTM);
+						list.removeIDs();
 						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
 				};
