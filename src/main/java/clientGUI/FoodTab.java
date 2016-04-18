@@ -13,8 +13,8 @@ class FoodTab extends GenericList {
 	private static String[][] linkTables = {{ "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name" },
 			{ "Orders", "order_id", "HCL_order_food", "HCL_order", "adress" },
 			{ "Packages", "package_id", "HCL_package_food", "HCL_package", "name" }};
-	public FoodTab(SQL sql) {
-		super(query, "HCL_food", linkTables, null, sql);
+	public FoodTab(SQL sql, int role) {
+		super(query, "HCL_food", linkTables, null, sql, role);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}

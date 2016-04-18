@@ -2,6 +2,8 @@ package clientGUI;
 
 import backend.SQL;
 
+import java.util.Arrays;
+
 /**
  * Created by Jens on 06-Apr-16.
  */
@@ -11,7 +13,9 @@ abstract class ColumnNamer {
 	}
 	public static String[][] getNamesWithOriginals(String query, SQL sql) {
 		String[] one = sql.getColumnNames(query);
+		System.out.println(Arrays.toString(one));
 		String[] two = getNames(query, sql);
+		System.out.println(Arrays.toString(two));
 		String[][] ret = { one, two };
 		return ret;
 	}

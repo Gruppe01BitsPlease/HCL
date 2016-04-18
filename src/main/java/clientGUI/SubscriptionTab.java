@@ -20,8 +20,8 @@ public class SubscriptionTab extends GenericList {
 	//Tab name, foreign PK, link table name, other table name, foreign identifier
 	//{ "Foods", "food_id", "HCL_order_food", "HCL_food", "name" }
 	private static String[][] linkTables = {{ "Dates", "date_id", "HCL_subscription_date", "HCL_subscription_date", "dato"}};
-	public SubscriptionTab(SQL sql) {
-		super(query, sqlTableName, linkTables, null, sql);
+	public SubscriptionTab(SQL sql, int role) {
+		super(query, sqlTableName, linkTables, null, sql, role);
 		this.sql = sql;
 	}
 	public int delete(int nr) {

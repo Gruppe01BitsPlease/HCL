@@ -12,8 +12,8 @@ class PackageTab extends GenericList {
 	private static String[][] linkTables = {{ "Orders", "order_id", "HCL_order_package", "HCL_order", "adress" },
 	{ "Foods", "food_id", "HCL_package_food", "HCL_food", "name" }};
 	private SQL sql;
-	public PackageTab(SQL sql) {
-		super(query, "HCL_package", linkTables, null, sql);
+	public PackageTab(SQL sql, int role) {
+		super(query, "HCL_package", linkTables, null, sql, role);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}

@@ -33,11 +33,14 @@ class GenericList extends JPanel {
 	private String scrollName = "List";
 	private String searchName = "Search";
     private SQL sql;
-    public int x;
-    public int y;
+	private int role;
+    public static int x;
+    public static int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql) {
+	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
+		System.out.println(SqlTableName + "query: " + query);
+		this.role = role;
 		this.FKs = FKs;
 		//try {
 			this.sql = sql;
@@ -90,6 +93,9 @@ class GenericList extends JPanel {
 		list.removeIDs();
 		//removePK();
     }
+	public int getRole() {
+		return role;
+	}
 	class cardTable extends JPanel {
 		public cardTable() {
 			cardLayout = new CardLayout();
@@ -191,7 +197,7 @@ class GenericList extends JPanel {
 					int index = newTable.length - 1;
 					table = newTable;
 					fillTable();*/
-					editWindow edit = new editWindow(-1, true);
+					edit(-1, true);
 				}
 			});
 			add(newThing);
@@ -199,58 +205,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class datePane extends JPanel {
-		JTextField year;
-		JTextField month;
-		JTextField day;
-		public datePane(String date) {
-			//2014-01-01
-			setLayout(new GridLayout(1, 3));
-			if (date != null && !(date.equals(""))) {
-				if (date.length() == 10) {
-					year = new JTextField(date.substring(0, 4));
-					//System.out.println(year.getText());
-					month = new JTextField(date.substring(5, 7));
-					//System.out.println(month.getText());
-					day = new JTextField(date.substring(8, 10));
-					//System.out.println(day.getText());
-				}
-				else {
-					System.out.println("Date format is wrong! GenericList.datePane");
-				}
-			}
-			else {
-				year = new JTextField("");
-				month = new JTextField("");
-				day = new JTextField("");
-			}
-			add(year);
-			add(month);
-			add(day);
-		}
-		public datePane() {
-			setLayout(new GridLayout(1, 3));
-			year = new JTextField("");
-			month = new JTextField("");
-			day = new JTextField("");
-			add(year);
-			add(month);
-			add(day);
-		}
-		public String getDate() {
-			if (!(year.getText().equals("") && month.getText().equals("") & day.getText().equals(""))) {
-				return year.getText() + "-" + month.getText() + "-" + day.getText();
-			}
-			else {
-				return "";
-			}
-		}
-		public void setDate(String date) {
-			year = new JTextField(date.substring(0, 4));
-			month = new JTextField(date.substring(5, 7));
-			day = new JTextField(date.substring(8, 10));
-		}
-	}
+
 	class editWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
@@ -553,6 +508,7 @@ class GenericList extends JPanel {
 						PKColumnIndex = i;
 					}
 				}
+				linkTable.removeIDs();
 			}
 			class lowerButtons extends JPanel {
 				public lowerButtons() {

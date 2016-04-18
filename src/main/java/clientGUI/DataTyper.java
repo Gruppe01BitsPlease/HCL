@@ -120,7 +120,7 @@ abstract class DataTyper {
 				ret[i] = "int";
 			}
 			else if (UINames[i].equals("Start date")) {
-				ret[i] = "date";
+				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Post code")) {
 				ret[i] = "int";
