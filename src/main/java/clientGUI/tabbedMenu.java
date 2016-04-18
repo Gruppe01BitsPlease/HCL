@@ -28,6 +28,26 @@ public class tabbedMenu extends JFrame {
 		setIconImage(image);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowListener() {
+			@Override
+			public void windowOpened(WindowEvent e) {}
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Closing connection");
+				sql.end();
+				System.exit(0);
+			}
+			@Override
+			public void windowClosed(WindowEvent e) {}
+			@Override
+			public void windowIconified(WindowEvent e) {}
+			@Override
+			public void windowDeiconified(WindowEvent e) {}
+			@Override
+			public void windowActivated(WindowEvent e) {}
+			@Override
+			public void windowDeactivated(WindowEvent e) {}
+		});
 		//Dynamic size based on screen resolution bitches
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		x = (int) (screen.width * 0.75);
