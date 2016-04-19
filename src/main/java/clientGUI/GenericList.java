@@ -266,7 +266,7 @@ class GenericList extends JPanel {
 			add(new saveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		String[] comboBoxChoices;
+		String[] comboBoxIDs;
 		class saveCancelButtons extends JPanel {
 			public saveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
@@ -301,9 +301,10 @@ class GenericList extends JPanel {
 										newValues[i] = dtp.getDate();
 									} else if (fields.get(i) instanceof JComboBox) {
 										JComboBox cmb = (JComboBox) fields.get(i);
-										String sel = (String) cmb.getSelectedItem();
-										String[] chosen = sel.split(",");
-										newValues[i] = chosen[0];
+										String selID = comboBoxIDs[cmb.getSelectedIndex()];
+										/*String sel = (String) cmb.getSelectedItem();
+										String[] chosen = sel.split(",");*/
+										newValues[i] = selID;
 										System.out.println(newValues[i]);
 									}
 								}
@@ -449,6 +450,7 @@ class GenericList extends JPanel {
 							k.setSelectedItem(choices[1][Stuff.findIndexOf(choices[1], selected[i])]);
 							k.setEnabled(false);
 						}
+						comboBoxIDs = choices[0];
 						fields.add(k);
 						add(j);
 						add(k);

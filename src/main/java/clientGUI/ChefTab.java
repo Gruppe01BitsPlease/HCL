@@ -14,8 +14,7 @@ import java.awt.event.MouseEvent;
  * Created by Jens on 18-Apr-16.
  */
 public class ChefTab extends JPanel {
-	private String query = "SELECT order_id, adress, delivery_date, name FROM HCL_order NATURAL JOIN HCL_food_ingredient " +
-			"NATURAL JOIN HCL_food WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT order_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -23,6 +22,7 @@ public class ChefTab extends JPanel {
 	public ChefTab(SQL sql, int role) {
 		this.sql = sql;
 		setLayout(new BorderLayout());
+		System.out.println("Chef tab query: " + query);
 		data = sql.getStringTable(query, false);
 		titles = ColumnNamer.getNames(query, sql);
 		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
@@ -39,6 +39,7 @@ public class ChefTab extends JPanel {
 				}
 			}
 		});
+		add(new northBar(), BorderLayout.NORTH);
 		table.removeIDs();
 	}
 	private void refresh() {
@@ -46,6 +47,40 @@ public class ChefTab extends JPanel {
 		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
 		table.setModel(tabModel);
 		table.removeIDs();
+	}
+	private class northBar extends JPanel {
+		public northBar() {
+			setLayout(new GridLayout(1, 2));
+			JButton deliver = new JButton("Finish");
+			JButton refresh = new JButton("Refresh");
+			refresh.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					refresh();
+				}
+			});
+			deliver.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					int choice = JOptionPane.showConfirmDialog(null, "Complete orders?", "Order", JOptionPane.YES_NO_OPTION);
+					if (choice == 0) {
+						int[] selectedIndexes = table.getSelectedRows();
+						int[] selectedIDs = new int[selectedIndexes.length];
+						for (int i = 0; i < selectedIndexes.length; i++) {
+							selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
+						}
+						OrderManager mng = new OrderManager(sql);
+						for (int i = 0; i < selectedIDs.length; i++) {
+							System.out.println("Deliver ID: " + selectedIDs[i]);
+							mng.deliver(selectedIDs[i]);
+						}
+						refresh();
+					}
+				}
+			});
+			add(deliver);
+			add(refresh);
+		}
 	}
 	private class viewVindow extends JFrame {
 		private int order_id;
