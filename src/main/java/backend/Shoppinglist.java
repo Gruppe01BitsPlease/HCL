@@ -23,9 +23,10 @@ public class Shoppinglist {
      */
     public String[][] getShoppinglist(int interval){
 
-        String prepString = "SELECT ingredient_id,`Ingredient Name`,sum(`Total to buy this date`)-Stock FROM " +
-                "ingredients_to_buy_summed WHERE `Total to buy this date`-Stock > 0 AND delivery_date " +
-                "BETWEEN CURDATE() AND CURDATE() + INTERVAL ? DAY GROUP BY ingredient_id;";
+        String prepString = "SELECT ingredient_id, `Ingredient Name`, Sum(`Total Ingredients`), `Ingredient Stock`, Sum(`Total Ingredients`)-`Ingredient Stock`'Total Minus Stock'" +
+                " FROM deliveries_ingredients_total " +
+                "WHERE (`Total Ingredients`)-`Ingredient Stock` > 0 AND delivery_date BETWEEN CURDATE() AND CURDATE()+ ? " +
+                "GROUP BY ingredient_id;";
 
                 ArrayList<ArrayList<String>> list = new ArrayList<ArrayList<String>>();
 
@@ -43,6 +44,7 @@ public class Shoppinglist {
 
             while(res.next()){
                 row++;
+
                 list.add(new ArrayList<String>());
 
                 for(int i = 1; i<=colomns; i++) {
@@ -141,7 +143,7 @@ public class Shoppinglist {
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist();
 
-        String[][] array = list.getShoppinglist(5);
+        String[][] array = list.getShoppinglist(2000);
 
         sql.print2dArray(array);
 
