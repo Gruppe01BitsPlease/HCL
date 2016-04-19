@@ -68,11 +68,11 @@ public class tabbedMenu extends JFrame {
 			addTab(new EmployeeTab(sql, rolle));
 			addTab(new CeoTab());
 		}
-		/*if (rolle == 1 || rolle == 0) {
+		if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql, rolle));
 			addTab(new CustomerTab(sql, rolle));
-			addTab(new SubscriptionTab(sql, rolle));
-		}*/
+			//addTab(new SubscriptionTab(sql, rolle));
+		}
 		if (rolle == 2 || rolle == 0) {
 			addTab(new FoodTab(sql, rolle));
 			addTab(new IngredientTab(sql, rolle));

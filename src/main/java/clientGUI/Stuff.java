@@ -51,19 +51,33 @@ abstract class Stuff {
 	}
 }
 class datePane extends JPanel {
-	JTextField year;
-	JTextField month;
-	JTextField day;
+	JComboBox<String> yearBox;
+	JComboBox<String> monthBox;
+	JTextField dayField;
 	public datePane(String date) {
-		//2014-01-01
+		//2014-01-31
+		String[] years = new String[5];
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		for (int i = 0; i < years.length; i++) {
+			years[i] = Integer.toString(year + i);
+		}
+		yearBox = new JComboBox<>(years);
+		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		monthBox = new JComboBox<>(months);
 		setLayout(new GridLayout(1, 3));
 		if (date != null && !(date.equals(""))) {
 			if (date.length() == 10) {
-				year = new JTextField(date.substring(0, 4));
+				String selyear = date.substring(0, 4);
+				if (Integer.parseInt(selyear) < year) {
+					yearBox.addItem(selyear);
+				}
+				yearBox.setSelectedItem(selyear);
 				//System.out.println(year.getText());
-				month = new JTextField(date.substring(5, 7));
+				int selmonth = Integer.parseInt(date.substring(5, 7));
+				monthBox.setSelectedIndex(selmonth - 1);
 				//System.out.println(month.getText());
-				day = new JTextField(date.substring(8, 10));
+				dayField = new JTextField(date.substring(8, 10));
 				//System.out.println(day.getText());
 			}
 			else {
@@ -71,43 +85,64 @@ class datePane extends JPanel {
 			}
 		}
 		else {
-			year = new JTextField("");
-			month = new JTextField("");
-			day = new JTextField("");
+			dayField = new JTextField("");
 		}
-		add(year);
-		add(month);
-		add(day);
+		add(yearBox);
+		add(monthBox);
+		add(dayField);
 	}
 	public datePane() {
+		//2014-01-31
+		String[] years = new String[5];
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		for (int i = 0; i < years.length; i++) {
+			years[i] = Integer.toString(year + i);
+		}
+		yearBox = new JComboBox<>(years);
+		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		monthBox = new JComboBox<>(months);
 		setLayout(new GridLayout(1, 3));
-		year = new JTextField("");
-		month = new JTextField("");
-		day = new JTextField("");
-		add(year);
-		add(month);
-		add(day);
+		dayField = new JTextField("");
+		add(yearBox);
+		add(monthBox);
+		add(dayField);
 	}
 	public String getDate() {
-		if (!(year.getText().equals("") && month.getText().equals("") & day.getText().equals(""))) {
-			return year.getText() + "-" + month.getText() + "-" + day.getText();
+		String year = (String) yearBox.getSelectedItem();
+		String month = Integer.toString(monthBox.getSelectedIndex() + 1);
+		String day = dayField.getText();
+		if (month.length() < 2) {
+			String foo = "0";
+			foo += month;
+			month = foo;
 		}
-		else {
-			return "";
-		}
+		return year + "-" + month + "-" + day;
 	}
 	public void setDate(String date) {
-		year = new JTextField(date.substring(0, 4));
-		month = new JTextField(date.substring(5, 7));
-		day = new JTextField(date.substring(8, 10));
+		String year = (date.substring(0, 4));
+		String month = (date.substring(5, 7));
+		String day = (date.substring(8, 10));
+		yearBox.setSelectedItem(year);
+		monthBox.setSelectedIndex(Integer.parseInt(month) - 1);
+		dayField.setText(day);
 	}
 }
 class editFields extends JPanel {
 	private ArrayList<JComponent> fields = new ArrayList<>();
-	public editFields(String query, SQL sql, boolean newEntry) {
-		String[] selected = sql.getRow(query);
-		String[] titles = ColumnNamer.getNames(query, sql);
-		String[] dataTypes = DataTyper.getDataTypes(titles);
+	private String[][] comboBoxChoices;
+	private String[] selected;
+	private String[] dataTypes;
+	private boolean newEntry;
+	private SQL sql;
+	public editFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
+		this.selected = selected;
+		this.newEntry = newEntry;
+		this.sql = sql;
+		dataTypes = DataTyper.getDataTypes(titles);
+		if (FKs != null && FKs.length > 0) {
+			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
+		}
 		int length = selected.length + 1;
 		setLayout(new GridLayout(length, 2));
 		//setSize((int) (x * 0.5), (int) (length * 0.01));
@@ -141,16 +176,17 @@ class editFields extends JPanel {
 			} else if (dataTypes[i].contains("SELECT")) {
 				JLabel j = new JLabel(titles[i]);
 				String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
-				JComboBox<String> k = new JComboBox<>(choices[1]);
+				comboBoxChoices = choices;
+				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
 				if (!newEntry) {
-					k.setSelectedItem(choices[1][Stuff.findIndexOf(choices[1], selected[i])]);
+					k.setSelectedItem(comboBoxChoices[1][Stuff.findIndexOf(comboBoxChoices[0], selected[i])]);
 					k.setEnabled(false);
 				}
 				fields.add(k);
 				add(j);
 				add(k);
 			}
-			else if (dataTypes[i].equals("id")) {
+			else if (dataTypes[i].equals("id") || dataTypes[i].equals("active")) {
 				JTextField k = new JTextField(selected[i]);
 				fields.add(k);
 			} else {
@@ -167,4 +203,70 @@ class editFields extends JPanel {
 	public ArrayList<JComponent> getFields() {
 		return fields;
 	}
+	public String[][] getComboBoxChoices() {
+		return comboBoxChoices;
+	}
+	public String[] getNewValues() {
+		String[] newValues = new String[selected.length];
+		for (int i = 0; i < newValues.length; i++) {
+			if (fields.get(i) instanceof JTextField) {
+				JTextField field = (JTextField) fields.get(i);
+				newValues[i] = field.getText();
+			} else if (fields.get(i) instanceof JCheckBox) {
+				JCheckBox chk = (JCheckBox) fields.get(i);
+				if (chk.isSelected()) {
+					newValues[i] = "true";
+				} else if (!(chk.isSelected())) {
+					newValues[i] = "false";
+				}
+			} else if (fields.get(i) instanceof datePane) {
+				datePane dtp = (datePane) fields.get(i);
+				newValues[i] = dtp.getDate();
+			} else if (fields.get(i) instanceof JComboBox) {
+				JComboBox cmb = (JComboBox) fields.get(i);
+				String selID = comboBoxChoices[0][cmb.getSelectedIndex()];
+										/*String sel = (String) cmb.getSelectedItem();
+										String[] chosen = sel.split(",");*/
+				newValues[i] = selID;
+				System.out.println(newValues[i]);
+			}
+		}
+		return newValues;
+	}
+	/*public void update() {
+		String[] newValues = getNewValues();
+		if (!newEntry) {
+			for (int i = 1; i < newValues.length; i++) {
+				if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
+					if (dataTypes[i].equals("boolean")) {
+						if (newValues[i].equals("true")) {
+							boolean update = true;
+							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+						} else if (newValues[i].equals("false")) {
+							boolean update = false;
+							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+						} else {
+							System.out.println("ERROR NO BOOLEAN VALUE");
+						}
+					} else {
+						sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+					}
+				}
+			}
+		} else if (newEntry) {
+			if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
+				int res = GenericList.this.generate(newValues);
+				if (res == -2) {
+					JOptionPane.showMessageDialog(GenericList.editWindow.this, "Database Error!");
+				} else if (res == -3) {
+					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is a problem with one of the parameters.");
+				} else if (res == -4) {
+					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
+				}
+				//System.out.println(res);
+			} else {
+				JOptionPane.showMessageDialog(GenericList.editWindow.this, "Entry already exists! Choose a different ID number.");
+			}
+		}
+	}*/
 }
