@@ -16,12 +16,10 @@ public class OrderManager {
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_order";
     public static final String CURRENT_TABLE_LINK_FOOD = "HCL_order_food";
-    public static final String CURRENT_TABLE_LINK_PACKAGE = "HCL_order_package";
 
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
     public static final String CURRENT_TABLE_PK = "(order_id)";
     public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(order_id, food_id, number)";
-    public static final String CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS = "(order_id, package_id)";
 
 
     public OrderManager(SQL sql){
@@ -107,23 +105,6 @@ public class OrderManager {
      * -1: Already exist
      * -2: SQL Exception
      * -3: Wrong Parameters
-     */
-    public int addPackage(int order_id, int package_id){
-
-        LinkManager link = new LinkManager(sql);
-
-        if(package_id <0 || order_id <0 )return -3;
-        if(sql.rowExists(CURRENT_TABLE_LINK_PACKAGE, "order_id","package_id",order_id,package_id)) return -1;
-
-        return link.generate(CURRENT_TABLE_LINK_PACKAGE,"order_id","package_id",order_id,package_id,1);
-
-    }
-    /**
-     * @return
-     *  1: OK
-     * -1: Already exist
-     * -2: SQL Exception
-     * -3: Wrong Parameters
      * -4: Is a subscription, can't be delivered
      */
     public int deliver(int order_id){
@@ -143,15 +124,15 @@ public class OrderManager {
         catch (SQLException e){return -2;}
 
     }
+    public boolean isSubscription(int order_id){
 
-    /**
-     * Same as Subscriptionmanager.generate(), but makes more sense here.
-     */
-    public int addSubscription(int order_id){
-        SubscriptionManager man = new SubscriptionManager(sql);
-        return man.generate(order_id);
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return false;
+
+        String[][] results = sql.getStringTable("SELECT count(*) FROM HCL_order NATURAL JOIN HCL_deliveries WHERE order_id = "+order_id,false);
+
+        return Integer.parseInt(results[0][0]) > 1;
+
     }
-
     public static void main(String[]args){
 
         SQL sql = new SQL();
@@ -163,6 +144,7 @@ public class OrderManager {
         System.out.println(p);*/
        // order.delete(3);
        // order.delete("Ost");
-        System.out.println(order.generate(70,150,"Testing",1000,"2016-04-19","2016-04-29"));
+       // System.out.println(order.generate(70,150,"Testing",1000,"2016-04-19","2016-04-29"));
+        System.out.println(order.isSubscription(2));
     }
 }
