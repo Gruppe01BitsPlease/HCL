@@ -9,7 +9,7 @@ import java.time.*;
 import java.time.format.DateTimeParseException;
 
 /**
- * Created by Faiter119 on 15.03.2016.
+ * Created by Olav Husby on 15.03.2016.
  */
 public class SubscriptionManager {
 

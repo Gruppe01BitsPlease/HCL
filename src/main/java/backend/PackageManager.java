@@ -7,7 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by Faiter119 on 15.03.2016.
+ * Created by Olav Husby on 15.03.2016.
  */
 public class PackageManager {
 

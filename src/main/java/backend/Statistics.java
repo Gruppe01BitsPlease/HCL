@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by Faiter119 on 11.04.2016.
+ * Created by Olav Husby on 11.04.2016.
  */
 public class Statistics {
 

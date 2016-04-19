@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by Faiter119 on 01.04.2016.
+ * Created by Olav Husby on 01.04.2016.
  */
 public class Shoppinglist {
 

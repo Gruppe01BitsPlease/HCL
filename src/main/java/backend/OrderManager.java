@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 /**
- * Created by Faiter119 on 15.03.2016.
+ * Created by Olav Husby on 15.03.2016.
  */
 public class OrderManager {
 
@@ -56,8 +56,12 @@ public class OrderManager {
 
             return sql.getLastID();
         }
-        catch (SQLException e){return -2;}
-        catch (DateTimeParseException e){return -3;}
+        catch (SQLException e){
+            System.out.println(e);
+            return -2;}
+        catch (DateTimeParseException e){
+            System.out.println(e.toString());
+            return -3;}
     }
 
     /**
@@ -159,5 +163,6 @@ public class OrderManager {
         System.out.println(p);*/
        // order.delete(3);
        // order.delete("Ost");
+        System.out.println(order.generate(70,150,"Testing",1000,"2016-04-19","2016-04-29"));
     }
 }
