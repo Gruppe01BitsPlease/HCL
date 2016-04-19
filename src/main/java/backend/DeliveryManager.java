@@ -26,31 +26,6 @@ public class DeliveryManager {
     /**
      * @return
      *  1: OK
-     * -1: Already exists
-     * -2: SQL Exception
-     * -3: Wrong parameters
-     */
-    public int generate(int order_id) {
-
-        if(order_id < 0) return -3;
-
-        try {
-
-            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES (?)";
-            PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
-
-            prep.setInt(1,order_id);
-            prep.executeUpdate();
-
-            return sql.getLastID();
-        }
-        catch (SQLException e){
-            return -2;}
-    }
-
-    /**
-     * @return
-     *  1: OK
      * -1: Row does not  exist
      * -2: SQL Exception
      */
@@ -187,7 +162,7 @@ public class DeliveryManager {
             weekCounter++;
             current = current.plusDays(1);
 
-            if(weekCounter == 7 && interval != 1){
+            if(weekCounter == 7 && interval > 1){
                 weekCounter = 0;
                 current = current.plusDays(7*interval); // Skips weeks
             }
@@ -203,7 +178,7 @@ public class DeliveryManager {
      */
     public int deliver(int delivery_id){
 
-        if(!sql.rowExists(CURRENT_TABLE,"delivery_id",delivery_id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -1;
 
         String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE delivery_id = ?;";
 

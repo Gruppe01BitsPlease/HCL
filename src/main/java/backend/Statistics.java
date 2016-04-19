@@ -25,9 +25,10 @@ public class Statistics {
 
         for(int i=0; i<datesString.length; i++){
             try {
-                LocalDate date = LocalDate.parse(datesString[i][0]); // LocalDate >>>>>>> Date // java.time forever
+                LocalDate date = LocalDate.parse(datesString[i][0]);
                 dates.add(date);
-            }catch (DateTimeParseException e){return null;}
+            }
+            catch (DateTimeParseException e){return null;}
         }
 
         return dates;
@@ -51,11 +52,18 @@ public class Statistics {
      *  Mest populære ingrediens / mat
      */
     public int getTotalSubscriptions(){
-        String[][] results = sql.getStringTable("SELECT COUNT(*) FROM HCL_subscription NATURAL JOIN HCL_order;",false);
-        if(results.length > 0 || results[0].length > 0) { // Ikke sikker hvilken det er ^-^
-            return Integer.parseInt(results[0][0]);
+
+        OrderManager man = new OrderManager(sql);
+        int count = 0;
+
+        String[][] orders = sql.getStringTable("Select order_id from HCL_order;",false);
+        for(String[] row : orders){
+
+            int order_id = Integer.parseInt(row[0]);
+
+            if(man.isSubscription(order_id)) count++;
         }
-        return 0;
+        return count;
     }
     public int getTotalOrders(){
 
