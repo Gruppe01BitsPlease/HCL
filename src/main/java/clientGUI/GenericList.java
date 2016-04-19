@@ -231,6 +231,7 @@ class GenericList extends JPanel {
 			}
 			if (newEntry) {
 				setTitle("New Item");
+				selected = new String[titles.length];
 			} else {
 				setTitle("View Item");
 			}
@@ -245,13 +246,13 @@ class GenericList extends JPanel {
 					String link = "";
 					if (selected[0] != null && !(selected[0].equals(""))) {
 						link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
-								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
+								" WHERE " + SqlColumnNames[0] + " = " + selected[0] + " AND active = 1";
 
 						System.out.println(link);
 					}
 					else {
 						link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
-								" WHERE " + SqlColumnNames[0] + " = -1";
+								" WHERE " + SqlColumnNames[0] + " = -1 AND active = 1";
 						System.out.println(link);
 					}
 					tabs.addTab(linkTables[i][0], new linkTab(link, i));
@@ -351,7 +352,9 @@ class GenericList extends JPanel {
 								if (removeLinks.size() > 0) {
 									LinkManager linkMng = new LinkManager(sql);
 									for (int[] i : removeLinks) {
-										linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
+										int a = linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
+										System.out.println(linkTables[i[0]][2] + " " + SqlColumnNames[0] + " " + linkTables[i[0]][1] + " " + Integer.parseInt(selected[0]) + " " + i[1]);
+										System.out.println("Delete result :" + a);
 									}
 								}
 								int pk = sql.getLastID();
@@ -450,7 +453,7 @@ class GenericList extends JPanel {
 						add(j);
 						add(k);
 					}
-					else if (dataTypes[i].equals("id")) {
+					else if (dataTypes[i].equals("id") || dataTypes[i].equals("active")) {
 						JTextField k = new JTextField(selected[i]);
 						fields.add(k);
 					} else {
@@ -576,7 +579,7 @@ class GenericList extends JPanel {
 								" FROM " + linkTables[linkIndex][3] + " NATURAL JOIN " + linkTables[linkIndex][2] +
 								" WHERE " + linkTables[linkIndex][1] + " NOT IN (SELECT " + linkTables[linkIndex][1] +
 								" FROM " + linkTables[linkIndex][2] + " WHERE " + SqlColumnNames[0] +
-								" = " + selected[0] + ")";
+								" = " + selected[0] + ") AND active = 1";
 					System.out.println("Choice query: \n\t" + choiceQuery);
 					String[] choice = sql.getColumn(choiceQuery, 1);
 					JTextField amount = new JTextField();
