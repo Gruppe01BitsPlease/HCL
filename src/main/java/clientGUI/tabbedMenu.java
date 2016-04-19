@@ -78,9 +78,9 @@ public class tabbedMenu extends JFrame {
 			addTab(new IngredientTab(sql, rolle));
 			addTab(new ChefTab(sql, rolle));
 		}
-		/*if (rolle == 3 || rolle == 0) {
-			addTab(new PackageTab(sql, rolle));
-		}*/
+		if (rolle == 3 || rolle == 0) {
+			addTab(new DriverTab(sql, rolle));
+		}
 	}
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
@@ -92,6 +92,7 @@ public class tabbedMenu extends JFrame {
 	private String subscrName = "Subscriptions";
 	private String chefName = "Chef view";
 	private String statName = "Statistics";
+	private String drivName = "Driver view";
 
 	private void addTab(JPanel tab) {
 
@@ -145,6 +146,11 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(statName, tab);
 			}
 		}*/
+		else if (tab instanceof DriverTab) {
+			if (tabs.indexOfTab(drivName) == -1) {
+				tabs.addTab(drivName, tab);
+			}
+		}
 		addCloseButtons();
 	}
 	private void addCloseButtons() {
@@ -268,6 +274,21 @@ public class tabbedMenu extends JFrame {
 					pack.setEnabled(false);
 					newTab.add(pack);
 				}*/
+				if (tabs.indexOfTab(drivName) == -1) {
+					JMenuItem driv = new JMenuItem(drivName);
+					driv.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							addTab(new DriverTab(sql, rolle));
+						}
+					});
+					newTab.add(driv);
+				}
+				else {
+					JMenuItem driv = new JMenuItem(drivName);
+					driv.setEnabled(false);
+					newTab.add(driv);
+				}
 			}
 			if (rolle == 2 || rolle == 0) {
 				if (tabs.indexOfTab(foodName) == -1) {

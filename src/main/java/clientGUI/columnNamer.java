@@ -133,6 +133,9 @@ abstract class ColumnNamer {
 			else if (sqlNames[i].equals("delivery_id")) {
 				ret[i] = "ID";
 			}
+			else if (sqlNames[i].equals("completed")) {
+				ret[i] = "Completed";
+			}
 			else {
 				System.out.println(sqlNames[i]);
 				ret[i] = "ERROR " + sqlNames[i];

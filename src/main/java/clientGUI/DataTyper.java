@@ -134,6 +134,9 @@ abstract class DataTyper {
 			else if (UINames[i].equals("ID")) {
 				ret[i] = "id";
 			}
+			else if (UINames[i].equals("Completed")) {
+				ret[i] = "boolean";
+			}
 			else {
 				System.out.println("ERROR no data type found: " + UINames[i]);
 			}

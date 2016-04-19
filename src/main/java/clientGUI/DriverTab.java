@@ -13,15 +13,15 @@ import java.awt.event.MouseEvent;
 /**
  * Created by Jens on 18-Apr-16.
  */
-public class ChefTab extends JPanel {
+public class DriverTab extends JPanel {
 	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
-	private String query = "SELECT delivery_id, adress, delivery_date FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND completed = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT delivery_id, adress, delivery_date, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
 	private JTableHCL table;
 	private DefaultTableModel tabModel;
-	public ChefTab(SQL sql, int role) {
+	public DriverTab(SQL sql, int role) {
 		this.sql = sql;
 		setLayout(new BorderLayout());
 		System.out.println("Chef tab query: " + query);
@@ -36,13 +36,19 @@ public class ChefTab extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
-					int selID = Integer.parseInt((String) tabModel.getValueAt(table.getSelectedRow(), 0));
-					viewVindow view = new viewVindow(selID);
+					int choice = JOptionPane.showConfirmDialog(null, "Deliver this order?", "Deliver", JOptionPane.YES_NO_OPTION);
+					if (choice == 0) {
+						int selID = Integer.parseInt((String) tabModel.getValueAt(table.getSelectedRow(), 0));
+						DeliveryManager mng = new DeliveryManager(sql);
+						mng.deliver(selID);
+						refresh();
+					}
 				}
 			}
 		});
 		add(new northBar(), BorderLayout.NORTH);
 		table.removeIDs();
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	private void refresh() {
 		data = sql.getStringTable(query, false);
@@ -53,7 +59,7 @@ public class ChefTab extends JPanel {
 	private class northBar extends JPanel {
 		public northBar() {
 			setLayout(new GridLayout(1, 2));
-			JButton deliver = new JButton("Finish");
+			JButton deliver = new JButton("Deliver");
 			JButton refresh = new JButton("Refresh");
 			refresh.addActionListener(new AbstractAction() {
 				@Override
@@ -64,20 +70,14 @@ public class ChefTab extends JPanel {
 			deliver.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
-					if (choice == 0) {
-						int[] selectedIndexes = table.getSelectedRows();
-						int[] selectedIDs = new int[selectedIndexes.length];
-						for (int i = 0; i < selectedIndexes.length; i++) {
-							selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
+					if (table.getSelectedRow() != -1) {
+						int choice = JOptionPane.showConfirmDialog(null, "Deliver this order?", "Order", JOptionPane.YES_NO_OPTION);
+						if (choice == 0) {
+							int selID = Integer.parseInt((String) tabModel.getValueAt(table.getSelectedRow(), 0));
+							DeliveryManager mng = new DeliveryManager(sql);
+							mng.deliver(selID);
+							refresh();
 						}
-						DeliveryManager mng = new DeliveryManager(sql);
-						for (int i = 0; i < selectedIDs.length; i++) {
-							System.out.println("Deliver ID: " + selectedIDs[i]);
-							int rs = mng.complete(selectedIDs[i]);
-							System.out.println("Deliver result: " + rs);
-						}
-						refresh();
 					}
 				}
 			});
@@ -85,7 +85,7 @@ public class ChefTab extends JPanel {
 			add(refresh);
 		}
 	}
-	private class viewVindow extends JFrame {
+	/*private class viewVindow extends JFrame {
 		private int date_id;
 		public viewVindow(int delivery_id) {
 			this.date_id = delivery_id;
@@ -111,7 +111,7 @@ public class ChefTab extends JPanel {
 					int choice = JOptionPane.showConfirmDialog(null, "Complete delivery?", "Order", JOptionPane.YES_NO_OPTION);
 					if (choice == 0) {
 						DeliveryManager mng = new DeliveryManager(sql);
-						mng.complete(delivery_id);
+						mng.deliver(delivery_id);
 						dispose();
 						refresh();
 					}
@@ -159,5 +159,5 @@ public class ChefTab extends JPanel {
 				add(scroll, BorderLayout.CENTER);
 			}
 		}
-	}
+	}*/
 }

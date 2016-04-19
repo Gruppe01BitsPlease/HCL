@@ -193,6 +193,23 @@ public class DeliveryManager {
         catch (SQLException e){return -2;}
 
     }
+    public int complete(int delivery_id){
+
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -1;
+
+        String prepString = "Update "+CURRENT_TABLE+" SET completed = true WHERE delivery_id = ?;";
+
+        try{
+            PreparedStatement prep = sql.connection.prepareStatement(prepString);
+
+            prep.setInt(1,delivery_id);
+
+            prep.executeUpdate();
+            return 1;
+        }
+        catch (SQLException e){return -2;}
+
+    }
 
     public static void main(String[]args){
 
