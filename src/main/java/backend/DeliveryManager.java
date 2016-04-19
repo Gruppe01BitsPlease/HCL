@@ -17,7 +17,7 @@ public class DeliveryManager {
 
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(order_id)";
     public static final String CURRENT_TABLE_PK = "(delivery_id)";
-    public static final String CURRENT_TABLE_ADD_DATE_ARGUMENTS = "(order_id, dato)";
+    public static final String CURRENT_TABLE_ADD_DATE_ARGUMENTS = "(order_id, delivery_date)";
 
     public DeliveryManager(SQL sql){
         this.sql = sql;
@@ -94,6 +94,7 @@ public class DeliveryManager {
             return 1;
         }
         catch (SQLException e){
+            System.out.println(e.toString() + ": " + e.getMessage());
             return -2;
         }
     }

@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
  */
 public class ChefTab extends JPanel {
 	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
-	private String query = "SELECT delivery_id, adress, dato FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY dato ASC";
+	private String query = "SELECT delivery_id, adress, delivery_date FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;

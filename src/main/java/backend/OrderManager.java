@@ -17,7 +17,7 @@ public class OrderManager {
     public static final String CURRENT_TABLE = "HCL_order";
     public static final String CURRENT_TABLE_LINK_FOOD = "HCL_order_food";
 
-    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date)";
     public static final String CURRENT_TABLE_PK = "(order_id)";
     public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(order_id, food_id, number)";
 
@@ -32,16 +32,15 @@ public class OrderManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int generate(int customer_id, int price, String adress, int postnr, String order_date, String delivery_date) {
+    public int generate(int customer_id, int price, String adress, int postnr, String order_date) {
 
         if(price < 0 || customer_id < 0) return -3;
 
         try {
-
+            System.out.println("Order date:" + order_date);
             LocalDate date1 = LocalDate.parse(order_date);
-            LocalDate date2 = LocalDate.parse(delivery_date);
 
-            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
+            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
             prep.setInt(1,customer_id);
@@ -49,7 +48,6 @@ public class OrderManager {
             prep.setString(3,adress);
             prep.setInt(4,postnr);
             prep.setDate(5,Date.valueOf(date1));
-            prep.setDate(6,Date.valueOf(date2));
             prep.executeUpdate();
 
             return sql.getLastID();
@@ -58,7 +56,7 @@ public class OrderManager {
             System.out.println(e);
             return -2;}
         catch (DateTimeParseException e){
-            System.out.println(e.toString());
+            System.out.println(e.toString() + ": " + e.getMessage());
             return -3;}
     }
 
@@ -138,7 +136,8 @@ public class OrderManager {
         SQL sql = new SQL();
         OrderManager order = new OrderManager(sql);
 
-        //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
+        int res = order.generate(10,111,"Ostehaug",1911,"2015-01-01");
+        System.out.println(res);
         //order.addFood(2,200,5);
         /*int p = order.addPackage(2,1);
         System.out.println(p);*/
