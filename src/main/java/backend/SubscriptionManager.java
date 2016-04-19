@@ -178,7 +178,7 @@ public class SubscriptionManager {
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth());
         int weekCounter = 0;
         while(Period.between(current,end).getDays() != 0){
-            System.out.println(current);
+
             if(current.getDayOfWeek() == DayOfWeek.MONDAY && mon){ addDate(order_id,current.toString());}
             if(current.getDayOfWeek() == DayOfWeek.TUESDAY && tues){ addDate(order_id,current.toString());}
             if(current.getDayOfWeek() == DayOfWeek.WEDNESDAY && wed){ addDate(order_id,current.toString());}
