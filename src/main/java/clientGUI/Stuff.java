@@ -51,19 +51,33 @@ abstract class Stuff {
 	}
 }
 class datePane extends JPanel {
-	JTextField year;
-	JTextField month;
-	JTextField day;
+	JComboBox<String> yearBox;
+	JComboBox<String> monthBox;
+	JTextField dayField;
 	public datePane(String date) {
-		//2014-01-01
+		//2014-01-31
+		String[] years = new String[5];
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		for (int i = 0; i < years.length; i++) {
+			years[i] = Integer.toString(year + i);
+		}
+		yearBox = new JComboBox<>(years);
+		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		monthBox = new JComboBox<>(months);
 		setLayout(new GridLayout(1, 3));
 		if (date != null && !(date.equals(""))) {
 			if (date.length() == 10) {
-				year = new JTextField(date.substring(0, 4));
+				String selyear = date.substring(0, 4);
+				if (Integer.parseInt(selyear) < year) {
+					yearBox.addItem(selyear);
+				}
+				yearBox.setSelectedItem(selyear);
 				//System.out.println(year.getText());
-				month = new JTextField(date.substring(5, 7));
+				int selmonth = Integer.parseInt(date.substring(5, 7));
+				monthBox.setSelectedIndex(selmonth - 1);
 				//System.out.println(month.getText());
-				day = new JTextField(date.substring(8, 10));
+				dayField = new JTextField(date.substring(8, 10));
 				//System.out.println(day.getText());
 			}
 			else {
@@ -71,35 +85,47 @@ class datePane extends JPanel {
 			}
 		}
 		else {
-			year = new JTextField("");
-			month = new JTextField("");
-			day = new JTextField("");
+			dayField = new JTextField("");
 		}
-		add(year);
-		add(month);
-		add(day);
+		add(yearBox);
+		add(monthBox);
+		add(dayField);
 	}
 	public datePane() {
+		//2014-01-31
+		String[] years = new String[5];
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		for (int i = 0; i < years.length; i++) {
+			years[i] = Integer.toString(year + i);
+		}
+		yearBox = new JComboBox<>(years);
+		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
+		monthBox = new JComboBox<>(months);
 		setLayout(new GridLayout(1, 3));
-		year = new JTextField("");
-		month = new JTextField("");
-		day = new JTextField("");
-		add(year);
-		add(month);
-		add(day);
+		dayField = new JTextField("");
+		add(yearBox);
+		add(monthBox);
+		add(dayField);
 	}
 	public String getDate() {
-		if (!(year.getText().equals("") && month.getText().equals("") & day.getText().equals(""))) {
-			return year.getText() + "-" + month.getText() + "-" + day.getText();
+		String year = (String) yearBox.getSelectedItem();
+		String month = Integer.toString(monthBox.getSelectedIndex() + 1);
+		String day = dayField.getText();
+		if (month.length() < 2) {
+			String foo = "0";
+			foo += month;
+			month = foo;
 		}
-		else {
-			return "";
-		}
+		return year + "-" + month + "-" + day;
 	}
 	public void setDate(String date) {
-		year = new JTextField(date.substring(0, 4));
-		month = new JTextField(date.substring(5, 7));
-		day = new JTextField(date.substring(8, 10));
+		String year = (date.substring(0, 4));
+		String month = (date.substring(5, 7));
+		String day = (date.substring(8, 10));
+		yearBox.setSelectedItem(year);
+		monthBox.setSelectedIndex(Integer.parseInt(month) - 1);
+		dayField.setText(day);
 	}
 }
 class editFields extends JPanel {
