@@ -1,6 +1,5 @@
-package clientGUI;
+/*package clientGUI;
 
-import backend.PackageManager;
 import backend.SQL;
 
 import javax.swing.*;
@@ -28,5 +27,5 @@ class PackageTab extends GenericList {
 		System.out.println("Delete code" + ret);
 		return ret;
 	}
-}
+}*/
 

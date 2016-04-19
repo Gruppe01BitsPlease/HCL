@@ -1,7 +1,6 @@
-package clientGUI;
+/*package clientGUI;
 
 import backend.SQL;
-import backend.SubscriptionManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,7 +12,7 @@ import java.util.Arrays;
 /**
  * Created by Jens on 14-Apr-16.
  */
-public class SubscriptionTab extends GenericList {
+/*public class SubscriptionTab extends GenericList {
 	private static SQL sql;
 	private static String query = "SELECT order_id, customer_name, adress, postnr FROM HCL_subscription NATURAL JOIN HCL_order NATURAL JOIN HCL_customer";
 	private static String sqlTableName = "HCL_subscription";
@@ -192,4 +191,4 @@ public class SubscriptionTab extends GenericList {
 			}
 		}
 	}
-}
+}*/
