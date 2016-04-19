@@ -1,6 +1,6 @@
 package clientGUI;
 
-import backend.OrderManager;
+import backend.DeliveryManager;
 import backend.SQL;
 
 import javax.swing.*;
@@ -14,18 +14,20 @@ import java.awt.event.MouseEvent;
  * Created by Jens on 18-Apr-16.
  */
 public class ChefTab extends JPanel {
-	private String query = "SELECT order_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
+	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT delivery_id, adress, dato FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY dato ASC";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
 	private JTableHCL table;
+	private DefaultTableModel tabModel;
 	public ChefTab(SQL sql, int role) {
 		this.sql = sql;
 		setLayout(new BorderLayout());
 		System.out.println("Chef tab query: " + query);
 		data = sql.getStringTable(query, false);
 		titles = ColumnNamer.getNames(query, sql);
-		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
+		tabModel = new DefaultTableModel(data, titles);
 		table = new JTableHCL(tabModel);
 		JScrollPane scroller = new JScrollPane(table);
 		add(scroller, BorderLayout.CENTER);
@@ -44,7 +46,7 @@ public class ChefTab extends JPanel {
 	}
 	private void refresh() {
 		data = sql.getStringTable(query, false);
-		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
+		tabModel = new DefaultTableModel(data, titles);
 		table.setModel(tabModel);
 		table.removeIDs();
 	}
@@ -62,17 +64,18 @@ public class ChefTab extends JPanel {
 			deliver.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int choice = JOptionPane.showConfirmDialog(null, "Complete orders?", "Order", JOptionPane.YES_NO_OPTION);
+					int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
 					if (choice == 0) {
 						int[] selectedIndexes = table.getSelectedRows();
 						int[] selectedIDs = new int[selectedIndexes.length];
 						for (int i = 0; i < selectedIndexes.length; i++) {
 							selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
 						}
-						OrderManager mng = new OrderManager(sql);
+						DeliveryManager mng = new DeliveryManager(sql);
 						for (int i = 0; i < selectedIDs.length; i++) {
 							System.out.println("Deliver ID: " + selectedIDs[i]);
-							mng.deliver(selectedIDs[i]);
+							int rs = mng.deliver(selectedIDs[i]);
+							System.out.println("Deliver result: " + rs);
 						}
 						refresh();
 					}
@@ -83,27 +86,32 @@ public class ChefTab extends JPanel {
 		}
 	}
 	private class viewVindow extends JFrame {
-		private int order_id;
-		public viewVindow(int order_id) {
-			this.order_id = order_id;
+		private int date_id;
+		public viewVindow(int delivery_id) {
+			this.date_id = delivery_id;
 			Dimension d = new Dimension((int) (GenericList.x * 0.4), (int) (GenericList.y * 0.4));
 			setMinimumSize(d);
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
-			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food WHERE order_id = " + order_id;
+			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
+					" WHERE delivery_id = " + delivery_id;
+			System.out.println("Food query: " + foodQuery);
 			tabs.addTab("Foods", new viewTab(foodQuery));
-			String ingrQuery = "SELECT ingredient_id, name, number FROM HCL_ingredient NATURAL JOIN HCL_food_ingredient " +
-					"WHERE food_id IN (SELECT food_id FROM HCL_order_food WHERE order_id = " + order_id + ")";
-			tabs.addTab("Ingredients", new viewTab(ingrQuery));
+			String ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
+					"HCL_deliveries WHERE delivery_id = " + delivery_id;
+			System.out.println("Ingredients query: " + ingrQuery);
+			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
+			String[] tabTitles = sql.getColumn(ingrQuery, 1);
+			tabs.addTab("Ingredients", new ingredientTab(FoodIDs, tabTitles));
 			add(tabs, BorderLayout.CENTER);
-			JButton finish = new JButton("Complete order");
+			JButton finish = new JButton("Complete delivery");
 			finish.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int choice = JOptionPane.showConfirmDialog(null, "Complete order?", "Order", JOptionPane.YES_NO_OPTION);
+					int choice = JOptionPane.showConfirmDialog(null, "Complete delivery?", "Order", JOptionPane.YES_NO_OPTION);
 					if (choice == 0) {
-						OrderManager mng = new OrderManager(sql);
-						mng.deliver(order_id);
+						DeliveryManager mng = new DeliveryManager(sql);
+						mng.deliver(delivery_id);
 						dispose();
 						refresh();
 					}
@@ -126,6 +134,29 @@ public class ChefTab extends JPanel {
 				JScrollPane scroll = new JScrollPane(tabTable);
 				add(scroll, BorderLayout.CENTER);
 				tabTable.removeIDs();
+			}
+		}
+		class ingredientTab extends JPanel {
+			public ingredientTab(String[] IDs, String[] tabTitles) {
+				setLayout(new BorderLayout());
+				JTabbedPane tabs = new JTabbedPane();
+				for (int i = 0; i < IDs.length; i++) {
+					tabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
+				}
+				add(tabs, BorderLayout.CENTER);
+			}
+		}
+		class ingredientList extends JPanel {
+			public ingredientList(String food_id) {
+				setLayout(new BorderLayout());
+				String query = "SELECT name, number, stock, other, expiration_date FROM HCL_ingredient" +
+						" NATURAL JOIN HCL_food_ingredient WHERE food_id = " + food_id;
+				String[][] foods = sql.getStringTable(query, false);
+				String[][] titles = ColumnNamer.getNamesWithOriginals(query, sql);
+				DefaultTableModel tabModel = new DefaultTableModel(foods, titles[1]);
+				JTableHCL table = new JTableHCL(tabModel);
+				JScrollPane scroll = new JScrollPane(table);
+				add(scroll, BorderLayout.CENTER);
 			}
 		}
 	}

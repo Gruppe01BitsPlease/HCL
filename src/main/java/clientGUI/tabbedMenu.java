@@ -64,23 +64,23 @@ public class tabbedMenu extends JFrame {
     }
 	private void addTabs() {
 		if (rolle == 0) {
-			addTab(new StatisticsTab());
+			//addTab(new StatisticsTab());
 			addTab(new EmployeeTab(sql, rolle));
 			addTab(new CeoTab());
 		}
-		if (rolle == 1 || rolle == 0) {
+		/*if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql, rolle));
 			addTab(new CustomerTab(sql, rolle));
 			addTab(new SubscriptionTab(sql, rolle));
-		}
+		}*/
 		if (rolle == 2 || rolle == 0) {
 			addTab(new FoodTab(sql, rolle));
 			addTab(new IngredientTab(sql, rolle));
 			addTab(new ChefTab(sql, rolle));
 		}
-		if (rolle == 3 || rolle == 0) {
+		/*if (rolle == 3 || rolle == 0) {
 			addTab(new PackageTab(sql, rolle));
-		}
+		}*/
 	}
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
@@ -125,26 +125,26 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(ordrName, tab);
 			}
 		}
-		else if (tab instanceof PackageTab) {
+		/*else if (tab instanceof PackageTab) {
 			if (tabs.indexOfTab(packName) == -1) {
 				tabs.addTab(packName, tab);
 			}
-		}
-		else if (tab instanceof SubscriptionTab) {
+		}*/
+		/*else if (tab instanceof SubscriptionTab) {
 			if (tabs.indexOfTab(subscrName) == -1) {
 				tabs.addTab(subscrName, tab);
 			}
-		}
+		}*/
 		else if (tab instanceof ChefTab) {
 			if (tabs.indexOfTab(chefName) == -1) {
 				tabs.addTab(chefName, tab);
 			}
 		}
-		else if (tab instanceof StatisticsTab) {
+		/*else if (tab instanceof StatisticsTab) {
 			if (tabs.indexOfTab(statName) == -1) {
 				tabs.addTab(statName, tab);
 			}
-		}
+		}*/
 		addCloseButtons();
 	}
 	private void addCloseButtons() {
@@ -253,7 +253,7 @@ public class tabbedMenu extends JFrame {
 			});
 			newTab.add(orig);
 			if(rolle == 3 || rolle == 0) {
-				if (tabs.indexOfTab(packName) == -1) {
+				/*if (tabs.indexOfTab(packName) == -1) {
 					JMenuItem pack = new JMenuItem(packName);
 					pack.addActionListener(new AbstractAction() {
 						@Override
@@ -267,7 +267,7 @@ public class tabbedMenu extends JFrame {
 					JMenuItem pack = new JMenuItem(packName);
 					pack.setEnabled(false);
 					newTab.add(pack);
-				}
+				}*/
 			}
 			if (rolle == 2 || rolle == 0) {
 				if (tabs.indexOfTab(foodName) == -1) {
@@ -347,7 +347,7 @@ public class tabbedMenu extends JFrame {
 					cust.setEnabled(false);
 					newTab.add(cust);
 				}
-				if (tabs.indexOfTab(subscrName) == -1) {
+				/*if (tabs.indexOfTab(subscrName) == -1) {
 					JMenuItem subscr = new JMenuItem(subscrName);
 					subscr.addActionListener(new AbstractAction() {
 						@Override
@@ -361,7 +361,7 @@ public class tabbedMenu extends JFrame {
 					JMenuItem subscr = new JMenuItem(subscrName);
 					subscr.setEnabled(false);
 					newTab.add(subscr);
-				}
+				}*/
 			}
 			if (rolle == 0) {
 				if (tabs.indexOfTab(empName) == -1) {
