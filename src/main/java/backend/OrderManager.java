@@ -140,6 +140,14 @@ public class OrderManager {
 
     }
 
+    /**
+     * Same as Subscriptionmanager.generate(), but makes more sense here.
+     */
+    public int addSubscription(int order_id){
+        SubscriptionManager man = new SubscriptionManager(sql);
+        return man.generate(order_id);
+    }
+
     public static void main(String[]args){
 
         SQL sql = new SQL();

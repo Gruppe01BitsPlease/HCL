@@ -20,16 +20,12 @@
 	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Se hvilke mat/pakker som er i order
 - Dato-greier prefilled med dags-dato?
-- Størrelse på inputfelter i editvindu
+- Størrelse på inputfelter i editvindu!
 
 **BUGS**:
 - Legge til en link og så fjerne den uten å lukke vindu mellom
 - Kan søke i IDnummer
 - Legge til orders funker ikke
-
-**Database**
-- Ordne on update cascade / on delete cascade // nvm
-- Legge til "Active" boolean søyle over alt
 
 **Trine**:
 - Legg til "Active" boolean søyle i alle nødvendige tabeller, ingenting skal slettes; bare settes inactive
@@ -39,6 +35,7 @@
 - Lage tester
 - Lage driver-rute-greier?
 
-**Exceptions**
-- Alle new-knapper -> Nullpointer
-- Deleter -> Indexoutofbounds 0
+
+VIKTIG
+- Legge til nye brukere MED ROLLER!
+- Endre EGEN informasjon, eget passord

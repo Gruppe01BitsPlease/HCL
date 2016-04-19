@@ -172,13 +172,11 @@ public class SubscriptionManager {
 
     /**
      * @param interval How often: 1 = per week, 2 = every other week, 3 = every third week etc
-     * @return
      */
-    public boolean addDates(int order_id,LocalDate start, LocalDate end, int interval, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun){
-
+    public void addDates(int order_id,LocalDate start, LocalDate end, int interval, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun){
 
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth());
-
+        int weekCounter = 0;
         while(Period.between(current,end).getDays() != 0){
 
             if(current.getDayOfWeek() == DayOfWeek.MONDAY && mon){ addDate(order_id,current.toString());}
@@ -189,10 +187,14 @@ public class SubscriptionManager {
             if(current.getDayOfWeek() == DayOfWeek.SATURDAY && sat){ addDate(order_id,current.toString());}
             if(current.getDayOfWeek() == DayOfWeek.SUNDAY && sun){ addDate(order_id,current.toString());}
 
-
+            weekCounter++;
             current = current.plusDays(1);
+
+            if(weekCounter == 7 && interval != 1){
+                weekCounter = 0;
+                current = current.plusDays(7*interval); // Skips weeks
+            }
         }
-        return true;
     }
 
     /**
@@ -234,6 +236,8 @@ public class SubscriptionManager {
         manager.addDates(5,first,15,30);*/
         //System.out.println(manager.removeDate(4,3008));
 
-        System.out.println(manager.deliver(3010));
+        manager.addDates(2,LocalDate.now(),LocalDate.of(2016,6,1),2,true,true,true,false,false,true,true);
+
+
     }
 }
