@@ -104,8 +104,12 @@ class GenericList extends JPanel {
 		}
 	}
 	public void refresh() {
+		int sortColumn = -1;
 		try {
-			int sortColumn = list.getSortColumn();
+			sortColumn = list.getSortColumn();
+		}
+		catch (Exception e) {}
+		try {
 			table = sql.getStringTable(query, false);
 			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
@@ -125,7 +129,9 @@ class GenericList extends JPanel {
 				searchPress.actionPerformed(act);
 			}
 			list.removeIDs();
-			list.setSortColumn(sortColumn);
+			if (sortColumn != -1) {
+				list.setSortColumn(sortColumn);
+			}
 		}
 		catch (Exception e) {
 			System.out.println("ERROR: " + e.toString());
