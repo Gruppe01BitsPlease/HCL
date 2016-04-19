@@ -54,9 +54,9 @@ public class StatisticsTab extends JPanel{
         //
         // JFrame frame = new JFrame();  // The frame itself
        //  frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel();  // The main panel in the frame
+        JPanel panel = new JPanel(new BorderLayout());  // The main panel in the frame
 
-        JPanel centerPanel = new JPanel(new BorderLayout());
+        JPanel centerPanel = new JPanel();
         JPanel westPanel = new JPanel();
         //
 

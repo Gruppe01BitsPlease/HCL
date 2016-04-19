@@ -1,5 +1,6 @@
 package clientGUI;
 
+import backend.OrderManager;
 import backend.SQL;
 
 import javax.swing.*;
@@ -18,13 +19,14 @@ public class ChefTab extends JPanel {
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
+	private JTableHCL table;
 	public ChefTab(SQL sql, int role) {
 		this.sql = sql;
 		setLayout(new BorderLayout());
 		data = sql.getStringTable(query, false);
 		titles = ColumnNamer.getNames(query, sql);
 		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
-		JTableHCL table = new JTableHCL(tabModel);
+		table = new JTableHCL(tabModel);
 		JScrollPane scroller = new JScrollPane(table);
 		add(scroller, BorderLayout.CENTER);
 		table.addMouseListener(new MouseAdapter() {
@@ -37,6 +39,12 @@ public class ChefTab extends JPanel {
 				}
 			}
 		});
+		table.removeIDs();
+	}
+	private void refresh() {
+		data = sql.getStringTable(query, false);
+		DefaultTableModel tabModel = new DefaultTableModel(data, titles);
+		table.setModel(tabModel);
 		table.removeIDs();
 	}
 	private class viewVindow extends JFrame {
@@ -59,10 +67,14 @@ public class ChefTab extends JPanel {
 				public void actionPerformed(ActionEvent e) {
 					int choice = JOptionPane.showConfirmDialog(null, "Complete order?", "Order", JOptionPane.YES_NO_OPTION);
 					if (choice == 0) {
-
+						OrderManager mng = new OrderManager(sql);
+						mng.deliver(order_id);
+						dispose();
+						refresh();
 					}
 				}
 			});
+			add(finish, BorderLayout.SOUTH);
 			setLocationRelativeTo(null);
 			setVisible(true);
 		}

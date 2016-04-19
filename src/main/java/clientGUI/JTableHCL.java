@@ -26,15 +26,12 @@ public class JTableHCL extends JTable {
 	public void removeIDs() {
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
 			String type = DataTyper.getDataType(tabModel.getColumnName(i));
-			if (type.equals("active")) {
-				mod.removeColumn(mod.getColumn(i));
-			}
-			if (type.equals("id")) {
+			if (type.equals("id") || type.equals("active")) {
 				TableColumn column = getColumnModel().getColumn(i);
-				column.setMinWidth(0);
-				column.setMaxWidth(0);
-				column.setWidth(0);
-				column.setPreferredWidth(0);
+				column.setMinWidth(100);
+				column.setMaxWidth(100);
+				column.setWidth(100);
+				column.setPreferredWidth(100);
 			}
 		}
 	}
