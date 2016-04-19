@@ -99,36 +99,15 @@ public class OrderManager {
         return link.generate(CURRENT_TABLE_LINK_FOOD,"order_id","food_id",order_id,food_id,number);
 
     }
+
     /**
-     * @return
-     *  1: OK
-     * -1: Already exist
-     * -2: SQL Exception
-     * -3: Wrong Parameters
-     * -4: Is a subscription, can't be delivered
+     * @return true if the order_id is valid and the order has >1 deliveries
      */
-    public int deliver(int order_id){
-
-        if(sql.rowExists("HCL_subscription","order_id",order_id)) return -4;
-
-        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE order_id = ?;";
-
-        try{
-            PreparedStatement prep = sql.connection.prepareStatement(prepString);
-
-            prep.setInt(1,order_id);
-
-            prep.executeUpdate();
-            return 1;
-        }
-        catch (SQLException e){return -2;}
-
-    }
     public boolean isSubscription(int order_id){
 
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return false;
 
-        String[][] results = sql.getStringTable("SELECT count(*) FROM HCL_order NATURAL JOIN HCL_deliveries WHERE order_id = "+order_id,false);
+        String[][] results = sql.getStringTable("SELECT count(*) FROM HCL_order NATURAL JOIN HCL_deliveries WHERE active = 1 AND delivered = 0 AND order_id = "+order_id,false);
 
         return Integer.parseInt(results[0][0]) > 1;
 
@@ -145,6 +124,6 @@ public class OrderManager {
        // order.delete(3);
        // order.delete("Ost");
        // System.out.println(order.generate(70,150,"Testing",1000,"2016-04-19","2016-04-29"));
-        System.out.println(order.isSubscription(2));
+        System.out.println(order.isSubscription(4));
     }
 }
