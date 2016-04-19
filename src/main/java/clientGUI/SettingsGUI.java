@@ -5,15 +5,8 @@ import backend.SettingsFile;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 
-/**
- * Created by bahafeld on 03.04.2016.....
- * For HCL
- */
-//TODO Edit filereference before deployement
 public class SettingsGUI extends JFrame {
     private SettingsFile settings;
     private final JTextField host = new JTextField();
@@ -23,19 +16,17 @@ public class SettingsGUI extends JFrame {
     private final JTextPane helpText = new JTextPane();
     public boolean isValid = false;
 
-
     public SettingsGUI(){
-
         try {
             settings = new SettingsFile();
         } catch (FileNotFoundException e) {
-            JOptionPane.showConfirmDialog(null, "Settings file is corrupted or missing, and the default file can't be recovered");
+            JOptionPane.showConfirmDialog(null, "Settings file is corrupted or missing, and the default file can't be recovered" +
+                    "\n Program will terminate!");
             e.printStackTrace();
             System.exit(-1);
         }
 
         //window parameters
-
             setTitle("Setup");
             setLayout(new GridLayout(10, 1));
             setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -45,10 +36,8 @@ public class SettingsGUI extends JFrame {
             setSize((int) x, (int) y);
             setLocationRelativeTo(null);
             setResizable(false);
-            //this.setModalityType(ModalityType.APPLICATION_MODAL);
 
             //Create label, textfield and center their text.
-
 
             JLabel jHost = new JLabel("Host: ", SwingConstants.LEFT);
 
@@ -71,19 +60,18 @@ public class SettingsGUI extends JFrame {
             password.setHorizontalAlignment(JTextField.LEFT);
 
             //add label and textfield
-
-        helpText.setText("Please enter your server settings. " +
+            helpText.setText("Please enter your server settings. " +
                 "If the connection is successful, settings will be saved." +
                 " Hover over each field for more help! ");
-        helpText.setEnabled(false);
-        helpText.setAlignmentX(100);
+            helpText.setEnabled(false);
+            helpText.setAlignmentX(100);
 
 
-        helpText.setBackground(this.getBackground());
-        helpText.setFont(new Font("Courier New", Font.ITALIC, 12));
-        helpText.setDisabledTextColor(Color.black);
+            helpText.setBackground(this.getBackground());
+            helpText.setFont(new Font("Courier New", Font.ITALIC, 12));
+            helpText.setDisabledTextColor(Color.black);
 
-        add(helpText);
+            add(helpText);
             add(jHost);
             add(host);
             add(jDatabase);
@@ -93,46 +81,34 @@ public class SettingsGUI extends JFrame {
             add(jPassword);
             add(password);
 
-        getSettings();
-
-
-
-
-
-
-
         //buttons and their action
-        //JButton exitButton = new JButton("Exit");
         JButton saveButton = new JButton("Save");
-
         saveButton.addActionListener((pressed) -> validateInput());
-
-        //exitButton.addActionListener((pressed) -> dispose());
-
 
         //adding buttons to panel and panel to frame
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout());
-        //buttonPanel.add(exitButton);
         buttonPanel.add(saveButton);
-            add(buttonPanel);
+        add(buttonPanel);
 
-            this.setVisible(true);
+        //Get current settings, and displays the frame
+        getSettings();
+        setVisible(true);
         }
-
 
     private String addJDBCFormat(String url){
         return "jdbc:mysql://"+ url + "/";
     }
 
     private String remJDBCFormat(String urlJDBC){
-        if(urlJDBC == null || urlJDBC.length() < 1) return "";
-        String url = urlJDBC.substring(13);
-        url =  url.substring(0, url.length()-1);
-        return url;
+        if(urlJDBC == null || urlJDBC.length() < 1){
+            return "";
+        }else{
+            String url = urlJDBC.substring(13);
+            url =  url.substring(0, url.length()-1);
+            return url;
+        }
     }
-
-
 
     private boolean validateInput() {
         String[] validateTable = {
@@ -176,14 +152,9 @@ public class SettingsGUI extends JFrame {
         database.setText(settings.getPropValue("database"));
         user.setText(settings.getPropValue("user"));
         password.setText(settings.getPropValue("password"));
-
-
-
     }
 
-    public static void main(String[] args){
-        new SettingsGUI();
-    }
+    public static void main(String[] args){ new SettingsGUI();}
 }
 
 

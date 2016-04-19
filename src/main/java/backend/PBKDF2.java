@@ -13,6 +13,10 @@ import javax.crypto.spec.PBEKeySpec;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+/**
+ * Taken from:
+ * http://blog.jerryorr.com/2012/05/secure-password-storage-lots-of-donts.html
+ */
 public class PBKDF2 {
 
 	public boolean authenticate(String attemptedPassword, byte[] encryptedPassword, byte[] salt)

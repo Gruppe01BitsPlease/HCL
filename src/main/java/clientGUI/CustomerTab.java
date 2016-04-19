@@ -11,8 +11,8 @@ import java.util.Arrays;
 class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer WHERE active = 1";
 	private SQL sql;
-	public CustomerTab(SQL sql) {
-		super(query, "HCL_customer", null, null, sql);
+	public CustomerTab(SQL sql, int role) {
+		super(query, "HCL_customer", null, null, sql, role);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}

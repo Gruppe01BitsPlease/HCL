@@ -28,6 +28,26 @@ public class tabbedMenu extends JFrame {
 		setIconImage(image);
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowListener() {
+			@Override
+			public void windowOpened(WindowEvent e) {}
+			@Override
+			public void windowClosing(WindowEvent e) {
+				System.out.println("Closing connection");
+				sql.end();
+				System.exit(0);
+			}
+			@Override
+			public void windowClosed(WindowEvent e) {}
+			@Override
+			public void windowIconified(WindowEvent e) {}
+			@Override
+			public void windowDeiconified(WindowEvent e) {}
+			@Override
+			public void windowActivated(WindowEvent e) {}
+			@Override
+			public void windowDeactivated(WindowEvent e) {}
+		});
 		//Dynamic size based on screen resolution bitches
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		x = (int) (screen.width * 0.75);
@@ -44,20 +64,22 @@ public class tabbedMenu extends JFrame {
     }
 	private void addTabs() {
 		if (rolle == 0) {
-			addTab(new EmployeeTab(sql));
+			//addTab(new StatisticsTab());
+			addTab(new EmployeeTab(sql, rolle));
 			addTab(new CeoTab());
 		}
 		if (rolle == 1 || rolle == 0) {
-			addTab(new OrderTab(sql));
-			addTab(new CustomerTab(sql));
-			addTab(new SubscriptionTab(sql));
+			addTab(new OrderTab(sql, rolle));
+			addTab(new CustomerTab(sql, rolle));
+			//addTab(new SubscriptionTab(sql, rolle));
 		}
 		if (rolle == 2 || rolle == 0) {
-			addTab(new FoodTab(sql));
-			addTab(new IngredientTab(sql));
+			addTab(new FoodTab(sql, rolle));
+			addTab(new IngredientTab(sql, rolle));
+			addTab(new ChefTab(sql, rolle));
 		}
 		if (rolle == 3 || rolle == 0) {
-			addTab(new PackageTab(sql));
+			addTab(new DriverTab(sql, rolle));
 		}
 	}
 	private String ceoName = "CEO functions";
@@ -68,6 +90,9 @@ public class tabbedMenu extends JFrame {
 	private String ordrName = "Orders";
 	private String packName = "Packages";
 	private String subscrName = "Subscriptions";
+	private String chefName = "Chef view";
+	private String statName = "Statistics";
+	private String drivName = "Driver view";
 
 	private void addTab(JPanel tab) {
 
@@ -101,14 +126,29 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(ordrName, tab);
 			}
 		}
-		else if (tab instanceof PackageTab) {
+		/*else if (tab instanceof PackageTab) {
 			if (tabs.indexOfTab(packName) == -1) {
 				tabs.addTab(packName, tab);
 			}
-		}
-		else if (tab instanceof SubscriptionTab) {
+		}*/
+		/*else if (tab instanceof SubscriptionTab) {
 			if (tabs.indexOfTab(subscrName) == -1) {
 				tabs.addTab(subscrName, tab);
+			}
+		}*/
+		else if (tab instanceof ChefTab) {
+			if (tabs.indexOfTab(chefName) == -1) {
+				tabs.addTab(chefName, tab);
+			}
+		}
+		/*else if (tab instanceof StatisticsTab) {
+			if (tabs.indexOfTab(statName) == -1) {
+				tabs.addTab(statName, tab);
+			}
+		}*/
+		else if (tab instanceof DriverTab) {
+			if (tabs.indexOfTab(drivName) == -1) {
+				tabs.addTab(drivName, tab);
 			}
 		}
 		addCloseButtons();
@@ -219,12 +259,12 @@ public class tabbedMenu extends JFrame {
 			});
 			newTab.add(orig);
 			if(rolle == 3 || rolle == 0) {
-				if (tabs.indexOfTab(packName) == -1) {
+				/*if (tabs.indexOfTab(packName) == -1) {
 					JMenuItem pack = new JMenuItem(packName);
 					pack.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new PackageTab(sql));
+							addTab(new PackageTab(sql, rolle));
 						}
 					});
 					newTab.add(pack);
@@ -233,6 +273,21 @@ public class tabbedMenu extends JFrame {
 					JMenuItem pack = new JMenuItem(packName);
 					pack.setEnabled(false);
 					newTab.add(pack);
+				}*/
+				if (tabs.indexOfTab(drivName) == -1) {
+					JMenuItem driv = new JMenuItem(drivName);
+					driv.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							addTab(new DriverTab(sql, rolle));
+						}
+					});
+					newTab.add(driv);
+				}
+				else {
+					JMenuItem driv = new JMenuItem(drivName);
+					driv.setEnabled(false);
+					newTab.add(driv);
 				}
 			}
 			if (rolle == 2 || rolle == 0) {
@@ -241,7 +296,7 @@ public class tabbedMenu extends JFrame {
 					food.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new FoodTab(sql));
+							addTab(new FoodTab(sql, rolle));
 						}
 					});
 					newTab.add(food);
@@ -256,7 +311,7 @@ public class tabbedMenu extends JFrame {
 					ingr.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new IngredientTab(sql));
+							addTab(new IngredientTab(sql, rolle));
 						}
 					});
 					newTab.add(ingr);
@@ -266,6 +321,21 @@ public class tabbedMenu extends JFrame {
 					ingr.setEnabled(false);
 					newTab.add(ingr);
 				}
+				if (tabs.indexOfTab(chefName) == -1) {
+					JMenuItem chf = new JMenuItem(chefName);
+					chf.addActionListener(new AbstractAction() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							addTab(new ChefTab(sql, rolle));
+						}
+					});
+					newTab.add(chf);
+				}
+				else {
+					JMenuItem chf = new JMenuItem(chefName);
+					chf.setEnabled(false);
+					newTab.add(chf);
+				}
 			}
 			if (rolle == 1 || rolle == 0) {
 				if (tabs.indexOfTab(ordrName) == -1) {
@@ -273,7 +343,7 @@ public class tabbedMenu extends JFrame {
 					order.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new OrderTab(sql));
+							addTab(new OrderTab(sql, rolle));
 						}
 					});
 					newTab.add(order);
@@ -288,7 +358,7 @@ public class tabbedMenu extends JFrame {
 					cust.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new CustomerTab(sql));
+							addTab(new CustomerTab(sql, rolle));
 						}
 					});
 					newTab.add(cust);
@@ -298,12 +368,12 @@ public class tabbedMenu extends JFrame {
 					cust.setEnabled(false);
 					newTab.add(cust);
 				}
-				if (tabs.indexOfTab(subscrName) == -1) {
+				/*if (tabs.indexOfTab(subscrName) == -1) {
 					JMenuItem subscr = new JMenuItem(subscrName);
 					subscr.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new SubscriptionTab(sql));
+							addTab(new SubscriptionTab(sql, rolle));
 						}
 					});
 					newTab.add(subscr);
@@ -312,7 +382,7 @@ public class tabbedMenu extends JFrame {
 					JMenuItem subscr = new JMenuItem(subscrName);
 					subscr.setEnabled(false);
 					newTab.add(subscr);
-				}
+				}*/
 			}
 			if (rolle == 0) {
 				if (tabs.indexOfTab(empName) == -1) {
@@ -320,7 +390,7 @@ public class tabbedMenu extends JFrame {
 					emp.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new EmployeeTab(sql));
+							addTab(new EmployeeTab(sql, rolle));
 						}
 					});
 					newTab.add(emp);

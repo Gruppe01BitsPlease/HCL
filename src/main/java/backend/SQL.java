@@ -1,28 +1,19 @@
 package backend;
 
 import java.io.FileNotFoundException;
-import java.net.URISyntaxException;
 import java.sql.*;
-import java.util.Arrays;
 
 public class SQL {
+
+	private final static String databasedriver = "com.mysql.jdbc.Driver";
+
 	private SettingsFile settings;
 	private String username;
 	private String password;
-	private String databasedriver = "com.mysql.jdbc.Driver";
 	private String host;
 	private String database;
 	public  Connection connection;
-	private Statement sentence;
-	private ResultSet res;
-	@Deprecated
-	/**
-	 * Use method isConnected() instead
-	 * Still works but is worse
-	 */
-    public boolean isConnected = false;
-
-	public static int colomns = 0;
+	private static int colomns = 0;
 
 	public SQL() {
 		try {this.settings = new SettingsFile();}
@@ -37,13 +28,7 @@ public class SQL {
 	}
 
 	/**For testing SQLconnection based on input from end user
-	 * aerierjasiperjpaesjripase
-	 * @throws throws nothing
-	 * @returns returns nothing
-	 * @param host url for host, should be
-	 * @param database
-	 * @param username
-	 * @param password
+	 * @param host url for host
 	 */
 	public SQL(String host, String database, String username, String password) {
 		try {this.settings = new SettingsFile();}
@@ -60,20 +45,12 @@ public class SQL {
 	 * @return True if connected to the internet and the database
      */
 	public boolean isConnected(){
-		boolean isValid;
-		try{
-			if(connection != null) {  //Fikk nullpointexception fordi det er jo ikke noe connection om man har feil innstillinger!
-				isValid = connection.isValid(3);
-				return isValid;
-			}else{
-				return false;
-			}
+		try {
+			return connection != null && connection.isValid(3);
 		}
 		catch (SQLException e){
-			return false;
+		 	return false;
 		}
-
-
 	}
 
 
@@ -91,33 +68,21 @@ public class SQL {
 		}
 		try {
 			connection = DriverManager.getConnection(database);
-			//setning = forbindelse.createStatement();
 			return connection;
 		}
 
-		catch (SQLException e) {
-			//e.printStackTrace(); Better not to print, because wrong password on db will give exception
-			return null;
-		}
+		catch (SQLException e) { return null;}
 
 	}
 
 
 	/**
-	 * Attemts to end the link with the database
-     * TODO: Make this not shit
+	 * Ends all connections with the database. Closes Connection and ResultSet
 	 */
-	public boolean end() {
+	public void end() {
 
-		try {
-            res.close();
-            connection.close();
-			//setning.close();
-			return true;
-		}
-		catch (SQLException e) {
-			e.printStackTrace();
-			return false;
+		if(connection != null){
+			try { connection.close();} catch (SQLException ignored){}
 		}
 	}
 
@@ -130,48 +95,14 @@ public class SQL {
 		if (query == null || query.trim().equals("")) {
 			return null;
 		}
-        ResultSet out;
 		try { //Can't use try-with, because you cant do stuff with a closed ResultSet object
             Statement setning = connection.createStatement();
-            ResultSet res = setning.executeQuery(query);
-            return res;
-
+			return setning.executeQuery(query);
 
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
 			return null;
-		}
-    }
-
-	/**
-	 * Inserts something into the database through the specified query sentence
-	 * 
-	 * @return True if it worked, false otherwise
-     * TODO Make useful
-	 */
-	public boolean insert(String query) {
-		if (query == null || query.trim().equals("")) {
-			return false;
-		}
-		else {
-			try {
-				sentence = connection.createStatement();
-				sentence.execute(query);
-				return true;
-			}
-			catch (SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
-			finally {
-				try {
-					sentence.close();
-				}
-				catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
@@ -299,10 +230,10 @@ public class SQL {
      *
      */
     public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
-        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+       /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
            // System.out.println("Ostost");
             return false;
-        }
+        }*/
 
         try {
             String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
@@ -315,25 +246,22 @@ public class SQL {
 
             //System.out.println(prep.toString()+"\n"+res.toString());
 
-            if(res.next()){
-               return true;
-            }
+			return res.next();
         }
         catch (SQLException e){
             e.printStackTrace();
-            return false;}
-
-        return false;
+            return false;
+		}
     }
 
 	/**
 	 * Used where the value is an int
      */
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
-        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+       /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
             // System.out.println("Ostost");
             return false;
-        }
+        }*/
 
         try {
             String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
@@ -346,27 +274,21 @@ public class SQL {
 
             //System.out.println(prep.toString()+"\n"+res.toString());
 
-            if(res.next()){
-                return true;
-            }
+			return res.next();
         }
         catch (SQLException e){
 			e.printStackTrace();
-            return false;}
-
-        return false;
+            return false;
+		}
     }
 
 	/**
 	 * Used for link-tables
      */
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
-		if((table.split(" \"\':;").length) < 1){ //Prevents sql-injection
-			return false;
-		}
 
 		try {
-			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1";
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1;";
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
@@ -378,16 +300,13 @@ public class SQL {
 
 			//System.out.println(prep.toString()+"\n"+res.toString());
 
+			return res.next();
 
-			if(res.next()){ // At least 1 line in the result
-				return true;
-			}
 		}
 		catch (SQLException e){
 			e.printStackTrace();
-			return false;}
-
-		return false;
+			return false;
+		}
 	}
 
 
@@ -478,14 +397,13 @@ public class SQL {
 
 	public String[] getRow(String query) {
 		String[][] one = getStringTable(query, false);
-		String[] ret = one[0];
-		return ret;
+		return one[0];
 	}
 	/**
-	 * Returns an array with the correct size for the specified query Returns
+	 * Returns an array with the correct size for the specified query
 	 * and null if something goes wrong
 	 */
-	public String[][] arrayWithCorrectSize(String query, boolean header) {
+	private String[][] arrayWithCorrectSize(String query, boolean header) {
 
 		try {
 			ResultSet res = query(query);
@@ -513,7 +431,7 @@ public class SQL {
 	/**
 	 * Prints a generic [][] array. Can take all types off arrays cuz fancy
 	 */
-	public <T> void print2dArray(T[][] array) {
+	<T> void print2dArray(T[][] array) {
 		if (array != null && array.length != 0) {
 			System.out.println();
 			for (int i = 0; i < array[0].length; i++) {
@@ -534,15 +452,13 @@ public class SQL {
 		}
 	}
 
-
-
 	public static void main(String[] args) throws Exception {
 
         SettingsFile db = new SettingsFile();
 
 		SQL sql = new SQL();
 		//System.out.println(sql.connect());
-		System.out.println("SQL is connected? : "+sql.isConnected());
+	/*	System.out.println("SQL is connected? : "+sql.isConnected());
 		if (sql.isConnected()) {
 
 			String[][] tabell = sql.getStringTable("Select * from HCL_users", true);
@@ -551,9 +467,11 @@ public class SQL {
 		}
 		else {
 			System.out.println("Could not contact database @ " + db.getPropValue("database"));
-        }
+        }*/
+		System.out.println(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",207,31));
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
        // System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
         //System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
+		sql.end();
 	}
 }

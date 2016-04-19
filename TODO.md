@@ -1,16 +1,14 @@
-Generel Diskusjon / Todos / Ønsker / Kommentarer
+**Generel Diskusjon / Todos / Ønsker / Kommentarer**
 
 - Lage JUnit tester
 - Lage noe slags ruteplanlegger (Trenger ikke være sånn op javascript GoogleMaps implementasjon -.-')
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
-
-- Konfigureringsvindu når du åpner programmet første gang? #Bjørn A
-
+- Javadoc i alle backend klasser, trenger vi så mye javadoc i GUI?
 - Ny order: Exception hvis kunde ikke finns, bruk drop-down
 
 - Legg til UseCase: Endre Settings elns
 
-GUI
+**GUI**
 - Endre eget passord / Email osv
 - CEO: Endre roller, slette
 - Legg til mat / pakker i ordre osv
@@ -22,16 +20,22 @@ GUI
 	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Se hvilke mat/pakker som er i order
 - Dato-greier prefilled med dags-dato?
-- Størrelse på inputfelter i editvindu
+- Størrelse på inputfelter i editvindu!
 
-Database
-- Ordne on update cascade / on delete cascade // nvm
-- Legge til "Active" boolean søyle over alt
+**BUGS**:
+- Legge til en link og så fjerne den uten å lukke vindu mellom
+- Kan søke i IDnummer
+- Legge til orders funker ikke
 
-Trine:
+**Trine**:
 - Legg til "Active" boolean søyle i alle nødvendige tabeller, ingenting skal slettes; bare settes inactive
 - Legge inn masse data i databasen
 - Fixe at dags-dato er ferdig-fyllt i UI der det trengs
 - Lage statistikk
 - Lage tester
 - Lage driver-rute-greier?
+
+
+VIKTIG
+- Legge til nye brukere MED ROLLER!
+- Endre EGEN informasjon, eget passord

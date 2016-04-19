@@ -257,20 +257,3 @@ ALTER TABLE `HCL_subscription_date`
 
 -- --------------------------------------------------------
 SET FOREIGN_KEY_CHECKS=1;
-INSERT INTO  HCL_users (
-  `user_id` ,
-  `user_name` ,
-  `user_role` ,
-  `user_salt` ,
-  `user_pass` ,
-  `user_firstname` ,
-  `user_lastname` ,
-  `user_email` ,
-  `user_tlf` ,
-  `user_adress` ,
-  `user_postnr` ,
-  `user_start` ,
-  `active`
-)
-VALUES (DEFAULT , 'admin', '0', 'IOdABDSNfAA=', 'I+D2C2RKkFjw1UxOEbd5k8BdYkE=', 'test', 'test', 'test', '0', 'test',  '1111',  '2016-04-01',  '1'
-);

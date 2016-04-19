@@ -371,7 +371,7 @@ INSERT INTO `HCL_subscription_date` (`date_id`, `order_id`, `dato`, `active`) VA
 --
 
 INSERT INTO `HCL_users` (`user_id`, `user_name`, `user_role`, `user_salt`, `user_pass`, `user_firstname`, `user_lastname`, `user_email`, `user_tlf`, `user_adress`, `user_postnr`, `user_start`, `active`) VALUES
-(100, 'olavhus', 0, 'U8nqJS5MW2o=', 'a2lJ8psbJJWch/5wBIWBY/KoG8Q=', 'Olav', 'Husby', 'OlavH96@gmail.com', 93240605, 'Bøkveien 11A', 7059, '2016-03-16', 1),
+(1, 'olavhus', 0, 'U8nqJS5MW2o=', 'a2lJ8psbJJWch/5wBIWBY/KoG8Q=', 'Olav', 'Husby', 'OlavH96@gmail.com', 93240605, 'Bøkveien 11A', 7059, '2016-03-16', 1),
 (8, 'bjornhaf', 0, 'HB7RkSzak8Q=', '7XTMzI6Ib5wvXBUUtzMpjSr4Vnc=', 'Bjørn', 'Hafeld', 'BjørnHafeld@gmail.com', 12345678, 'Borti Sjægget', 1000, '2011-02-02', 1),
 (9, 'trineols', 0, 'vvx+BLVq4Do=', 'ep/9fK1A40vwtn33/dSEz+CnRN8=', 'Trine', 'Olsen', 'trineliseolsen@outlook.com', 65678, 'Atmed Elgan', 20, '2014-02-02', 1),
 (13, 'jensern', 0, 'wiA7nXBVg4I=', 'TsPyO8W6wBda3Fl4EawyuYNzBGk=', 'Jens Tobias', 'Kaarud', 'jenskaarud@gmail.com', NULL, 'Norge', 8400, NULL, 1);

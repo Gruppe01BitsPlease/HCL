@@ -9,19 +9,17 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 /**
- * Created by Faiter119 on 15.03.2016.
+ * Created by Olav Husby on 15.03.2016.
  */
 public class OrderManager {
 
     private SQL sql;
     public static final String CURRENT_TABLE = "HCL_order";
     public static final String CURRENT_TABLE_LINK_FOOD = "HCL_order_food";
-    public static final String CURRENT_TABLE_LINK_PACKAGE = "HCL_order_package";
 
-    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date,delivery_date)";
+    public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(customer_id,price,adress,postnr,order_date)";
     public static final String CURRENT_TABLE_PK = "(order_id)";
     public static final String CURRENT_TABLE_ADD_FOOD_ARGUMENTS = "(order_id, food_id, number)";
-    public static final String CURRENT_TABLE_ADD_PACKAGE_ARGUMENTS = "(order_id, package_id)";
 
 
     public OrderManager(SQL sql){
@@ -34,16 +32,15 @@ public class OrderManager {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int generate(int customer_id, int price, String adress, int postnr, String order_date, String delivery_date) {
+    public int generate(int customer_id, int price, String adress, int postnr, String order_date) {
 
         if(price < 0 || customer_id < 0) return -3;
 
         try {
-
+            System.out.println("Order date:" + order_date);
             LocalDate date1 = LocalDate.parse(order_date);
-            LocalDate date2 = LocalDate.parse(delivery_date);
 
-            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?,?)";
+            String sqlPrep = "INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?,?,?)";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
             prep.setInt(1,customer_id);
@@ -51,13 +48,16 @@ public class OrderManager {
             prep.setString(3,adress);
             prep.setInt(4,postnr);
             prep.setDate(5,Date.valueOf(date1));
-            prep.setDate(6,Date.valueOf(date2));
             prep.executeUpdate();
 
             return sql.getLastID();
         }
-        catch (SQLException e){return -2;}
-        catch (DateTimeParseException e){return -3;}
+        catch (SQLException e){
+            System.out.println(e);
+            return -2;}
+        catch (DateTimeParseException e){
+            System.out.println(e.toString() + ": " + e.getMessage());
+            return -3;}
     }
 
     /**
@@ -97,34 +97,32 @@ public class OrderManager {
         return link.generate(CURRENT_TABLE_LINK_FOOD,"order_id","food_id",order_id,food_id,number);
 
     }
+
     /**
-     * @return
-     *  1: OK
-     * -1: Already exist
-     * -2: SQL Exception
-     * -3: Wrong Parameters
+     * @return true if the order_id is valid and the order has >1 deliveries
      */
-    public int addPackage(int order_id, int package_id){
+    public boolean isSubscription(int order_id){
 
-        LinkManager link = new LinkManager(sql);
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return false;
 
-        if(package_id <0 || order_id <0 )return -3;
-        if(sql.rowExists(CURRENT_TABLE_LINK_PACKAGE, "order_id","package_id",order_id,package_id)) return -1;
+        String[][] results = sql.getStringTable("SELECT count(*) FROM HCL_order NATURAL JOIN HCL_deliveries WHERE active = 1 AND delivered = 0 AND order_id = "+order_id,false);
 
-        return link.generate(CURRENT_TABLE_LINK_PACKAGE,"order_id","package_id",order_id,package_id,1);
+        return Integer.parseInt(results[0][0]) > 1;
 
     }
-
     public static void main(String[]args){
 
         SQL sql = new SQL();
         OrderManager order = new OrderManager(sql);
 
-        //order.generate(2,100,"Ostehaug",1911,"2015-01-01","2015-02-02");
+        int res = order.generate(10,111,"Ostehaug",1911,"2015-01-01");
+        System.out.println(res);
         //order.addFood(2,200,5);
         /*int p = order.addPackage(2,1);
         System.out.println(p);*/
        // order.delete(3);
        // order.delete("Ost");
+       // System.out.println(order.generate(70,150,"Testing",1000,"2016-04-19","2016-04-29"));
+        System.out.println(order.isSubscription(4));
     }
 }

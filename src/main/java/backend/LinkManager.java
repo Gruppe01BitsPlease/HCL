@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Created by Faiter119 on 18.03.2016.
+ * Created by Olav Husby on 18.03.2016.
  * Creates links between databses by inserting into the help-tables
  */
 public class LinkManager {
@@ -112,7 +112,8 @@ public class LinkManager {
 
         //link.delete("HCL_food_ingredient","food_id","ingredient_id",3,3);
         //link.generate();
-        link.editNumber("HCL_food_ingredient","food_id","ingredient_id",200,1,5);
+        //link.editNumber("HCL_food_ingredient","food_id","ingredient_id",200,1,5);
+        System.out.println(link.delete("HCL_food_ingredient","food_id","ingredient_id",207,31));
 
     }
 }

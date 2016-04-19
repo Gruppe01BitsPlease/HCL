@@ -120,7 +120,7 @@ abstract class DataTyper {
 				ret[i] = "int";
 			}
 			else if (UINames[i].equals("Start date")) {
-				ret[i] = "date";
+				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Post code")) {
 				ret[i] = "int";
@@ -133,6 +133,9 @@ abstract class DataTyper {
 			}
 			else if (UINames[i].equals("ID")) {
 				ret[i] = "id";
+			}
+			else if (UINames[i].equals("Completed")) {
+				ret[i] = "boolean";
 			}
 			else {
 				System.out.println("ERROR no data type found: " + UINames[i]);

@@ -26,13 +26,21 @@ class GenericList extends JPanel {
 	private String[][] linkTables;
 	private String[][] FKs;
 	private JTableHCL list;
-	private JTableHCL searchTab;
+	private JTableHCL searchList;
+	private JScrollPane scroll;
+	private cardTable cards;
+	private CardLayout cardLayout;
+	private String scrollName = "List";
+	private String searchName = "Search";
     private SQL sql;
-    public int x;
-    public int y;
+	private int role;
+    public static int x;
+    public static int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql) {
+	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
+		System.out.println(SqlTableName + "query: " + query);
+		this.role = role;
 		this.FKs = FKs;
 		//try {
 			this.sql = sql;
@@ -68,20 +76,40 @@ class GenericList extends JPanel {
 						edit(-1, true);
 					}
 					else {
-						edit(Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]), false);
+						int ID = Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]);
+						System.out.println("ID: " + ID);
+						edit(ID, false);
 					}
 				}
 			}
 		});
-        JScrollPane scroll = new JScrollPane(list);
+        scroll = new JScrollPane(list);
+		cards = new cardTable();
 		add(new northBar(), BorderLayout.NORTH);
-        add(scroll, BorderLayout.CENTER);
+		add(cards, BorderLayout.CENTER);
+		cardLayout.show(cards, scrollName);
+		//searchScroll.setVisible(false);
+        //add(scroll, BorderLayout.CENTER);
 		list.removeIDs();
 		//removePK();
     }
+	public int getRole() {
+		return role;
+	}
+	class cardTable extends JPanel {
+		public cardTable() {
+			cardLayout = new CardLayout();
+			setLayout(cardLayout);
+			add(scroll, scrollName);
+		}
+	}
 	public void refresh() {
+		int sortColumn = -1;
 		try {
-			int sortColumn = list.getSortColumn();
+			sortColumn = list.getSortColumn();
+		}
+		catch (Exception e) {}
+		try {
 			table = sql.getStringTable(query, false);
 			fillTable();
 			SqlColumnNames = sql.getColumnNames(query);
@@ -101,7 +129,9 @@ class GenericList extends JPanel {
 				searchPress.actionPerformed(act);
 			}
 			list.removeIDs();
-			list.setSortColumn(sortColumn);
+			if (sortColumn != -1) {
+				list.setSortColumn(sortColumn);
+			}
 		}
 		catch (Exception e) {
 			System.out.println("ERROR: " + e.toString());
@@ -123,7 +153,7 @@ class GenericList extends JPanel {
 		return -4;
 	}
 	public void edit(int ID, boolean newItem) {
-		editWindow edit = new editWindow(newItem);
+		editWindow edit = new editWindow(ID, newItem);
 	}
 	private class northBar extends JPanel {
 		public northBar() {
@@ -173,7 +203,7 @@ class GenericList extends JPanel {
 					int index = newTable.length - 1;
 					table = newTable;
 					fillTable();*/
-					editWindow edit = new editWindow(true);
+					edit(-1, true);
 				}
 			});
 			add(newThing);
@@ -181,58 +211,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class datePane extends JPanel {
-		JTextField year;
-		JTextField month;
-		JTextField day;
-		public datePane(String date) {
-			//2014-01-01
-			setLayout(new GridLayout(1, 3));
-			if (date != null && !(date.equals(""))) {
-				if (date.length() == 10) {
-					year = new JTextField(date.substring(0, 4));
-					//System.out.println(year.getText());
-					month = new JTextField(date.substring(5, 7));
-					//System.out.println(month.getText());
-					day = new JTextField(date.substring(8, 10));
-					//System.out.println(day.getText());
-				}
-				else {
-					System.out.println("Date format is wrong! GenericList.datePane");
-				}
-			}
-			else {
-				year = new JTextField("");
-				month = new JTextField("");
-				day = new JTextField("");
-			}
-			add(year);
-			add(month);
-			add(day);
-		}
-		public datePane() {
-			setLayout(new GridLayout(1, 3));
-			year = new JTextField("");
-			month = new JTextField("");
-			day = new JTextField("");
-			add(year);
-			add(month);
-			add(day);
-		}
-		public String getDate() {
-			if (!(year.getText().equals("") && month.getText().equals("") & day.getText().equals(""))) {
-				return year.getText() + "-" + month.getText() + "-" + day.getText();
-			}
-			else {
-				return "";
-			}
-		}
-		public void setDate(String date) {
-			year = new JTextField(date.substring(0, 4));
-			month = new JTextField(date.substring(5, 7));
-			day = new JTextField(date.substring(8, 10));
-		}
-	}
+
 	class editWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
@@ -244,14 +223,15 @@ class GenericList extends JPanel {
 		private ArrayList<JTableHCL> linkJTables = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-		public editWindow(boolean newEntry) {
+		public editWindow(int ID, boolean newEntry) {
 			this.newEntry = newEntry;
 			if (!newEntry) {
-				selected = table[Stuff.findIndexOf(table, (String) tabModel.getValueAt(list.getSelectedRow(), 0), 0)];
-				index = Stuff.findIndexOf(table, (String) tabModel.getValueAt(list.getSelectedRow(), 0), 0);
+				index = Stuff.findIndexOf(table, Integer.toString(ID), 0);
+				selected = table[index];
 			}
 			if (newEntry) {
 				setTitle("New Item");
+				selected = new String[titles.length];
 			} else {
 				setTitle("View Item");
 			}
@@ -266,13 +246,13 @@ class GenericList extends JPanel {
 					String link = "";
 					if (selected[0] != null && !(selected[0].equals(""))) {
 						link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
-								" WHERE " + SqlColumnNames[0] + " = " + selected[0];
+								" WHERE " + SqlColumnNames[0] + " = " + selected[0] + " AND active = 1";
 
 						System.out.println(link);
 					}
 					else {
 						link = "SELECT * FROM " + linkTables[i][2] + " NATURAL JOIN " + linkTables[i][3] +
-								" WHERE " + SqlColumnNames[0] + " = -1";
+								" WHERE " + SqlColumnNames[0] + " = -1 AND active = 1";
 						System.out.println(link);
 					}
 					tabs.addTab(linkTables[i][0], new linkTab(link, i));
@@ -286,7 +266,7 @@ class GenericList extends JPanel {
 			add(new saveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		String[] comboBoxChoices;
+		String[] comboBoxIDs;
 		class saveCancelButtons extends JPanel {
 			public saveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
@@ -321,9 +301,10 @@ class GenericList extends JPanel {
 										newValues[i] = dtp.getDate();
 									} else if (fields.get(i) instanceof JComboBox) {
 										JComboBox cmb = (JComboBox) fields.get(i);
-										String sel = (String) cmb.getSelectedItem();
-										String[] chosen = sel.split(",");
-										newValues[i] = chosen[0];
+										String selID = comboBoxIDs[cmb.getSelectedIndex()];
+										/*String sel = (String) cmb.getSelectedItem();
+										String[] chosen = sel.split(",");*/
+										newValues[i] = selID;
 										System.out.println(newValues[i]);
 									}
 								}
@@ -372,7 +353,9 @@ class GenericList extends JPanel {
 								if (removeLinks.size() > 0) {
 									LinkManager linkMng = new LinkManager(sql);
 									for (int[] i : removeLinks) {
-										linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
+										int a = linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
+										System.out.println(linkTables[i[0]][2] + " " + SqlColumnNames[0] + " " + linkTables[i[0]][1] + " " + Integer.parseInt(selected[0]) + " " + i[1]);
+										System.out.println("Delete result :" + a);
 									}
 								}
 								int pk = sql.getLastID();
@@ -412,11 +395,11 @@ class GenericList extends JPanel {
 								table[index] = newValues;
 								refresh();
 								if (searchTableMod != null) {
-									int searchSelectedRow = searchTab.getSelectedRow();
+									int searchSelectedRow = searchList.getSelectedRow();
 									if (searchSelectedRow >= 0 && searchSelectedRow < searchTable.length) {
 										searchTable[searchSelectedRow] = newValues;
 										searchTableMod = new DefaultTableModel(searchTable, titles);
-										searchTab.setModel(searchTableMod);
+										searchList.setModel(searchTableMod);
 									}
 								}
 								dispose();
@@ -467,11 +450,12 @@ class GenericList extends JPanel {
 							k.setSelectedItem(choices[1][Stuff.findIndexOf(choices[1], selected[i])]);
 							k.setEnabled(false);
 						}
+						comboBoxIDs = choices[0];
 						fields.add(k);
 						add(j);
 						add(k);
 					}
-					else if (dataTypes[i].equals("id")) {
+					else if (dataTypes[i].equals("id") || dataTypes[i].equals("active")) {
 						JTextField k = new JTextField(selected[i]);
 						fields.add(k);
 					} else {
@@ -535,6 +519,7 @@ class GenericList extends JPanel {
 						PKColumnIndex = i;
 					}
 				}
+				linkTable.removeIDs();
 			}
 			class lowerButtons extends JPanel {
 				public lowerButtons() {
@@ -596,7 +581,7 @@ class GenericList extends JPanel {
 								" FROM " + linkTables[linkIndex][3] + " NATURAL JOIN " + linkTables[linkIndex][2] +
 								" WHERE " + linkTables[linkIndex][1] + " NOT IN (SELECT " + linkTables[linkIndex][1] +
 								" FROM " + linkTables[linkIndex][2] + " WHERE " + SqlColumnNames[0] +
-								" = " + selected[0] + ")";
+								" = " + selected[0] + ") AND active = 1";
 					System.out.println("Choice query: \n\t" + choiceQuery);
 					String[] choice = sql.getColumn(choiceQuery, 1);
 					JTextField amount = new JTextField();
@@ -691,8 +676,6 @@ class GenericList extends JPanel {
 
 		}
 	}
-
-
     class GenericSearch extends JPanel {
         //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;
@@ -711,51 +694,82 @@ class GenericList extends JPanel {
 				setLayout(new GridLayout(1, 2));
 				JButton searcher = new JButton("Search");
 				JButton closeSearch = new JButton("Close search");
-				searcher.setToolTipText("Search for any entry and display all matches in a separate window.");
 				searchPress = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						ArrayList<Integer> rowAdded = new ArrayList<Integer>();
-						searchTable = new String[table.length][table[0].length];
-						for (int i = 0; i < table.length; i++) {
-							for (int j = 0; j < table[i].length; j++) {
-								if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
-									int k = 0;
-									boolean added = false;
-									for (int l = 0; l < searchTable.length; l++) {
-										while (!added && k < searchTable[0].length) {
-											if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
-												searchTable[k] = table[i];
-												added = true;
-												rowAdded.add(i);
-											} else {
-												k++;
+						if (search.getText().equals("")) {
+							cardLayout.show(cards, scrollName);
+						}
+						else {
+							ArrayList<Integer> rowAdded = new ArrayList<Integer>();
+							searchTable = new String[table.length][table[0].length];
+							ArrayList<String[]> searchArray = new ArrayList<>();
+							for (int i = 0; i < table.length; i++) {
+								for (int j = 0; j < table[i].length; j++) {
+									if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
+										int k = 0;
+										boolean added = false;
+										for (int l = 0; l < searchTable.length; l++) {
+											while (!added && k < searchTable[0].length) {
+												if (searchTable[k][0] == null || searchTable[k][0].isEmpty()) {
+													searchTable[k] = table[i];
+													searchArray.add(table[i]);
+													added = true;
+													rowAdded.add(i);
+												} else {
+													k++;
+												}
 											}
 										}
 									}
 								}
 							}
+							if (searchArray.size() > 0) {
+								String[][] newArr = new String[searchArray.size()][];
+								for (int i = 0; i < newArr.length; i++) {
+									newArr[i] = searchArray.get(i);
+								}
+								searchTable = newArr;
+								cardLayout.show(cards, searchName);
+								DefaultTableModel searchTM = new DefaultTableModel(searchTable, titles);
+								System.out.println("Titles:\t" + Arrays.toString(titles));
+								System.out.println("Search array:\t" + Arrays.toString(searchArray.get(0)));
+								searchList = new JTableHCL(searchTM);
+								searchList.removeIDs();
+								searchList.addMouseListener(new MouseAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent e) {
+										if (e.getClickCount() == 2) {
+											edit(Integer.parseInt(searchTable[Stuff.findIndexOf(searchTable, (String) searchList.getValueAt(searchList.getSelectedRow(), 0), 0)][0]), false);
+										}
+									}
+								});
+								JScrollPane searchScroll = new JScrollPane(searchList);
+								cards.add(searchScroll, searchName);
+								cardLayout.show(cards, searchName);
+								//toggleSearch.actionPerformed(e);
+							}
 						}
-						//searchWindow window = new searchWindow();
-						DefaultTableModel searchTM = new DefaultTableModel(searchTable, titles);
-						list.setModel(tabModel);
-						toggleSearch.actionPerformed(new ActionEvent(this, 0, ""));
 					}
 				};
-				toggleSearch = new AbstractAction() {
+				/*toggleSearch = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						if (searchEnabled) {
-							searchEnabled = false;
-							remove(closeSearch);
-						}
-						else if (!searchEnabled) {
-							searchEnabled = true;
+						if (!searchEnabled) {
 							add(closeSearch);
 						}
+						else if (searchEnabled) {
+							remove(closeSearch);
+						}
 					}
-				};
-				closeSearch.addActionListener(toggleSearch);
+				};*/
+				/*closeSearch.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						cardLayout.show(cards, scrollName);
+					}
+				});*/
+				//add(closeSearch);
 				searcher.addActionListener(searchPress);
 				add(searcher);
 			}

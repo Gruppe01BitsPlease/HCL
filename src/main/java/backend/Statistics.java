@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Created by Faiter119 on 11.04.2016.
+ * Created by Olav Husby on 11.04.2016.
  */
 public class Statistics {
 
@@ -16,17 +16,19 @@ public class Statistics {
     public Statistics(){
         this.sql = new SQL();
     }
+
     private ArrayList<LocalDate> getDeliveryDates(){
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
 
-        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM HCL_order;",false);
+        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM deliveries;",false);
 
         for(int i=0; i<datesString.length; i++){
             try {
-                LocalDate date = LocalDate.parse(datesString[i][0]); // LocalDate >>>>>>> Date // java.time forever
+                LocalDate date = LocalDate.parse(datesString[i][0]);
                 dates.add(date);
-            }catch (DateTimeParseException e){return null;}
+            }
+            catch (DateTimeParseException e){return null;}
         }
 
         return dates;
@@ -50,11 +52,18 @@ public class Statistics {
      *  Mest populære ingrediens / mat
      */
     public int getTotalSubscriptions(){
-        String[][] results = sql.getStringTable("SELECT COUNT(*) FROM HCL_subscription NATURAL JOIN HCL_order;",false);
-        if(results.length > 0 || results[0].length > 0) { // Ikke sikker hvilken det er ^-^
-            return Integer.parseInt(results[0][0]);
+
+        OrderManager man = new OrderManager(sql);
+        int count = 0;
+
+        String[][] orders = sql.getStringTable("Select order_id from HCL_order;",false);
+        for(String[] row : orders){
+
+            int order_id = Integer.parseInt(row[0]);
+
+            if(man.isSubscription(order_id)) count++;
         }
-        return 0;
+        return count;
     }
     public int getTotalOrders(){
 
@@ -184,6 +193,14 @@ public class Statistics {
 
     }
 
+    public int getGrossIncome(){
+
+        String[][] results = sql.getStringTable("SELECT delivered_subscriptions.`Sum(price)`+" +
+                "delivered_orders.`sum(price)`'Gross' FROM delivered_subscriptions, delivered_orders;\n",false);
+
+        return Integer.parseInt(results[0][0]);
+
+    }
     public static void main(String[]args){
 
         Statistics stats = new Statistics();
@@ -204,7 +221,10 @@ public class Statistics {
         System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
 
         System.out.println("All Time Popular Food: "+stats.getAllTimePopularFood());
-       // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
+        System.out.println("Gross Income: "+stats.getGrossIncome());
+
+
+        // System.out.println("Popular Popular Food in month: "+stats.getAllTimePopularFood());
 
 
       /*  LocalDate date = LocalDate.now();

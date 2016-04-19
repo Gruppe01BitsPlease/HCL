@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
@@ -161,6 +162,41 @@ public class UserManager{
         }
         return -3;
     }
+    public String getRandomPassword(String username){
+
+        String[] options1 = {"Ost","Max","Per","Bord","Oppned"};
+        String[] options2 = {"Norge","Sverige","Danmark","Finland","England"};
+
+        String generated = rString(options1,options2);
+
+        String newSalt2;
+        String newPass2;
+        try{
+            byte[] newSalt = crypt.generateSalt();
+            byte[] newPass = crypt.getEncryptedPassword(generated,newSalt);
+            newSalt2 = Base64.encode(newSalt);
+            newPass2 = Base64.encode(newPass);
+        }
+        catch (Exception e){return "-1";}
+
+        boolean pass = sql.update("HCL_users","user_pass","user_name",username,newPass2);
+        boolean salt = sql.update("HCL_users","user_salt","user_name",username,newSalt2);
+
+        if(pass && salt)
+        return generated;
+
+        return "-1";
+    }
+    private  String rString(String[] first, String[] second) { // Random combination from two tables
+
+        Random r = new Random();
+
+        int r1 = r.nextInt(first.length);
+        int r2 = r.nextInt(second.length);
+
+        return first[r1] + second[r2];
+
+    }
 
 	/**
 	 * @return -2: Not Connected, -1: Denied, 0: CEO, 1: Salesperson, 2: Cheff,
@@ -238,6 +274,7 @@ public class UserManager{
 
 		System.out.println(u.logon("olavhus", "ostost"));
         System.out.println(u.logon("olavhus", "faiter119"));
+        u.generate("admin", "admin", 0);
 
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
