@@ -16,11 +16,12 @@ public class Statistics {
     public Statistics(){
         this.sql = new SQL();
     }
+
     private ArrayList<LocalDate> getDeliveryDates(){
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
 
-        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM HCL_order;",false);
+        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM deliveries;",false);
 
         for(int i=0; i<datesString.length; i++){
             try {

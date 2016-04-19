@@ -106,9 +106,9 @@ public class DeliveryManager {
      * -3: Wrong Parameters
      * -5: Wrong date formatting
      */
-    public int removeDate(int date_id){
+    public int removeDate(int delivery_id){
 
-        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,date_id)) return -3;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -3;
 
         String prepString = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
 
@@ -116,7 +116,7 @@ public class DeliveryManager {
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
-            prep.setInt(1,date_id);
+            prep.setInt(1,delivery_id);
 
             prep.executeUpdate();
 
@@ -200,16 +200,16 @@ public class DeliveryManager {
      * -2: SQL Exception
      * -3: Wrong Parameters
      */
-    public int deliver(int date_id){
+    public int deliver(int delivery_id){
 
-        if(!sql.rowExists(CURRENT_TABLE,"date_id",date_id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE,"delivery_id",delivery_id)) return -1;
 
-        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE date_id = ?;";
+        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE delivery_id = ?;";
 
         try{
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
-            prep.setInt(1,date_id);
+            prep.setInt(1,delivery_id);
 
             prep.executeUpdate();
             return 1;
