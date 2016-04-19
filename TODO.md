@@ -25,6 +25,7 @@
 **BUGS**:
 - Legge til en link og så fjerne den uten å lukke vindu mellom
 - Kan søke i IDnummer
+- Legge til orders funker ikke
 
 **Trine**:
 - Legg til "Active" boolean søyle i alle nødvendige tabeller, ingenting skal slettes; bare settes inactive
