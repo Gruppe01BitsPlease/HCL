@@ -230,10 +230,10 @@ public class SQL {
      *
      */
     public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
-        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+       /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
            // System.out.println("Ostost");
             return false;
-        }
+        }*/
 
         try {
             String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
@@ -258,10 +258,10 @@ public class SQL {
 	 * Used where the value is an int
      */
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
-        if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
+       /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
             // System.out.println("Ostost");
             return false;
-        }
+        }*/
 
         try {
             String sqlPrep = "Select * from " + table + " where "+primaryKey+" = ? AND active = 1";
