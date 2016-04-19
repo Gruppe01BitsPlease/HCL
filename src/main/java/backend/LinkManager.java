@@ -112,7 +112,8 @@ public class LinkManager {
 
         //link.delete("HCL_food_ingredient","food_id","ingredient_id",3,3);
         //link.generate();
-        link.editNumber("HCL_food_ingredient","food_id","ingredient_id",200,1,5);
+        //link.editNumber("HCL_food_ingredient","food_id","ingredient_id",200,1,5);
+        System.out.println(link.delete("HCL_food_ingredient","food_id","ingredient_id",207,31));
 
     }
 }

@@ -5,10 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.MonthDay;
-import java.time.Period;
+import java.time.*;
 import java.time.format.DateTimeParseException;
 
 /**
@@ -171,6 +168,31 @@ public class SubscriptionManager {
 
         }
         return 1;
+    }
+
+    /**
+     * @param interval How often: 1 = per week, 2 = every other week, 3 = every third week etc
+     * @return
+     */
+    public boolean addDates(int order_id,LocalDate start, LocalDate end, int interval, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun){
+
+
+        LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth());
+
+        while(Period.between(current,end).getDays() != 0){
+
+            if(current.getDayOfWeek() == DayOfWeek.MONDAY && mon){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.TUESDAY && tues){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.WEDNESDAY && wed){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.THURSDAY && thur){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.FRIDAY && fri){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.SATURDAY && sat){ addDate(order_id,current.toString());}
+            if(current.getDayOfWeek() == DayOfWeek.SUNDAY && sun){ addDate(order_id,current.toString());}
+
+
+            current = current.plusDays(1);
+        }
+        return true;
     }
 
     /**

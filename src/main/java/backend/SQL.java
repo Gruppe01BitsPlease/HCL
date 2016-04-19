@@ -286,12 +286,9 @@ public class SQL {
 	 * Used for link-tables
      */
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
-		if(!(table.split(" \"\':;").length > 1)){ //Prevents sql-injection
-			return false;
-		}
 
 		try {
-			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1";
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1;";
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
@@ -302,7 +299,6 @@ public class SQL {
 			ResultSet res = prep.executeQuery();
 
 			//System.out.println(prep.toString()+"\n"+res.toString());
-
 
 			return res.next();
 
@@ -462,7 +458,7 @@ public class SQL {
 
 		SQL sql = new SQL();
 		//System.out.println(sql.connect());
-		System.out.println("SQL is connected? : "+sql.isConnected());
+	/*	System.out.println("SQL is connected? : "+sql.isConnected());
 		if (sql.isConnected()) {
 
 			String[][] tabell = sql.getStringTable("Select * from HCL_users", true);
@@ -471,7 +467,8 @@ public class SQL {
 		}
 		else {
 			System.out.println("Could not contact database @ " + db.getPropValue("database"));
-        }
+        }*/
+		System.out.println(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",207,31));
         //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
        // System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
         //System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
