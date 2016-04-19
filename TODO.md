@@ -37,3 +37,7 @@
 - Lage statistikk
 - Lage tester
 - Lage driver-rute-greier?
+
+**Exceptions**
+- Alle new-knapper -> Nullpointer
+- Deleter -> Indexoutofbounds 0
