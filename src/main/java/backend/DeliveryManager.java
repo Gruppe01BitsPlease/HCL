@@ -3,26 +3,23 @@ package backend;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeParseException;
 
 /**
  * Created by Olav Husby on 15.03.2016.
  */
-public class SubscriptionManager {
+public class DeliveryManager {
 
     private SQL sql;
-    public static final String CURRENT_TABLE = "HCL_subscription";
-    public static final String CURRENT_TABLE_LINK_DATE = "HCL_subscription_date";
+    public static final String CURRENT_TABLE = "HCL_deliveries";
     public static final String CURRENT_TABLE_LINK_ORDER = "HCL_order";
 
     public static final String CURRENT_TABLE_GENERATE_ARGUMENTS = "(order_id)";
-    public static final String CURRENT_TABLE_PK = "(order_id)";
+    public static final String CURRENT_TABLE_PK = "(delivery_id)";
     public static final String CURRENT_TABLE_ADD_DATE_ARGUMENTS = "(order_id, dato)";
 
-    public SubscriptionManager(SQL sql){
+    public DeliveryManager(SQL sql){
         this.sql = sql;
     }
 
@@ -57,14 +54,14 @@ public class SubscriptionManager {
      * -1: Row does not  exist
      * -2: SQL Exception
      */
-    public int delete(int order_id) {
+    public int delete(int delivery_id) {
         try {
-            if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
+            if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -1;
 
             String sqlPrep = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
 
-            prep.setInt(1,order_id);
+            prep.setInt(1,delivery_id);
             prep.executeUpdate();
             return 1;
         }
@@ -77,15 +74,14 @@ public class SubscriptionManager {
      * 1: OK
      * -1: Does not exist
      * -2: SQL Exception
-     * -3: Wrong Parameters
+     * -3: Invalid order ID
      * -5: Wrong date formatting
      */
     public int addDate(int order_id, String date){
 
-        if(order_id <0 || date.equals("") )return -3;
-        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
+        if(!sql.rowExists("HCL_order","order_id",order_id)) return -3;
 
-        String prepString = "Insert into "+CURRENT_TABLE_LINK_DATE+CURRENT_TABLE_ADD_DATE_ARGUMENTS+" values(?,?)";
+        String prepString = "Insert into "+CURRENT_TABLE+CURRENT_TABLE_ADD_DATE_ARGUMENTS+" values(?,?)";
         try {
             LocalDate date1 = LocalDate.parse(date);
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
@@ -110,20 +106,17 @@ public class SubscriptionManager {
      * -3: Wrong Parameters
      * -5: Wrong date formatting
      */
-    public int removeDate(int order_id, int date_id){
+    public int removeDate(int date_id){
 
-        if(order_id < 0 || date_id < 0  ) return -3;
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,date_id)) return -3;
 
-        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return -1;
-
-        String prepString = "UPDATE "+CURRENT_TABLE+"_date"+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ? AND date_id = ?";
+        String prepString = "UPDATE "+CURRENT_TABLE+" SET active = FALSE WHERE "+CURRENT_TABLE_PK+" = ?";
 
         try {
 
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
-            prep.setInt(1,order_id);
-            prep.setInt(2,date_id);
+            prep.setInt(1,date_id);
 
             prep.executeUpdate();
 
@@ -136,6 +129,7 @@ public class SubscriptionManager {
             return -5;
         }
     }
+    @Deprecated
     private boolean contains(int[] dates, int date){
 
         for(int value : dates){
@@ -145,7 +139,9 @@ public class SubscriptionManager {
     }
     /**
      * -1 Invalid dates
+     * Use the other one instead
      */
+    @Deprecated
     public int addDates(int order_id, LocalDate start, int ... dates){
 
         for(int date : dates){
@@ -206,9 +202,9 @@ public class SubscriptionManager {
      */
     public int deliver(int date_id){
 
-        if(!sql.rowExists(CURRENT_TABLE_LINK_DATE,"date_id",date_id)) return -1;
+        if(!sql.rowExists(CURRENT_TABLE,"date_id",date_id)) return -1;
 
-        String prepString = "Update "+CURRENT_TABLE_LINK_DATE+" SET delivered = true WHERE date_id = ?;";
+        String prepString = "Update "+CURRENT_TABLE+" SET delivered = true WHERE date_id = ?;";
 
         try{
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
@@ -226,7 +222,7 @@ public class SubscriptionManager {
 
         SQL sql = new SQL();
 
-        SubscriptionManager manager = new SubscriptionManager(sql);
+        DeliveryManager manager = new DeliveryManager(sql);
 
         // manager.generate(4);
 
