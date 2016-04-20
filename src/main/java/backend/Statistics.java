@@ -79,7 +79,7 @@ public class Statistics {
 
     /**
      * Table of which days get the deliverables
-     * @return int[]: 0 = monday, 6 = sunday etc
+     * @return double[]: 0 = monday, 6 = sunday etc
      */
     public double[] getOrdersPerDay(){
 
@@ -94,7 +94,7 @@ public class Statistics {
     }
 
     /**
-     * @return int[] with deliverables per months, 0 = January, 11 = Desember etc, over all years
+     * @return double[] with deliverables per months, 0 = January, 11 = Desember etc, over all years
      */
     public double[] getOrdersPerMonth(){
         double[] months = new double[12];
@@ -146,7 +146,7 @@ public class Statistics {
     /**
      * @return ID of all time most sold ingredient, -1 if no results
      */
-    public String getAllTimePopularIngredient(){ // FIXME: 19.04.2016 
+    public String getAllTimePopularIngredient(){
 
         String[][] results = sql.getStringTable("SELECT `Ingredient Name`,sum(`Total Ingredients`) " +
                 "FROM deliveries_ingredients_total GROUP BY ingredient_id ORDER BY sum(`Total Ingredients`) DESC ;",false);
@@ -158,7 +158,8 @@ public class Statistics {
     /**
      * @return ID of most sold ingredient in specified month and year, -1 if no results
      */
-    public String getMonthlyPopularIngredient(int year, int month){ // FIXME: 19.04.2016 
+    @Deprecated
+    public String getMonthlyPopularIngredient(int year, int month){ // Not fixed, but not used
 
         String prepString = "SELECT ingredient_id,`Ingredient Name`,Sum(Amount) FROM orders_dates_ingredients WHERE delivery_date BETWEEN ? AND ? GROUP BY ingredient_id ORDER BY sum(Amount) desc;";
         LocalDate startDate = LocalDate.of(year,month,1);
@@ -192,7 +193,7 @@ public class Statistics {
 
     }
 
-    public int getGrossIncome(){ // FIXME: 19.04.2016 
+    public int getGrossIncome(){
 
         String[][] results = sql.getStringTable("SELECT sum(price) FROM HCL_deliveries " +
                 "NATURAL JOIN HCL_order WHERE HCL_deliveries.delivered=1 AND HCL_deliveries.active=1 " +
