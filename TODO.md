@@ -28,10 +28,7 @@
 - Legge til orders funker ikke
 
 **Trine**:
-- Legg til "Active" boolean søyle i alle nødvendige tabeller, ingenting skal slettes; bare settes inactive
 - Legge inn masse data i databasen
-- Fixe at dags-dato er ferdig-fyllt i UI der det trengs
-- Lage statistikk
 - Lage tester
 - Lage driver-rute-greier?
 

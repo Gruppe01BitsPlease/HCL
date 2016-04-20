@@ -21,7 +21,7 @@ public class Statistics {
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
 
-        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM deliveries;",false);
+        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM HCL_deliveries;",false);
 
         for(int i=0; i<datesString.length; i++){
             try {
@@ -142,15 +142,14 @@ public class Statistics {
 
         return (double) sum / 12;
     }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * @return ID of all time most sold ingredient, -1 if no results
      */
-    public String getAllTimePopularIngredient(){
+    public String getAllTimePopularIngredient(){ // FIXME: 19.04.2016 
 
         String[][] results = sql.getStringTable("SELECT ingredient_id,`Ingredient Name`,sum(`Food Items`*Ingredients) " +
-                "FROM orders_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
+                "FROM deliveries_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
         try {
             return results[0][1];
         }
@@ -159,7 +158,7 @@ public class Statistics {
     /**
      * @return ID of most sold ingredient in specified month and year, -1 if no results
      */
-    public String getMonthlyPopularIngredient(int year, int month){
+    public String getMonthlyPopularIngredient(int year, int month){ // FIXME: 19.04.2016 
 
         String prepString = "SELECT ingredient_id,`Ingredient Name`,Sum(Amount) FROM orders_dates_ingredients WHERE delivery_date BETWEEN ? AND ? GROUP BY ingredient_id ORDER BY sum(Amount) desc;";
         LocalDate startDate = LocalDate.of(year,month,1);
@@ -193,7 +192,7 @@ public class Statistics {
 
     }
 
-    public int getGrossIncome(){
+    public int getGrossIncome(){ // FIXME: 19.04.2016 
 
         String[][] results = sql.getStringTable("SELECT delivered_subscriptions.`Sum(price)`+" +
                 "delivered_orders.`sum(price)`'Gross' FROM delivered_subscriptions, delivered_orders;\n",false);
