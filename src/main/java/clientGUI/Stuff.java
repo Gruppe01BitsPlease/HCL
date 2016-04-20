@@ -19,8 +19,12 @@ import static java.time.temporal.ChronoField.YEAR;
  * Created by Jens on 15-Apr-16.
  */
 abstract class Stuff {
-	public static Dimension getEditBoxSize() {
-		Dimension dim = new Dimension((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.3));
+	//Used to size a window relative to the main window, which is sized relative to the screen
+	public static Dimension getWindowSize(double factorX, double factorY) {
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) (screen.width * 0.75);
+		int y = (int) (screen.height * 0.75);
+		Dimension dim = new Dimension((int) (x * factorX), (int) (y * factorY));
 		return dim;
 	}
 	//Finds the index in the list from a search key
@@ -195,8 +199,7 @@ class editFields extends JPanel {
 		if (FKs != null && FKs.length > 0) {
 			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
 		}
-		int length = selected.length + 1;
-		setLayout(new GridLayout(length, 2));
+		setLayout(new GridLayout(10, 2));
 		//setSize((int) (x * 0.5), (int) (length * 0.01));
 		for (int i = 0; i < dataTypes.length; i++) {
 			if (dataTypes[i].equals("boolean")) {
@@ -397,7 +400,7 @@ class linkTab extends JPanel {
 	}
 	class inputBox extends JFrame {
 		public inputBox(String[] selectedLink, boolean newLink) {
-			setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+			setSize(Stuff.getWindowSize(0.3, 0.2));
 			setLayout(new GridLayout(3, 2));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
@@ -505,10 +508,21 @@ class linkTab extends JPanel {
 	public void generate() {
 		if (removeLinks.size() > 0) {
 			LinkManager linkMng = new LinkManager(sql);
+			boolean added = false;
 			for (int[] i : removeLinks) {
-				int a = linkMng.delete(link[2], primaryColumn, link[1], selectedID, i[1]);
-				System.out.println("Remove link: " + link[2] + " - " +  primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1]);
-				System.out.println("Delete result :" + a);
+				for (int[] add : createLinks) {
+					if (add[1] == i[1]) {
+						added = true;
+					}
+				}
+				if (!added) {
+					int a = linkMng.delete(link[2], primaryColumn, link[1], selectedID, i[1]);
+					System.out.println("Remove link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1]);
+					System.out.println("Delete result :" + a);
+				}
+				else {
+					System.out.println("Created this session!");
+				}
 			}
 		}
 		int pk = sql.getLastID();
@@ -517,14 +531,34 @@ class linkTab extends JPanel {
 			//Saves to link tables if links have been created
 			LinkManager linkMng = new LinkManager(sql);
 			System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
+			boolean deleted = false;
 			if (newEntry) {
 				System.out.println("NEW LINK NEW ENTRY!");
 				for (int[] i : createLinks) {
-					linkMng.generate(link[2], primaryColumn, link[1], pk, i[1], i[2]);
+					for (int[] del : removeLinks) {
+						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
+						if (del[1] == i[1]) {
+							deleted = true;
+						}
+					}
+					if (!deleted) {
+						linkMng.generate(link[2], primaryColumn, link[1], pk, i[1], i[2]);
+						System.out.println("Create link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + pk + " - " + i[1] + " - " + i[2]);
+					}
 				}
 			} else {
 				for (int[] i : createLinks) {
-					linkMng.generate(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+					for (int[] del : removeLinks) {
+						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
+						if (del[1] == i[1]) {
+							deleted = true;
+						}
+					}
+					if (!deleted) {
+						linkMng.generate(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+						System.out.println("Create link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1] + " - " + i[2]);
+					}
+
 				}
 			}
 		}

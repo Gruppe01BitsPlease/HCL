@@ -89,8 +89,7 @@ public class ChefTab extends JPanel {
 		private int date_id;
 		public viewVindow(int delivery_id) {
 			this.date_id = delivery_id;
-			Dimension d = new Dimension((int) (GenericList.x * 0.4), (int) (GenericList.y * 0.4));
-			setMinimumSize(d);
+			setMinimumSize(Stuff.getWindowSize(0.4,0.4));
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
 			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
