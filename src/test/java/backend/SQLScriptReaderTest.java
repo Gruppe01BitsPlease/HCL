@@ -8,9 +8,12 @@ import static org.junit.Assert.*;
 
 /**
  * Created by bahafeld on 20.04.2016...
- * For HCL
+ * Can't come up with a good testpattern for this class, since we only have one database to work with.
+ * Running all the scripts will delete all our data.
  */
 public class SQLScriptReaderTest {
+
+
     @Before
     public void setUp() throws Exception {
 
@@ -22,13 +25,8 @@ public class SQLScriptReaderTest {
     }
 
     @Test
-    public void resetDatabaseWithScript() throws Exception {
-
-    }
-
-    @Test
-    public void main() throws Exception {
-
+    public void runDatabaseScript() throws Exception {
+        SQLScriptReader test = new SQLScriptReader();
     }
 
 }

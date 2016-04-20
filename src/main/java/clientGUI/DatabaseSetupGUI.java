@@ -7,8 +7,6 @@ import java.awt.*;
 
 import backend.SQL;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
@@ -114,17 +112,17 @@ import java.sql.SQLException;
                 String path;
                 if (checkOverWriteTables.isSelected()) {
                     path = "sqlscripts/tables.sql";
-                    reset.resetDatabaseWithScript(path);
+                    reset.runDatabaseScript(path);
                     if (checkRandomData.isSelected()) {
                         path = "sqlscripts/randomdata.sql";
-                        reset.resetDatabaseWithScript(path);
+                        reset.runDatabaseScript(path);
                     }
                 } else {
                     path = "sqlscripts/tables_nooverwrite.sql";
-                    reset.resetDatabaseWithScript(path);
+                    reset.runDatabaseScript(path);
                 }
                 path = "sqlscripts/views.sql";
-                reset.resetDatabaseWithScript(path);
+                reset.runDatabaseScript(path);
             }
 
             sql.connection.commit();
