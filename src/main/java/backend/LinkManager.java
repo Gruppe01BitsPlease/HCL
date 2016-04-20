@@ -1,6 +1,5 @@
 package backend;
 
-import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 

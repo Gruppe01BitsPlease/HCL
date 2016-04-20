@@ -73,16 +73,15 @@ public class Shoppinglist {
      * -2: SQL Exception
      * -3: Wrong parameters
      */
-    public int addShoppinglist(String[][] shoppinglist){
+    public int addShoppinglist(String[][] list){
 
-        String[][] list = shoppinglist.clone();
         IngredientManager manager = new IngredientManager(sql);
         int out = 1;
         try {
             sql.connection.setAutoCommit(false);
 
             for (String[] row : list) {
-                out = manager.addStock(Integer.parseInt(row[0]), Integer.parseInt(row[2]));
+                out = manager.addStock(Integer.parseInt(row[0]), Integer.parseInt(row[4]));
                 if (out < 0) return out; // Hvis vi får en feilkode
             }
             sql.connection.commit();
@@ -127,15 +126,13 @@ public class Shoppinglist {
 
         try {
             int ingredient_id = Integer.parseInt(table[0]);
-            int amount = Integer.parseInt(table[2]);
+            int amount = Integer.parseInt(table[4]);
 
             IngredientManager manager = new IngredientManager(sql);
 
             return manager.addStock(ingredient_id, amount);
-
         }
         catch (NumberFormatException e){return -3;}
-
     }
 
     public static void main(String[]args){
