@@ -72,14 +72,9 @@ class GenericList extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					if (list.getSelectedRow() == -1) {
-						edit(-1, true);
-					}
-					else {
-						int ID = Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]);
-						System.out.println("ID: " + ID);
-						edit(ID, false);
-					}
+					int ID = Integer.parseInt(table[Stuff.findIndexOf(table, (String) list.getValueAt(list.getSelectedRow(), 0), 0)][0]);
+					System.out.println("ID: " + ID);
+					edit(ID, false);
 				}
 			}
 		});
@@ -193,16 +188,6 @@ class GenericList extends JPanel {
 			newThing.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					/*String[][] newTable = new String[table.length + 1][SqlColumnNames.length];
-					for (int i = 0; i < table.length; i++) {
-						for (int j = 0; j < SqlColumnNames.length; j++) {
-							newTable[i][j] = table[i][j];
-						}
-					}
-					String[] selected = newTable[newTable.length - 1];
-					int index = newTable.length - 1;
-					table = newTable;
-					fillTable();*/
 					edit(-1, true);
 				}
 			});
@@ -211,7 +196,6 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-
 	class editWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();

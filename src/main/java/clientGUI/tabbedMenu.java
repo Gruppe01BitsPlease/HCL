@@ -191,10 +191,10 @@ public class tabbedMenu extends JFrame {
 			newTab = new JMenu("View");
 			JMenu file = new JMenu("File");
             JMenu settings = new JMenu("Settings");
-			if (rolle != 0) {
-                settings.setEnabled(false);
-            }
 			JMenuItem DBsettings = new JMenuItem("Database Settings...");
+			if (rolle != 0) {
+				DBsettings.setEnabled(false);
+			}
 			JMenuItem logout = new JMenuItem("Log out...");
 			JMenuItem about = new JMenuItem("About...");
 			JMenuItem refresh = new JMenuItem("Refresh all");
@@ -487,6 +487,9 @@ public class tabbedMenu extends JFrame {
 				String[][] titles = ColumnNamer.getNamesWithOriginals(selectQuery, sql);
 				editFields fields = new editFields(titles[1], selectedUser, false, null, sql);
 				fields.getFields().get(0).setEnabled(false);
+				if (rolle != 0) {
+					fields.getFields().get(7).setEnabled(false);
+				}
 				add(fields, BorderLayout.CENTER);
 				JPanel saveCancel = new JPanel(new GridLayout(1, 2));
 				JButton save = new JButton("Save");
@@ -499,7 +502,7 @@ public class tabbedMenu extends JFrame {
 						if (sure == 0) {
 							String[] newValues = fields.getNewValues();
 							for (int i = 0; i < newValues.length; i++) {
-								if (!(selectedUser[i].equals(newValues[i]))) {
+								if (selectedUser[i] == null || !(selectedUser[i].equals(newValues[i]))) {
 									sql.update("HCL_user", titles[0][i], "user_name", userName, newValues[i]);
 								}
 							}

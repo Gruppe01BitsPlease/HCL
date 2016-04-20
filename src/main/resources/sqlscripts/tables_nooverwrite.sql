@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS HCL_deliveries
   delivery_date DATE NOT NULL,
   completed TINYINT(1) DEFAULT '0' NOT NULL,
   delivered TINYINT(4) DEFAULT '0' NOT NULL,
-  active TINYINT(4) DEFAULT '1' NOT NULL
+  active TINYINT(4) DEFAULT '1' NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES HCL_order (order_id)
 );
 
 -- DROP TABLE IF EXISTS HCL_food;
@@ -42,7 +43,9 @@ CREATE TABLE IF NOT EXISTS HCL_food_ingredient
   ingredient_id INT(11) DEFAULT '0' NOT NULL,
   number INT(11),
   active TINYINT(1) DEFAULT '1' NOT NULL,
-  CONSTRAINT `PRIMARY` PRIMARY KEY (food_id, ingredient_id)
+  CONSTRAINT `PRIMARY` PRIMARY KEY (food_id, ingredient_id),
+  FOREIGN KEY (food_id) REFERENCES HCL_food (food_id),
+  FOREIGN KEY (ingredient_id) REFERENCES HCL_ingredient (ingredient_id)
 );
 
 -- DROP TABLE IF EXISTS HCL_ingredient;
@@ -70,7 +73,8 @@ CREATE TABLE IF NOT EXISTS HCL_order
   adress VARCHAR(50),
   postnr VARCHAR(50),
   active TINYINT(1) DEFAULT '1' NOT NULL,
-  order_date DATE NOT NULL
+  order_date DATE NOT NULL,
+  FOREIGN KEY (customer_id) REFERENCES HCL_customer (customer_id)
 );
 
 -- DROP TABLE IF EXISTS HCL_order_food;
@@ -80,7 +84,9 @@ CREATE TABLE IF NOT EXISTS HCL_order_food
   food_id INT(11) DEFAULT '0' NOT NULL,
   number INT(11) DEFAULT '1',
   active TINYINT(1) DEFAULT '1' NOT NULL,
-  CONSTRAINT `PRIMARY` PRIMARY KEY (order_id, food_id)
+  CONSTRAINT `PRIMARY` PRIMARY KEY (order_id, food_id),
+  FOREIGN KEY (order_id) REFERENCES HCL_order (order_id),
+  FOREIGN KEY (food_id) REFERENCES HCL_food (food_id)
 );
 
 -- DROP TABLE IF EXISTS HCL_users;
@@ -100,33 +106,6 @@ CREATE TABLE IF NOT EXISTS HCL_user
   user_start DATE,
   active TINYINT(1) DEFAULT '1' NOT NULL
 );
-
--- --------------------------------------------------------
---
--- ADDING FOREIGN KEYS
---
-
-ALTER TABLE HCL_deliveries ADD FOREIGN KEY (order_id) REFERENCES HCL_order (order_id);
-ALTER TABLE HCL_food_ingredient ADD FOREIGN KEY (food_id) REFERENCES HCL_food (food_id);
-ALTER TABLE HCL_food_ingredient ADD FOREIGN KEY (ingredient_id) REFERENCES HCL_ingredient (ingredient_id);
-ALTER TABLE HCL_order ADD FOREIGN KEY (customer_id) REFERENCES HCL_customer (customer_id);
-ALTER TABLE HCL_order_food ADD FOREIGN KEY (order_id) REFERENCES HCL_order (order_id);
-ALTER TABLE HCL_order_food ADD FOREIGN KEY (food_id) REFERENCES HCL_food (food_id);
-
--- --------------------------------------------------------
---
--- ADDING FIRST TIME USER
---
-
-INSERT INTO  HCL_user (
-  `user_id` ,
-  `user_name` ,
-  `user_role` ,
-  `user_salt` ,
-  `user_pass` ,
-  `active`
-)
-VALUES (DEFAULT , 'admin', '0', 'IOdABDSNfAA=', 'I+D2C2RKkFjw1UxOEbd5k8BdYkE=', '1');
 
 -- --------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 1;
