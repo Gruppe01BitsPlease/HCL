@@ -119,15 +119,14 @@ public class MyJFreeChart extends JPanel {
         String[] days = {"Mon","Tue","Wed","Thurs","Fri","Sat","Sun"};
         MyJFreeChart ordersByDayChart = new MyJFreeChart.Builder().title("Orders per day").dataset("Orders",days,data).build();
 
-        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
         double[] data2 = stats.getOrdersPerMonth();
+        String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"};
         MyJFreeChart ordersByMonthChart = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
 
         // Add the charts here
         JPanel cards = new JPanel(new CardLayout());
         cards.add(ordersByDayChart,DAYS);
         cards.add(ordersByMonthChart,MONTHS);
-
 
         // Dropdown Panel
         JPanel dropdownPanel = new JPanel();

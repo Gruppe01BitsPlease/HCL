@@ -112,7 +112,7 @@ public class SQL {
      *                        primaryKeyValue: The value of the primary key
 	 */
 	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, String newValue) {
-        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        //UPDATE HCL_user SET user_name =  'ost' WHERE user_name LIKE  'Mat'
         if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
                 !rowExists(table,primaryKey,primaryKeyValue)){
             return false;
@@ -141,7 +141,7 @@ public class SQL {
 	 *                        primaryKeyValue: The value of the primary key
 	 */
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, int newValue) {
-        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE/=  'Mat'
+        //UPDATE HCL_user SET user_name =  'ost' WHERE user_name LIKE/=  'Mat'
 
         if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
                 !rowExists(table,primaryKey,primaryKeyValue)){
@@ -172,7 +172,7 @@ public class SQL {
 	 *                        primaryKeyValue: The value of the primary key
 	 */
     public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, Date newDate) {
-        //UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+        //UPDATE HCL_user SET user_name =  'ost' WHERE user_name LIKE  'Mat'
         if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
                 !rowExists(table,primaryKey,primaryKeyValue)){
             return false;
@@ -201,7 +201,7 @@ public class SQL {
 	 *                        primaryKeyValue: The value of the primary key
 	 */
 	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, boolean newBoolean) {
-		//UPDATE HCL_users SET user_name =  'ost' WHERE user_name LIKE  'Mat'
+		//UPDATE HCL_user SET user_name =  'ost' WHERE user_name LIKE  'Mat'
 		if(table.split(" \"\'").length > 1 || colomnName.split(" \"\'").length > 1 || primaryKey.split(" \"\'").length > 1 ||
 				!rowExists(table,primaryKey,primaryKeyValue)){
 			return false;
@@ -461,7 +461,7 @@ public class SQL {
 	/*	System.out.println("SQL is connected? : "+sql.isConnected());
 		if (sql.isConnected()) {
 
-			String[][] tabell = sql.getStringTable("Select * from HCL_users", true);
+			String[][] tabell = sql.getStringTable("Select * from HCL_user", true);
 			//System.out.println("End: " + sql.end());
             sql.print2dArray(tabell);
 		}
@@ -469,9 +469,9 @@ public class SQL {
 			System.out.println("Could not contact database @ " + db.getPropValue("database"));
         }*/
 		System.out.println(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",207,31));
-        //sql.update("HCL_users","user_tlf","user_name","Magisk",123456789);
-       // System.out.println(sql.rowExists("HCL_users","user_name","Trine"));
-        //System.out.println( sql.update("HCL_users","user_name","user_ID","9","Oste"));
+        //sql.update("HCL_user","user_tlf","user_name","Magisk",123456789);
+       // System.out.println(sql.rowExists("HCL_user","user_name","Trine"));
+        //System.out.println( sql.update("HCL_user","user_name","user_ID","9","Oste"));
 		sql.end();
 	}
 }
