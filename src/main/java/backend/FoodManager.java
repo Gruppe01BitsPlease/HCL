@@ -72,7 +72,7 @@ public class FoodManager {
      *
      * @return
      * 1: OK
-     * -1: Already exist
+     * -1: Food or ingredient don't exist
      * -2: SQL Exception
      * -3: Wrong Parameters
      * -4: Food or Ingredient does not exist

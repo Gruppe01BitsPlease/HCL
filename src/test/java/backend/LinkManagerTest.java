@@ -1,8 +1,7 @@
 package backend;
 
 /**
- * Testklasse for klassen FoodManager
- * Created by trineliseolsen on 13.04.2016.
+ * Created by trineliseolsen on 18.04.2016.
  */
 
 import org.junit.After;
@@ -11,18 +10,18 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class FoodManagerTest {
+public class LinkManagerTest {
 
-    FoodManager manager;
     SQL sql = new SQL();
-    LinkManager lManager;
+    LinkManager manager;
     IngredientManager iManager;
+    FoodManager fManager;
 
 
     @Before
     public void setUp() throws Exception {
-        manager = new FoodManager(sql);
-        lManager = new LinkManager(sql);
+        fManager = new FoodManager(sql);
+        manager = new LinkManager(sql);
         iManager = new IngredientManager(sql);
 
     }
@@ -34,18 +33,20 @@ public class FoodManagerTest {
         sql.end();
     }
 
-    @Test
+   /* @Test
     public void generate() {
 
-        //lager food-objekter
-        int kakeID = manager.generate("Bløtkake", 75);
-        int snippID = manager.generate("Sirupssnipp", 75);
+        //Lager testobjekter fra food og ingredient-klassen
+        int gjørmeID = iManager.generate("gjørme", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
+        int søleID =  fManager.generate("sølekake", 60);
 
-        //Tester om foodobjektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_food", "name", "Bløtkake"));
-        assertTrue(sql.rowExists("HCL_food", "name", "Sirupssnipp"));
+        //prøver å generere et linkobjekt
+        int linkID = manager.generate("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID, 20);
+
+        //Tester om linkobjektene faktisk ble laget.
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID));
         //Sjekker at uekte food-objekt ikke eksisterer
-        assertFalse(sql.rowExists("HCL_food", "name", "Mølje"));
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", 1010, 1010));
 
         //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", 1));
@@ -93,6 +94,7 @@ public class FoodManagerTest {
         iManager.delete(mandelID);
         manager.delete(grøtID);
 
-    }
+    }*/
 
 }
+
