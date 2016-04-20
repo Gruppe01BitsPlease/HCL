@@ -9,14 +9,12 @@
 - Legg til UseCase: Endre Settings elns
 
 **GUI**
-- Endre eget passord / Email osv
 - CEO: Endre roller, slette
 - Inkorporere subscriptions
 - Skille Corporation / Private???
 - Forslag: Enklere måte å legge til / dra ifra ingredienser, kanskje en knapp ala
 	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Størrelse på inputfelter i editvindu!
-- Gjøre ferdig ordertab
 
 **BUGS**:
 - Legge til en linkQuery og så fjerne den uten å lukke vindu mellom

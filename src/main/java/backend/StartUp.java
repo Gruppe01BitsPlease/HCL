@@ -1,6 +1,6 @@
 package backend;
 
-import clientGUI.DatabaseResetGUI;
+import clientGUI.DatabaseSetupGUI;
 import clientGUI.SettingsGUI;
 import clientGUI.LogOnGUI;
 
@@ -62,7 +62,7 @@ public class StartUp
                 public void windowClosing(WindowEvent windowEvent){
                     if(window.isValid) {
                         int reply = JOptionPane.showConfirmDialog(null,
-                                "Do you want to changes to the structure of this database?",
+                                "Do you want to run the database setup?",
                                 "Please make a selection",
                                 JOptionPane.YES_NO_OPTION);
                         if (reply == JOptionPane.NO_OPTION) {
@@ -72,13 +72,13 @@ public class StartUp
                         if (reply == JOptionPane.YES_OPTION) {
                             window.dispose();
                             new LogOnGUI();
-                            DatabaseResetGUI DBsetting = new DatabaseResetGUI();
+                            DatabaseSetupGUI DBsetting = new DatabaseSetupGUI();
                             DBsetting.setLocationRelativeTo(null);
                             DBsetting.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                         }
                     }else{
                         int reply = JOptionPane.showConfirmDialog(null,
-                                    "Settings are still not verified, program will exit!",
+                                    "Settings are not valid, program will exit!",
                                     "Settings not saved!",
                                     JOptionPane.OK_CANCEL_OPTION);
                         if(reply == JOptionPane.OK_OPTION){

@@ -1,5 +1,6 @@
 package clientGUI;
 
+import backend.LinkManager;
 import backend.SQL;
 
 import javax.swing.*;
@@ -187,7 +188,7 @@ class editFields extends JPanel {
 				add(j);
 				add(k);
 			} else if (dataTypes[i].contains("SELECT")) {
-				JLabel j = new JLabel(titles[i]);
+				JLabel j = new JLabel("Customer");
 				String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 				comboBoxChoices = choices;
 				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
@@ -246,42 +247,6 @@ class editFields extends JPanel {
 		}
 		return newValues;
 	}
-	/*public void update() {
-		String[] newValues = getNewValues();
-		if (!newEntry) {
-			for (int i = 1; i < newValues.length; i++) {
-				if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
-					if (dataTypes[i].equals("boolean")) {
-						if (newValues[i].equals("true")) {
-							boolean update = true;
-							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-						} else if (newValues[i].equals("false")) {
-							boolean update = false;
-							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-						} else {
-							System.out.println("ERROR NO BOOLEAN VALUE");
-						}
-					} else {
-						sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
-					}
-				}
-			}
-		} else if (newEntry) {
-			if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
-				int res = GenericList.this.generate(newValues);
-				if (res == -2) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "Database Error!");
-				} else if (res == -3) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is a problem with one of the parameters.");
-				} else if (res == -4) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
-				}
-				//System.out.println(res);
-			} else {
-				JOptionPane.showMessageDialog(GenericList.editWindow.this, "Entry already exists! Choose a different ID number.");
-			}
-		}
-	}*/
 }
 class linkTab extends JPanel {
 	private ArrayList<int[]> removeLinks = new ArrayList<>();
@@ -299,13 +264,19 @@ class linkTab extends JPanel {
 	private String[] link;
 	private int selectedID;
 	private String primaryColumn;
-	//Link = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
-	public linkTab(String[] link, String primaryColumn, int selectedID, SQL sql) {
+	private boolean newEntry;
+	public linkTab(String[] link, String primaryColumn, int selectedID, SQL sql, boolean newEntry) {
+		this.newEntry = newEntry;
 		this.primaryColumn = primaryColumn;
 		this.sql = sql;
 		this.link = link;
 		this.selectedID = selectedID;
-		this.linkQuery = "SELECT " + link[1] + ", " + link[4] + ", number FROM " + link[2] + " NATURAL JOIN " + link[3] + " WHERE " + primaryColumn + " = " + selectedID;
+		//Link = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
+		//SELECT HCL_ingredient.ingredient_id, name, number FROM HCL_ingredient JOIN HCL_food_ingredient ON
+		// (HCL_ingredient.ingredient_id = HCL_food_ingredient.ingredient_id) WHERE food_id =200;
+		this.linkQuery = "SELECT " + link[3] + "." + link[1] +  ", " + link[4] + ", number FROM " + link[2] + " " +
+				"JOIN " + link[3] + " ON (" + link[3] + "." + link[1] + " = " + link[2] + "." + link[1] + ") WHERE " +
+				primaryColumn + " = " + selectedID + " AND " + link[2] + ".active = 1";
 		System.out.println("Link query: " + linkQuery);
 		titles = ColumnNamer.getNamesWithOriginals(linkQuery, sql);
 		setLayout(new BorderLayout());
@@ -396,13 +367,9 @@ class linkTab extends JPanel {
 			JLabel amountLabel = new JLabel("Amount");
 			String[] foo2 = new String[0];
 			JComboBox<String> inpTemp = new JComboBox<>();
-			//Gets choices and IDs for dropdown linkTable
-			//linkTables = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
-			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] +
-					" FROM " + link[3] + " NATURAL JOIN " + link[2] +
-					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] +
-					" FROM " + link[2] + " WHERE " + primaryColumn +
-					" = " + selectedID + " AND active = 1) AND " + link[3] + ".active = 1";
+			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] + " FROM " + link[3] +
+					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] + " FROM " + link[2]
+					+ " WHERE " + primaryColumn + " = " + selectedID + " AND active = 1) AND " + link[3] + ".active = 1";
 			System.out.println("Choice query: \n\t" + choiceQuery);
 			String[] choice = sql.getColumn(choiceQuery, 1);
 			JTextField amount = new JTextField();
@@ -491,13 +458,46 @@ class linkTab extends JPanel {
 	public ArrayList<int[]> getRemoveLinks() {
 		return removeLinks;
 	}
-	public ArrayList<String[]> getAddedLinks() {
-		return addedLinks;
-	}
 	public ArrayList<int[]> getCreateLinks() {
 		return createLinks;
 	}
 	public ArrayList<int[]> getChangeLinks() {
 		return changeLinks;
+	}
+	public void generate() {
+		if (removeLinks.size() > 0) {
+			LinkManager linkMng = new LinkManager(sql);
+			for (int[] i : removeLinks) {
+				int a = linkMng.delete(link[2], primaryColumn, link[1], selectedID, i[1]);
+				System.out.println("Remove link: " + link[2] + " - " +  primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1]);
+				System.out.println("Delete result :" + a);
+			}
+		}
+		int pk = sql.getLastID();
+		System.out.println("New primary key: " + pk);
+		if (createLinks.size() > 0) {
+			//Saves to link tables if links have been created
+			LinkManager linkMng = new LinkManager(sql);
+			System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
+			if (newEntry) {
+				System.out.println("NEW LINK NEW ENTRY!");
+				for (int[] i : createLinks) {
+					linkMng.generate(link[2], primaryColumn, link[1], pk, i[1], i[2]);
+				}
+			} else {
+				for (int[] i : createLinks) {
+					linkMng.generate(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+				}
+			}
+		}
+		if (changeLinks.size() > 0) {
+			//Changes link tables if needed
+			LinkManager linkMng = new LinkManager(sql);
+			System.out.println("Changelink: " + Arrays.toString(changeLinks.get(0)));
+			//int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
+			for (int[] i : changeLinks) {
+				linkMng.editNumber(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+			}
+		}
 	}
 }
