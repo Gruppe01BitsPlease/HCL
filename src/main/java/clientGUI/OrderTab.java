@@ -12,6 +12,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -195,65 +197,98 @@ class OrderTab extends GenericList {
             }
         }
         class editBox extends JFrame {
+            private JComboBox<String> intervalBox;
+            private JComboBox<String> numberBox;
             private datePane pane;
             public editBox() {
-                setLayout(new GridLayout(2, 1));
-                pane = new datePane();
+                setLayout(new GridLayout(4, 2));
+                pane = new datePane(null);
+                JLabel dateLabel = new JLabel("Date");
+                JLabel intervalLabel = new JLabel("Interval");
+                JLabel numberLabel = new JLabel("Number of dates");
                 pane.setDate(LocalDate.now().toString());
-                saveCancel buts = new saveCancel();
+                String[] boxChoices = { "Single", "Weekly", "Monthly" };
+                intervalBox = new JComboBox<>(boxChoices);
+                String[] numberBoxChoices = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" };
+                numberBox = new JComboBox<>(numberBoxChoices);
+                add(dateLabel);
                 add(pane);
-                add(buts);
-                setSize((int) (x * 0.2), (int) (y * 0.2));
-                setLocationRelativeTo(null);
-                setVisible(true);
-            }
-            class saveCancel extends JPanel {
-                public saveCancel() {
-                    JButton save = new JButton("Save");
-                    JButton cancel = new JButton("Cancel");
-                    setLayout(new GridLayout(1, 2));
-                    save.addActionListener(new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            if (!(pane.getDate().equals(""))) {
-                                addedDates.add(pane.getDate());
-                                String newDate = Stuff.setBold() + pane.getDate() + Stuff.endBold();
-                                String[][] newArray = new String[dateArray.length + 1][];
-                                for (int i = 0; i < dateArray.length; i++) {
-                                    newArray[i] = dateArray[i];
+                add(intervalLabel);
+                add(intervalBox);
+                add(numberLabel);
+                add(numberBox);
+                numberBox.setEnabled(false);
+                intervalBox.addItemListener(new ItemListener() {
+                    @Override
+                    public void itemStateChanged(ItemEvent e) {
+                        if (!(intervalBox.getSelectedItem().equals("Single"))) {
+                            numberBox.setEnabled(true);
+                            dateLabel.setText("First date");
+                            System.out.println("List selection!");
+                        }
+                        else {
+                            dateLabel.setText("Date");
+                            numberBox.setEnabled(false);
+                        }
+                    }
+                });
+                JButton save = new JButton("Save");
+                JButton cancel = new JButton("Cancel");
+                save.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String[] newDates = new String[1];
+                        if (!(intervalBox.getSelectedItem().equals("Single"))) {
+                            newDates = new String[numberBox.getSelectedIndex() + 1];
+                            for (int i = 1; i < newDates.length; i++) {
+                                if (intervalBox.getSelectedItem().equals(("Weekly"))) {
+                                    pane.addDays(7);
+                                    newDates[i] = pane.getDate();
+                                    System.out.println("Add date: " + pane.getDate());
                                 }
-                                newArray[dateArray.length] = new String[subTitles.length];
-                                //System.out.println(Arrays.toString(dateArray[0]));
-                                newArray[dateArray.length][2] = newDate;
-                                dateArray = newArray;
-                                subModel = new DefaultTableModel(dateArray, subTitles);
-                                subTable.setModel(subModel);
-                                subTable.removeIDs();
+                                else if (intervalBox.getSelectedItem().equals("Monthly")) {
+                                    pane.addMonths(1);
+                                    newDates[i] = pane.getDate();
+                                    System.out.println("Add date: " + pane.getDate());
+                                }
                             }
-                            else {
+                        }
+                        else {
+                            newDates[0] = pane.getDate();
+                        }
+                        String[][] newArray = new String[dateArray.length + newDates.length][];
+                        for (int i = 0; i < dateArray.length; i++) {
+                            newArray[i] = dateArray[i];
+                        }
+                        for (int j = 0; j < newDates.length; j++) {
+                            if (!(newDates[j].equals(""))) {
+                                addedDates.add(newDates[j]);
+                                String newDate = Stuff.setBold() + newDates[j] + Stuff.endBold();
+                                newArray[dateArray.length + j] = new String[subTitles.length];
+                                //System.out.println(Arrays.toString(dateArray[0]));
+                                newArray[dateArray.length + j][2] = newDate;
+                            } else {
                                 JOptionPane.showMessageDialog(null, "Enter a valid date");
                             }
                             dispose();
                         }
-                    });
-                    cancel.addActionListener(new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            dispose();
-                        }
-                    });
-                    add(save);
-                    add(cancel);
-                }
-            }
-        }
-        class amountWindow extends JFrame {
-            public amountWindow() {
-                setLayout(new GridLayout(1, 3));
-                setSize((int)(x * 0.3), (int) (y * 0.3));
-                JLabel amountLabel = new JLabel("How many dates do you want to add?");
-                JTextField amount = new JTextField();
-                JButton ok = new JButton("OK");
+                        dateArray = newArray;
+                        subModel = new DefaultTableModel(dateArray, subTitles);
+                        subTable.setModel(subModel);
+                        subTable.removeIDs();
+                    }
+                });
+                cancel.addActionListener(new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        dispose();
+                    }
+                });
+                add(save);
+                add(cancel);
+                setSize((int) (x * 0.3), (int) (y * 0.3));
+                setLocationRelativeTo(null);
+                setVisible(true);
             }
         }
     }

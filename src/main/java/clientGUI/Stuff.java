@@ -6,12 +6,14 @@ import backend.SQL;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * Created by Jens on 15-Apr-16.
@@ -62,9 +64,17 @@ abstract class Stuff {
 class datePane extends JPanel {
 	JComboBox<String> yearBox;
 	JComboBox<String> monthBox;
+	JComboBox<Integer> dayBox;
 	JTextField dayField;
-	public datePane(String date) {
+	LocalDate date;
+	public datePane(String dateInput) {
 		//2014-01-31
+		if (dateInput != null) {
+			date = LocalDate.parse(dateInput);
+		}
+		else {
+			date = LocalDate.now();
+		}
 		String[] years = new String[5];
 		LocalDate now = LocalDate.now();
 		int year = now.getYear();
@@ -72,61 +82,87 @@ class datePane extends JPanel {
 			years[i] = Integer.toString(year + i);
 		}
 		yearBox = new JComboBox<>(years);
+		Integer[][] daysOfMonths = new Integer[12][];
+		for (int i = 0; i < daysOfMonths.length; i++) {
+			int yearSel = Integer.parseInt((String)(yearBox.getSelectedItem()));
+			LocalDate date = LocalDate.of(yearSel, i+1, 1);
+			daysOfMonths[i] = new Integer[date.getMonth().maxLength()];
+			for (int j = 0; j < daysOfMonths[i].length; j++) {
+				daysOfMonths[i][j] = j + 1;
+			}
+		}
 		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
 		monthBox = new JComboBox<>(months);
-		setLayout(new GridLayout(1, 3));
-		if (date != null && !(date.equals(""))) {
-			if (date.length() == 10) {
-				String selyear = date.substring(0, 4);
-				if (Integer.parseInt(selyear) < year) {
-					yearBox.addItem(selyear);
+		dayBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex() + 1]);
+		yearBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				for (int i = 0; i < daysOfMonths.length; i++) {
+					daysOfMonths[i] = new Integer[LocalDate.of(Integer.parseInt((String) yearBox.getSelectedItem()), i + 1, 1).getMonth().maxLength()];
+					for (int j = 0; j < daysOfMonths[i].length; j++) {
+						daysOfMonths[i][j] = j + 1;
+					}
 				}
-				yearBox.setSelectedItem(selyear);
-				//System.out.println(year.getText());
-				int selmonth = Integer.parseInt(date.substring(5, 7));
-				monthBox.setSelectedIndex(selmonth - 1);
-				//System.out.println(month.getText());
-				dayField = new JTextField(date.substring(8, 10));
-				//System.out.println(day.getText());
 			}
-			else {
-				System.out.println("Date format is wrong! GenericList.datePane");
+		});
+		monthBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				JComboBox<Integer> newBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex()]);
+				dayBox.setModel(newBox.getModel());
 			}
+		});
+
+		setLayout(new GridLayout(1, 3));
+		if (date != null) {
+			String selyear = Integer.toString(date.get(YEAR));
+			if (Integer.parseInt(selyear) < year) {
+				yearBox.addItem(selyear);
+			}
+			yearBox.setSelectedItem(selyear);
+			//System.out.println(year.getText());
+			int selmonth = date.getMonthValue();
+			monthBox.setSelectedIndex(selmonth - 1);
+			//System.out.println(month.getText());
+			int selday = date.getDayOfMonth();
+			dayBox.setSelectedIndex(selday - 1);
+			//System.out.println(day.getText());
+			System.out.println(selyear + " " + selmonth);
 		}
 		else {
 			dayField = new JTextField("");
 		}
 		add(yearBox);
 		add(monthBox);
-		add(dayField);
-	}
-	public datePane() {
-		//2014-01-31
-		String[] years = new String[5];
-		LocalDate now = LocalDate.now();
-		int year = now.getYear();
-		for (int i = 0; i < years.length; i++) {
-			years[i] = Integer.toString(year + i);
-		}
-		yearBox = new JComboBox<>(years);
-		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
-		monthBox = new JComboBox<>(months);
-		setLayout(new GridLayout(1, 3));
-		dayField = new JTextField("");
-		add(yearBox);
-		add(monthBox);
-		add(dayField);
+		add(dayBox);
+		//add(dayField);
 	}
 	public String getDate() {
-		String year = (String) yearBox.getSelectedItem();
+		String year = ((String)(yearBox.getSelectedItem()));
 		String month = Integer.toString(monthBox.getSelectedIndex() + 1);
-		String day = dayField.getText();
-		if (month.length() < 2) {
-			String foo = "0";
-			foo += month;
-			month = foo;
-		}
+		String day = Integer.toString((Integer)dayBox.getSelectedItem());
 		return year + "-" + month + "-" + day;
+	}
+	public String getYear() {
+		return (String) yearBox.getSelectedItem();
+	}
+	public String getMonth() {
+		return Integer.toString(monthBox.getSelectedIndex() + 1);
+	}
+	public String getDay() {
+		return Integer.toString((Integer)dayBox.getSelectedItem());
+	}
+	public void addDays(int days) {
+		int orig = Integer.parseInt(dayField.getText());
+		LocalDate date = LocalDate.of(Integer.parseInt(getYear()), Integer.parseInt(getMonth()), Integer.parseInt(getDay()));
+		int daysInMonth = date.getMonth().maxLength();
+		int neue = orig + days;
+		dayField.setText(Integer.toString(neue));
+	}
+	public void addMonths(int months) {
+		int orig = monthBox.getSelectedIndex() + 1;
+		int neue = orig + months;
+		monthBox.setSelectedIndex(neue);
 	}
 	public void setDate(String date) {
 		String year = (date.substring(0, 4));
