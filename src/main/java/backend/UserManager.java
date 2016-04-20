@@ -210,7 +210,7 @@ public class UserManager{
 		if(!sql.isConnected()) return -2;
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username)) return -1;
 
-        String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
+        String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_user where user_name = ?;";
 
         String userSalt;
         String userPass;
