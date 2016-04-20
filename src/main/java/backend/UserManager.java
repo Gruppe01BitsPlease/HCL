@@ -17,7 +17,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
 public class UserManager{
 
-    public final static String CURRENT_TABLE = "HCL_users";
+    public final static String CURRENT_TABLE = "HCL_user";
     public final static String CURRENT_TABLE_GENERATE_ARGUMENTS = "(user_name, user_role, user_salt, user_pass)";
     public final static String CURRENT_TABLE_PK = "user_name";
 
@@ -158,8 +158,8 @@ public class UserManager{
             }
             catch (Exception e){return -2;}
 
-            boolean pass = sql.update("HCL_users","user_pass","user_name",username,newPass2);
-            boolean salt = sql.update("HCL_users","user_salt","user_name",username,newSalt2);
+            boolean pass = sql.update("HCL_user","user_pass","user_name",username,newPass2);
+            boolean salt = sql.update("HCL_user","user_salt","user_name",username,newSalt2);
 
             return pass && salt ? 1 : -2;
         }
@@ -182,8 +182,8 @@ public class UserManager{
         }
         catch (Exception e){return "-1";}
 
-        boolean pass = sql.update("HCL_users","user_pass","user_name",username,newPass2);
-        boolean salt = sql.update("HCL_users","user_salt","user_name",username,newSalt2);
+        boolean pass = sql.update("HCL_user","user_pass","user_name",username,newPass2);
+        boolean salt = sql.update("HCL_user","user_salt","user_name",username,newSalt2);
 
         if(pass && salt)
         return generated;
@@ -210,7 +210,7 @@ public class UserManager{
 		if(!sql.isConnected()) return -2;
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,username)) return -1;
 
-        String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_users where user_name = ?;";
+        String insertTableSQL = "Select user_salt, user_pass, user_role from HCL_user where user_name = ?;";
 
         String userSalt;
         String userPass;
