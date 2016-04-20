@@ -188,7 +188,7 @@ class editFields extends JPanel {
 				add(j);
 				add(k);
 			} else if (dataTypes[i].contains("SELECT")) {
-				JLabel j = new JLabel(titles[i]);
+				JLabel j = new JLabel("Customer");
 				String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 				comboBoxChoices = choices;
 				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
@@ -367,13 +367,6 @@ class linkTab extends JPanel {
 			JLabel amountLabel = new JLabel("Amount");
 			String[] foo2 = new String[0];
 			JComboBox<String> inpTemp = new JComboBox<>();
-			//Gets choices and IDs for dropdown linkTable
-			//linkTables = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
-
-			//SELECT DISTINCT ingredient_id, name FROM HCL_ingredient WHERE ingredient_id NOT IN
-			// (SELECT ingredient_id FROM HCL_food_ingredient WHERE food_id = 200 AND active = 1)
-			// AND HCL_ingredient.active = 1
-
 			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] + " FROM " + link[3] +
 					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] + " FROM " + link[2]
 					+ " WHERE " + primaryColumn + " = " + selectedID + " AND active = 1) AND " + link[3] + ".active = 1";
