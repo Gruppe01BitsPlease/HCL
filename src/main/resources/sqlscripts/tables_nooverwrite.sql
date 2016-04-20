@@ -84,9 +84,9 @@ CREATE TABLE IF NOT EXISTS HCL_order_food
 );
 
 -- DROP TABLE IF EXISTS HCL_users;
-CREATE TABLE IF NOT EXISTS HCL_users
+CREATE TABLE IF NOT EXISTS HCL_user
 (
-  user_id INT(11) PRIMARY KEY NOT NULL,
+  user_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   user_name VARCHAR(50) NOT NULL UNIQUE,
   user_role INT(11) NOT NULL,
   user_salt VARCHAR(50) NOT NULL,
@@ -118,7 +118,7 @@ ALTER TABLE HCL_order_food ADD FOREIGN KEY (food_id) REFERENCES HCL_food (food_i
 -- ADDING FIRST TIME USER
 --
 
-INSERT INTO  HCL_users (
+INSERT INTO  HCL_user (
   `user_id` ,
   `user_name` ,
   `user_role` ,
