@@ -33,7 +33,7 @@ public class LinkManagerTest {
         sql.end();
     }
 
-   /* @Test
+    @Test
     public void generate() {
 
         //Lager testobjekter fra food og ingredient-klassen
@@ -41,60 +41,78 @@ public class LinkManagerTest {
         int søleID =  fManager.generate("sølekake", 60);
 
         //prøver å generere et linkobjekt
-        int linkID = manager.generate("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID, 20);
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID, 20);
 
         //Tester om linkobjektene faktisk ble laget.
         assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID));
-        //Sjekker at uekte food-objekt ikke eksisterer
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", 1010, 1010));
+        //Sjekker at uekte link-objekter ikke eksisterer
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", 1010, gjørmeID));
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, 1010));
 
-        //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
-        assertEquals(-3, manager.generate("", 1));
-        assertEquals(-3, manager.generate("Pultost",-1));
+        //Prøver å lage ukorrekte linkobjekter, og sjekker om generate() sender riktig feilmelding
+        assertEquals(-1, manager.generate("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID, 20));
+        assertEquals(-3, manager.generate("", "food_id","ingredient_id", søleID, gjørmeID, 20));
+        assertEquals(-3, manager.generate("HCL_food_ingredient", "","ingredient_id", søleID, gjørmeID, 20));
+        assertEquals(-3, manager.generate("HCL_food_ingredient", "food_id","", søleID, gjørmeID, 20));
+        assertEquals(-3, manager.generate("HCL_food_ingredient", "food_id","ingredient_id", -1, gjørmeID, 20));
+        assertEquals(-3, manager.generate("HCL_food_ingredient", "food_id","ingredient_id", søleID, -1, 20));
 
-        manager.delete(kakeID);
-        manager.delete(snippID);
+
+        manager.delete("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID);
+        fManager.delete(søleID);
+        iManager.delete(gjørmeID);
     }
 
     @Test
     public void delete() {
-        //Lager testobjekter som kan slettes
-        int idKlubb = manager.generate("Klubb", 60);
-        int idMøs = manager.generate("Møsbrømslfse", 75);
+        int kakestrøID = iManager.generate("kakestrø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
+        int muffinsstrøID = iManager.generate("muffinsstrø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
+        int kakeID =  fManager.generate("kake", 60);
+        int muffinsID =  fManager.generate("muffins", 60);
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID, 20);
 
-        //Sjekker at Klubb finnes, sletter klubb, og forsikrer seg om at Klubb er slettet
-        assertTrue(sql.rowExists("HCL_food", "name", "Klubb"));
-        manager.delete(idKlubb);
-        assertFalse(sql.rowExists("HCL_food", "name", "Klubb"));
+
+        //Sjekker at kake-kakestrø finnes, sletter kake-kaktrø, og forsikrer seg om at kake-kakestrø er slettet
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID));
+        manager.delete("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID);
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID));
 
         //Sjekker at sletting gir riktig return.
-        assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
-        assertEquals(-1, manager.delete(379)); //Finnes ikke, riktig
+        assertEquals(-1, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID)); //Finnes ikke, riktig
+        assertEquals(-3, manager.delete("", "food_id","ingredient_id", muffinsID, muffinsstrøID));
+        assertEquals(-3, manager.delete("HCL_food_ingredient", "","ingredient_id", muffinsID, muffinsstrøID));
+        assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","", muffinsID, muffinsstrøID));
+        assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", -1, muffinsstrøID));
+        assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, -1));
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID, 20);
+       // assertEquals(1, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID)); //Filmelding!!!!!
 
 
     }
 
     @Test
-    public void addIngredient(){
-        //Lager ny ingrediens, henter ID
-        int mandelID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
-        //Lager mat-objekt og henter ID, samt legger mandel i grøten.
-        int grøtID =  manager.generate("Grøt", 60);
-        manager.addIngredient(grøtID,mandelID,10);
+    public void editNumber(){
+        int frøID = iManager.generate("frø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
+        int brødID =  fManager.generate("frøbrød", 60);
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", brødID, frøID, 5);
 
-        //Sjekker at mandelen ligger i grøten
-        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID));
-        //Sjekker at alle feilmeldingene fungerer
-        assertEquals(-4, manager.addIngredient(grøtID, 379, 40));
-        assertEquals(-4, manager.addIngredient(379, mandelID, 40));
-        assertEquals(-3, manager.addIngredient(grøtID, mandelID, -1));
+        String førSetning = "SELECT number from HCL_food_ingredient where ingredient_id = " + frøID + "AND food_id = " + brødID;
+        String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
+        for(int i = 0; i < utskrift1[0].length; i++){
+            System.out.println(utskrift1[0][i]);
+        } //Skriver ut "19, rose"
+
+        manager.editNumber("HCL_food_ingredient", "food_id","ingredient_id", brødID, frøID, 10);
+
+        String etterSetning = "SELECT number from HCL_food_ingredient where ingredient_id = " + frøID + "AND food_id = " + brødID;
+        String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
+        for(int i = 0; i < utskrift2[0].length; i++){
+            System.out.println(utskrift2[0][i]);
+        } //Skriver ut "19, rose"
 
 
-        lManager.delete("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID);
-        iManager.delete(mandelID);
-        manager.delete(grøtID);
 
-    }*/
+    }
 
 }
 
