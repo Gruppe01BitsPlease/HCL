@@ -140,7 +140,13 @@ class datePane extends JPanel {
 	public String getDate() {
 		String year = ((String)(yearBox.getSelectedItem()));
 		String month = Integer.toString(monthBox.getSelectedIndex() + 1);
+		if (month.length() < 2) {
+			month = "0" + month;
+		}
 		String day = Integer.toString((Integer)dayBox.getSelectedItem());
+		if (day.length() < 2) {
+			day = "0" + day;
+		}
 		return year + "-" + month + "-" + day;
 	}
 	public String getYear() {
@@ -153,24 +159,20 @@ class datePane extends JPanel {
 		return Integer.toString((Integer)dayBox.getSelectedItem());
 	}
 	public void addDays(int days) {
-		int orig = Integer.parseInt(dayField.getText());
-		LocalDate date = LocalDate.of(Integer.parseInt(getYear()), Integer.parseInt(getMonth()), Integer.parseInt(getDay()));
-		int daysInMonth = date.getMonth().maxLength();
-		int neue = orig + days;
-		dayField.setText(Integer.toString(neue));
+		LocalDate neue = date.plusDays(days);
+		date = neue;
+		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
 	}
 	public void addMonths(int months) {
-		int orig = monthBox.getSelectedIndex() + 1;
-		int neue = orig + months;
-		monthBox.setSelectedIndex(neue);
+		LocalDate neue = date.plusMonths(months);
+		date = neue;
+		monthBox.setSelectedIndex(date.getMonthValue() - 1);
 	}
-	public void setDate(String date) {
-		String year = (date.substring(0, 4));
-		String month = (date.substring(5, 7));
-		String day = (date.substring(8, 10));
-		yearBox.setSelectedItem(year);
-		monthBox.setSelectedIndex(Integer.parseInt(month) - 1);
-		dayField.setText(day);
+	public void setDate(String dateIn) {
+		date = LocalDate.parse(dateIn);
+		yearBox.setSelectedItem(date.getYear());
+		monthBox.setSelectedIndex(date.getMonthValue() - 1);
+		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
 	}
 	public void setEnabled(boolean enable) {
 		yearBox.setEnabled(enable);

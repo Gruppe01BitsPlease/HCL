@@ -240,7 +240,7 @@ class OrderTab extends GenericList {
                         String[] newDates = new String[1];
                         if (!(intervalBox.getSelectedItem().equals("Single"))) {
                             newDates = new String[numberBox.getSelectedIndex() + 1];
-                            for (int i = 1; i < newDates.length; i++) {
+                            for (int i = 0; i < newDates.length; i++) {
                                 if (intervalBox.getSelectedItem().equals(("Weekly"))) {
                                     pane.addDays(7);
                                     newDates[i] = pane.getDate();
@@ -261,7 +261,7 @@ class OrderTab extends GenericList {
                             newArray[i] = dateArray[i];
                         }
                         for (int j = 0; j < newDates.length; j++) {
-                            if (!(newDates[j].equals(""))) {
+                            if (newDates[j] != null && !(newDates[j].equals(""))) {
                                 addedDates.add(newDates[j]);
                                 String newDate = Stuff.setBold() + newDates[j] + Stuff.endBold();
                                 newArray[dateArray.length + j] = new String[subTitles.length];
