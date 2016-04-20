@@ -153,7 +153,7 @@ public class Statistics {
         try {
             return results[0][0];
         }
-        catch (NumberFormatException e){return "";}
+        catch (Exception e){return "";}
     }
     /**
      * @return ID of most sold ingredient in specified month and year, -1 if no results
@@ -189,7 +189,7 @@ public class Statistics {
         try {
             return results[0][0];
         }
-        catch (NumberFormatException e){return "";}
+        catch (Exception e){return "";}
 
     }
 
@@ -198,8 +198,10 @@ public class Statistics {
         String[][] results = sql.getStringTable("SELECT sum(price) FROM HCL_deliveries " +
                 "NATURAL JOIN HCL_order WHERE HCL_deliveries.delivered=1 AND HCL_deliveries.active=1 " +
                 "AND HCL_deliveries.completed=1;",false);
-
-        return Integer.parseInt(results[0][0]);
+        try {
+            return Integer.parseInt(results[0][0]);
+        }
+        catch (Exception e){return 0;}
 
     }
     public static void main(String[]args){
