@@ -23,7 +23,7 @@ public class SQLScriptReader {
     }
 
 
-    public void resetDatabaseWithScript(String path) throws SQLException, FileNotFoundException {
+    public void runDatabaseScript(String path) throws SQLException, FileNotFoundException {
         try {
             //fetches script from resources folder
             InputStream in = getClass().getClassLoader().getResourceAsStream(path);
@@ -46,7 +46,7 @@ public class SQLScriptReader {
             for(int i = 0; i<sentence.length; i++) {
                 // Removes empty, comment and null statements
                 if(!sentence[i].trim().equals("") || !sentence[i].startsWith("--") || sentence[i] != null) {
-                    System.out.println(">>"+sentence[i]);
+                    System.out.print(">>"+sentence[i] + "\n");
                     statement.executeUpdate(sentence[i]);
                 }
             }
@@ -60,13 +60,6 @@ public class SQLScriptReader {
     }
 
     public static void main(String[] args) throws Exception {
-        SQLScriptReader test = new SQLScriptReader();
-        String path = "sqlscripts/tables.sql";
-        test.resetDatabaseWithScript(path);
-        path = "sqlscripts/views.sql";
-        test.resetDatabaseWithScript(path);
-        path = "sqlscripts/randomdata.sql";
-        test.resetDatabaseWithScript(path);
     }
 }
 

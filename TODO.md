@@ -27,7 +27,8 @@
 - Lage tester
 - Lage driver-rute-greier?
 
-
 VIKTIG
 - Legge til nye brukere MED ROLLER!
-- Endre EGEN informasjon, eget passord
+
+**Olav Bugtesting**
+-

@@ -66,8 +66,8 @@ public class tabbedMenu extends JFrame {
 	private void addTabs() {
 		if (rolle == 0) {
 			//addTab(new StatisticsTab());
-			addTab(new EmployeeTab(sql, rolle));
-			addTab(new CeoTab());
+			// addTab(new EmployeeTab(sql, rolle));
+			addTab(new CeoTab(rolle));
 		}
 		if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql, rolle));
@@ -85,7 +85,7 @@ public class tabbedMenu extends JFrame {
 	}
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
-	private String empName = "Employees";
+	//private String empName = "Employees";
 	private String foodName = "Foods";
 	private String ingrName = "Ingredients";
 	private String ordrName = "Orders";
@@ -107,11 +107,11 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(custName, tab);
 			}
 		}
-		else if (tab instanceof EmployeeTab) {
+		/*else if (tab instanceof EmployeeTab) {
 			if (tabs.indexOfTab(empName) == -1) {
 				tabs.addTab(empName, tab);
 			}
-		}
+		}*/
 		else if (tab instanceof FoodTab) {
 			if (tabs.indexOfTab(foodName) == -1) {
 				tabs.addTab(foodName, tab);
@@ -215,7 +215,7 @@ public class tabbedMenu extends JFrame {
 			Action aboutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
+					JOptionPane.showMessageDialog(null, "FoodPlease © 2016 Bits Please");
 				}
 			};
 			Action refreshpress = new AbstractAction() {
@@ -363,7 +363,7 @@ public class tabbedMenu extends JFrame {
 					newTab.add(cust);
 				}
 			}
-			if (rolle == 0) {
+			if (rolle == 0) {/*
 				if (tabs.indexOfTab(empName) == -1) {
 					JMenuItem emp = new JMenuItem(empName);
 					emp.addActionListener(new AbstractAction() {
@@ -378,13 +378,13 @@ public class tabbedMenu extends JFrame {
 					JMenuItem emp = new JMenuItem(empName);
 					emp.setEnabled(false);
 					newTab.add(emp);
-				}
+				}*/
 				if (tabs.indexOfTab(ceoName) == -1) {
 					JMenuItem ceo = new JMenuItem(ceoName);
 					ceo.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new CeoTab());
+							addTab(new CeoTab(rolle));
 						}
 					});
 					newTab.add(ceo);
@@ -507,11 +507,11 @@ public class tabbedMenu extends JFrame {
 								}
 							}
 							dispose();
-							for (int i = 0; i < tabs.getTabCount(); i++) {
+						/*	for (int i = 0; i < tabs.getTabCount(); i++) {
 								if (tabs.getComponentAt(i) instanceof EmployeeTab) {
 									((GenericList) tabs.getComponentAt(i)).refresh();
 								}
-							}
+							}*/
 						}
 					}
 				});
