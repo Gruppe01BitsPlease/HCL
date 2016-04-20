@@ -88,17 +88,17 @@ public class UserManager{
 
             sql.connection.setAutoCommit(false);
 
-            if (!firstname.trim().equals("")) sql.update("HCL_users", "user_firstname", "user_name", username, firstname);
-            if (role >= -1) sql.update("HCL_users", "user_role", "user_name", username, role);
-            if (!lastname.trim().equals("")) sql.update("HCL_users", "user_lastname", "user_name", username, lastname);
-            if (!email.trim().equals("")) sql.update("HCL_users", "user_email", "user_name", username, email);
-            if (tlf > 0) sql.update("HCL_users", "user_tlf", "user_name", username, tlf);
-            if (!adress.trim().equals("")) sql.update("HCL_users", "user_adress", "user_name", username, adress);
-            if (postnr > 0) sql.update("HCL_users", "user_postnr", "user_name", username, postnr);
+            if (!firstname.trim().equals("")) sql.update("HCL_user", "user_firstname", "user_name", username, firstname);
+            if (role >= -1) sql.update("HCL_user", "user_role", "user_name", username, role);
+            if (!lastname.trim().equals("")) sql.update("HCL_user", "user_lastname", "user_name", username, lastname);
+            if (!email.trim().equals("")) sql.update("HCL_user", "user_email", "user_name", username, email);
+            if (tlf > 0) sql.update("HCL_user", "user_tlf", "user_name", username, tlf);
+            if (!adress.trim().equals("")) sql.update("HCL_user", "user_adress", "user_name", username, adress);
+            if (postnr > 0) sql.update("HCL_user", "user_postnr", "user_name", username, postnr);
             if (start != null) {
                 try {
                     LocalDate date = LocalDate.parse(start);
-                    sql.update("HCL_users", "user_start", "user_name", username, Date.valueOf(date));
+                    sql.update("HCL_user", "user_start", "user_name", username, Date.valueOf(date));
                 }
                 catch (DateTimeParseException e) {return -3;}
             }

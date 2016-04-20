@@ -36,12 +36,13 @@ public class Statistics {
 
         ArrayList<String[]> ingredients = new ArrayList<String[]>();
 
-        String[][] results = sql.getStringTable("SELECT delivery_date,`Ingredient Name`,`Food Items`*Ingredients FROM deliveries_foods_ingredients ;",false);
+        String[][] results = sql.getStringTable("SELECT delivery_date, delivery_id, ingredient_id, " +
+                "`Ingredient Name`, `Ingredient Amount`*`Food Number`, `Ingredient Price`, `Ingredient Stock` " +
+                "FROM deliveries_foods_ingredients;",false);
 
         for(String[] row : results){
             ingredients.add(row);
             System.out.println(Arrays.toString(row));
-
         }
         return ingredients;
     }
@@ -147,10 +148,10 @@ public class Statistics {
      */
     public String getAllTimePopularIngredient(){ // FIXME: 19.04.2016 
 
-        String[][] results = sql.getStringTable("SELECT ingredient_id,`Ingredient Name`,sum(`Food Items`*Ingredients) " +
-                "FROM deliveries_ingredients GROUP BY ingredient_id ORDER BY sum(`Food Items`*Ingredients) DESC ;",false);
+        String[][] results = sql.getStringTable("SELECT `Ingredient Name`,sum(`Total Ingredients`) " +
+                "FROM deliveries_ingredients_total GROUP BY ingredient_id ORDER BY sum(`Total Ingredients`) DESC ;",false);
         try {
-            return results[0][1];
+            return results[0][0];
         }
         catch (NumberFormatException e){return "";}
     }
@@ -182,10 +183,10 @@ public class Statistics {
     }
     public String getAllTimePopularFood(){
 
-        String[][] results = sql.getStringTable("SELECT delivery_date, food_id, `Food Name`, sum(`Food Items`) FROM orders_foods " +
-                "GROUP BY food_id ORDER BY sum(`Food Items`) DESC;",false);
+        String[][] results = sql.getStringTable("SELECT name'Food Name', sum(number) FROM deliveries_foods " +
+                "GROUP BY food_id ORDER BY sum(number) DESC;",false);
         try {
-            return results[0][2];
+            return results[0][0];
         }
         catch (NumberFormatException e){return "";}
 
@@ -193,8 +194,9 @@ public class Statistics {
 
     public int getGrossIncome(){ // FIXME: 19.04.2016 
 
-        String[][] results = sql.getStringTable("SELECT delivered_subscriptions.`Sum(price)`+" +
-                "delivered_orders.`sum(price)`'Gross' FROM delivered_subscriptions, delivered_orders;\n",false);
+        String[][] results = sql.getStringTable("SELECT sum(price) FROM HCL_deliveries " +
+                "NATURAL JOIN HCL_order WHERE HCL_deliveries.delivered=1 AND HCL_deliveries.active=1 " +
+                "AND HCL_deliveries.completed=1;",false);
 
         return Integer.parseInt(results[0][0]);
 
@@ -216,7 +218,7 @@ public class Statistics {
         System.out.println("Orders 2016-04: "+stats.getOrdersAt(2016,4));
 
         System.out.println("All Time Top Ingredient: "+stats.getAllTimePopularIngredient());
-        System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
+        // System.out.println("Popular Ingredient in month: "+stats.getMonthlyPopularIngredient(2016,4));
 
         System.out.println("All Time Popular Food: "+stats.getAllTimePopularFood());
         System.out.println("Gross Income: "+stats.getGrossIncome());
