@@ -223,7 +223,7 @@ class GenericList extends JPanel {
 			tabs.addTab("Info", new editFields());
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql);
+					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
 					tabs.addTab(linkTables[i][0], k);
 					linkTabs.add(k);
 				}
@@ -252,12 +252,12 @@ class GenericList extends JPanel {
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							ArrayList<int[]> removeLinks = new ArrayList<>();
-							ArrayList<String[]> addedLinks = new ArrayList<>();
+							//ArrayList<String[]> addedLinks = new ArrayList<>();
 							ArrayList<int[]> createLinks = new ArrayList<>();
 							ArrayList<int[]> changeLinks = new ArrayList<>();
 							for (linkTab tab : linkTabs) {
 								removeLinks.addAll(tab.getRemoveLinks());
-								addedLinks.addAll(tab.getAddedLinks());
+								//addedLinks.addAll(tab.getAddedLinks());
 								createLinks.addAll(tab.getCreateLinks());
 								changeLinks.addAll(tab.getChangeLinks());
 							}
@@ -318,39 +318,8 @@ class GenericList extends JPanel {
 										JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 									}
 								}
-								if (removeLinks.size() > 0) {
-									LinkManager linkMng = new LinkManager(sql);
-									for (int[] i : removeLinks) {
-										int a = linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
-										System.out.println(linkTables[i[0]][2] + " " + SqlColumnNames[0] + " " + linkTables[i[0]][1] + " " + Integer.parseInt(selected[0]) + " " + i[1]);
-										System.out.println("Delete result :" + a);
-									}
-								}
-								int pk = sql.getLastID();
-								System.out.println("New primary key: " + pk);
-								if (createLinks.size() > 0) {
-									//Saves to link tables if links have been created
-									LinkManager linkMng = new LinkManager(sql);
-									System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
-									if (newEntry) {
-										System.out.println("NEW LINK NEW ENTRY!");
-										for (int[] i : createLinks) {
-											linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], pk, i[1], i[2]);
-										}
-									} else {
-										for (int[] i : createLinks) {
-											linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1], i[2]);
-										}
-									}
-								}
-								if (changeLinks.size() > 0) {
-									//Changes link tables if needed
-									LinkManager linkMng = new LinkManager(sql);
-									System.out.println("Changelink: " + Arrays.toString(changeLinks.get(0)));
-									//int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
-									for (int[] i : changeLinks) {
-										linkMng.editNumber(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1], i[2]);
-									}
+								for (linkTab tab : linkTabs) {
+									tab.generate();
 								}
 								table[index] = newValues;
 								refresh();

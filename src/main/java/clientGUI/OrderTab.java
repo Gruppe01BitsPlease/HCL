@@ -1,9 +1,11 @@
 package clientGUI;
 
 import backend.DeliveryManager;
+import backend.LinkManager;
 import backend.OrderManager;
 import backend.SQL;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
+import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -21,10 +23,9 @@ class OrderTab extends GenericList {
             "ORDER BY customer_name ASC";
     private static String[][] foreignKeys = {{ "SELECT DISTINCT customer_id, customer_name FROM HCL_customer NATURAL JOIN HCL_order WHERE HCL_customer.active = 1", "1" }};
     //Tab name, foreign PK, link table name, other table name, foreign identifier
-    private static String[][] linkTables = {{ "Foods", "food_id", "HCL_order_food", "HCL_food", "name" }};
     private SQL sql;
     public OrderTab(SQL sql, int role) {
-        super(query, "HCL_order", linkTables, foreignKeys, sql, role);
+        super(query, "HCL_order", null, foreignKeys, sql, role);
         add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }
@@ -51,7 +52,7 @@ class OrderTab extends GenericList {
         private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
         private ArrayList<String> deletedDates = new ArrayList<>();
-        private ArrayList<linkTab> linkTabs = new ArrayList<>();
+        private linkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
         private JTableHCL subTable;
@@ -79,11 +80,9 @@ class OrderTab extends GenericList {
             //tabs.addTab("Info", new infoTab());
             tabs.addTab("Edit", editFields);
             tabs.addTab("Dates", new dateTab());
-            for (int i = 0; i < linkTables.length; i++) {
-                linkTab k = new linkTab(linkTables[i], titles[0][0], order_id, sql);
-                tabs.addTab(linkTables[i][0], k);
-                linkTabs.add(k);
-            }
+            String[] link = { "Foods", "food_id", "HCL_order_food", "HCL_food", "name" };
+            foodTab = new linkTab(link, "order_id", order_id, sql, newOrder);
+            tabs.addTab("Foods", foodTab);
             add(tabs, BorderLayout.CENTER);
             add(new lowerButtons(), BorderLayout.SOUTH);
             setLocationRelativeTo(null);
@@ -144,6 +143,7 @@ class OrderTab extends GenericList {
                 save.addActionListener(new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+
                         String[] newValues = editFields.getNewValues();
                         if (newOrder) {
                             order_id = generate(newValues);
@@ -179,6 +179,7 @@ class OrderTab extends GenericList {
                         else {
                             dispose();
                         }
+                        foodTab.generate();
                         refresh();
                     }
                 });
@@ -198,6 +199,7 @@ class OrderTab extends GenericList {
             public editBox() {
                 setLayout(new GridLayout(2, 1));
                 pane = new datePane();
+                pane.setDate(LocalDate.now().toString());
                 saveCancel buts = new saveCancel();
                 add(pane);
                 add(buts);
