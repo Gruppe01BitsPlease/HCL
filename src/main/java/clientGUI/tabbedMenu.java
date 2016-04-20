@@ -215,7 +215,7 @@ public class tabbedMenu extends JFrame {
 			Action aboutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
+					JOptionPane.showMessageDialog(null, "FoodPlease © 2016 Bits Please");
 				}
 			};
 			Action refreshpress = new AbstractAction() {
