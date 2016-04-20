@@ -48,7 +48,7 @@ class EmployeeTab extends GenericList {
 	}
 	private class editBox extends JFrame {
 		public editBox() {
-			setSize((int) (x * 0.3), (int) (y * 0.25));
+			setSize(Stuff.getWindowSize(0.3,0.25));
 			setLocationRelativeTo(null);
 			setTitle("New user");
 			setLayout(new GridLayout(3, 2));

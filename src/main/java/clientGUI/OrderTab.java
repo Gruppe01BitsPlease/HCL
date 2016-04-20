@@ -68,7 +68,7 @@ class OrderTab extends GenericList {
         public editWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
             this.newOrder = newOrder;
-            setSize((int) (x * 0.5), (int) (y * 0.5));
+            setSize(Stuff.getWindowSize(0.5,0.5));
             setTitle("Order");
             setLayout(new BorderLayout());
             JTabbedPane tabs = new JTabbedPane();
@@ -286,7 +286,7 @@ class OrderTab extends GenericList {
                 });
                 add(save);
                 add(cancel);
-                setSize((int) (x * 0.3), (int) (y * 0.3));
+                setSize(Stuff.getWindowSize(0.3, 0.3));
                 setLocationRelativeTo(null);
                 setVisible(true);
             }

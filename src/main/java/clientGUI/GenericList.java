@@ -34,8 +34,6 @@ class GenericList extends JPanel {
 	private String searchName = "Search";
     private SQL sql;
 	private int role;
-    public static int x;
-    public static int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
@@ -62,9 +60,7 @@ class GenericList extends JPanel {
 		this.titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
 		this.query = query;
 		this.linkTables = linkTables;
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		x = (int) (screen.width * 0.75);
-		y = (int) (screen.height * 0.75);
+
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
         list = new JTableHCL(tabModel);
@@ -216,7 +212,7 @@ class GenericList extends JPanel {
 			} else {
 				setTitle("View Item");
 			}
-			setSize((int) (x * 0.5), (int) (y * 0.5));
+			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setResizable(false);
