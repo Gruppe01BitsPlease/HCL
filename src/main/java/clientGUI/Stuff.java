@@ -531,10 +531,10 @@ class linkTab extends JPanel {
 			//Saves to link tables if links have been created
 			LinkManager linkMng = new LinkManager(sql);
 			System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
-			boolean deleted = false;
 			if (newEntry) {
 				System.out.println("NEW LINK NEW ENTRY!");
 				for (int[] i : createLinks) {
+					boolean deleted = false;
 					for (int[] del : removeLinks) {
 						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
 						if (del[1] == i[1]) {
@@ -548,6 +548,7 @@ class linkTab extends JPanel {
 				}
 			} else {
 				for (int[] i : createLinks) {
+					boolean deleted = false;
 					for (int[] del : removeLinks) {
 						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
 						if (del[1] == i[1]) {

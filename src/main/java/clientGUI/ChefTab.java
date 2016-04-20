@@ -34,10 +34,15 @@ public class ChefTab extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				viewVindow bottom = null;
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
-					int selID = Integer.parseInt((String) tabModel.getValueAt(table.getSelectedRow(), 0));
-					viewVindow view = new viewVindow(selID);
+					if (bottom != null) {
+						remove(bottom);
+					}
+					bottom = new viewVindow(Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0)));
+					add(bottom, BorderLayout.SOUTH);
+					ChefTab.this.revalidate();
 				}
 			}
 		});
@@ -85,11 +90,10 @@ public class ChefTab extends JPanel {
 			add(refresh);
 		}
 	}
-	private class viewVindow extends JFrame {
+	private class viewVindow extends JPanel {
 		private int date_id;
 		public viewVindow(int delivery_id) {
 			this.date_id = delivery_id;
-			setMinimumSize(Stuff.getWindowSize(0.4,0.4));
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
 			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
@@ -111,14 +115,11 @@ public class ChefTab extends JPanel {
 					if (choice == 0) {
 						DeliveryManager mng = new DeliveryManager(sql);
 						mng.complete(delivery_id);
-						dispose();
 						refresh();
 					}
 				}
 			});
 			add(finish, BorderLayout.SOUTH);
-			setLocationRelativeTo(null);
-			setVisible(true);
 		}
 		class viewTab extends JPanel {
 			public viewTab(String query) {
