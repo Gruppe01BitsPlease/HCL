@@ -5,5 +5,6 @@
     <file url="file://$PROJECT_DIR$/src/main/resources/sqlscripts/randomdata.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sqlscripts/tables.sql" dialect="MySQL" />
     <file url="file://$PROJECT_DIR$/src/main/resources/sqlscripts/tables_nooverwrite.sql" dialect="MySQL" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sqlscripts/views.sql" dialect="MySQL" />
   </component>
 </project>
