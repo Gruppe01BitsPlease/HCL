@@ -32,10 +32,11 @@ public class StatisticsTab extends JPanel{
         double[] data2 = stats.getOrdersPerMonth();
         MyJFreeChart ordersByMonthChart = new MyJFreeChart.Builder().title("Orders per month").dataset("Orders",months,data2).build();
 
-        // Add the charts here
+        // Card Panek, add "cards" here
         JPanel cards = new JPanel(new CardLayout());
         cards.add(ordersByDayChart,DAYS);
         cards.add(ordersByMonthChart,MONTHS);
+        // Card Panek, add "cards" here
 
 
         // Dropdown Panel
@@ -51,28 +52,35 @@ public class StatisticsTab extends JPanel{
         dropdownPanel.add(dropdown,BorderLayout.NORTH);
         // Dropdown Panel
 
-        //
-        // JFrame frame = new JFrame();  // The frame itself
-       //  frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JPanel panel = new JPanel(new BorderLayout());  // The main panel in the frame
 
-        JPanel centerPanel = new JPanel();
+        JPanel panel = new JPanel(/*new BorderLayout()*/);  // The main panel in the frame
+
+        JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel westPanel = new JPanel();
-        //
 
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
 
         westPanel.add(getStats());
 
-        // westPanel.setPreferredSize(new Dimension(500,200));
+        panel.add(westPanel/*,BorderLayout.WEST*/);
+        panel.add(centerPanel/*,BorderLayout.CENTER*/);
 
-        panel.add(westPanel,BorderLayout.WEST);
-        panel.add(centerPanel,BorderLayout.CENTER);
 
         add(panel);
-      /*  frame.add(panel);
+    }
+    public static void main(String[]args){
+
+        JFrame frame = new JFrame();
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JPanel panel = new JPanel(new BorderLayout());
+
+        panel.add(new StatisticsTab(),BorderLayout.CENTER);
+
+        frame.add(panel);
         frame.pack();
-        frame.setVisible(true);*/
+        frame.setVisible(true);
+
     }
 }
