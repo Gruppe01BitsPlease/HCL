@@ -42,17 +42,17 @@ public class FoodManagerTest {
         int snippID = manager.generate("Sirupssnipp", 75);
 
         //Tester om foodobjektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_food", "name", "Bløtkake"));
-        assertTrue(sql.rowExists("HCL_food", "name", "Sirupssnipp"));
+        assertTrue(sql.rowExists("HCL_food", "food_id", kakeID));
+        assertTrue(sql.rowExists("HCL_food", "food_id", snippID));
         //Sjekker at uekte food-objekt ikke eksisterer
-        assertFalse(sql.rowExists("HCL_food", "name", "Mølje"));
+        assertFalse(sql.rowExists("HCL_food", "food_id", 010101));
 
         //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", 1));
         assertEquals(-3, manager.generate("Pultost",-1));
 
-        manager.delete(kakeID);
-        manager.delete(snippID);
+        sql.deleteForGood("HCL_food", "food_id", kakeID);
+        sql.deleteForGood("HCL_food", "food_id", snippID);
     }
 
     @Test
@@ -62,13 +62,16 @@ public class FoodManagerTest {
         int idMøs = manager.generate("Møsbrømslfse", 75);
 
         //Sjekker at Klubb finnes, sletter klubb, og forsikrer seg om at Klubb er slettet
-        assertTrue(sql.rowExists("HCL_food", "name", "Klubb"));
+        assertTrue(sql.rowExists("HCL_food", "food_id", idKlubb));
         manager.delete(idKlubb);
-        assertFalse(sql.rowExists("HCL_food", "name", "Klubb"));
+        assertFalse(sql.rowExists("HCL_food", "food_id", idKlubb));
 
         //Sjekker at sletting gir riktig return.
         assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
         assertEquals(-1, manager.delete(379)); //Finnes ikke, riktig
+
+        sql.deleteForGood("HCL_food", "food_id", idKlubb);
+        sql.deleteForGood("HCL_food", "food_id", idMøs);
 
 
     }
@@ -92,6 +95,11 @@ public class FoodManagerTest {
         lManager.delete("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID);
         iManager.delete(mandelID);
         manager.delete(grøtID);
+
+        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID);
+        sql.deleteForGood("HCL_food", "food_id", grøtID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", mandelID);
+
 
     }
 

@@ -54,12 +54,15 @@ public class LinkManager {
         if(table.trim().equals("") || PK1.trim().equals("") || PK2.trim().equals("") || value1 <0 || value2 <0) return -3;
         if(!sql.rowExists(table,PK1,PK2,value1,value2)) return -1;
 
-        String sqlPrep = "Update "+table+" SET active = 0 WHERE "+PK1+" = ? AND "+PK2+" = ?;";
 
         try {
+            String sqlPrep = "Update "+table+" SET active = FALSE WHERE "+PK1+" = ? AND "+PK2+" = ?;";
             PreparedStatement prep = sql.connection.prepareStatement(sqlPrep);
             prep.setInt(1,value1);
             prep.setInt(2,value2);
+
+
+
 
             boolean success =  prep.execute();
 
@@ -82,16 +85,20 @@ public class LinkManager {
 
         if(!sql.rowExists(table,PK1,PK2,value1,value2)) return -1;
 
-        String prepString = "UPDATE "+table+" SET number = ? WHERE "+PK1+" = ? AND "+PK2+" = ?;";
-
         try{
+            String prepString = "UPDATE "+table+" SET number = ? WHERE "+PK1+" = ? AND "+PK2+" = ?;";
             PreparedStatement prep = sql.connection.prepareStatement(prepString);
 
             prep.setInt(1,newNumber);
             prep.setInt(2,value1);
             prep.setInt(3,value2);
 
-            return prep.executeUpdate();
+            int row = prep.executeUpdate();
+
+            if(row == 0)
+                return -1;
+
+            return 1;
 
         }
         catch (SQLException e){return -2;}

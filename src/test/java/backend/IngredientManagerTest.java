@@ -33,7 +33,7 @@ public class IngredientManagerTest {
         //Lager ingrediens, sjekker at den finnes, sjekker at ingrediens med falsk id ikke eksisterer
         int brunostID = manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
         assertTrue(sql.rowExists("HCL_ingredient", "ingredient_id", brunostID));
-        assertFalse(sql.rowExists("HCL_ingredient", "ingredient_id", 001));
+        assertFalse(sql.rowExists("HCL_ingredient", "ingredient_id", 010101));
 
 
         //Prøver å lage ukorrekte ingrediensobjekter, og sjekker om generate() sender riktig feilmelding
@@ -44,8 +44,8 @@ public class IngredientManagerTest {
         int ostID = manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06");
         assertEquals(-1, manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
 
-        manager.delete(brunostID);
-        manager.delete(ostID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", brunostID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", rødostID);
 
     }
 
@@ -78,8 +78,8 @@ public class IngredientManagerTest {
             assertEquals(-3, manager.edit(ølID, 10, 80, "" ));
 
 
-            manager.delete(ølID);
-            manager.delete(vinID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", vinID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ølID);
         }
 
 
@@ -98,6 +98,9 @@ public class IngredientManagerTest {
         //Sjekker at sletting gir riktig return.
         assertEquals(1, manager.delete(sanasolID)); //Finnes, riktig
         assertEquals(-1, manager.delete(5550)); //Finnes ikke, riktig
+
+       sql.deleteForGood("HCL_ingredient", "ingredient_id", sanasolID);
+       sql.deleteForGood("HCL_ingredient", "ingredient_id", tranID);
 
     }
 
@@ -130,8 +133,8 @@ public class IngredientManagerTest {
         assertEquals(-3, manager.addStock(tulipanID, 0)); //Feil parameter, riktig
 
 
-        manager.delete(roseID);
-        manager.delete(tulipanID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", roseID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", tulipanID);
 
     }
 
@@ -166,8 +169,8 @@ public class IngredientManagerTest {
         assertEquals(-3, manager.removeStock(løvetannID, 20)); //Ugyldig parameter, riktig
 
 
-        manager.delete(løvetannID);
-        manager.delete(hestehovID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", løvetannID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", hestehovID);
 
     }
 
