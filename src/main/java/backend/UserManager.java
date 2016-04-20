@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Random;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
@@ -75,6 +77,7 @@ public class UserManager{
      *  1: OK
      * -1: Does not exists
      * -2: SQL Exception
+     * -3: Wrong Date Format
      */
     public int edit(String username,int role, String firstname, String lastname, String email, int tlf, String adress, int postnr, String start){
         //UPDATE  `olavhus`.`HCL_users` SET  `user_firstname` =  'Olav' WHERE  `HCL_users`.`user_id` =1;
@@ -94,10 +97,10 @@ public class UserManager{
             if (postnr > 0) sql.update("HCL_users", "user_postnr", "user_name", username, postnr);
             if (start != null) {
                 try {
-                    Date date = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(start).getTime());
-                    sql.update("HCL_users", "user_start", "user_name", username, date);
+                    LocalDate date = LocalDate.parse(start);
+                    sql.update("HCL_users", "user_start", "user_name", username, Date.valueOf(date));
                 }
-                catch (Exception e) {}
+                catch (DateTimeParseException e) {return -3;}
             }
 
             sql.connection.commit();

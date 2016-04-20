@@ -30,18 +30,17 @@ public class Statistics {
             }
             catch (DateTimeParseException e){return null;}
         }
-
         return dates;
     }
     public ArrayList<String[]> getIngredientsInAllOrders(){
 
         ArrayList<String[]> ingredients = new ArrayList<String[]>();
 
-        String[][] results = sql.getStringTable("SELECT delivery_date,`Ingredient Name`,`Food Items`*Ingredients FROM orders_ingredients ;",false);
+        String[][] results = sql.getStringTable("SELECT delivery_date,`Ingredient Name`,`Food Items`*Ingredients FROM deliveries_foods_ingredients ;",false);
 
         for(String[] row : results){
             ingredients.add(row);
-            // System.out.println(Arrays.toString(row));
+            System.out.println(Arrays.toString(row));
 
         }
         return ingredients;
