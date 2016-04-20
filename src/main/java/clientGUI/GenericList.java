@@ -389,7 +389,7 @@ class GenericList extends JPanel {
 		class editFields extends JPanel {
 			public editFields() {
 				int length = selected.length + 1;
-				setLayout(new GridLayout(length, 2));
+				setLayout(new GridLayout(11, 2));
 				//setSize((int) (x * 0.5), (int) (length * 0.01));
 				for (int i = 0; i < dataTypes.length; i++) {
 					if (dataTypes[i].equals("boolean")) {

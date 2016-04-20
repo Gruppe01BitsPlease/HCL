@@ -1,12 +1,13 @@
 package clientGUI;
 import backend.SQL;
+import backend.UserManager;
+
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Jens on 14.03.2016.
@@ -197,6 +198,7 @@ public class tabbedMenu extends JFrame {
 			JMenuItem logout = new JMenuItem("Log out...");
 			JMenuItem about = new JMenuItem("About...");
 			JMenuItem refresh = new JMenuItem("Refresh all");
+			JMenuItem editUser = new JMenuItem("Edit user...");
 			Action settingspress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -240,7 +242,14 @@ public class tabbedMenu extends JFrame {
 			DBsettings.addActionListener(settingspress);
 			logout.addActionListener(logoutpress);
 			about.addActionListener(aboutpress);
+			editUser.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					userEditMenu edit = new userEditMenu();
+				}
+			});
             settings.add(DBsettings);
+			settings.add(editUser);
 			file.add(refresh);
             file.add(logout);
             file.add(about);
@@ -259,21 +268,6 @@ public class tabbedMenu extends JFrame {
 			});
 			newTab.add(orig);
 			if(rolle == 3 || rolle == 0) {
-				/*if (tabs.indexOfTab(packName) == -1) {
-					JMenuItem pack = new JMenuItem(packName);
-					pack.addActionListener(new AbstractAction() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							addTab(new PackageTab(sql, rolle));
-						}
-					});
-					newTab.add(pack);
-				}
-				else {
-					JMenuItem pack = new JMenuItem(packName);
-					pack.setEnabled(false);
-					newTab.add(pack);
-				}*/
 				if (tabs.indexOfTab(drivName) == -1) {
 					JMenuItem driv = new JMenuItem(drivName);
 					driv.addActionListener(new AbstractAction() {
@@ -368,21 +362,6 @@ public class tabbedMenu extends JFrame {
 					cust.setEnabled(false);
 					newTab.add(cust);
 				}
-				/*if (tabs.indexOfTab(subscrName) == -1) {
-					JMenuItem subscr = new JMenuItem(subscrName);
-					subscr.addActionListener(new AbstractAction() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							addTab(new SubscriptionTab(sql, rolle));
-						}
-					});
-					newTab.add(subscr);
-				}
-				else {
-					JMenuItem subscr = new JMenuItem(subscrName);
-					subscr.setEnabled(false);
-					newTab.add(subscr);
-				}*/
 			}
 			if (rolle == 0) {
 				if (tabs.indexOfTab(empName) == -1) {
@@ -443,5 +422,158 @@ public class tabbedMenu extends JFrame {
 	public static void main(String[] args) throws Exception {
 		tabbedMenu menu = new tabbedMenu(0, "CEO");
         //tabbedMenu menu2 = new tabbedMenu(1, "Sales");
+	}
+	private class userEditMenu extends JFrame {
+		private String userName;
+		private JPasswordField passField;
+
+		public userEditMenu() {
+			setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+			setLocationRelativeTo(null);
+			setLayout(new BorderLayout());
+			JLabel loginAgain = new JLabel("Please log in again");
+			JPanel namePassPanel = new JPanel();
+			namePassPanel.setLayout(new GridLayout(2,2));
+			JLabel userNameLabel = new JLabel("User name:");
+			JLabel passLabel = new JLabel("Password:");
+			JTextField userNameField = new JTextField();
+			passField = new JPasswordField();
+			namePassPanel.add(userNameLabel);
+			namePassPanel.add(userNameField);
+			namePassPanel.add(passLabel);
+			namePassPanel.add(passField);
+			JPanel okCancel = new JPanel(new GridLayout(1, 2));
+			JButton okButton = new JButton("OK");
+			JButton cancelButton = new JButton("Cancel");
+			Action okAction = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					UserManager mng = new UserManager(sql);
+					int res = mng.logon(userNameField.getText(), new String(passField.getPassword()));
+					if (res >= 0) {
+						userName = userNameField.getText();
+						editMenu menu = new editMenu();
+						dispose();
+					}
+					else {
+						JOptionPane.showMessageDialog(null, "Wrong user name or password");
+					}
+				}
+			};
+			passField.addActionListener(okAction);
+			okButton.addActionListener(okAction);
+			cancelButton.addActionListener(new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+				}
+			});
+			okCancel.add(okButton);
+			okCancel.add(cancelButton);
+			add(loginAgain, BorderLayout.NORTH);
+			add(namePassPanel, BorderLayout.CENTER);
+			add(okCancel, BorderLayout.SOUTH);
+			setVisible(true);
+		}
+		private class editMenu extends JFrame {
+			public editMenu() {
+				setSize((int) (GenericList.x * 0.5), (int) (GenericList.y * 0.5));
+				setLocationRelativeTo(null);
+				String selectQuery = "SELECT user_name, user_firstname, user_lastname, user_email, user_tlf, " +
+						"user_adress, user_postnr, user_start FROM HCL_user WHERE user_name = '" + userName + "'";
+				System.out.println("User edit select query = " + selectQuery);
+				setLayout(new BorderLayout());
+				String[] selectedUser = sql.getRow(selectQuery);
+				String[][] titles = ColumnNamer.getNamesWithOriginals(selectQuery, sql);
+				editFields fields = new editFields(titles[1], selectedUser, false, null, sql);
+				fields.getFields().get(0).setEnabled(false);
+				add(fields, BorderLayout.CENTER);
+				JPanel saveCancel = new JPanel(new GridLayout(1, 2));
+				JButton save = new JButton("Save");
+				JButton cancel = new JButton("Cancel");
+				JButton changePass = new JButton("Change password...");
+				save.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int sure = JOptionPane.showConfirmDialog(editMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
+						if (sure == 0) {
+							String[] newValues = fields.getNewValues();
+							for (int i = 0; i < newValues.length; i++) {
+								if (!(selectedUser[i].equals(newValues[i]))) {
+									sql.update("HCL_user", titles[0][i], "user_name", userName, newValues[i]);
+								}
+							}
+							dispose();
+							for (int i = 0; i < tabs.getTabCount(); i++) {
+								if (tabs.getComponentAt(i) instanceof EmployeeTab) {
+									((GenericList) tabs.getComponentAt(i)).refresh();
+								}
+							}
+						}
+					}
+				});
+				cancel.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
+				changePass.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						passBox box = new passBox();
+					}
+				});
+				saveCancel.add(save);
+				saveCancel.add(cancel);
+				saveCancel.add(changePass);
+				add(saveCancel, BorderLayout.SOUTH);
+				setVisible(true);
+			}
+		}
+		private class passBox extends JFrame {
+			public passBox() {
+				setLocationRelativeTo(null);
+				setAlwaysOnTop(true);
+				setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+				setLayout(new GridLayout(3, 2));
+				JLabel newPassLabel = new JLabel("Enter new password:");
+				JPasswordField newPassField = new JPasswordField();
+				JLabel reEnterPass = new JLabel("Reenter password:");
+				JPasswordField newPassField2 = new JPasswordField();
+				JButton save = new JButton("Save");
+				JButton cancel = new JButton("Cancel");
+				save.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						int sure = JOptionPane.showConfirmDialog(passBox.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
+						if (sure == 0) {
+							if (!(Arrays.equals(newPassField.getPassword(), newPassField2.getPassword()))) {
+								JOptionPane.showMessageDialog(passBox.this, "Passwords do not match");
+							} else {
+								UserManager mng = new UserManager(sql);
+								String oldPass = new String(passField.getPassword());
+								String newPass = new String(newPassField.getPassword());
+								mng.changePassword(userName, oldPass, newPass);
+								dispose();
+							}
+						}
+					}
+				});
+				cancel.addActionListener(new AbstractAction() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
+				add(newPassLabel);
+				add(newPassField);
+				add(reEnterPass);
+				add(newPassField2);
+				add(save);
+				add(cancel);
+				setVisible(true);
+			}
+		}
 	}
 }
