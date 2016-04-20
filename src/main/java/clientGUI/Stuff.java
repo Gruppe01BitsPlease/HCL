@@ -16,6 +16,10 @@ import java.util.Arrays;
  * Created by Jens on 15-Apr-16.
  */
 abstract class Stuff {
+	public static Dimension getEditBoxSize() {
+		Dimension dim = new Dimension((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.3));
+		return dim;
+	}
 	//Finds the index in the list from a search key
 	public static int findIndexOf(String[][] searchArrays, String search, int column) {
 		int ret = -1;
@@ -130,6 +134,11 @@ class datePane extends JPanel {
 		yearBox.setSelectedItem(year);
 		monthBox.setSelectedIndex(Integer.parseInt(month) - 1);
 		dayField.setText(day);
+	}
+	public void setEnabled(boolean enable) {
+		yearBox.setEnabled(enable);
+		monthBox.setEnabled(enable);
+		dayField.setEnabled(enable);
 	}
 }
 class editFields extends JPanel {

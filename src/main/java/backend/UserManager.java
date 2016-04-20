@@ -72,6 +72,15 @@ public class UserManager{
 	}
 
     /**
+     *
+     */
+    public String generate(String username,int role){
+        String rand = getRandomString();
+        generate(username,rand,role);
+        return rand;
+    }
+
+    /**
      * Edits any of the information in the Users-table
      * @return
      *  1: OK
@@ -165,12 +174,10 @@ public class UserManager{
         }
         return -3;
     }
-    public String getRandomPassword(String username){
 
-        String[] options1 = {"Ost","Max","Per","Bord","Oppned"};
-        String[] options2 = {"Norge","Sverige","Danmark","Finland","England"};
+    public String generateRandomPassword(String username){
 
-        String generated = rString(options1,options2);
+        String generated = getRandomString();
 
         String newSalt2;
         String newPass2;
@@ -190,9 +197,12 @@ public class UserManager{
 
         return "-1";
     }
-    private  String rString(String[] first, String[] second) { // Random combination from two tables
+    private  String getRandomString() { // Random combination from two tables
 
         Random r = new Random();
+
+        String[] first = {"Norge","Sverige","Danmark","Finland","England","Spania","Russland","Korea"};
+        String[] second = {"ErBest","ErVerst","FinnsIkke","ErDårligeIFotball","ErGodeIFotball"};
 
         int r1 = r.nextInt(first.length);
         int r2 = r.nextInt(second.length);
