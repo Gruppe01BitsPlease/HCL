@@ -18,7 +18,7 @@
 
 **BUGS**:
 - Kan søke i IDnummer
-- Legge til orders funker ikke
+- Foods i ordertab funker ikke
 
 **Trine**:
 - Legge inn masse data i databasen

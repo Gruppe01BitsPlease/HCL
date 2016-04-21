@@ -5,6 +5,7 @@ import backend.SQL;
 import backend.UserManager;
 import jdk.nashorn.internal.scripts.JO;
 
+import javax.jws.soap.SOAPBinding;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -681,6 +682,10 @@ class userEditMenu extends JFrame {
 			JPanel saveCancel = new JPanel(new GridLayout(1, 2));
 			JButton save = new JButton("Save");
 			JButton cancel = new JButton("Cancel");
+			JButton roleButton = new JButton("Change access level...");
+			roleButton.addActionListener(e -> {
+
+			});
 			save.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -707,6 +712,41 @@ class userEditMenu extends JFrame {
 			saveCancel.add(passButton);
 			add(saveCancel, BorderLayout.SOUTH);
 			setVisible(true);
+		}
+	}
+	private class LoginWindow extends JFrame {
+		public LoginWindow() {
+			setTitle("Administrator login");
+			setLayout(new GridLayout(5, 2));
+			JLabel login = new JLabel("User name");
+			JTextField userNameField = new JTextField();
+			JLabel pass = new JLabel("Password");
+			JPasswordField passField = new JPasswordField();
+			JButton ok = new JButton("Log in");
+			JButton canc = new JButton("Cancel");
+			ok.addActionListener(e -> {
+				UserManager mng = new UserManager(sql);
+				int role = mng.logon(userNameField.getText(), new String(passField.getPassword()));
+				if (role > 0) {
+					JOptionPane.showMessageDialog(LoginWindow.this, "You do not have the required access level.");
+				}
+				else if (role == -1) {
+					JOptionPane.showMessageDialog(LoginWindow.this, "Incorrect user name or password.");
+				}
+				else if (role == -2) {
+					JOptionPane.showMessageDialog(LoginWindow.this, "There was a problem with the connection.");
+				}
+				else if (role == 0) {
+
+				}
+			});
+		}
+	}
+	private class roleChangeBox extends JFrame {
+		public roleChangeBox(String user_name) {
+			setSize(Stuff.getWindowSize(0.4,0.4));
+			String[] selected = sql.getRow("SELECT user_name, user_role FROM HCL_user WHERE user_name = " + user_name);
+
 		}
 	}
 	private class passBox extends JFrame {
