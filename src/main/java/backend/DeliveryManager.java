@@ -145,19 +145,19 @@ public class DeliveryManager {
     /**
      * @param interval How often: 1 = per week, 2 = every other week, 3 = every third week etc
      */
-    public void addDates(int order_id,LocalDate start, LocalDate end, int interval, boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun){
+    public void addDates(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days/*boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun*/){
 
-        LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth());
+        if(!sql.rowExists("HCL_order","order_id",order_id)) return;
+
+        LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
+
         int weekCounter = 0;
+
         while(Period.between(current,end).getDays() != 0){
 
-            if(current.getDayOfWeek() == DayOfWeek.MONDAY && mon){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.TUESDAY && tues){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.WEDNESDAY && wed){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.THURSDAY && thur){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.FRIDAY && fri){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.SATURDAY && sat){ addDate(order_id,current.toString());}
-            if(current.getDayOfWeek() == DayOfWeek.SUNDAY && sun){ addDate(order_id,current.toString());}
+            for(DayOfWeek day : days){
+                if(current.getDayOfWeek().equals(day)){ addDate(order_id,current.toString());}
+            }
 
             weekCounter++;
             current = current.plusDays(1);
@@ -166,7 +166,9 @@ public class DeliveryManager {
                 weekCounter = 0;
                 current = current.plusDays(7*interval); // Skips weeks
             }
+
         }
+
     }
 
     /**
@@ -225,7 +227,9 @@ public class DeliveryManager {
         manager.addDates(5,first,15,30);*/
         //System.out.println(manager.removeDate(4,3008));
 
-        manager.addDates(2,LocalDate.now(),LocalDate.of(2016,6,1),2,true,true,true,false,false,true,true);
+        DayOfWeek[] days = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY};
+
+        manager.addDates(11,LocalDate.now(),LocalDate.of(2016,6,1),2, days);
 
 
     }

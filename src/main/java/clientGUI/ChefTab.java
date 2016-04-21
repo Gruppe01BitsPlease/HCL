@@ -60,31 +60,24 @@ public class ChefTab extends JPanel {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Finish");
 			JButton refresh = new JButton("Refresh");
-			refresh.addActionListener(new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					refresh();
-				}
-			});
-			deliver.addActionListener(new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
-					if (choice == 0) {
-						int[] selectedIndexes = table.getSelectedRows();
-						int[] selectedIDs = new int[selectedIndexes.length];
-						for (int i = 0; i < selectedIndexes.length; i++) {
-							selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
-						}
-						DeliveryManager mng = new DeliveryManager(sql);
-						for (int i = 0; i < selectedIDs.length; i++) {
-							System.out.println("Deliver ID: " + selectedIDs[i]);
-							int rs = mng.complete(selectedIDs[i]);
-							System.out.println("Deliver result: " + rs);
-						}
-						refresh();
-					}
-				}
+			refresh.addActionListener(e ->{refresh();});
+
+			deliver.addActionListener(e ->  {
+                int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
+                if (choice == 0) {
+                    int[] selectedIndexes = table.getSelectedRows();
+                    int[] selectedIDs = new int[selectedIndexes.length];
+                    for (int i = 0; i < selectedIndexes.length; i++) {
+                        selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
+                    }
+                    DeliveryManager mng = new DeliveryManager(sql);
+                    for (int i = 0; i < selectedIDs.length; i++) {
+                        System.out.println("Deliver ID: " + selectedIDs[i]);
+                        int rs = mng.complete(selectedIDs[i]);
+                        System.out.println("Deliver result: " + rs);
+                    }
+                    refresh();
+                }
 			});
 			add(deliver);
 			add(refresh);
@@ -112,16 +105,13 @@ public class ChefTab extends JPanel {
 			tabs.addTab("Ingredients", ingrTab);
 			add(tabs, BorderLayout.CENTER);
 			JButton finish = new JButton("Complete delivery");
-			finish.addActionListener(new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					int choice = JOptionPane.showConfirmDialog(null, "Complete delivery?", "Order", JOptionPane.YES_NO_OPTION);
-					if (choice == 0) {
-						DeliveryManager mng = new DeliveryManager(sql);
-						mng.complete(delivery_id);
-						refresh();
-					}
-				}
+			finish.addActionListener(e-> {
+                int choice = JOptionPane.showConfirmDialog(null, "Complete delivery?", "Order", JOptionPane.YES_NO_OPTION);
+                if (choice == 0) {
+                    DeliveryManager mng = new DeliveryManager(sql);
+                    mng.complete(delivery_id);
+                    refresh();
+                }
 			});
 			add(finish, BorderLayout.SOUTH);
 		}

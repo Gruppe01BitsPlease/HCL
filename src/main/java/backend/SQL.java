@@ -450,6 +450,57 @@ public class SQL {
 			}
 			System.out.println();
 		}
+
+	}
+
+	/**
+	 * @return An int-object
+	 * 1: okay, -1: SQLException
+	 *
+	 */
+	public int deleteForGood(String table, String PK1, int v1) {
+
+		try {
+			String sqlPrep = "DELETE FROM " + table + " where "+PK1+ " = ? ;";
+
+			PreparedStatement prep = connection.prepareStatement(sqlPrep);
+
+			//  prep.setString(1, primaryKey);
+			prep.setInt(1, v1);
+
+			prep.execute();
+
+			return 1;
+
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return -1;
+		}
+
+	}
+
+	public int deleteForGood(String table, String PK1, String PK2, int v1, int v2) {
+
+		try {
+			String sqlPrep = "DELETE FROM " + table + " where "+PK1+ " = ? AND " +PK2+ " = ? ;";
+
+			PreparedStatement prep = connection.prepareStatement(sqlPrep);
+
+			//  prep.setString(1, primaryKey);
+			prep.setInt(1, v1);
+			prep.setInt(2, v2);
+
+			prep.execute();
+
+			return 1;
+
+		}
+		catch (SQLException e){
+			e.printStackTrace();
+			return -1;
+		}
+
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -458,7 +509,7 @@ public class SQL {
 
 		SQL sql = new SQL();
 		//System.out.println(sql.connect());
-	/*	System.out.println("SQL is connected? : "+sql.isConnected());
+		System.out.println("SQL is connected? : "+sql.isConnected());
 		if (sql.isConnected()) {
 
 			String[][] tabell = sql.getStringTable("Select * from HCL_user", true);
@@ -467,7 +518,7 @@ public class SQL {
 		}
 		else {
 			System.out.println("Could not contact database @ " + db.getPropValue("database"));
-        }*/
+        }
 		System.out.println(sql.rowExists("HCL_food_ingredient","food_id","ingredient_id",207,31));
         //sql.update("HCL_user","user_tlf","user_name","Magisk",123456789);
        // System.out.println(sql.rowExists("HCL_user","user_name","Trine"));
