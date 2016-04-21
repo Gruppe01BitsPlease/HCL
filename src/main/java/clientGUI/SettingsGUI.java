@@ -16,6 +16,9 @@ public class SettingsGUI extends JFrame {
     private final JTextPane helpText = new JTextPane();
     public boolean isValid = false;
 
+    /**
+     * Creates the windows that allows the user to change database settings
+     */
     public SettingsGUI(){
         try {
             settings = new SettingsFile();

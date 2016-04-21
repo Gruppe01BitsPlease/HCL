@@ -16,6 +16,7 @@ import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 /**
  * Taken from:
  * http://blog.jerryorr.com/2012/05/secure-password-storage-lots-of-donts.html
+ * Encrypts password on the database
  */
 public class PBKDF2 {
 

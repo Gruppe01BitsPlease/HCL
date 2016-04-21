@@ -1,16 +1,14 @@
 package clientGUI;
 import backend.SQL;
-import backend.UserManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
 
 /**
- * Created by Jens on 14.03.2016.
+ * Main window
  */
 public class tabbedMenu extends JFrame {
 	private SQL sql;

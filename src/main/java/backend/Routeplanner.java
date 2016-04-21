@@ -3,7 +3,7 @@ package backend;
 import java.util.Arrays;
 
 /**
- * Created by Olav Husby on 11.04.2016.
+ *
  */
 public class Routeplanner {
 

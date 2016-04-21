@@ -1,13 +1,13 @@
 package clientGUI;
 
 import backend.CustomerManager;
-import backend.FoodManager;
 import backend.SQL;
 
-import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 
+/**
+ * Creates the JPanel that is used as a tab in tabbedMenu
+ */
 class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer WHERE active = 1";
 	private SQL sql;

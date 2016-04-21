@@ -6,13 +6,12 @@ import backend.SQL;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Arrays;
 
 /**
- * Created by Jens on 18-Apr-16.
+ * Creates the JPanel that is used as a tab in tabbedMenu
  */
 public class ChefTab extends JPanel {
 	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
