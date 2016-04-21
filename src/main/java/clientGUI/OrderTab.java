@@ -116,15 +116,10 @@ class OrderTab extends GenericList {
                     setLayout(new GridLayout(1, 2));
                     JButton neue = new JButton("New...");
                     JButton del = new JButton("Delete");
-                    neue.addActionListener(new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
+                    neue.addActionListener(e-> {
                             editBox edit = new editBox();
-                        }
                     });
-                    del.addActionListener(new AbstractAction() {
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
+                    del.addActionListener(e-> {
                             int[] sel = subTable.getSelectedRows();
                             for (int i = 0; i < sel.length; i++) {
                                 String value = Stuff.setGrey() + subModel.getValueAt(sel[i], 2) + Stuff.endGrey();
@@ -132,7 +127,6 @@ class OrderTab extends GenericList {
                                 deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                             }
                             subTable.setModel(subModel);
-                        }
                     });
                     add(neue);
                     add(del);
@@ -144,9 +138,7 @@ class OrderTab extends GenericList {
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
-                save.addActionListener(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                save.addActionListener( e-> {
 
                         String[] newValues = editFields.getNewValues();
                         if (newOrder) {
@@ -185,13 +177,9 @@ class OrderTab extends GenericList {
                         }
                         foodTab.generate();
                         refresh();
-                    }
                 });
-                cancel.addActionListener(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                cancel.addActionListener(e->{
                         dispose();
-                    }
                 });
 
                 add(save);
@@ -220,9 +208,8 @@ class OrderTab extends GenericList {
                 add(numberLabel);
                 add(numberBox);
                 numberBox.setEnabled(false);
-                intervalBox.addItemListener(new ItemListener() {
-                    @Override
-                    public void itemStateChanged(ItemEvent e) {
+                intervalBox.addItemListener(e->{
+
                         if (!(intervalBox.getSelectedItem().equals("Single"))) {
                             numberBox.setEnabled(true);
                             dateLabel.setText("First date");
@@ -232,13 +219,11 @@ class OrderTab extends GenericList {
                             dateLabel.setText("Date");
                             numberBox.setEnabled(false);
                         }
-                    }
                 });
+
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");
-                save.addActionListener(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                save.addActionListener(e->{
                         String[] newDates = new String[1];
                         if (!(intervalBox.getSelectedItem().equals("Single"))) {
                             newDates = new String[numberBox.getSelectedIndex() + 1];
@@ -278,13 +263,9 @@ class OrderTab extends GenericList {
                         subModel = new DefaultTableModel(dateArray, subTitles);
                         subTable.setModel(subModel);
                         subTable.removeIDs();
-                    }
                 });
-                cancel.addActionListener(new AbstractAction() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                cancel.addActionListener(e->{
                         dispose();
-                    }
                 });
                 add(save);
                 add(cancel);
