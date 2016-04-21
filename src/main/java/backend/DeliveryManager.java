@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.time.*;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Is responsible for managing delivery entries in the database
@@ -141,13 +143,41 @@ public class DeliveryManager {
         }
         return 1;
     }
+    public String[] getDatesToBeAdded(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days){
+
+        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return new String[0];
+
+        LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
+
+        int weekCounter = 0;
+
+        ArrayList<String> dates = new ArrayList<>();
+
+        while(!Period.between(current,end).isNegative()){
+
+            for(DayOfWeek day : days){
+                if(current.getDayOfWeek().equals(day)){ dates.add(current.toString());}
+            }
+
+            weekCounter++;
+            current = current.plusDays(1);
+
+            if(weekCounter == 7 && interval > 1){
+                weekCounter = 0;
+                current = current.plusDays(7*interval); // Skips weeks
+            }
+        }
+        String[] array = new String[dates.size()];
+        for(int i=0; i<array.length; i++){array[i]=dates.get(i);}
+        return array;
+    }
 
     /**
      * @param interval How often: 1 = per week, 2 = every other week, 3 = every third week etc
      */
     public void addDates(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days/*boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun*/){
 
-        if(!sql.rowExists("HCL_order","order_id",order_id)) return;
+        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return;
 
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
 
@@ -228,9 +258,10 @@ public class DeliveryManager {
         //System.out.println(manager.removeDate(4,3008));
 
         DayOfWeek[] days = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY};
-
-        //manager.addDates(11,LocalDate.now(),LocalDate.of(2016,6,1),2, days);
+        System.out.println(days.toString());
+        System.out.println("Dates:"+ Arrays.toString(manager.getDatesToBeAdded(130,LocalDate.now(),LocalDate.of(2016,6,1),2, days)));
         //manager.addDates(11, LocalDate.now(), LocalDate.of(2017,12,24), 2, days);
+        System.out.println("Send Help");
 
 
     }
