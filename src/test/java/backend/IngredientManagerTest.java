@@ -45,7 +45,7 @@ public class IngredientManagerTest {
         assertEquals(-1, manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
 
         sql.deleteForGood("HCL_ingredient", "ingredient_id", brunostID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", rødostID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ostID);
 
     }
 

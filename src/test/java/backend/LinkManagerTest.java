@@ -70,7 +70,7 @@ public class LinkManagerTest {
         int muffinsstrøID = iManager.generate("muffinsstrø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
         int kakeID =  fManager.generate("kake", 60);
         int muffinsID =  fManager.generate("muffins", 60);
-        System.out.println(manager.generate("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID, 20));
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID, 20);
 
 
         //Sjekker at kake-kakestrø finnes, sletter kake-kaktrø, og forsikrer seg om at kake-kakestrø er slettet
@@ -85,8 +85,8 @@ public class LinkManagerTest {
         assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","", muffinsID, muffinsstrøID));
         assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", -1, muffinsstrøID));
         assertEquals(-3, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, -1));
-        System.out.println(manager.generate("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID, 20));
-        assertEquals(1, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID)); //Filmelding!!!!!
+        manager.generate("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID, 20);
+        assertEquals(1, manager.delete("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID)); //Feilmelding!!!!!
 
         sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID);
         sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", muffinsID, muffinsstrøID);
