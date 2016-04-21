@@ -33,17 +33,19 @@ public class CustomerManagerTest {
         int idLars = manager.generate("Kaffe-Lars", "coffein_lover@gmail.com", 75584061);
 
         //Tester om Customer-objektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_customer", "customer_name", "Kjell-Sture"));
-        assertTrue(sql.rowExists("HCL_customer", "customer_name", "Kaffe-Lars"));
-        assertFalse(sql.rowExists("HCL_customer", "customer_name", "Mølje"));
+        assertTrue(sql.rowExists("HCL_customer", "customer_id", idKjell));
+        assertTrue(sql.rowExists("HCL_customer", "customer_id", idLars));
+        assertFalse(sql.rowExists("HCL_customer", "customer_name", 00101));
 
         //Prøver å lage ukorrekte Customer-objekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", "hei@nei.no", 12345678));
         assertEquals(-3, manager.generate("Astrid Anker-Hansen", "",87654321));
         assertEquals(-3, manager.generate("Jens-August Anker-Hansen","kulemeg@hotelcaesar.no", 0));
 
-        manager.delete(idKjell);
-        manager.delete(idLars);
+        sql.deleteForGood("HCL_customer", "customer_id", idKjell);
+        sql.deleteForGood("HCL_customer", "customer_id", idLars);
+
+
 
     }
 
@@ -73,8 +75,8 @@ public class CustomerManagerTest {
         assertEquals(-3, manager.edit(storeperID, "", 75584788));
         assertEquals(-3, manager.edit(storeperID, "mailadresse@mail.com", 0));
 
-        manager.delete(lilleperID);
-        manager.delete(storeperID);
+        sql.deleteForGood("HCL_customer", "customer_id", lilleperID);
+        sql.deleteForGood("HCL_customer", "customer_id", storeperID);
     }
 
     @Test
@@ -92,10 +94,7 @@ public class CustomerManagerTest {
         assertEquals(-1,manager.delete(0));
         assertEquals(-1,manager.delete(001));
 
-
-
-
-
+        sql.deleteForGood("HCL_customer", "customer_id", kariID);
 
     }
 }

@@ -103,6 +103,7 @@ public class IngredientManager {
     public int addStock(int ingredient_id,int addStock){
 
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,ingredient_id)) return -1;
+        if((addStock == 0))return -3;
 
         try {
             sql.connection.setAutoCommit(false);
@@ -145,6 +146,13 @@ public class IngredientManager {
      * -3: Wrong parameters
      */
     public int removeStock(int ingredient_id, int amount){
+
+        if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,ingredient_id)) return -1;
+
+        String setning = "SELECT stock from HCL_ingredient where ingredient_id = " + ingredient_id;
+        String[][] utskrift  = sql.getStringTable(  setning , false  );
+        int currentStock = Integer.parseInt(utskrift[0][0]);
+        if ((currentStock < amount) || (amount == 0)) return -3;
 
         int out;
         if(amount > 0) {
