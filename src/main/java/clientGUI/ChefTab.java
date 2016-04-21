@@ -1,6 +1,7 @@
 package clientGUI;
 
 import backend.DeliveryManager;
+import backend.IngredientManager;
 import backend.SQL;
 
 import javax.swing.*;
@@ -76,9 +77,17 @@ class ChefTab extends JPanel {
                         selectedIDs[i] = Integer.parseInt((String) table.getValueAt(selectedIndexes[i], 0));
                     }
                     DeliveryManager mng = new DeliveryManager(sql);
+					IngredientManager ingMng = new IngredientManager(sql);
                     for (int i = 0; i < selectedIDs.length; i++) {
-                        System.out.println("Deliver ID: " + selectedIDs[i]);
+						String selectIngr = "SELECT ingredient_id, stock FROM HCL_ingredient WHERE ingredient_id IN " +
+								"(SELECT ingredient_id FROM HCL_food_ingredient WHERE food_id IN " +
+								"(SELECT food_id FROM HCL_order_food WHERE order_id IN " +
+								"(SELECT order_id FROM HCL_deliveries WHERE delivery_id = "+selectedIDs[i]+"))) AND active = 1";
+						String[][] ingredients = sql.getStringTable(selectIngr, false);
+						System.out.println(selectIngr);
+						System.out.println("Deliver ID: " + selectedIDs[i]);
                         int rs = mng.complete(selectedIDs[i]);
+
                         System.out.println("Deliver result: " + rs);
                     }
                     refresh();
