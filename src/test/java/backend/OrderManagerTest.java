@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
@@ -102,7 +103,8 @@ public class OrderManagerTest {
         int bestilling5ID = manager.generate(luluID, 123, "Elgeseter", 7030, "2017-02-02");
         System.out.println(luluID  + " " + bestilling5ID);
         assertEquals(false, manager.isSubscription(bestilling5ID));
-        dManager.addDates(bestilling5ID, LocalDate.now(), LocalDate.of(2017,12,24), 2, false, false, false, false, false, false, true);
+        DayOfWeek[] testArray = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY, DayOfWeek.WEDNESDAY};
+        dManager.addDates(bestilling5ID, LocalDate.now(), LocalDate.of(2017,12,24), 2, testArray);
         assertEquals(true, manager.isSubscription(bestilling5ID));
 
 
