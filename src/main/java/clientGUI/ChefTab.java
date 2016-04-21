@@ -34,15 +34,22 @@ public class ChefTab extends JPanel {
 		JScrollPane scroller = new JScrollPane(table);
 		centerPanel.add(scroller);
 		//JTabbedPane bottomTabs = new JTabbedPane();
-		viewVindow bottom = new viewVindow(Integer.parseInt((String)table.getValueAt(0, 0)));
-		centerPanel.add(bottom);
+		viewVindow bottom;
+		try {
+			bottom = new viewVindow(Integer.parseInt((String) table.getValueAt(0, 0)));
+		}
+		catch (Exception e) {
+			bottom = new viewVindow();
+		}
+		final viewVindow botFinal = bottom;
+		centerPanel.add(botFinal);
 		add(centerPanel, BorderLayout.CENTER);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
-					bottom.change(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
+					botFinal.change(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
 				}
 			}
 		});
@@ -61,7 +68,6 @@ public class ChefTab extends JPanel {
 			JButton deliver = new JButton("Finish");
 			JButton refresh = new JButton("Refresh");
 			refresh.addActionListener(e ->{refresh();});
-
 			deliver.addActionListener(e ->  {
                 int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
                 if (choice == 0) {
@@ -89,15 +95,22 @@ public class ChefTab extends JPanel {
 		private String[][] tabTitles;
 		private JTabbedPane ingredientTabs;
 		private ingredientTab ingrTab;
+		public viewVindow() {
+
+		}
 		public viewVindow(int delivery_id) {
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
-			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
-					" WHERE delivery_id = " + delivery_id;
+			String foodQuery = "";
+			String ingrQuery = "";
+			if (delivery_id != -1) {
+				foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
+						" WHERE delivery_id = " + delivery_id;
+				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
+						"HCL_deliveries WHERE delivery_id = " + delivery_id;
+			}
 			System.out.println("Food query: " + foodQuery);
 			tabs.addTab("Foods", new viewTab(foodQuery));
-			String ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
-					"HCL_deliveries WHERE delivery_id = " + delivery_id;
 			System.out.println("Ingredients query: " + ingrQuery);
 			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
 			String[] tabTitles = sql.getColumn(ingrQuery, 1);
