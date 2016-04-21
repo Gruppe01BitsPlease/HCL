@@ -586,7 +586,7 @@ class userEditMenu extends JFrame {
 				}
 			}
 		});
-		editMenu menu = new editMenu();
+		editMenu menu = new editMenu(rolle);
 	}
 	public userEditMenu(SQL sql, int rolle) {
 		this.rolle = rolle;
@@ -615,7 +615,7 @@ class userEditMenu extends JFrame {
 				int res = mng.logon(userNameField.getText(), new String(passField.getPassword()));
 				if (res >= 0) {
 					userName = userNameField.getText();
-					editMenu menu = new editMenu();
+					editMenu menu = new editMenu(res);
 					dispose();
 				}
 				else {
@@ -646,7 +646,7 @@ class userEditMenu extends JFrame {
 		});
 	}
 	private class editMenu extends JFrame {
-		public editMenu() {
+		public editMenu(int rolle) {
 			setResizable(false);
 			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
