@@ -1,4 +1,4 @@
-/**********************************************************************************************************************/
+-- -----------------------------
 
 -- Select the foods AND their ingredients: food_id, ingredient_id, Food Price, Ingredient Price, Food Name, Ingredient Name, Ingredient Amount(in said food), Ingredient Stock, Alergens,
 DROP VIEW IF EXISTS foods_ingredients;
@@ -9,7 +9,7 @@ CREATE VIEW foods_ingredients AS
   WHERE HCL_food.active=1 AND HCL_food_ingredient.active=1 AND HCL_ingredient.active=1;
 -- Select the foods AND their ingredients: food_id, ingredient_id, Food Price, Ingredient Price, Food Name, Ingredient Name, Ingredient Amount(in said food), Ingredient Stock, Alergens,
 
-/**********************************************************************************************************************/
+-- -----------------------------
 
 -- Deliveries AND their Food: Order_id, delivery_id, food_id, prices, Food Name, Food Number, adress, postnr, delivery date
 DROP VIEW IF EXISTS deliveries_foods;
@@ -21,7 +21,7 @@ CREATE VIEW deliveries_foods AS
         AND HCL_deliveries.delivered=0;
 -- Deliveries AND their Food: Order_id, delivery_id, food_id, prices, Food Name, Food Number, adress, postnr, delivery date
 
-/**********************************************************************************************************************/
+-- -----------------------------
 
 -- Deliveries, their foods, and their ingredients
 DROP VIEW IF EXISTS deliveries_foods_ingredients;
@@ -31,7 +31,7 @@ CREATE VIEW deliveries_foods_ingredients AS
   FROM deliveries_foods NATURAL JOIN foods_ingredients ORDER BY delivery_date;
 -- Deliveries, their foods, and their ingredients
 
-/**********************************************************************************************************************/
+-- -----------------------------
 
 -- Ingredients per delivery. AND total ingredients of that type in the delivery, with the stock
 DROP VIEW IF EXISTS deliveries_ingredients_total;
@@ -40,4 +40,4 @@ CREATE VIEW deliveries_ingredients_total AS
   FROM deliveries_foods_ingredients GROUP BY delivery_id;
 -- Ingredients per delivery. AND total ingredients of that type in the delivery, with the stock
 
-/**********************************************************************************************************************/
+-- -----------------------------

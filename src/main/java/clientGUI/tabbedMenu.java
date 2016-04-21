@@ -49,11 +49,7 @@ public class tabbedMenu extends JFrame {
 			@Override
 			public void windowDeactivated(WindowEvent e) {}
 		});
-		//Dynamic size based on screen resolution bitches
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		x = (int) (screen.width * 0.75);
-		y = (int) (screen.height * 0.75);
-		setMinimumSize(new Dimension(x, y));
+		setMinimumSize(Stuff.getWindowSize(1,1));
         setLocationRelativeTo(null);
         setResizable(true);
         tabs = new JTabbedPane();
@@ -66,8 +62,8 @@ public class tabbedMenu extends JFrame {
 	private void addTabs() {
 		if (rolle == 0) {
 			//addTab(new StatisticsTab());
-			addTab(new EmployeeTab(sql, rolle));
-			addTab(new CeoTab());
+			// addTab(new EmployeeTab(sql, rolle));
+			addTab(new CeoTab(rolle, sql));
 		}
 		if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql, rolle));
@@ -85,7 +81,7 @@ public class tabbedMenu extends JFrame {
 	}
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
-	private String empName = "Employees";
+	//private String empName = "Employees";
 	private String foodName = "Foods";
 	private String ingrName = "Ingredients";
 	private String ordrName = "Orders";
@@ -107,11 +103,11 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(custName, tab);
 			}
 		}
-		else if (tab instanceof EmployeeTab) {
+		/*else if (tab instanceof EmployeeTab) {
 			if (tabs.indexOfTab(empName) == -1) {
 				tabs.addTab(empName, tab);
 			}
-		}
+		}*/
 		else if (tab instanceof FoodTab) {
 			if (tabs.indexOfTab(foodName) == -1) {
 				tabs.addTab(foodName, tab);
@@ -215,7 +211,7 @@ public class tabbedMenu extends JFrame {
 			Action aboutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(null, "Healthy Catering Limited © 2016 Bits Please");
+					JOptionPane.showMessageDialog(null, "FoodPlease © 2016 Bits Please");
 				}
 			};
 			Action refreshpress = new AbstractAction() {
@@ -363,7 +359,7 @@ public class tabbedMenu extends JFrame {
 					newTab.add(cust);
 				}
 			}
-			if (rolle == 0) {
+			if (rolle == 0) {/*
 				if (tabs.indexOfTab(empName) == -1) {
 					JMenuItem emp = new JMenuItem(empName);
 					emp.addActionListener(new AbstractAction() {
@@ -378,13 +374,13 @@ public class tabbedMenu extends JFrame {
 					JMenuItem emp = new JMenuItem(empName);
 					emp.setEnabled(false);
 					newTab.add(emp);
-				}
+				}*/
 				if (tabs.indexOfTab(ceoName) == -1) {
 					JMenuItem ceo = new JMenuItem(ceoName);
 					ceo.addActionListener(new AbstractAction() {
 						@Override
 						public void actionPerformed(ActionEvent e) {
-							addTab(new CeoTab());
+							addTab(new CeoTab(rolle, sql));
 						}
 					});
 					newTab.add(ceo);
@@ -426,9 +422,8 @@ public class tabbedMenu extends JFrame {
 	private class userEditMenu extends JFrame {
 		private String userName;
 		private JPasswordField passField;
-
 		public userEditMenu() {
-			setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+			setSize(Stuff.getWindowSize(0.3,0.2));
 			setLocationRelativeTo(null);
 			setLayout(new BorderLayout());
 			JLabel loginAgain = new JLabel("Please log in again");
@@ -477,7 +472,7 @@ public class tabbedMenu extends JFrame {
 		}
 		private class editMenu extends JFrame {
 			public editMenu() {
-				setSize((int) (GenericList.x * 0.5), (int) (GenericList.y * 0.5));
+				setSize(Stuff.getWindowSize(0.5,0.5));
 				setLocationRelativeTo(null);
 				String selectQuery = "SELECT user_name, user_firstname, user_lastname, user_email, user_tlf, " +
 						"user_adress, user_postnr, user_start FROM HCL_user WHERE user_name = '" + userName + "'";
@@ -508,7 +503,7 @@ public class tabbedMenu extends JFrame {
 							}
 							dispose();
 							for (int i = 0; i < tabs.getTabCount(); i++) {
-								if (tabs.getComponentAt(i) instanceof EmployeeTab) {
+								if (tabs.getComponentAt(i) instanceof CeoTab) {
 									((GenericList) tabs.getComponentAt(i)).refresh();
 								}
 							}
@@ -538,7 +533,7 @@ public class tabbedMenu extends JFrame {
 			public passBox() {
 				setLocationRelativeTo(null);
 				setAlwaysOnTop(true);
-				setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+				setSize(Stuff.getWindowSize(0.3,0.2));
 				setLayout(new GridLayout(3, 2));
 				JLabel newPassLabel = new JLabel("Enter new password:");
 				JPasswordField newPassField = new JPasswordField();

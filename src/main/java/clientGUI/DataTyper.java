@@ -84,7 +84,7 @@ abstract class DataTyper {
 				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Delivery date")) {
-				ret[i] = "date";
+				ret[i] = "curdate";
 			}
 			else if (UINames[i].equals("Package ID")) {
 				ret[i] = "id";

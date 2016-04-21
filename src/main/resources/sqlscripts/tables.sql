@@ -8,7 +8,7 @@ SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS HCL_customer;
 CREATE TABLE HCL_customer
 (
-  customer_id INT(11) PRIMARY KEY NOT NULL,
+  customer_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   customer_name VARCHAR(50),
   epost VARCHAR(50),
   tlf INT(11),
@@ -18,7 +18,7 @@ CREATE TABLE HCL_customer
 DROP TABLE IF EXISTS HCL_deliveries;
 CREATE TABLE HCL_deliveries
 (
-  delivery_id INT(11) PRIMARY KEY NOT NULL,
+  delivery_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   order_id INT(11) NOT NULL,
   delivery_date DATE NOT NULL,
   completed TINYINT(1) DEFAULT '0' NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE HCL_deliveries
 DROP TABLE IF EXISTS HCL_food;
 CREATE TABLE HCL_food
 (
-  food_id INT(11) PRIMARY KEY NOT NULL,
+  food_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   name VARCHAR(50),
   price INT(11),
   active TINYINT(1) DEFAULT '1' NOT NULL
@@ -48,7 +48,7 @@ CREATE TABLE HCL_food_ingredient
 DROP TABLE IF EXISTS HCL_ingredient;
 CREATE TABLE HCL_ingredient
 (
-  ingredient_id INT(11) PRIMARY KEY NOT NULL,
+  ingredient_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   name VARCHAR(50),
   stock INT(11),
   purchase_price INT(11),
@@ -64,7 +64,7 @@ CREATE TABLE HCL_ingredient
 DROP TABLE IF EXISTS HCL_order;
 CREATE TABLE HCL_order
 (
-  order_id INT(11) PRIMARY KEY NOT NULL,
+  order_id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
   customer_id INT(11) NOT NULL,
   price INT(11),
   adress VARCHAR(50),

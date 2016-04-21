@@ -34,8 +34,6 @@ class GenericList extends JPanel {
 	private String searchName = "Search";
     private SQL sql;
 	private int role;
-    public static int x;
-    public static int y;
 	private boolean searchEnabled = false;
 	private Action searchPress;
 	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
@@ -62,9 +60,7 @@ class GenericList extends JPanel {
 		this.titles = ColumnNamer.getNamesFromArray(SqlColumnNames);
 		this.query = query;
 		this.linkTables = linkTables;
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		x = (int) (screen.width * 0.75);
-		y = (int) (screen.height * 0.75);
+
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
         list = new JTableHCL(tabModel);
@@ -203,6 +199,7 @@ class GenericList extends JPanel {
 		private ArrayList<linkTab> linkTabs = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
+		private editFields editFields;
 		public editWindow(int ID, boolean newEntry) {
 			this.newEntry = newEntry;
 			if (!newEntry) {
@@ -215,15 +212,16 @@ class GenericList extends JPanel {
 			} else {
 				setTitle("View Item");
 			}
-			setSize((int) (x * 0.5), (int) (y * 0.5));
+			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setResizable(false);
+			editFields = new editFields(titles, selected, newEntry, null, sql);
 			JTabbedPane tabs = new JTabbedPane();
-			tabs.addTab("Info", new editFields());
+			tabs.addTab("Info", editFields);
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql);
+					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
 					tabs.addTab(linkTables[i][0], k);
 					linkTabs.add(k);
 				}
@@ -252,182 +250,67 @@ class GenericList extends JPanel {
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							ArrayList<int[]> removeLinks = new ArrayList<>();
-							ArrayList<String[]> addedLinks = new ArrayList<>();
 							ArrayList<int[]> createLinks = new ArrayList<>();
 							ArrayList<int[]> changeLinks = new ArrayList<>();
 							for (linkTab tab : linkTabs) {
 								removeLinks.addAll(tab.getRemoveLinks());
-								addedLinks.addAll(tab.getAddedLinks());
 								createLinks.addAll(tab.getCreateLinks());
 								changeLinks.addAll(tab.getChangeLinks());
 							}
-								String[] newValues = new String[selected.length];
-								for (int i = 0; i < newValues.length; i++) {
-									if (fields.get(i) instanceof JTextField) {
-										JTextField field = (JTextField) fields.get(i);
-										newValues[i] = field.getText();
-									} else if (fields.get(i) instanceof JCheckBox) {
-										JCheckBox chk = (JCheckBox) fields.get(i);
-										if (chk.isSelected()) {
-											newValues[i] = "true";
-										} else if (!(chk.isSelected())) {
-											newValues[i] = "false";
-										}
-									} else if (fields.get(i) instanceof datePane) {
-										datePane dtp = (datePane) fields.get(i);
-										newValues[i] = dtp.getDate();
-									} else if (fields.get(i) instanceof JComboBox) {
-										JComboBox cmb = (JComboBox) fields.get(i);
-										String selID = comboBoxIDs[cmb.getSelectedIndex()];
-										/*String sel = (String) cmb.getSelectedItem();
-										String[] chosen = sel.split(",");*/
-										newValues[i] = selID;
-										System.out.println(newValues[i]);
-									}
-								}
-								if (!newEntry) {
-									for (int i = 1; i < newValues.length; i++) {
-										if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
-											if (dataTypes[i].equals("boolean")) {
-												if (newValues[i].equals("true")) {
-													boolean update = true;
-													sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-												} else if (newValues[i].equals("false")) {
-													boolean update = false;
-													sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-												} else {
-													System.out.println("ERROR NO BOOLEAN VALUE");
-												}
+							//fields = editFields.getFields();
+							String[] newValues = editFields.getNewValues();
+							if (!newEntry) {
+								for (int i = 1; i < newValues.length; i++) {
+									if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
+										if (dataTypes[i].equals("boolean")) {
+											if (newValues[i].equals("true")) {
+												boolean update = true;
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+											} else if (newValues[i].equals("false")) {
+												boolean update = false;
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
 											} else {
-												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
+												System.out.println("ERROR NO BOOLEAN VALUE");
 											}
-										}
-									}
-								} else if (newEntry) {
-									if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
-										int res = GenericList.this.generate(newValues);
-										if (res == -2) {
-											JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
-										} else if (res == -3) {
-											JOptionPane.showMessageDialog(editWindow.this, "There is a problem with one of the parameters.");
-										} else if (res == -4) {
-											JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
-										}
-										//System.out.println(res);
-									} else {
-										JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
-									}
-								}
-								if (removeLinks.size() > 0) {
-									LinkManager linkMng = new LinkManager(sql);
-									for (int[] i : removeLinks) {
-										int a = linkMng.delete(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1]);
-										System.out.println(linkTables[i[0]][2] + " " + SqlColumnNames[0] + " " + linkTables[i[0]][1] + " " + Integer.parseInt(selected[0]) + " " + i[1]);
-										System.out.println("Delete result :" + a);
-									}
-								}
-								int pk = sql.getLastID();
-								System.out.println("New primary key: " + pk);
-								if (createLinks.size() > 0) {
-									//Saves to link tables if links have been created
-									LinkManager linkMng = new LinkManager(sql);
-									System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
-									if (newEntry) {
-										System.out.println("NEW LINK NEW ENTRY!");
-										for (int[] i : createLinks) {
-											linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], pk, i[1], i[2]);
-										}
-									} else {
-										for (int[] i : createLinks) {
-											linkMng.generate(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1], i[2]);
+										} else {
+											sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
 										}
 									}
 								}
-								if (changeLinks.size() > 0) {
-									//Changes link tables if needed
-									LinkManager linkMng = new LinkManager(sql);
-									System.out.println("Changelink: " + Arrays.toString(changeLinks.get(0)));
-									//int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
-									for (int[] i : changeLinks) {
-										linkMng.editNumber(linkTables[i[0]][2], SqlColumnNames[0], linkTables[i[0]][1], Integer.parseInt(selected[0]), i[1], i[2]);
+							} else if (newEntry) {
+								if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
+									int res = GenericList.this.generate(newValues);
+									if (res == -2) {
+										JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
+									} else if (res == -3) {
+										JOptionPane.showMessageDialog(editWindow.this, "There is a problem with one of the parameters.");
+									} else if (res == -4) {
+										JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
 									}
+									//System.out.println(res);
+								} else {
+									JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 								}
-								table[index] = newValues;
-								refresh();
-								if (searchTableMod != null) {
-									int searchSelectedRow = searchList.getSelectedRow();
-									if (searchSelectedRow >= 0 && searchSelectedRow < searchTable.length) {
-										searchTable[searchSelectedRow] = newValues;
-										searchTableMod = new DefaultTableModel(searchTable, titles);
-										searchList.setModel(searchTableMod);
-									}
+							}
+							for (linkTab tab : linkTabs) {
+								tab.generate();
+							}
+							table[index] = newValues;
+							refresh();
+							if (searchTableMod != null) {
+								int searchSelectedRow = searchList.getSelectedRow();
+								if (searchSelectedRow >= 0 && searchSelectedRow < searchTable.length) {
+									searchTable[searchSelectedRow] = newValues;
+									searchTableMod = new DefaultTableModel(searchTable, titles);
+									searchList.setModel(searchTableMod);
 								}
-								dispose();
+							}
+							dispose();
 						}
 					}
 				});
 				add(save);
 				add(cancel);
-			}
-		}
-		class editFields extends JPanel {
-			public editFields() {
-				int length = selected.length + 1;
-				setLayout(new GridLayout(11, 2));
-				//setSize((int) (x * 0.5), (int) (length * 0.01));
-				for (int i = 0; i < dataTypes.length; i++) {
-					if (dataTypes[i].equals("boolean")) {
-						JLabel j = new JLabel(titles[i]);
-						JCheckBox k = new JCheckBox();
-						if (selected[i] != null && selected[i].equals("1")) {
-							k.setSelected(true);
-						}
-						fields.add(k);
-						add(j);
-						add(k);
-					} else if (dataTypes[i].equals("date")) {
-						JLabel j = new JLabel(titles[i]);
-						datePane k = new datePane(selected[i]);
-						fields.add(k);
-						add(j);
-						add(k);
-					} else if (dataTypes[i].equals("curdate")) {
-						JLabel j = new JLabel(titles[i]);
-						datePane k = new datePane(selected[i]);
-						if (newEntry) {
-							LocalDate now = LocalDate.now();
-							String date = now.toString();
-							k = new datePane(date);
-						}
-						fields.add(k);
-						add(j);
-						add(k);
-					} else if (dataTypes[i].contains("SELECT")) {
-						JLabel j = new JLabel(titles[i]);
-						String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
-						JComboBox<String> k = new JComboBox<>(choices[1]);
-						if (!newEntry) {
-							k.setSelectedItem(choices[1][Stuff.findIndexOf(choices[1], selected[i])]);
-							k.setEnabled(false);
-						}
-						comboBoxIDs = choices[0];
-						fields.add(k);
-						add(j);
-						add(k);
-					}
-					else if (dataTypes[i].equals("id") || dataTypes[i].equals("active")) {
-						JTextField k = new JTextField(selected[i]);
-						fields.add(k);
-					} else {
-						JLabel j = new JLabel(titles[i]);
-						JTextField k = new JTextField(selected[i]);
-						fields.add(k);
-						add(j);
-						add(k);
-					}
-				}
-				//fields.get(0).setEnabled(false);
-				setVisible(true);
 			}
 		}
 	}

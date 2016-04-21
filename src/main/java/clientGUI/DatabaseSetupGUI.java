@@ -7,7 +7,6 @@ import java.awt.*;
 
 import backend.SQL;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
@@ -17,7 +16,7 @@ import java.sql.SQLException;
  */
 
 //TODO Edit filereference before deployement
-    public class DatabaseResetGUI extends JDialog{
+    public class DatabaseSetupGUI extends JDialog{
     private JCheckBox checkTables;
     private JCheckBox checkRandomData;
     private JCheckBox checkOverWriteTables;
@@ -25,13 +24,13 @@ import java.sql.SQLException;
     private JTextPane helpText;
 
 
-    public DatabaseResetGUI(){
+    public DatabaseSetupGUI(){
         reset = new SQLScriptReader();
         setVisible(true);
 
             //window parameters
             setTitle("Database Setup");
-            setLayout(new GridLayout(5, 1));
+            setLayout(new GridLayout(7, 1));
             Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
             double x = (double) screen.width * 0.25;
             double y = (double) screen.height * 0.6;
@@ -42,8 +41,11 @@ import java.sql.SQLException;
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
             //Create label, textfield and center their text.
+
             helpText = new JTextPane();
-            helpText.setText("WARNING: THESE SETTINGS MAY GIVE DATALOSS IF NOT USED CORRECTLY");
+            helpText.setText("WARNING: THESE SETTINGS MAY GIVE DATALOSS IF NOT USED CORRECTLY \n" +
+                    "Hover over for more info \n" +
+                    "Use default settings if unsure");
             helpText.setEnabled(false);
             helpText.setAlignmentX(100);
             helpText.setDisabledTextColor(Color.red);
@@ -51,20 +53,38 @@ import java.sql.SQLException;
             helpText.setFont(new Font("Courier New", Font.ITALIC, 15));
             add(helpText);
 
+            //Labels
+            JLabel safeLabel = new JLabel("Data should be safe:", SwingConstants.LEFT);
+            safeLabel.setFont(new Font("Ariel", Font.BOLD, 15));
+            JLabel unsafeLabel = new JLabel("Data will be lost:", SwingConstants.LEFT);
+            unsafeLabel.setFont(new Font("Ariel", Font.BOLD, 15));
+
             //Checkboxes
-            checkTables = new JCheckBox("Create/fix DB structure (data safe)");
+            checkTables = new JCheckBox("Recreate/Fix DB structure");
             checkTables.setToolTipText("Creates missing tables/views required by this software");
             checkTables.setSelected(true);
+
 
             checkOverWriteTables = new JCheckBox("Drop all data and create DB structure");
             checkOverWriteTables.setToolTipText("Drops any existing tables/views, then creates DB structure");
             checkOverWriteTables.setSelected(false);
+            checkOverWriteTables.addItemListener(ie -> {
+                if (checkOverWriteTables.isSelected()) {
+                    checkRandomData.setEnabled(true);
+                } else {
+                    checkRandomData.setEnabled(false);
+                    checkRandomData.setSelected(false);
+                }
+            });
 
-            checkRandomData = new JCheckBox("Fill DB with random data");
+            checkRandomData = new JCheckBox("Fill with test data (only when dropping data)");
             checkRandomData.setToolTipText("Adds random entries, for testing purposes");
             checkRandomData.setSelected(false);
+            checkRandomData.setEnabled(false);
 
+            add(safeLabel);
             add(checkTables);
+            add(unsafeLabel);
             add(checkOverWriteTables);
             add(checkRandomData);
 
@@ -92,18 +112,19 @@ import java.sql.SQLException;
                 String path;
                 if (checkOverWriteTables.isSelected()) {
                     path = "sqlscripts/tables.sql";
-                    reset.resetDatabaseWithScript(path);
+                    reset.runDatabaseScript(path);
+                    if (checkRandomData.isSelected()) {
+                        path = "sqlscripts/randomdata.sql";
+                        reset.runDatabaseScript(path);
+                    }
                 } else {
                     path = "sqlscripts/tables_nooverwrite.sql";
-                    reset.resetDatabaseWithScript(path);
+                    reset.runDatabaseScript(path);
                 }
                 path = "sqlscripts/views.sql";
-                reset.resetDatabaseWithScript(path);
+                reset.runDatabaseScript(path);
             }
-            if (checkRandomData.isSelected()) {
-                String path = "sqlscripts/randomdata.sql";
-                reset.resetDatabaseWithScript(path);
-            }
+
             sql.connection.commit();
             helpText.setDisabledTextColor(new Color(0, 102, 0));
             helpText.setText("Database operation successful.");
@@ -126,7 +147,7 @@ import java.sql.SQLException;
     }
 
     public static void main(String[] args){
-            DatabaseResetGUI frame = new DatabaseResetGUI();
+            DatabaseSetupGUI frame = new DatabaseSetupGUI();
             frame.setVisible(true);
         }
 }

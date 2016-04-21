@@ -1,6 +1,8 @@
 package backend;
 
 import java.awt.*;
+import java.time.LocalDate;
+
 import clientGUI.JTableHCL;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -96,12 +98,17 @@ public class MyJFreeChart extends JPanel {
         String[][] statTable = {
                 {"Gross Income",Integer.toString(stats.getGrossIncome())+"kr"},
                 {"Total Orders",Integer.toString(stats.getTotalOrders())},
+                {"Total Deliveries Today",Integer.toString(stats.getDeliveriesToday())},
                 {"Total Subscriptions",Integer.toString(stats.getTotalSubscriptions())},
                 {"Average Orders Per Month This Year",String.format("%.5s",Double.toString(stats.getAvgOrdersPerMonthThisYear()))},
                 {"Popular Food All Time",stats.getAllTimePopularFood()},
-                {"Popular Ingredient All Time ",stats.getAllTimePopularIngredient()}
+                {"Popular Food This Month",stats.getMonthlyPopularFood()},
+                {"Popular Ingredient All Time",stats.getAllTimePopularIngredient()},
+                {"Popular Ingredient This Month",stats.getMonthlyPopularIngredient()},
+                {"Number Of Customers",Integer.toString(stats.getNumberOfCustomers())},
+                {"Biggest Customer",stats.getBiggestCustomer()},
+                {"Biggest Customer This Month",stats.getBiggestCustomerThisMonth()}
         };
-        // 2 Stats til, der du må skrive inn
 
         DefaultTableModel model = new DefaultTableModel(statTable,names);
 
@@ -154,7 +161,6 @@ public class MyJFreeChart extends JPanel {
         centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
 
         westPanel.add(getStats());
-        westPanel.setPreferredSize(new Dimension(500,122));
         //
         panel.add(westPanel,BorderLayout.WEST);
         panel.add(centerPanel,BorderLayout.CENTER);

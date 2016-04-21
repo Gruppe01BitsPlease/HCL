@@ -1,23 +1,30 @@
 package clientGUI;
 
+import backend.LinkManager;
 import backend.SQL;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.time.LocalDate;
+import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * Created by Jens on 15-Apr-16.
  */
 abstract class Stuff {
-	public static Dimension getEditBoxSize() {
-		Dimension dim = new Dimension((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.3));
+	//Used to size a window relative to the main window, which is sized relative to the screen
+	public static Dimension getWindowSize(double factorX, double factorY) {
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+		int x = (int) (screen.width * 0.75);
+		int y = (int) (screen.height * 0.75);
+		Dimension dim = new Dimension((int) (x * factorX), (int) (y * factorY));
 		return dim;
 	}
 	//Finds the index in the list from a search key
@@ -61,9 +68,17 @@ abstract class Stuff {
 class datePane extends JPanel {
 	JComboBox<String> yearBox;
 	JComboBox<String> monthBox;
+	JComboBox<Integer> dayBox;
 	JTextField dayField;
-	public datePane(String date) {
+	LocalDate date;
+	public datePane(String dateInput) {
 		//2014-01-31
+		if (dateInput != null) {
+			date = LocalDate.parse(dateInput);
+		}
+		else {
+			date = LocalDate.now();
+		}
 		String[] years = new String[5];
 		LocalDate now = LocalDate.now();
 		int year = now.getYear();
@@ -71,69 +86,97 @@ class datePane extends JPanel {
 			years[i] = Integer.toString(year + i);
 		}
 		yearBox = new JComboBox<>(years);
+		Integer[][] daysOfMonths = new Integer[12][];
+		for (int i = 0; i < daysOfMonths.length; i++) {
+			int yearSel = Integer.parseInt((String)(yearBox.getSelectedItem()));
+			LocalDate date = LocalDate.of(yearSel, i+1, 1);
+			daysOfMonths[i] = new Integer[date.getMonth().maxLength()];
+			for (int j = 0; j < daysOfMonths[i].length; j++) {
+				daysOfMonths[i][j] = j + 1;
+			}
+		}
 		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
 		monthBox = new JComboBox<>(months);
-		setLayout(new GridLayout(1, 3));
-		if (date != null && !(date.equals(""))) {
-			if (date.length() == 10) {
-				String selyear = date.substring(0, 4);
-				if (Integer.parseInt(selyear) < year) {
-					yearBox.addItem(selyear);
+		dayBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex() + 1]);
+		yearBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				for (int i = 0; i < daysOfMonths.length; i++) {
+					daysOfMonths[i] = new Integer[LocalDate.of(Integer.parseInt((String) yearBox.getSelectedItem()), i + 1, 1).getMonth().maxLength()];
+					for (int j = 0; j < daysOfMonths[i].length; j++) {
+						daysOfMonths[i][j] = j + 1;
+					}
 				}
-				yearBox.setSelectedItem(selyear);
-				//System.out.println(year.getText());
-				int selmonth = Integer.parseInt(date.substring(5, 7));
-				monthBox.setSelectedIndex(selmonth - 1);
-				//System.out.println(month.getText());
-				dayField = new JTextField(date.substring(8, 10));
-				//System.out.println(day.getText());
 			}
-			else {
-				System.out.println("Date format is wrong! GenericList.datePane");
+		});
+		monthBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				JComboBox<Integer> newBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex()]);
+				dayBox.setModel(newBox.getModel());
 			}
+		});
+
+		setLayout(new GridLayout(1, 3));
+		if (date != null) {
+			String selyear = Integer.toString(date.get(YEAR));
+			if (Integer.parseInt(selyear) < year) {
+				yearBox.addItem(selyear);
+			}
+			yearBox.setSelectedItem(selyear);
+			//System.out.println(year.getText());
+			int selmonth = date.getMonthValue();
+			monthBox.setSelectedIndex(selmonth - 1);
+			//System.out.println(month.getText());
+			int selday = date.getDayOfMonth();
+			dayBox.setSelectedIndex(selday - 1);
+			//System.out.println(day.getText());
+			System.out.println(selyear + " " + selmonth);
 		}
 		else {
 			dayField = new JTextField("");
 		}
 		add(yearBox);
 		add(monthBox);
-		add(dayField);
-	}
-	public datePane() {
-		//2014-01-31
-		String[] years = new String[5];
-		LocalDate now = LocalDate.now();
-		int year = now.getYear();
-		for (int i = 0; i < years.length; i++) {
-			years[i] = Integer.toString(year + i);
-		}
-		yearBox = new JComboBox<>(years);
-		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
-		monthBox = new JComboBox<>(months);
-		setLayout(new GridLayout(1, 3));
-		dayField = new JTextField("");
-		add(yearBox);
-		add(monthBox);
-		add(dayField);
+		add(dayBox);
+		//add(dayField);
 	}
 	public String getDate() {
-		String year = (String) yearBox.getSelectedItem();
+		String year = ((String)(yearBox.getSelectedItem()));
 		String month = Integer.toString(monthBox.getSelectedIndex() + 1);
-		String day = dayField.getText();
 		if (month.length() < 2) {
-			String foo = "0";
-			foo += month;
-			month = foo;
+			month = "0" + month;
+		}
+		String day = Integer.toString((Integer)dayBox.getSelectedItem());
+		if (day.length() < 2) {
+			day = "0" + day;
 		}
 		return year + "-" + month + "-" + day;
 	}
-	public void setDate(String date) {
-		String year = (date.substring(0, 4));
-		String month = (date.substring(5, 7));
-		String day = (date.substring(8, 10));
-		yearBox.setSelectedItem(year);
-		monthBox.setSelectedIndex(Integer.parseInt(month) - 1);
-		dayField.setText(day);
+	public String getYear() {
+		return (String) yearBox.getSelectedItem();
+	}
+	public String getMonth() {
+		return Integer.toString(monthBox.getSelectedIndex() + 1);
+	}
+	public String getDay() {
+		return Integer.toString((Integer)dayBox.getSelectedItem());
+	}
+	public void addDays(int days) {
+		LocalDate neue = date.plusDays(days);
+		date = neue;
+		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
+	}
+	public void addMonths(int months) {
+		LocalDate neue = date.plusMonths(months);
+		date = neue;
+		monthBox.setSelectedIndex(date.getMonthValue() - 1);
+	}
+	public void setDate(String dateIn) {
+		date = LocalDate.parse(dateIn);
+		yearBox.setSelectedItem(date.getYear());
+		monthBox.setSelectedIndex(date.getMonthValue() - 1);
+		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
 	}
 	public void setEnabled(boolean enable) {
 		yearBox.setEnabled(enable);
@@ -156,8 +199,7 @@ class editFields extends JPanel {
 		if (FKs != null && FKs.length > 0) {
 			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
 		}
-		int length = selected.length + 1;
-		setLayout(new GridLayout(length, 2));
+		setLayout(new GridLayout(10, 2));
 		//setSize((int) (x * 0.5), (int) (length * 0.01));
 		for (int i = 0; i < dataTypes.length; i++) {
 			if (dataTypes[i].equals("boolean")) {
@@ -187,7 +229,7 @@ class editFields extends JPanel {
 				add(j);
 				add(k);
 			} else if (dataTypes[i].contains("SELECT")) {
-				JLabel j = new JLabel(titles[i]);
+				JLabel j = new JLabel("Customer");
 				String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 				comboBoxChoices = choices;
 				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
@@ -246,42 +288,6 @@ class editFields extends JPanel {
 		}
 		return newValues;
 	}
-	/*public void update() {
-		String[] newValues = getNewValues();
-		if (!newEntry) {
-			for (int i = 1; i < newValues.length; i++) {
-				if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
-					if (dataTypes[i].equals("boolean")) {
-						if (newValues[i].equals("true")) {
-							boolean update = true;
-							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-						} else if (newValues[i].equals("false")) {
-							boolean update = false;
-							sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
-						} else {
-							System.out.println("ERROR NO BOOLEAN VALUE");
-						}
-					} else {
-						sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
-					}
-				}
-			}
-		} else if (newEntry) {
-			if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
-				int res = GenericList.this.generate(newValues);
-				if (res == -2) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "Database Error!");
-				} else if (res == -3) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is a problem with one of the parameters.");
-				} else if (res == -4) {
-					JOptionPane.showMessageDialog(GenericList.editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
-				}
-				//System.out.println(res);
-			} else {
-				JOptionPane.showMessageDialog(GenericList.editWindow.this, "Entry already exists! Choose a different ID number.");
-			}
-		}
-	}*/
 }
 class linkTab extends JPanel {
 	private ArrayList<int[]> removeLinks = new ArrayList<>();
@@ -299,13 +305,19 @@ class linkTab extends JPanel {
 	private String[] link;
 	private int selectedID;
 	private String primaryColumn;
-	//Link = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
-	public linkTab(String[] link, String primaryColumn, int selectedID, SQL sql) {
+	private boolean newEntry;
+	public linkTab(String[] link, String primaryColumn, int selectedID, SQL sql, boolean newEntry) {
+		this.newEntry = newEntry;
 		this.primaryColumn = primaryColumn;
 		this.sql = sql;
 		this.link = link;
 		this.selectedID = selectedID;
-		this.linkQuery = "SELECT " + link[1] + ", " + link[4] + ", number FROM " + link[2] + " NATURAL JOIN " + link[3] + " WHERE " + primaryColumn + " = " + selectedID;
+		//Link = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
+		//SELECT HCL_ingredient.ingredient_id, name, number FROM HCL_ingredient JOIN HCL_food_ingredient ON
+		// (HCL_ingredient.ingredient_id = HCL_food_ingredient.ingredient_id) WHERE food_id =200;
+		this.linkQuery = "SELECT " + link[3] + "." + link[1] +  ", " + link[4] + ", number FROM " + link[2] + " " +
+				"JOIN " + link[3] + " ON (" + link[3] + "." + link[1] + " = " + link[2] + "." + link[1] + ") WHERE " +
+				primaryColumn + " = " + selectedID + " AND " + link[2] + ".active = 1";
 		System.out.println("Link query: " + linkQuery);
 		titles = ColumnNamer.getNamesWithOriginals(linkQuery, sql);
 		setLayout(new BorderLayout());
@@ -388,7 +400,7 @@ class linkTab extends JPanel {
 	}
 	class inputBox extends JFrame {
 		public inputBox(String[] selectedLink, boolean newLink) {
-			setSize((int) (GenericList.x * 0.3), (int) (GenericList.y * 0.2));
+			setSize(Stuff.getWindowSize(0.3, 0.2));
 			setLayout(new GridLayout(3, 2));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
@@ -396,13 +408,9 @@ class linkTab extends JPanel {
 			JLabel amountLabel = new JLabel("Amount");
 			String[] foo2 = new String[0];
 			JComboBox<String> inpTemp = new JComboBox<>();
-			//Gets choices and IDs for dropdown linkTable
-			//linkTables = "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name"
-			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] +
-					" FROM " + link[3] + " NATURAL JOIN " + link[2] +
-					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] +
-					" FROM " + link[2] + " WHERE " + primaryColumn +
-					" = " + selectedID + " AND active = 1) AND " + link[3] + ".active = 1";
+			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] + " FROM " + link[3] +
+					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] + " FROM " + link[2]
+					+ " WHERE " + primaryColumn + " = " + selectedID + " AND active = 1) AND " + link[3] + ".active = 1";
 			System.out.println("Choice query: \n\t" + choiceQuery);
 			String[] choice = sql.getColumn(choiceQuery, 1);
 			JTextField amount = new JTextField();
@@ -491,13 +499,78 @@ class linkTab extends JPanel {
 	public ArrayList<int[]> getRemoveLinks() {
 		return removeLinks;
 	}
-	public ArrayList<String[]> getAddedLinks() {
-		return addedLinks;
-	}
 	public ArrayList<int[]> getCreateLinks() {
 		return createLinks;
 	}
 	public ArrayList<int[]> getChangeLinks() {
 		return changeLinks;
+	}
+	public void generate() {
+		if (removeLinks.size() > 0) {
+			LinkManager linkMng = new LinkManager(sql);
+			boolean added = false;
+			for (int[] i : removeLinks) {
+				for (int[] add : createLinks) {
+					if (add[1] == i[1]) {
+						added = true;
+					}
+				}
+				if (!added) {
+					int a = linkMng.delete(link[2], primaryColumn, link[1], selectedID, i[1]);
+					System.out.println("Remove link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1]);
+					System.out.println("Delete result :" + a);
+				}
+				else {
+					System.out.println("Created this session!");
+				}
+			}
+		}
+		int pk = sql.getLastID();
+		System.out.println("New primary key: " + pk);
+		if (createLinks.size() > 0) {
+			//Saves to link tables if links have been created
+			LinkManager linkMng = new LinkManager(sql);
+			System.out.println("Add link: " + Arrays.toString(createLinks.get(0)));
+			if (newEntry) {
+				System.out.println("NEW LINK NEW ENTRY!");
+				for (int[] i : createLinks) {
+					boolean deleted = false;
+					for (int[] del : removeLinks) {
+						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
+						if (del[1] == i[1]) {
+							deleted = true;
+						}
+					}
+					if (!deleted) {
+						linkMng.generate(link[2], primaryColumn, link[1], pk, i[1], i[2]);
+						System.out.println("Create link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + pk + " - " + i[1] + " - " + i[2]);
+					}
+				}
+			} else {
+				for (int[] i : createLinks) {
+					boolean deleted = false;
+					for (int[] del : removeLinks) {
+						System.out.println("ARRAYS!\n" + Arrays.toString(del) + "\n" + Arrays.toString(i));
+						if (del[1] == i[1]) {
+							deleted = true;
+						}
+					}
+					if (!deleted) {
+						linkMng.generate(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+						System.out.println("Create link: " + link[2] + " - " + primaryColumn + " - " + link[1] + " - " + selectedID + " - " + i[1] + " - " + i[2]);
+					}
+
+				}
+			}
+		}
+		if (changeLinks.size() > 0) {
+			//Changes link tables if needed
+			LinkManager linkMng = new LinkManager(sql);
+			System.out.println("Changelink: " + Arrays.toString(changeLinks.get(0)));
+			//int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
+			for (int[] i : changeLinks) {
+				linkMng.editNumber(link[2], primaryColumn, link[1], selectedID, i[1], i[2]);
+			}
+		}
 	}
 }
