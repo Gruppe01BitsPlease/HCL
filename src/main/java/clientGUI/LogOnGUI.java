@@ -42,9 +42,7 @@ public class LogOnGUI extends JFrame{
 		//buttons and their action for buttonpanel
 		JButton LogOn = new JButton("LogOn");
 		JButton exit = new JButton("Exit");
-		exit.addActionListener((pressed) -> {
-			dispose();
-		});
+		exit.addActionListener((pressed) -> dispose());
 		Action enterpass = new AbstractAction() {
 			public void actionPerformed(ActionEvent pressed) {
 				//ENTERING ADMIN & ADMIN WILL GET ACCESS FOR TESTING!!!!! TODO: Remove that before release

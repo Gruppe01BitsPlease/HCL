@@ -16,11 +16,10 @@ public class tabbedMenu extends JFrame {
 	private int x;
 	private int y;
 	private static JTabbedPane tabs;
-	private static boolean searchAdded;
 	private int rolle;
 
 	public tabbedMenu(int rolle, String username) throws Exception {
-		searchAdded = false;
+		boolean searchAdded = false;
 		sql = new SQL();
 		this.rolle = rolle;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);

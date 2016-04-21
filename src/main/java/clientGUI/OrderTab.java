@@ -181,9 +181,7 @@ class OrderTab extends GenericList {
                     foodTab.generate();
                     refresh();
                 });
-                cancel.addActionListener(e->{
-                        dispose();
-                });
+                cancel.addActionListener(e-> dispose());
 
                 add(save);
                 add(cancel);
@@ -266,9 +264,7 @@ class OrderTab extends GenericList {
                         subTable.setModel(subModel);
                         subTable.removeIDs();
                 });
-                cancel.addActionListener(e->{
-                        dispose();
-                });
+                cancel.addActionListener(e-> dispose());
                 add(save);
                 add(cancel);
                 setSize(Stuff.getWindowSize(0.3, 0.3));
