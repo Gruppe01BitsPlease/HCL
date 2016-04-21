@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 
 /**
  * Created by Jens on 18-Apr-16.
@@ -29,20 +30,19 @@ public class ChefTab extends JPanel {
 		titles = ColumnNamer.getNames(query, sql);
 		tabModel = new DefaultTableModel(data, titles);
 		table = new JTableHCL(tabModel);
+		JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 		JScrollPane scroller = new JScrollPane(table);
-		add(scroller, BorderLayout.CENTER);
+		centerPanel.add(scroller);
+		//JTabbedPane bottomTabs = new JTabbedPane();
+		viewVindow bottom = new viewVindow(Integer.parseInt((String)table.getValueAt(0, 0)));
+		centerPanel.add(bottom);
+		add(centerPanel, BorderLayout.CENTER);
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				viewVindow bottom = null;
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
-					if (bottom != null) {
-						remove(bottom);
-					}
-					bottom = new viewVindow(Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0)));
-					add(bottom, BorderLayout.SOUTH);
-					ChefTab.this.revalidate();
+					bottom.change(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
 				}
 			}
 		});
@@ -91,9 +91,12 @@ public class ChefTab extends JPanel {
 		}
 	}
 	private class viewVindow extends JPanel {
-		private int date_id;
+		private DefaultTableModel tabModel;
+		private JTableHCL tabTable;
+		private String[][] tabTitles;
+		private JTabbedPane ingredientTabs;
+		private ingredientTab ingrTab;
 		public viewVindow(int delivery_id) {
-			this.date_id = delivery_id;
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
 			String foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
@@ -105,7 +108,8 @@ public class ChefTab extends JPanel {
 			System.out.println("Ingredients query: " + ingrQuery);
 			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
 			String[] tabTitles = sql.getColumn(ingrQuery, 1);
-			tabs.addTab("Ingredients", new ingredientTab(FoodIDs, tabTitles));
+			ingrTab = new ingredientTab(FoodIDs, tabTitles);
+			tabs.addTab("Ingredients", ingrTab);
 			add(tabs, BorderLayout.CENTER);
 			JButton finish = new JButton("Complete delivery");
 			finish.addActionListener(new AbstractAction() {
@@ -127,10 +131,10 @@ public class ChefTab extends JPanel {
 				String tabQuery = query;
 				System.out.println("Chef view ingredient query:\t" + tabQuery);
 				System.out.println(tabQuery);
-				String[][] tabTitles = ColumnNamer.getNamesWithOriginals(tabQuery,sql);
+				tabTitles = ColumnNamer.getNamesWithOriginals(tabQuery,sql);
 				String[][] tabData = sql.getStringTable(tabQuery, false);
-				DefaultTableModel tabModel = new DefaultTableModel(tabData, tabTitles[1]);
-				JTableHCL tabTable = new JTableHCL(tabModel);
+				tabModel = new DefaultTableModel(tabData, tabTitles[1]);
+				tabTable = new JTableHCL(tabModel);
 				JScrollPane scroll = new JScrollPane(tabTable);
 				add(scroll, BorderLayout.CENTER);
 				tabTable.removeIDs();
@@ -139,11 +143,17 @@ public class ChefTab extends JPanel {
 		class ingredientTab extends JPanel {
 			public ingredientTab(String[] IDs, String[] tabTitles) {
 				setLayout(new BorderLayout());
-				JTabbedPane tabs = new JTabbedPane();
+				ingredientTabs = new JTabbedPane();
 				for (int i = 0; i < IDs.length; i++) {
-					tabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
+					ingredientTabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
 				}
-				add(tabs, BorderLayout.CENTER);
+				add(ingredientTabs, BorderLayout.CENTER);
+			}
+			public void refresh(String[] IDs, String[] tabTitles) {
+				ingredientTabs.removeAll();
+				for (int i = 0; i < IDs.length; i++) {
+					ingredientTabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
+				}
 			}
 		}
 		class ingredientList extends JPanel {
@@ -158,6 +168,22 @@ public class ChefTab extends JPanel {
 				JScrollPane scroll = new JScrollPane(table);
 				add(scroll, BorderLayout.CENTER);
 			}
+		}
+		public void change(int id) {
+			String select = "SELECT food_id, name, number FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
+					" WHERE delivery_id = " + id;
+			String ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
+					"HCL_deliveries WHERE delivery_id = " + id;
+			System.out.println("Ingredients query: " + ingrQuery);
+			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
+			String[] ingrTabTitles = sql.getColumn(ingrQuery, 1);
+			System.out.println("Food ids: " + Arrays.toString(FoodIDs));
+			System.out.println("Tab titles: " + Arrays.toString(ingrTabTitles));
+			String[][] tabData = sql.getStringTable(select, false);
+			tabModel = new DefaultTableModel(tabData, tabTitles[1]);
+			ingrTab.refresh(FoodIDs, ingrTabTitles);
+			tabTable.setModel(tabModel);
+			tabTable.removeIDs();
 		}
 	}
 }
