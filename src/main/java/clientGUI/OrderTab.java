@@ -122,8 +122,12 @@ class OrderTab extends GenericList {
                     del.addActionListener(e-> {
                             int[] sel = subTable.getSelectedRows();
                             for (int i = 0; i < sel.length; i++) {
-                                String value = Stuff.setGrey() + subModel.getValueAt(sel[i], 2) + Stuff.endGrey();
-                                subModel.setValueAt(value, sel[i], 2);
+                                for (int j = 0; j < subModel.getColumnCount(); j++) {
+                                    if (subModel.getValueAt(sel[i], j) != null) {
+                                        String value = Stuff.setGrey() + subModel.getValueAt(sel[i], j) + Stuff.endGrey();
+                                        subModel.setValueAt(value, sel[i], j);
+                                    }
+                                }
                                 deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                             }
                             subTable.setModel(subModel);
@@ -139,44 +143,42 @@ class OrderTab extends GenericList {
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
                 save.addActionListener( e-> {
-
-                        String[] newValues = editFields.getNewValues();
-                        if (newOrder) {
-                            order_id = generate(newValues);
-                        }
-                        System.out.println("New values: " + Arrays.toString(newValues));
-                        System.out.println("Selected original: " + Arrays.toString(selected));
-                        if (!newOrder) {
-                            for (int i = 0; i < newValues.length; i++) {
-                                if (!(newValues[i].equals(selected[i]))) {
-                                    sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
-                                }
+                    String[] newValues = editFields.getNewValues();
+                    if (newOrder) {
+                        order_id = generate(newValues);
+                    }
+                    System.out.println("New values: " + Arrays.toString(newValues));
+                    System.out.println("Selected original: " + Arrays.toString(selected));
+                    if (!newOrder) {
+                        for (int i = 0; i < newValues.length; i++) {
+                            if (!(newValues[i].equals(selected[i]))) {
+                                sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
                             }
                         }
-                        DeliveryManager mng = new DeliveryManager(sql);
-                        int removeResult = 0;
-                        if (deletedDates.size() > 0) {
-                            for (String date : deletedDates) {
-                                System.out.println(date);
-                                removeResult = mng.removeDate(Integer.parseInt(date));
-                            }
+                    }
+                    DeliveryManager mng = new DeliveryManager(sql);
+                    int removeResult = 0;
+                    int addResult = 0;
+                    for (int i = 0; i < dateArray.length; i++) {
+                        System.out.println("Date: " + dateArray[i][2]);
+                        String value = (String)subModel.getValueAt(i,2);
+                        if (value.contains(Stuff.setBold())) {
+                            addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
                         }
-                        int addResult = 0;
-                        if (addedDates.size() > 0) {
-                            for (String date : addedDates) {
-                                System.out.println(order_id + ", adding date " + date);
-                                addResult = mng.addDate(order_id, date);
-                            }
+                        if (value.contains(Stuff.setGrey())) {
+                            //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
+                            removeResult = mng.removeDate(Integer.parseInt(dateArray[i][0]));
                         }
-                        if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
-                            JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
-                            System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
-                        }
-                        else {
-                            dispose();
-                        }
-                        foodTab.generate();
-                        refresh();
+                    }
+                    /*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
+                        JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
+                        System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
+                    }*/
+                    //else {
+                        dispose();
+                    //}
+                    foodTab.generate();
+                    refresh();
                 });
                 cancel.addActionListener(e->{
                         dispose();
@@ -191,7 +193,7 @@ class OrderTab extends GenericList {
             private JComboBox<String> numberBox;
             private datePane pane;
             public editBox() {
-                setLayout(new GridLayout(10, 2));
+                setLayout(new GridLayout(4, 2));
                 pane = new datePane(null);
                 JLabel dateLabel = new JLabel("Date");
                 JLabel intervalLabel = new JLabel("Interval");
@@ -209,7 +211,6 @@ class OrderTab extends GenericList {
                 add(numberBox);
                 numberBox.setEnabled(false);
                 intervalBox.addItemListener(e->{
-
                         if (!(intervalBox.getSelectedItem().equals("Single"))) {
                             numberBox.setEnabled(true);
                             dateLabel.setText("First date");
