@@ -51,7 +51,7 @@ class EmployeeTab extends GenericList {
 			ret = mng.delete(userName);
 		}
 		else {
-			JOptionPane.showMessageDialog(EmployeeTab.this, "You do not have permission to delete users!");
+			JOptionPane.showMessageDialog(EmployeeTab.this, "You do not have permission to delete users");
 		}
 		return ret;
 	}

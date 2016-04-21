@@ -35,8 +35,7 @@ class IngredientTab extends GenericList {
 		catch (Exception e) {
 			System.out.println("generate() error: " + e.getMessage());
 		}
-		int res = mng.generate(args[1], stock, pprice, nuts, gluten, lactose, args[7], args[8], args[9]);
-		return res;
+		return mng.generate(args[1], stock, pprice, nuts, gluten, lactose, args[7], args[8], args[9]);
 	}
 	public int delete(int nr) {
 		IngredientManager mng = new IngredientManager(sql);

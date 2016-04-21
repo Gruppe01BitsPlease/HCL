@@ -90,7 +90,12 @@ class GenericList extends JPanel {
 		return role;
 	}
 	public int getSelectedID() {
-		return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
+		if (scroll.isVisible()) {
+			return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
+		}
+		else {
+			return Integer.parseInt((String) searchList.getValueAt(searchList.getSelectedRow(), 0));
+		}
 	}
 	class cardTable extends JPanel {
 		public cardTable() {
@@ -120,10 +125,8 @@ class GenericList extends JPanel {
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
 			System.out.println("REFRESH");
-			if (searchEnabled) {
-				ActionEvent act = new ActionEvent(this, 0, "");
-				searchPress.actionPerformed(act);
-			}
+			ActionEvent act = new ActionEvent(this, 0, "");
+			searchPress.actionPerformed(act);
 			list.removeIDs();
 			if (sortColumn != -1) {
 				list.setSortColumn(sortColumn);
@@ -312,7 +315,6 @@ class GenericList extends JPanel {
 		}
 	}
     class GenericSearch extends JPanel {
-        //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;
         public GenericSearch() {
 			buttonPanel panel = new buttonPanel();
@@ -324,11 +326,9 @@ class GenericList extends JPanel {
 			add(panel, BorderLayout.EAST);
         }
 		private class buttonPanel extends JPanel {
-			Action toggleSearch;
 			public buttonPanel() {
 				setLayout(new GridLayout(1, 2));
 				JButton searcher = new JButton("Search");
-				JButton closeSearch = new JButton("Close search");
 				searchPress = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -336,11 +336,11 @@ class GenericList extends JPanel {
 							cardLayout.show(cards, scrollName);
 						}
 						else {
-							ArrayList<Integer> rowAdded = new ArrayList<Integer>();
+							ArrayList<Integer> rowAdded = new ArrayList<>();
 							searchTable = new String[table.length][table[0].length];
 							ArrayList<String[]> searchArray = new ArrayList<>();
 							for (int i = 0; i < table.length; i++) {
-								for (int j = 0; j < table[i].length; j++) {
+								for (int j = 1; j < table[i].length; j++) {
 									if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
 										int k = 0;
 										boolean added = false;
@@ -382,29 +382,10 @@ class GenericList extends JPanel {
 								JScrollPane searchScroll = new JScrollPane(searchList);
 								cards.add(searchScroll, searchName);
 								cardLayout.show(cards, searchName);
-								//toggleSearch.actionPerformed(e);
 							}
 						}
 					}
 				};
-				/*toggleSearch = new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if (!searchEnabled) {
-							add(closeSearch);
-						}
-						else if (searchEnabled) {
-							remove(closeSearch);
-						}
-					}
-				};*/
-				/*closeSearch.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cardLayout.show(cards, scrollName);
-					}
-				});*/
-				//add(closeSearch);
 				searcher.addActionListener(searchPress);
 				add(searcher);
 			}

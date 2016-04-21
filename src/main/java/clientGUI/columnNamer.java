@@ -16,8 +16,7 @@ abstract class ColumnNamer {
 		System.out.println(Arrays.toString(one));
 		String[] two = getNames(query, sql);
 		System.out.println(Arrays.toString(two));
-		String[][] ret = { one, two };
-		return ret;
+		return new String[][]{ one, two };
 	}
 	public static String getName(String sqlName) {
 		String[] tab = { sqlName };

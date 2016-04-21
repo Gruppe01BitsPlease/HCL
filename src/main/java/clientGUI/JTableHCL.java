@@ -12,11 +12,11 @@ import javax.swing.table.TableModel;
 public class JTableHCL extends JTable {
 
 	private TableModel tabModel;
-	private TableColumnModel mod;
+
 	public JTableHCL(TableModel model) {
 		super(model);
 		tabModel = this.getModel();
-		mod = this.getColumnModel();
+		TableColumnModel mod = this.getColumnModel();
 		this.setAutoCreateRowSorter(true);
 	}
 	public boolean isCellEditable(int row, int column) {
