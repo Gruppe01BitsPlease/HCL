@@ -87,6 +87,9 @@ class GenericList extends JPanel {
 	public int getRole() {
 		return role;
 	}
+	public int getSelectedID() {
+		return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
+	}
 	class cardTable extends JPanel {
 		public cardTable() {
 			cardLayout = new CardLayout();
@@ -249,14 +252,6 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
-							ArrayList<int[]> removeLinks = new ArrayList<>();
-							ArrayList<int[]> createLinks = new ArrayList<>();
-							ArrayList<int[]> changeLinks = new ArrayList<>();
-							for (linkTab tab : linkTabs) {
-								removeLinks.addAll(tab.getRemoveLinks());
-								createLinks.addAll(tab.getCreateLinks());
-								changeLinks.addAll(tab.getChangeLinks());
-							}
 							//fields = editFields.getFields();
 							String[] newValues = editFields.getNewValues();
 							if (!newEntry) {

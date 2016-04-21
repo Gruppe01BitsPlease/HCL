@@ -203,7 +203,7 @@ class OrderTab extends GenericList {
             private JComboBox<String> numberBox;
             private datePane pane;
             public editBox() {
-                setLayout(new GridLayout(4, 2));
+                setLayout(new GridLayout(10, 2));
                 pane = new datePane(null);
                 JLabel dateLabel = new JLabel("Date");
                 JLabel intervalLabel = new JLabel("Interval");

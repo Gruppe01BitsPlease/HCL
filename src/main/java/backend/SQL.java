@@ -288,7 +288,7 @@ public class SQL {
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
 
 		try {
-			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ? AND active = 1;";
+			String sqlPrep = "Select * from " + table + " where "+PK1+" = ? AND "+PK2+" = ?;";
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 

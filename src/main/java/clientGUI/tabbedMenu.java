@@ -13,52 +13,66 @@ import java.util.Arrays;
  * Created by Jens on 14.03.2016.
  */
 public class tabbedMenu extends JFrame {
-    private SQL sql;
-    //X and Y is the size of the main menu window, other windows should be scaled according to this value
+	private SQL sql;
+	//X and Y is the size of the main menu window, other windows should be scaled according to this value
 	private int x;
 	private int y;
 	private static JTabbedPane tabs;
 	private static boolean searchAdded;
 	private int rolle;
-	public tabbedMenu (int rolle, String username) throws Exception {
+
+	public tabbedMenu(int rolle, String username) throws Exception {
 		searchAdded = false;
 		sql = new SQL();
 		this.rolle = rolle;
-        setTitle("Bits Please HCL System 0.5 - User: " + username);
+		setTitle("Bits Please HCL System 0.5 - User: " + username);
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image);
-        setLayout(new BorderLayout());
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new BorderLayout());
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowListener() {
 			@Override
-			public void windowOpened(WindowEvent e) {}
+			public void windowOpened(WindowEvent e) {
+			}
+
 			@Override
 			public void windowClosing(WindowEvent e) {
 				System.out.println("Closing connection");
 				sql.end();
 				System.exit(0);
 			}
+
 			@Override
-			public void windowClosed(WindowEvent e) {}
+			public void windowClosed(WindowEvent e) {
+			}
+
 			@Override
-			public void windowIconified(WindowEvent e) {}
+			public void windowIconified(WindowEvent e) {
+			}
+
 			@Override
-			public void windowDeiconified(WindowEvent e) {}
+			public void windowDeiconified(WindowEvent e) {
+			}
+
 			@Override
-			public void windowActivated(WindowEvent e) {}
+			public void windowActivated(WindowEvent e) {
+			}
+
 			@Override
-			public void windowDeactivated(WindowEvent e) {}
+			public void windowDeactivated(WindowEvent e) {
+			}
 		});
-		setMinimumSize(Stuff.getWindowSize(1,1));
-        setLocationRelativeTo(null);
-        setResizable(true);
-        tabs = new JTabbedPane();
+		setMinimumSize(Stuff.getWindowSize(1, 1));
+		setLocationRelativeTo(null);
+		setResizable(true);
+		tabs = new JTabbedPane();
 		addTabs();
 		add(tabs, BorderLayout.CENTER);
 		add(new menubar(rolle), BorderLayout.NORTH);
-       // 1 salg, 2 chef, 3 driver, 0 ceo
-        this.setVisible(true);
-    }
+		// 1 salg, 2 chef, 3 driver, 0 ceo
+		this.setVisible(true);
+	}
+
 	private void addTabs() {
 		if (rolle == 0) {
 			//addTab(new StatisticsTab());
@@ -79,6 +93,7 @@ public class tabbedMenu extends JFrame {
 			addTab(new DriverTab(sql, rolle));
 		}
 	}
+
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
 	//private String empName = "Employees";
@@ -97,8 +112,7 @@ public class tabbedMenu extends JFrame {
 			if (tabs.indexOfTab(ceoName) == -1) {
 				tabs.addTab(ceoName, tab);
 			}
-		}
-		else if (tab instanceof CustomerTab) {
+		} else if (tab instanceof CustomerTab) {
 			if (tabs.indexOfTab(custName) == -1) {
 				tabs.addTab(custName, tab);
 			}
@@ -112,13 +126,11 @@ public class tabbedMenu extends JFrame {
 			if (tabs.indexOfTab(foodName) == -1) {
 				tabs.addTab(foodName, tab);
 			}
-		}
-		else if (tab instanceof IngredientTab) {
+		} else if (tab instanceof IngredientTab) {
 			if (tabs.indexOfTab(ingrName) == -1) {
 				tabs.addTab(ingrName, tab);
 			}
-		}
-		else if (tab instanceof OrderTab) {
+		} else if (tab instanceof OrderTab) {
 			if (tabs.indexOfTab(ordrName) == -1) {
 				tabs.addTab(ordrName, tab);
 			}
@@ -150,11 +162,13 @@ public class tabbedMenu extends JFrame {
 		}
 		addCloseButtons();
 	}
+
 	private void addCloseButtons() {
 		for (int i = 0; i < tabs.getTabCount(); i++) {
 			tabs.setTabComponentAt(i, new tabCloser(tabs.getTitleAt(i)));
 		}
 	}
+
 	private class tabCloser extends JPanel {
 		public tabCloser(String title) {
 			BorderLayout layout = new BorderLayout(5, 0);
@@ -181,12 +195,14 @@ public class tabbedMenu extends JFrame {
 			setVisible(true);
 		}
 	}
+
 	private class menubar extends JMenuBar {
 		private JMenu newTab;
+
 		public menubar(int rolle) {
 			newTab = new JMenu("View");
 			JMenu file = new JMenu("File");
-            JMenu settings = new JMenu("Settings");
+			JMenu settings = new JMenu("Settings");
 			JMenuItem DBsettings = new JMenuItem("Database Settings...");
 			if (rolle != 0) {
 				DBsettings.setEnabled(false);
@@ -229,10 +245,14 @@ public class tabbedMenu extends JFrame {
 				public void menuSelected(MenuEvent e) {
 					addTabButtons();
 				}
+
 				@Override
-				public void menuDeselected(MenuEvent e) {}
+				public void menuDeselected(MenuEvent e) {
+				}
+
 				@Override
-				public void menuCanceled(MenuEvent e) {}
+				public void menuCanceled(MenuEvent e) {
+				}
 			});
 			refresh.addActionListener(refreshpress);
 			DBsettings.addActionListener(settingspress);
@@ -241,18 +261,19 @@ public class tabbedMenu extends JFrame {
 			editUser.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					userEditMenu edit = new userEditMenu();
+					userEditMenu edit = new userEditMenu(sql, rolle);
 				}
 			});
-            settings.add(DBsettings);
+			settings.add(DBsettings);
 			settings.add(editUser);
 			file.add(refresh);
-            file.add(logout);
-            file.add(about);
+			file.add(logout);
+			file.add(about);
 			add(file);
-            add(settings);
+			add(settings);
 			add(newTab);
 		}
+
 		private void addTabButtons() {
 			newTab.removeAll();
 			JMenuItem orig = new JMenuItem("Default");
@@ -263,7 +284,7 @@ public class tabbedMenu extends JFrame {
 				}
 			});
 			newTab.add(orig);
-			if(rolle == 3 || rolle == 0) {
+			if (rolle == 3 || rolle == 0) {
 				if (tabs.indexOfTab(drivName) == -1) {
 					JMenuItem driv = new JMenuItem(drivName);
 					driv.addActionListener(new AbstractAction() {
@@ -273,8 +294,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(driv);
-				}
-				else {
+				} else {
 					JMenuItem driv = new JMenuItem(drivName);
 					driv.setEnabled(false);
 					newTab.add(driv);
@@ -290,8 +310,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(food);
-				}
-				else {
+				} else {
 					JMenuItem food = new JMenuItem(foodName);
 					food.setEnabled(false);
 					newTab.add(food);
@@ -305,8 +324,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(ingr);
-				}
-				else {
+				} else {
 					JMenuItem ingr = new JMenuItem(ingrName);
 					ingr.setEnabled(false);
 					newTab.add(ingr);
@@ -320,8 +338,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(chf);
-				}
-				else {
+				} else {
 					JMenuItem chf = new JMenuItem(chefName);
 					chf.setEnabled(false);
 					newTab.add(chf);
@@ -337,8 +354,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(order);
-				}
-				else {
+				} else {
 					JMenuItem order = new JMenuItem(ordrName);
 					order.setEnabled(false);
 					newTab.add(order);
@@ -352,8 +368,7 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(cust);
-				}
-				else {
+				} else {
 					JMenuItem cust = new JMenuItem(custName);
 					cust.setEnabled(false);
 					newTab.add(cust);
@@ -384,15 +399,15 @@ public class tabbedMenu extends JFrame {
 						}
 					});
 					newTab.add(ceo);
-				}
-				else {
+				} else {
 					JMenuItem ceo = new JMenuItem(ceoName);
 					ceo.setEnabled(false);
 					newTab.add(ceo);
 				}
 			}
 		}
-		private class settingsMenu extends JFrame{
+
+		private class settingsMenu extends JFrame {
 			public settingsMenu() {
 				setTitle("Database settings");
 				setLayout(new GridLayout(6, 1));
@@ -415,163 +430,10 @@ public class tabbedMenu extends JFrame {
 		}
 
 	}
+
 	public static void main(String[] args) throws Exception {
 		tabbedMenu menu = new tabbedMenu(0, "CEO");
-        //tabbedMenu menu2 = new tabbedMenu(1, "Sales");
-	}
-	private class userEditMenu extends JFrame {
-		private String userName;
-		private JPasswordField passField;
-		public userEditMenu() {
-			setSize(Stuff.getWindowSize(0.3,0.2));
-			setLocationRelativeTo(null);
-			setLayout(new BorderLayout());
-			JLabel loginAgain = new JLabel("Please log in again");
-			JPanel namePassPanel = new JPanel();
-			namePassPanel.setLayout(new GridLayout(2,2));
-			JLabel userNameLabel = new JLabel("User name:");
-			JLabel passLabel = new JLabel("Password:");
-			JTextField userNameField = new JTextField();
-			passField = new JPasswordField();
-			namePassPanel.add(userNameLabel);
-			namePassPanel.add(userNameField);
-			namePassPanel.add(passLabel);
-			namePassPanel.add(passField);
-			JPanel okCancel = new JPanel(new GridLayout(1, 2));
-			JButton okButton = new JButton("OK");
-			JButton cancelButton = new JButton("Cancel");
-			Action okAction = new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					UserManager mng = new UserManager(sql);
-					int res = mng.logon(userNameField.getText(), new String(passField.getPassword()));
-					if (res >= 0) {
-						userName = userNameField.getText();
-						editMenu menu = new editMenu();
-						dispose();
-					}
-					else {
-						JOptionPane.showMessageDialog(null, "Wrong user name or password");
-					}
-				}
-			};
-			passField.addActionListener(okAction);
-			okButton.addActionListener(okAction);
-			cancelButton.addActionListener(new AbstractAction() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					dispose();
-				}
-			});
-			okCancel.add(okButton);
-			okCancel.add(cancelButton);
-			add(loginAgain, BorderLayout.NORTH);
-			add(namePassPanel, BorderLayout.CENTER);
-			add(okCancel, BorderLayout.SOUTH);
-			setVisible(true);
-		}
-		private class editMenu extends JFrame {
-			public editMenu() {
-				setSize(Stuff.getWindowSize(0.5,0.5));
-				setLocationRelativeTo(null);
-				String selectQuery = "SELECT user_name, user_firstname, user_lastname, user_email, user_tlf, " +
-						"user_adress, user_postnr, user_start FROM HCL_user WHERE user_name = '" + userName + "'";
-				System.out.println("User edit select query = " + selectQuery);
-				setLayout(new BorderLayout());
-				String[] selectedUser = sql.getRow(selectQuery);
-				String[][] titles = ColumnNamer.getNamesWithOriginals(selectQuery, sql);
-				editFields fields = new editFields(titles[1], selectedUser, false, null, sql);
-				fields.getFields().get(0).setEnabled(false);
-				if (rolle != 0) {
-					fields.getFields().get(7).setEnabled(false);
-				}
-				add(fields, BorderLayout.CENTER);
-				JPanel saveCancel = new JPanel(new GridLayout(1, 2));
-				JButton save = new JButton("Save");
-				JButton cancel = new JButton("Cancel");
-				JButton changePass = new JButton("Change password...");
-				save.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int sure = JOptionPane.showConfirmDialog(editMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
-						if (sure == 0) {
-							String[] newValues = fields.getNewValues();
-							for (int i = 0; i < newValues.length; i++) {
-								if (selectedUser[i] == null || !(selectedUser[i].equals(newValues[i]))) {
-									sql.update("HCL_user", titles[0][i], "user_name", userName, newValues[i]);
-								}
-							}
-							dispose();
-							for (int i = 0; i < tabs.getTabCount(); i++) {
-								if (tabs.getComponentAt(i) instanceof CeoTab) {
-									((GenericList) tabs.getComponentAt(i)).refresh();
-								}
-							}
-						}
-					}
-				});
-				cancel.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				changePass.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						passBox box = new passBox();
-					}
-				});
-				saveCancel.add(save);
-				saveCancel.add(cancel);
-				saveCancel.add(changePass);
-				add(saveCancel, BorderLayout.SOUTH);
-				setVisible(true);
-			}
-		}
-		private class passBox extends JFrame {
-			public passBox() {
-				setLocationRelativeTo(null);
-				setAlwaysOnTop(true);
-				setSize(Stuff.getWindowSize(0.3,0.2));
-				setLayout(new GridLayout(3, 2));
-				JLabel newPassLabel = new JLabel("Enter new password:");
-				JPasswordField newPassField = new JPasswordField();
-				JLabel reEnterPass = new JLabel("Reenter password:");
-				JPasswordField newPassField2 = new JPasswordField();
-				JButton save = new JButton("Save");
-				JButton cancel = new JButton("Cancel");
-				save.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						int sure = JOptionPane.showConfirmDialog(passBox.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
-						if (sure == 0) {
-							if (!(Arrays.equals(newPassField.getPassword(), newPassField2.getPassword()))) {
-								JOptionPane.showMessageDialog(passBox.this, "Passwords do not match");
-							} else {
-								UserManager mng = new UserManager(sql);
-								String oldPass = new String(passField.getPassword());
-								String newPass = new String(newPassField.getPassword());
-								mng.changePassword(userName, oldPass, newPass);
-								dispose();
-							}
-						}
-					}
-				});
-				cancel.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
-				add(newPassLabel);
-				add(newPassField);
-				add(reEnterPass);
-				add(newPassField2);
-				add(save);
-				add(cancel);
-				setVisible(true);
-			}
-		}
+		//tabbedMenu menu2 = new tabbedMenu(1, "Sales");
 	}
 }
+
