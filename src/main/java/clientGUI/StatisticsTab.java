@@ -54,14 +54,13 @@ public class StatisticsTab extends JPanel{
 
         JPanel centerPanel = new JPanel(new BorderLayout());
         JPanel westPanel = new JPanel();
-
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
-
-        westPanel.add(getStats());
-
-        panel.add(westPanel/*,BorderLayout.WEST*/);
-        panel.add(centerPanel/*,BorderLayout.CENTER*/);
+        westPanel.setLayout(new BorderLayout());
+        westPanel.add(getStats(), BorderLayout.CENTER);
+        panel.setLayout(new BorderLayout());
+        panel.add(westPanel,BorderLayout.WEST);
+        panel.add(centerPanel,BorderLayout.CENTER);
 
 
         add(panel);

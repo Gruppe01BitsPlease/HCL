@@ -22,7 +22,7 @@ public class MyJFreeChart extends JPanel {
     private ChartPanel chartPanel;
 
     private MyJFreeChart(Builder builder) {
-
+       // setLayout(new BorderLayout());
         JFreeChart chart = createChart(builder.dataset, builder.title);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));

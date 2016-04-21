@@ -86,9 +86,7 @@ class datePane extends JPanel {
 	private JComboBox<String> yearBox;
 	private JComboBox<String> monthBox;
 	private JComboBox<Integer> dayBox;
-	private JTextField dayField;
 	private LocalDate date;
-
 	public datePane(String dateInput) {
 		//2014-01-31
 		if (dateInput != null) {
@@ -154,13 +152,9 @@ class datePane extends JPanel {
 			//System.out.println(day.getText());
 			System.out.println(selyear + " " + selmonth);
 		}
-		else {
-			dayField = new JTextField("");
-		}
 		add(yearBox);
 		add(monthBox);
 		add(dayBox);
-		//add(dayField);
 	}
 	public String getDate() {
 		String year = ((String)(yearBox.getSelectedItem()));
@@ -203,7 +197,7 @@ class datePane extends JPanel {
 	public void setEnabled(boolean enable) {
 		yearBox.setEnabled(enable);
 		monthBox.setEnabled(enable);
-		dayField.setEnabled(enable);
+		dayBox.setEnabled(enable);
 	}
 }
 class editFields extends JPanel {
@@ -577,6 +571,7 @@ class userEditMenu extends JFrame {
 	public userEditMenu(String id, SQL sql, int rolle) {
 		this.rolle = rolle;
 		this.sql = sql;
+		setAlwaysOnTop(true);
 		String select = "SELECT user_name FROM HCL_user WHERE user_id = " + id;
 		userName = sql.getRow(select)[0];
 		passButton = new JButton("New password");
