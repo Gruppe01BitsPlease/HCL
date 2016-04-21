@@ -23,7 +23,7 @@ class OrderTab extends GenericList {
     private static String query = "SELECT order_id, customer_name, price, adress, postnr" +
             " , order_date, active FROM HCL_order NATURAL JOIN HCL_customer  WHERE HCL_order.active = 1 " +
             "ORDER BY customer_name ASC";
-    private static String[][] foreignKeys = {{ "SELECT DISTINCT customer_id, customer_name FROM HCL_customer NATURAL JOIN HCL_order WHERE HCL_customer.active = 1", "1" }};
+    private static String[][] foreignKeys = {{ "SELECT DISTINCT customer_id, customer_name FROM HCL_customer WHERE active=1;", "1" }};
     //Tab name, foreign PK, link table name, other table name, foreign identifier
     private SQL sql;
     public OrderTab(SQL sql, int role) {
@@ -49,6 +49,7 @@ class OrderTab extends GenericList {
     public void edit(int id, boolean newItem) {
         editWindow edit = new editWindow(id, newItem);
     }
+
     class editWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
         private ArrayList<String> addedDates = new ArrayList<>();
@@ -65,6 +66,7 @@ class OrderTab extends GenericList {
         private editFields editFields;
         private String[] selected;
         private String[][] titles;
+
         public editWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
             this.newOrder = newOrder;
