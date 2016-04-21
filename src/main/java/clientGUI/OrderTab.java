@@ -18,7 +18,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-
+/**
+ * Creates the JPanel that is used as a tab in tabbedMenu
+ */
 class OrderTab extends GenericList {
     private static String query = "SELECT order_id, customer_name, price, adress, postnr" +
             " , order_date, active FROM HCL_order NATURAL JOIN HCL_customer  WHERE HCL_order.active = 1 " +

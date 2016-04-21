@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by Olav Husby on 15.03.2016.
+ * Is responsible for managing ingredient entries in the database
  */
 public class IngredientManager {
 

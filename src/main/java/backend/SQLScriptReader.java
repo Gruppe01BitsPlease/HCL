@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Created by bahafeld on 14.04.2016...
- * For HCL
+ * Reads the premade sqlscripts and executes them
  */
-
 public class SQLScriptReader {
     SQL sql;
     public SQLScriptReader(){

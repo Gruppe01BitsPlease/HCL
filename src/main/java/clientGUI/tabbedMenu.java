@@ -10,7 +10,7 @@ import java.awt.event.*;
 import java.util.Arrays;
 
 /**
- * Created by Jens on 14.03.2016.
+ * Main window
  */
 public class tabbedMenu extends JFrame {
 	private SQL sql;

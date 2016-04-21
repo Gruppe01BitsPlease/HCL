@@ -9,7 +9,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 
-
+/**
+ * Creates the JPanel that is used as a tab in tabbedMenu
+ */
 class EmployeeTab extends GenericList {
 	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, " +
 			"user_adress, user_postnr, user_start FROM HCL_user WHERE active = 1";

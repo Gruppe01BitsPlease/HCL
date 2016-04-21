@@ -12,6 +12,9 @@ import java.util.Arrays;
 
 import backend.*;
 
+/**
+ * Creates the an extended JPanel that most other tabs use
+ */
 class GenericList extends JPanel {
     //This class is the superclass for most of our tabs
     private String query;

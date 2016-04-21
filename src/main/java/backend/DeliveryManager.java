@@ -7,7 +7,7 @@ import java.time.*;
 import java.time.format.DateTimeParseException;
 
 /**
- * Created by Olav Husby on 15.03.2016.
+ * Is responsible for managing delivery entries in the database
  */
 public class DeliveryManager {
 

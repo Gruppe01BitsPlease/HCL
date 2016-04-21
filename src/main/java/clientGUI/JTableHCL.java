@@ -7,11 +7,11 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 /**
- * Created by Jens on 10.04.2016.
+ * This extension of the JTable class handles our tables, since they all operate similarly
+ * It sets them to not be editable, it makes them sortable, and it hides the ID numbers from the user
  */
 public class JTableHCL extends JTable {
-	//This extension of the JTable class handles our tables, since they all operate similarly
-	//It sets them to not be editable, it makes them sortable, and it hides the ID numbers from the user
+
 	private TableModel tabModel;
 	private TableColumnModel mod;
 	public JTableHCL(TableModel model) {

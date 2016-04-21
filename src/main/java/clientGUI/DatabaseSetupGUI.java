@@ -11,11 +11,8 @@ import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 /**
- * Created by bahafeld on 15.04.2016...
- * For HCL
+ * Creates the GUI for init of database
  */
-
-//TODO Edit filereference before deployement
     public class DatabaseSetupGUI extends JDialog{
     private JCheckBox checkTables;
     private JCheckBox checkRandomData;

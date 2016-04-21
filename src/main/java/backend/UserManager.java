@@ -15,6 +15,9 @@ import java.util.Random;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 
+/**
+ * Is responsible for managing order entries in the database
+ */
 public class UserManager{
 
     public final static String CURRENT_TABLE = "HCL_user";

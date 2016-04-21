@@ -9,7 +9,9 @@ import java.awt.event.KeyEvent;
 import backend.*;
 import com.seaglasslookandfeel.*;
 
-@SuppressWarnings("serial")
+/**
+ * Creates the LogOn windows
+ */
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
 		//window pa	parameters

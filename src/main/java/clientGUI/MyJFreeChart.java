@@ -1,9 +1,8 @@
-package backend;
+package clientGUI;
 
 import java.awt.*;
-import java.time.LocalDate;
 
-import clientGUI.JTableHCL;
+import backend.Statistics;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -13,6 +12,9 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * Creates the chart
+ */
 public class MyJFreeChart extends JPanel {
 
     private CategoryDataset dataset;

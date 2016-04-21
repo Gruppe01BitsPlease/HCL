@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Created by Olav Husby on 15.03.2016.
+ * Is responsible for managing food entries in the database
  */
 public class FoodManager {
 

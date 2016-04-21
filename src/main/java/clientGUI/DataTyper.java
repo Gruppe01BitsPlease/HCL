@@ -1,11 +1,11 @@
 package clientGUI;
 
 /**
- * Created by Jens on 12.04.2016.
+ * 	This class takes arrays with column names and returns the data types for them.
+ * 	Data types are mostly used for edit windows
  */
 abstract class DataTyper {
-	//This class takes arrays with column names and returns the data types for them.
-	//Data types are mostly used for edit windows
+
 
 	public static String getDataType(String UIName) {
 		String[] data = { UIName };
