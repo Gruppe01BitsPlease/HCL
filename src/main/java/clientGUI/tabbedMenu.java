@@ -1,13 +1,11 @@
 package clientGUI;
 import backend.SQL;
-import backend.UserManager;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Arrays;
 
 /**
  * Main window

@@ -3,7 +3,6 @@ package clientGUI;
 import backend.SQL;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
 
 /**

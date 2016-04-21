@@ -1,10 +1,8 @@
 package clientGUI;
 
-import backend.CustomerManager;
 import backend.IngredientManager;
 import backend.SQL;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**

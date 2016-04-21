@@ -21,7 +21,7 @@ public class SQLScriptReader {
     }
 
 
-    public void runDatabaseScript(String path) throws SQLException, FileNotFoundException {
+    public void runDatabaseScript(String path) throws FileNotFoundException {
         try {
             //fetches script from resources folder
             InputStream in = getClass().getClassLoader().getResourceAsStream(path);

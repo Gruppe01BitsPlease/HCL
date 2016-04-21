@@ -65,7 +65,7 @@ public class IngredientManager {
     public int edit(int id, int newStock,int newPurchase_price, String newOther){
 
         if (!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK, id)) return -1;
-        if (!(newStock >= 0)|| !(newPurchase_price >= 0) || (newOther.trim().equals(""))){return -3;};
+        if (!(newStock >= 0)|| !(newPurchase_price >= 0) || (newOther.trim().equals(""))){return -3;}
 
         try {
             sql.connection.setAutoCommit(false);

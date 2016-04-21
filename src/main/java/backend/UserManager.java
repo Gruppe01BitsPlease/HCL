@@ -1,14 +1,11 @@
 package backend;
 
-import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.ECField;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.PreparedStatement;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Random;

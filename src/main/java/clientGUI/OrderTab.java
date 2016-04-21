@@ -1,19 +1,12 @@
 package clientGUI;
 
 import backend.DeliveryManager;
-import backend.LinkManager;
 import backend.OrderManager;
 import backend.SQL;
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;

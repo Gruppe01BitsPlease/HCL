@@ -5,8 +5,6 @@ import backend.*;
 import javax.swing.*;
 import java.awt.*;
 
-import backend.SQL;
-
 import java.io.FileNotFoundException;
 import java.sql.SQLException;
 

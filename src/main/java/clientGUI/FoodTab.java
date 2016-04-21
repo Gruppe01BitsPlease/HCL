@@ -3,7 +3,6 @@ package clientGUI;
 import backend.FoodManager;
 import backend.SQL;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**

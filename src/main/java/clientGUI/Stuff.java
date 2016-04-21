@@ -3,9 +3,7 @@ package clientGUI;
 import backend.LinkManager;
 import backend.SQL;
 import backend.UserManager;
-import jdk.nashorn.internal.scripts.JO;
 
-import javax.jws.soap.SOAPBinding;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
