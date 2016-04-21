@@ -17,7 +17,6 @@
 - Størrelse på inputfelter i editvindu!
 
 **BUGS**:
-- Legge til en linkQuery og så fjerne den uten å lukke vindu mellom
 - Kan søke i IDnummer
 - Legge til orders funker ikke
 - Lagre orders-link i foodvindu

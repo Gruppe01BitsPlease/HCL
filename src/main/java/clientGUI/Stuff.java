@@ -186,13 +186,16 @@ class datePane extends JPanel {
 	public void addDays(int days) {
 		LocalDate neue = date.plusDays(days);
 		date = neue;
+		yearBox.setSelectedItem(date.getYear());
+		monthBox.setSelectedIndex(date.getMonthValue() - 1);
 		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
 	}
 	public void addMonths(int months) {
 		LocalDate neue = date.plusMonths(months);
 		date = neue;
+		yearBox.setSelectedItem(date.getYear());
 		monthBox.setSelectedIndex(date.getMonthValue() - 1);
-	}
+		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);	}
 	public void setDate(String dateIn) {
 		date = LocalDate.parse(dateIn);
 		yearBox.setSelectedItem(date.getYear());
