@@ -126,6 +126,19 @@ public class Statistics {
         }
         return sum;
     }
+    public int getDeliveriesToday(){
+        int sum = 0;
+
+        ArrayList<LocalDate> dates = getDeliveryDates();
+        LocalDate now = LocalDate.now();
+
+        for(LocalDate date : dates){
+            if(date.equals(now)){
+                sum++;
+            }
+        }
+        return sum;
+    }
 
     public double getAvgOrdersPerMonthThisYear(){
 
@@ -294,6 +307,7 @@ public class Statistics {
         System.out.println("Number of customers: "+stats.getNumberOfCustomers());
         System.out.println("Biggest Customer: "+stats.getBiggestCustomer());
         System.out.println("Biggest Customer This Month: "+stats.getBiggestCustomerThisMonth());
+        System.out.println("Deliveries today: "+ stats.getDeliveriesToday());
 
       /*  LocalDate date = LocalDate.now();
         //System.out.println(date.getDayOfWeek().ordinal());

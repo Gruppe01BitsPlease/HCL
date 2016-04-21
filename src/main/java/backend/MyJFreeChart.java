@@ -98,7 +98,7 @@ public class MyJFreeChart extends JPanel {
         String[][] statTable = {
                 {"Gross Income",Integer.toString(stats.getGrossIncome())+"kr"},
                 {"Total Orders",Integer.toString(stats.getTotalOrders())},
-                {"Total Deliveries Today",Integer.toString(stats.getOrdersAt(LocalDate.now().getYear(),LocalDate.now().getMonthValue()))},
+                {"Total Deliveries Today",Integer.toString(stats.getDeliveriesToday())},
                 {"Total Subscriptions",Integer.toString(stats.getTotalSubscriptions())},
                 {"Average Orders Per Month This Year",String.format("%.5s",Double.toString(stats.getAvgOrdersPerMonthThisYear()))},
                 {"Popular Food All Time",stats.getAllTimePopularFood()},
