@@ -310,7 +310,6 @@ class GenericList extends JPanel {
 		}
 	}
     class GenericSearch extends JPanel {
-        //This is a generic search tab with button, which will show results in a popup window
 		private JTextField search;
         public GenericSearch() {
 			buttonPanel panel = new buttonPanel();
@@ -322,11 +321,9 @@ class GenericList extends JPanel {
 			add(panel, BorderLayout.EAST);
         }
 		private class buttonPanel extends JPanel {
-			Action toggleSearch;
 			public buttonPanel() {
 				setLayout(new GridLayout(1, 2));
 				JButton searcher = new JButton("Search");
-				JButton closeSearch = new JButton("Close search");
 				searchPress = new AbstractAction() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -338,7 +335,7 @@ class GenericList extends JPanel {
 							searchTable = new String[table.length][table[0].length];
 							ArrayList<String[]> searchArray = new ArrayList<>();
 							for (int i = 0; i < table.length; i++) {
-								for (int j = 0; j < table[i].length; j++) {
+								for (int j = 1; j < table[i].length; j++) {
 									if (!(rowAdded.contains(i)) && table[i][j].toLowerCase().contains(search.getText().toLowerCase())) {
 										int k = 0;
 										boolean added = false;
@@ -380,29 +377,10 @@ class GenericList extends JPanel {
 								JScrollPane searchScroll = new JScrollPane(searchList);
 								cards.add(searchScroll, searchName);
 								cardLayout.show(cards, searchName);
-								//toggleSearch.actionPerformed(e);
 							}
 						}
 					}
 				};
-				/*toggleSearch = new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						if (!searchEnabled) {
-							add(closeSearch);
-						}
-						else if (searchEnabled) {
-							remove(closeSearch);
-						}
-					}
-				};*/
-				/*closeSearch.addActionListener(new AbstractAction() {
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						cardLayout.show(cards, scrollName);
-					}
-				});*/
-				//add(closeSearch);
 				searcher.addActionListener(searchPress);
 				add(searcher);
 			}
