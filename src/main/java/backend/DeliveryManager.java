@@ -153,7 +153,7 @@ public class DeliveryManager {
 
         int weekCounter = 0;
 
-        while(Period.between(current,end).getDays() != 0){
+        while(!Period.between(current,end).isZero()){
 
             for(DayOfWeek day : days){
                 if(current.getDayOfWeek().equals(day)){ addDate(order_id,current.toString());}
@@ -229,7 +229,8 @@ public class DeliveryManager {
 
         DayOfWeek[] days = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY};
 
-        manager.addDates(11,LocalDate.now(),LocalDate.of(2016,6,1),2, days);
+        //manager.addDates(11,LocalDate.now(),LocalDate.of(2016,6,1),2, days);
+        //manager.addDates(11, LocalDate.now(), LocalDate.of(2017,12,24), 2, days);
 
 
     }
