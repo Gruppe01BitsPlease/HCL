@@ -19,6 +19,10 @@ abstract class ColumnNamer {
 		String[][] ret = { one, two };
 		return ret;
 	}
+	public static String getName(String sqlName) {
+		String[] tab = { sqlName };
+		return getNamesFromArray(tab)[0];
+	}
 	public static String[] getNamesFromArray(String[] sqlNames){
 		String[] ret = new String[sqlNames.length];
 		for (int i = 0; i < sqlNames.length; i++) {

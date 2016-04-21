@@ -52,6 +52,9 @@ abstract class Stuff {
 		}
 		return ret;
 	}
+	public static String bold(String text) {
+		return setBold() + text + endBold();
+	}
 	public static String setBold() {
 		return "<html><b>";
 	}
@@ -442,13 +445,6 @@ class linkTab extends JPanel {
 			inpTemp = new JComboBox<>(choice);
 			String[] choiceIDtemp = sql.getColumn(choiceQuery, 0);
 			if (!newLink) {
-				String existingChoices = "SELECT DISTINCT " + link[1] + ", " + link[4] +
-						" FROM " + link[3] + " NATURAL JOIN " + link[2] +
-						" WHERE " + link[1] + " = " + Stuff.removeHTML(selectedLink[0]) + " AND " + primaryColumn
-						+ " = " + selectedID;
-				System.out.println("Existing choice query: " + existingChoices);
-				//String[] choicesExist = sql.getColumn(existingChoices, 1);
-				//link: "Foods", "food_id", "HCL_food_ingredient", "HCL_food", "name"
 				int nameColumn = -1;
 				int idColumn = -1;
 				for (int i = 0; i < titles[0].length; i++) {
@@ -468,6 +464,7 @@ class linkTab extends JPanel {
 				amount.setText(Stuff.removeHTML(selectedLink[linkTableModel.findColumn("Amount")]));
 			}
 			final String[] choiceID = choiceIDtemp;
+			System.out.println("Choice IDs: " + Arrays.toString(choiceID));
 			final JComboBox<String> input = inpTemp;
 			JButton save = new JButton("Save");
 			JButton cancel = new JButton("Cancel");
@@ -480,19 +477,11 @@ class linkTab extends JPanel {
 			save.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+					//Link: "Orders", "order_id", "HCL_order_food", "HCL_order", "adress"
 					String[] addedLink = new String[linkTableModel.getColumnCount()];
-					addedLink[linkTableModel.findColumn("Amount")] = Stuff.setBold() + amount.getText() + Stuff.endBold();
-					String linkQuery = "SELECT * FROM " + link[3] + " WHERE " + link[1] + " = " + choiceID[input.getSelectedIndex()];
-					System.out.println(linkQuery);
-					String[] linker = sql.getRow(linkQuery);
-					String[] clm = ColumnNamer.getNames(linkQuery, sql);
-					for (int i = 0; i < linkTableModel.getColumnCount(); i++) {
-						for (int j = 0; j < clm.length; j++) {
-							if (linkTableModel.getColumnName(i).equals(clm[j])) {
-								addedLink[i] = Stuff.setBold() + linker[j] + Stuff.endBold();
-							}
-						}
-					}
+					addedLink[linkTableModel.findColumn("Amount")] = Stuff.bold(amount.getText());
+					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[1]))] = Stuff.bold(choiceID[input.getSelectedIndex()]);
+					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[4]))] = Stuff.bold((String)input.getSelectedItem());
 					addedLinks.add(addedLink);
 					int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
 					if (newLink) {
@@ -572,6 +561,7 @@ class linkTab extends JPanel {
 			if (linkTableData[i][1].contains(Stuff.setBold())) {
 				int genID = Integer.parseInt(Stuff.removeHTML(linkTableData[i][IDcolumn]));
 				int amount = Integer.parseInt(Stuff.removeHTML(linkTableData[i][numberColumn]));
+				System.out.println("Generate: " + link[2]+"-"+primaryColumn+"-"+link[1]+"-"+selectedID+"-"+genID+"-"+amount);
 				mng.generate(link[2], primaryColumn, link[1], selectedID, genID, amount);
 			}
 			if (linkTableData[i][1].contains(Stuff.setGrey())) {

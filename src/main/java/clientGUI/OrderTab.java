@@ -40,8 +40,14 @@ class OrderTab extends GenericList {
     public int generate(String[] args) {
         OrderManager mng = new OrderManager(sql);
         int customerid = Integer.parseInt(args[1]);
-        int price = Integer.parseInt(args[2]);
-        int postnr = Integer.parseInt(args[4]);
+        int price = 0;
+        int postnr = 0;
+        try {
+            price = Integer.parseInt(args[2]);
+            postnr = Integer.parseInt(args[4]);
+        }
+        catch (Exception e) {
+        }
         System.out.println("Generate arguments: " + Arrays.toString(args));
         System.out.println(customerid + " - " + price + " - " + args[3] + " - " + postnr + " - " + args[6]);
         return mng.generate(customerid, price, args[3], postnr, args[6]);

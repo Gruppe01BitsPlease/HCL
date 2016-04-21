@@ -18,7 +18,11 @@ class CustomerTab extends GenericList {
 	}
 	public int generate(String[] args) {
 		CustomerManager mng = new CustomerManager(sql);
-		int tlf = Integer.parseInt(args[3]);
+		int tlf = 0;
+		try {
+			tlf = Integer.parseInt(args[3]);
+		}
+		catch (Exception e) {}
 		return mng.generate(args[1], args[2], tlf);
 	}
 	public int delete(int nr) {

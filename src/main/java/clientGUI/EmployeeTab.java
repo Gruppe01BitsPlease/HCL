@@ -23,7 +23,12 @@ class EmployeeTab extends GenericList {
 	}
 	public int generate(String[] args) {
 		UserManager mng = new UserManager(sql);
-		int role = Integer.parseInt(args[3]);
+		try {
+			int role = Integer.parseInt(args[3]);
+		}
+		catch (Exception e) {
+			JOptionPane.showMessageDialog(this, "Role is invalid!");
+		}
 		return mng.generate(args[1], args[2], role);
 	}
 	public void edit(int id, boolean newEntry) {

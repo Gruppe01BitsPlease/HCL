@@ -19,7 +19,6 @@
 **BUGS**:
 - Kan søke i IDnummer
 - Legge til orders funker ikke
-- Lagre orders-link i foodvindu
 
 **Trine**:
 - Legge inn masse data i databasen

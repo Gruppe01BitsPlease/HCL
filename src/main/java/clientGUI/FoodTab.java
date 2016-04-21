@@ -19,7 +19,11 @@ class FoodTab extends GenericList {
 	}
 	public int generate(String[] args) {
 		FoodManager mng = new FoodManager(sql);
-		int price = Integer.parseInt(args[2]);
+		int price = 0;
+		try {
+			price = Integer.parseInt(args[2]);
+		}
+		catch (Exception e) {}
 		return mng.generate(args[1], price);
 	}
 	public int delete(int nr) {
