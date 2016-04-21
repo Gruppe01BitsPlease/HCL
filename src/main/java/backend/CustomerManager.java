@@ -3,7 +3,7 @@ package backend;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 /**
- * Created by Olav Husby on 15.03.2016.
+ * Is responsible for managing customer entries in the database
  */
 public class CustomerManager {
 

@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
- * Created by Olav Husby on 18.03.2016.
  * Creates links between databses by inserting into the help-tables
  */
 public class LinkManager {

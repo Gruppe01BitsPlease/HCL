@@ -4,8 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by bahafeld on 20.04.2016...
  * Can't come up with a good testpattern for this class, since we only have one database to work with.

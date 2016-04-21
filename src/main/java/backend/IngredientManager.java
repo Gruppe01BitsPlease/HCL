@@ -8,7 +8,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 /**
- * Created by Olav Husby on 15.03.2016.
+ * Is responsible for managing ingredient entries in the database
  */
 public class IngredientManager {
 
@@ -65,7 +65,7 @@ public class IngredientManager {
     public int edit(int id, int newStock,int newPurchase_price, String newOther){
 
         if (!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK, id)) return -1;
-        if (!(newStock >= 0)|| !(newPurchase_price >= 0) || (newOther.trim().equals(""))){return -3;};
+        if (!(newStock >= 0)|| !(newPurchase_price >= 0) || (newOther.trim().equals(""))){return -3;}
 
         try {
             sql.connection.setAutoCommit(false);

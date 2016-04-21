@@ -5,28 +5,19 @@
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
 - Javadoc i alle backend klasser, trenger vi så mye javadoc i GUI?
 - Ny order: Exception hvis kunde ikke finns, bruk drop-down
-
 - Legg til UseCase: Endre Settings elns
 
 **GUI**
-- CEO: Endre roller, slette
-- Inkorporere subscriptions
 - Skille Corporation / Private???
-- Forslag: Enklere måte å legge til / dra ifra ingredienser, kanskje en knapp ala
-	( [-1][Dra ifra][Mengde][Legg til][+1] )
 - Størrelse på inputfelter i editvindu!
 
 **BUGS**:
-- Kan søke i IDnummer
-- Foods i ordertab funker ikke
+-
 
 **Trine**:
 - Legge inn masse data i databasen
 - Lage tester
 - Lage driver-rute-greier?
-
-VIKTIG
-- Legge til nye brukere MED ROLLER!
 
 **Olav Bugtesting**
 -

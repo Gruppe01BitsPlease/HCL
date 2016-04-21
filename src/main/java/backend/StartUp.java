@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 
 /**
- * Class for the startup logic. Checks if settings file is valid, connection to db is successful
+ * Class for the startup logic. Checks if settings file is valid and connection to db is successful.
  */
 public class StartUp
 {
@@ -19,17 +19,13 @@ public class StartUp
     private SettingsGUI window;
     SQL sql;
 
-    /**
-     *
-     * @return boolean
-     */
+
     private StartUp(){
     init();
     }
 
     /**
-     *
-     * @return boolean
+     * Startup Logic, checks everything is setup correctly, then calls the LoginGUI
      */
     private void init() {
         if (settings == null) {
@@ -94,14 +90,18 @@ public class StartUp
 
 
 
-
+    /**
+     * Returns true if this is the first startup of the program
+     * @return boolean
+     */
     private boolean isFirstTime(){
         String firsttime = settings.getPropValue("firsttime");
         return firsttime == null || firsttime.trim().equals("1") || firsttime.trim().equals("");
     }
 
     /**
-     * Returns true if the stars align
+     * Returns true the database connection is successful
+     * @return boolean
      */
     private boolean validateDBConnection() {
         sql = new SQL();
@@ -110,7 +110,7 @@ public class StartUp
     }
 
     /**
-     *
+     *  Checks the settingsfile for errors
      *  -1 if settings file is not found and default can't be recovered. <br>
      *   0 if any setting in the validateTable is null or empty. <br>
      *   1 everything seems fine. <br>
@@ -133,6 +133,11 @@ public class StartUp
 
     }
 
+    /**
+     * Tries to set our "seeglass" look and feel for windows. Sets default if it fails.
+     * Skips this on mac
+     * Then launches the startupclass
+     */
     public static void main(String[] args) {
         if(!System.getProperty("os.name").equalsIgnoreCase("mac os x")){
             try {

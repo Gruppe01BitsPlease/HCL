@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
- * Created by Olav Husby on 01.04.2016.
+ * Is responsible for managing food entries in the database
  */
 public class Shoppinglist {
 

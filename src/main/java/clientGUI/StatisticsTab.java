@@ -1,18 +1,15 @@
 package clientGUI;
 
-import backend.MyJFreeChart;
 import backend.Statistics;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
-import static backend.MyJFreeChart.getStats;
+import static clientGUI.MyJFreeChart.getStats;
 
+/**
+ * Creates the JPanel and adds the chart that is used as a tab in tabbedMenu
+ */
 public class StatisticsTab extends JPanel{
 
     private Statistics stats;

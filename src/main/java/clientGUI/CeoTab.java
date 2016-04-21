@@ -3,10 +3,11 @@ package clientGUI;
 import backend.SQL;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicOptionPaneUI;
 import java.awt.*;
 
-
+/**
+ * Creates the JPanel that is used as a tab in tabbedMenu
+ */
 class CeoTab extends JPanel {
     private EmployeeTab empTab;
     public CeoTab(int role, SQL sql) {

@@ -7,10 +7,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Created by bahafeld on 14.04.2016...
- * For HCL
+ * Reads the premade sqlscripts and executes them
  */
-
 public class SQLScriptReader {
     SQL sql;
     public SQLScriptReader(){
@@ -23,7 +21,7 @@ public class SQLScriptReader {
     }
 
 
-    public void runDatabaseScript(String path) throws SQLException, FileNotFoundException {
+    public void runDatabaseScript(String path) throws FileNotFoundException {
         try {
             //fetches script from resources folder
             InputStream in = getClass().getClassLoader().getResourceAsStream(path);

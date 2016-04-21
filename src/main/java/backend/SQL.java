@@ -3,6 +3,9 @@ package backend;
 import java.io.FileNotFoundException;
 import java.sql.*;
 
+/**
+ * Is responsible for managing the database connection, and common utilities used for the database
+ */
 public class SQL {
 
 	private final static String databasedriver = "com.mysql.jdbc.Driver";
