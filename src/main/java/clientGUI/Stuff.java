@@ -665,6 +665,7 @@ class userEditMenu extends JFrame {
 	}
 	private class editMenu extends JFrame {
 		public editMenu() {
+			setResizable(false);
 			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
 			String selectQuery = "SELECT user_name, user_firstname, user_lastname, user_email, user_tlf, " +
@@ -684,7 +685,7 @@ class userEditMenu extends JFrame {
 			JButton cancel = new JButton("Cancel");
 			JButton roleButton = new JButton("Change access level...");
 			roleButton.addActionListener(e -> {
-
+				LoginWindow win = new LoginWindow(userName);
 			});
 			save.addActionListener(new AbstractAction() {
 				@Override
@@ -710,47 +711,95 @@ class userEditMenu extends JFrame {
 			saveCancel.add(save);
 			saveCancel.add(cancel);
 			saveCancel.add(passButton);
+			if (rolle == 0) {
+				saveCancel.add(roleButton);
+			}
 			add(saveCancel, BorderLayout.SOUTH);
 			setVisible(true);
 		}
 	}
 	private class LoginWindow extends JFrame {
-		public LoginWindow() {
+		public LoginWindow(String user_name) {
+			setResizable(false);
+			setSize(Stuff.getWindowSize(0.3,0.2));
 			setTitle("Administrator login");
-			setLayout(new GridLayout(5, 2));
+			setLayout(new GridLayout(3, 2));
+			setLocationRelativeTo(null);
 			JLabel login = new JLabel("User name");
 			JTextField userNameField = new JTextField();
 			JLabel pass = new JLabel("Password");
 			JPasswordField passField = new JPasswordField();
 			JButton ok = new JButton("Log in");
 			JButton canc = new JButton("Cancel");
-			ok.addActionListener(e -> {
-				UserManager mng = new UserManager(sql);
-				int role = mng.logon(userNameField.getText(), new String(passField.getPassword()));
-				if (role > 0) {
-					JOptionPane.showMessageDialog(LoginWindow.this, "You do not have the required access level.");
+			ActionListener action = new AbstractAction() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					UserManager mng = new UserManager(sql);
+					int role = mng.logon(userNameField.getText(), new String(passField.getPassword()));
+					if (role > 0) {
+						JOptionPane.showMessageDialog(LoginWindow.this, "You do not have the required access level.");
+					} else if (role == -1) {
+						JOptionPane.showMessageDialog(LoginWindow.this, "Incorrect user name or password.");
+					} else if (role == -2) {
+						JOptionPane.showMessageDialog(LoginWindow.this, "There was a problem with the connection.");
+					} else if (role == 0) {
+						roleChangeBox box = new roleChangeBox(user_name);
+						dispose();
+					}
 				}
-				else if (role == -1) {
-					JOptionPane.showMessageDialog(LoginWindow.this, "Incorrect user name or password.");
-				}
-				else if (role == -2) {
-					JOptionPane.showMessageDialog(LoginWindow.this, "There was a problem with the connection.");
-				}
-				else if (role == 0) {
-
-				}
+			};
+			ok.addActionListener(action);
+			canc.addActionListener(e -> {
+				dispose();
 			});
+			passField.addActionListener(action);
+			add(login);
+			add(userNameField);
+			add(pass);
+			add(passField);
+			add(ok);
+			add(canc);
+			setVisible(true);
 		}
 	}
 	private class roleChangeBox extends JFrame {
 		public roleChangeBox(String user_name) {
-			setSize(Stuff.getWindowSize(0.4,0.4));
-			String[] selected = sql.getRow("SELECT user_name, user_role FROM HCL_user WHERE user_name = " + user_name);
-
+			setResizable(false);
+			setSize(Stuff.getWindowSize(0.3,0.2));
+			setLayout(new GridLayout(2, 2));
+			setTitle("Change user role");
+			setLocationRelativeTo(null);
+			String selectQuery = "SELECT user_name, user_role FROM HCL_user WHERE user_name = '" + user_name + "'";
+			System.out.println(selectQuery);
+			String[] selected = sql.getRow(selectQuery);
+			JLabel user = new JLabel("User: "+selected[0]);
+			// 1 salg, 2 chef, 3 driver, 0 ceo
+			String[] roleChoices = { "CEO", "Sales", "Chef", "Driver" };
+			System.out.println(Arrays.toString(selected));
+			JComboBox<String> roleChoice = new JComboBox<>(roleChoices);
+			roleChoice.setSelectedIndex(Integer.parseInt(selected[1]));
+			JButton save = new JButton("Save");
+			JButton cancel = new JButton("Cancel");
+			save.addActionListener(e -> {
+				int sure = JOptionPane.showConfirmDialog(roleChangeBox.this, "Are you sure", "Confirm", JOptionPane.YES_NO_OPTION);
+				if (sure == 0) {
+					sql.update("HCL_user", "user_role", "User_name", user_name, roleChoice.getSelectedIndex());
+					dispose();
+				}
+			});
+			cancel.addActionListener(e -> {
+				dispose();
+			});
+			add(user);
+			add(roleChoice);
+			add(save);
+			add(cancel);
+			setVisible(true);
 		}
 	}
 	private class passBox extends JFrame {
 		public passBox() {
+			setResizable(false);
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setSize(Stuff.getWindowSize(0.3,0.2));
