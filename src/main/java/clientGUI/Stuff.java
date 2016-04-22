@@ -418,7 +418,7 @@ class linkTab extends JPanel {
 								removeLinks.add(link);
 							}
 							for (int j = 0; j < linkTableData[sel[i]].length; j++) {
-								linkTableData[sel[i]][j] = Stuff.setGrey() + linkTableData[sel[i]][j] + Stuff.endGrey();
+								linkTableData[sel[i]][j] = Stuff.setGrey() + Stuff.removeHTML(linkTableData[sel[i]][j]) + Stuff.endGrey();
 							}
 						}
 						linkTableModel = new DefaultTableModel(linkTableData, titles[1]);
