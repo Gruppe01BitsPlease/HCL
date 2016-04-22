@@ -1,0 +1,138 @@
+package clientGUI;
+
+import backend.IngredientManager;
+import backend.SQL;
+import backend.Shoppinglist;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+/**
+ * Created by Jens on 22-Apr-16.
+ */
+public class ShoppingListTab extends JPanel {
+	private SQL sql;
+	private Shoppinglist shop;
+	private String[][] shoppingList;
+	private String[] titles = { "id", "Ingredient name", "Total in deliveries", "Total stock", "Stock balance" };
+	private JTableHCL table;
+	private DefaultTableModel tabModel;
+	private JComboBox<Integer> dayBox;
+	public ShoppingListTab(SQL sql) {
+		this.sql = sql;
+		setLayout(new BorderLayout());
+		shop = new Shoppinglist(sql);
+		shoppingList = shop.getShoppinglist(7);
+		tabModel = new DefaultTableModel(shoppingList, titles);
+		table = new JTableHCL(tabModel);
+		TableColumn column = table.getColumnModel().getColumn(0);
+		column.setMinWidth(0);
+		column.setMaxWidth(0);
+		column.setWidth(0);
+		column.setPreferredWidth(0);
+		JScrollPane scroller = new JScrollPane(table);
+		Integer[] dayArray = new Integer[7];
+		for (int i = 0; i < dayArray.length; i++) {
+			dayArray[i] = i + 1;
+		}
+		dayBox = new JComboBox<>(dayArray);
+		dayBox.addItemListener(e -> {
+			refresh();
+		});
+		dayBox.setSelectedIndex(6);
+		JLabel boxLabel = new JLabel("Days to view:");
+		JPanel boxPanel = new JPanel(new GridLayout(1, 2));
+		boxPanel.add(boxLabel);
+		boxPanel.add(dayBox);
+		JPanel northBar = new JPanel(new GridLayout(1, 2));
+		JButton addStock = new JButton("Add to stock");
+		JButton addAll = new JButton("Add all to stock");
+		addStock.addActionListener(e -> {
+			if (table.getSelectedRow() != -1) {
+				addWindow window = new addWindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
+			}
+		});
+		table.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				if (e.getClickCount() == 2) {
+					addWindow window = new addWindow(Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0)));
+				}
+			}
+		});
+		addAll.addActionListener(e -> {
+			int sure = JOptionPane.showConfirmDialog(ShoppingListTab.this, "Really add all items to stock?", "", JOptionPane.YES_NO_OPTION);
+			if (sure == 0) {
+				shop.addShoppinglist(shoppingList);
+				refresh();
+			}
+		});
+		northBar.add(addStock);
+		northBar.add(addAll);
+		add(northBar, BorderLayout.NORTH);
+		add(scroller, BorderLayout.CENTER);
+		add(boxPanel, BorderLayout.SOUTH);
+	}
+	private class addWindow extends JFrame {
+		public addWindow(int ingredient_id) {
+			setLocationRelativeTo(null);
+			setSize(Stuff.getWindowSize(0.3, 0.15));
+			setResizable(false);
+			setAlwaysOnTop(true);
+			JLabel amountLabel = new JLabel("Amount to add to stock:");
+			JTextField amountField = new JTextField();
+			JButton add = new JButton("Add");
+			JButton addBalance = new JButton("Add balance");
+			JButton cancel = new JButton("Cancel");
+			add.addActionListener(e -> {
+				int amount = -1;
+				try {
+					amount = Integer.parseInt(amountField.getText());
+				}
+				catch (Exception f) {
+					JOptionPane.showMessageDialog(addWindow.this, "Please enter a valid number");
+				}
+				int sure = JOptionPane.showConfirmDialog(ShoppingListTab.this, "Add " + amountField.getText() + " of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				if (sure == 0 && amount > 0) {
+					IngredientManager ingrMng = new IngredientManager(sql);
+					ingrMng.addStock(ingredient_id, amount);
+					dispose();
+				}
+				refresh();
+			});
+			addBalance.addActionListener(e ->  {
+				int sure = JOptionPane.showConfirmDialog(ShoppingListTab.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				if (sure == 0) {
+					shop.add(shoppingList, ingredient_id);
+					dispose();
+				}
+				refresh();
+			});
+			cancel.addActionListener(e -> {
+				dispose();
+				refresh();
+			});
+			setLayout(new GridLayout(2, 1));
+			JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
+			JPanel topPanel = new JPanel(new GridLayout(1, 2));
+			topPanel.add(amountLabel);
+			topPanel.add(amountField);
+			bottomPanel.add(add);
+			bottomPanel.add(addBalance);
+			bottomPanel.add(cancel);
+			add(topPanel);
+			add(bottomPanel);
+			setVisible(true);
+		}
+	}
+	private void refresh() {
+		shoppingList = shop.getShoppinglist((Integer) dayBox.getSelectedItem());
+		tabModel = new DefaultTableModel(shoppingList, titles);
+		table.setModel(tabModel);
+	}
+}

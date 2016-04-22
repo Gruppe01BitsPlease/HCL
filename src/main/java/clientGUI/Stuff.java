@@ -17,10 +17,9 @@ import static java.time.temporal.ChronoField.YEAR;
 /**
  * Created by Jens on 15-Apr-16.
  */
-abstract class Stuff {
+class Stuff {
 
     private Stuff(){} // Can't be instansized
-
 	//Used to size a window relative to the main window, which is sized relative to the screen
 	public static Dimension getWindowSize(double factorX, double factorY) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -325,6 +324,7 @@ class editFields extends JPanel {
 		return comboBoxChoices;
 	}
 	public String[] getNewValues() {
+		//returns the new values as an array, should be in same order as columns in jtable (including hidden ones!)
 		String[] newValues = new String[selected.length];
 		for (int i = 0; i < newValues.length; i++) {
 			if (fields.get(i) instanceof JTextField) {
@@ -343,8 +343,6 @@ class editFields extends JPanel {
 			} else if (fields.get(i) instanceof JComboBox) {
 				JComboBox cmb = (JComboBox) fields.get(i);
 				String selID = comboBoxChoices[0][cmb.getSelectedIndex()];
-										/*String sel = (String) cmb.getSelectedItem();
-										String[] chosen = sel.split(",");*/
 				newValues[i] = selID;
 				System.out.println(newValues[i]);
 			}
@@ -450,7 +448,7 @@ class linkTab extends JPanel {
 								removeLinks.add(link);
 							}
 							for (int j = 0; j < linkTableData[sel[i]].length; j++) {
-								linkTableData[sel[i]][j] = Stuff.setGrey() + linkTableData[sel[i]][j] + Stuff.endGrey();
+								linkTableData[sel[i]][j] = Stuff.setGrey() + Stuff.removeHTML(linkTableData[sel[i]][j]) + Stuff.endGrey();
 							}
 						}
 						linkTableModel = new DefaultTableModel(linkTableData, titles[1]);

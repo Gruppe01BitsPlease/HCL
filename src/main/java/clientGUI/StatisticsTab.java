@@ -33,13 +33,13 @@ public class StatisticsTab extends JPanel{
 
         // Card Panel, add "cards" here
         JPanel cards = new JPanel(new CardLayout());
-        cards.add(ordersByDayChart,DAYS);
-        cards.add(ordersByMonthChart,MONTHS);
+        JPanel cardPanel = new JPanel(new BorderLayout());
+        JPanel cardPanel2 = new JPanel(new BorderLayout());
+        cardPanel.add(ordersByDayChart,BorderLayout.CENTER);
+        cardPanel2.add(ordersByMonthChart, BorderLayout.CENTER);
+        cards.add(cardPanel, DAYS);
+        cards.add(cardPanel2, MONTHS);
         // End Card Panel, add "cards" here
-
-
-        // Dropdown Panel
-        JPanel dropdownPanel = new JPanel();
 
         String[] graphs = {DAYS,MONTHS};
 
@@ -49,23 +49,13 @@ public class StatisticsTab extends JPanel{
             cl.show(cards, (String)e.getItem());
         });
 
-        dropdownPanel.add(dropdown,BorderLayout.NORTH);
-        // End Dropdown Panel
-
-        JPanel panel = new JPanel(new BorderLayout());  // The main panel in the frame
-
         JPanel centerPanel = new JPanel(new BorderLayout());
-        JPanel westPanel = new JPanel(new BorderLayout());
-
         centerPanel.add(cards,BorderLayout.CENTER);
-        centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
+        centerPanel.add(dropdown,BorderLayout.SOUTH);
 
-        westPanel.add(getStats(), BorderLayout.CENTER); // gets table with a bunch of numeric statistics
-
-        panel.add(westPanel,BorderLayout.WEST);
-        panel.add(centerPanel,BorderLayout.CENTER);
-
-        add(panel);
+        setLayout(new BorderLayout());
+        add(getStats(), BorderLayout.WEST);
+        add(centerPanel, BorderLayout.CENTER);
     }
     public static void main(String[]args){
 
