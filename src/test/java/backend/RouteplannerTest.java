@@ -9,6 +9,12 @@ import org.junit.Test;
  * For FoodPlease
  */
 public class RouteplannerTest {
+
+    Routeplanner planner;
+
+    SQL sql = new SQL();
+
+
     @Before
     public void setUp() throws Exception {
 
