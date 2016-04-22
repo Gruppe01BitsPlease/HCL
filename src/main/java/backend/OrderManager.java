@@ -3,11 +3,12 @@ package backend;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 /**
- * Is responsible for managing order entries in the database
+ * Is responsible for managing Order entries in the database
  */
 public class OrderManager {
 
@@ -25,7 +26,8 @@ public class OrderManager {
     }
 
     /**
-     * @return 1: OK
+     * @return
+     *  ID: Id of created item
      * -1: Already exists
      * -2: SQL Exception
      * -3: Wrong parameters
@@ -104,8 +106,10 @@ public class OrderManager {
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,order_id)) return false;
 
         String[][] results = sql.getStringTable("SELECT count(*) FROM HCL_order NATURAL JOIN HCL_deliveries WHERE active = 1 AND delivered = 0 AND order_id = "+order_id,false);
-
-        return Integer.parseInt(results[0][0]) > 1;
+        try {
+            return Integer.parseInt(results[0][0]) > 1;
+        }
+        catch (NumberFormatException e){return false;}
 
     }
     public static void main(String[]args){

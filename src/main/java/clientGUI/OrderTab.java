@@ -183,7 +183,6 @@ class OrderTab extends GenericList {
 
                     }*/
 
-
                     String[] newValues = editFields.getNewValues();
                     if (newOrder) {
                         order_id = generate(newValues);

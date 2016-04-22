@@ -22,7 +22,9 @@ public class IngredientManager {
     }
 
     /**
-     * @return ID: OK
+     * Generates an ingredient and adds it to the database
+     * @return
+     * ID: ID of the added object
      * -1: Already exists
      * -2: SQL Exception
      * -3: Wrong parameters / Wrong Date format yyyy-MM-dd
@@ -57,6 +59,7 @@ public class IngredientManager {
     }
 
     /**
+     * Edits an ingredient with the spesified ID.
      * @return 1: OK
      * -1: Does not exist
      * -2: SQL Exception
@@ -138,7 +141,7 @@ public class IngredientManager {
     }
 
     /**
-     * Reverses the amount and uses addStock ^v^
+     * Removes from the stock
      * @return
      *  1: OK
      * -1: Does not exists

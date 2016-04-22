@@ -20,6 +20,7 @@ public class LinkManager {
     }
 
     /**
+     * Generates a link between two tables spesified by the two Primary Keys and their Values
      * @return
      *  1: OK
      * -1: Already exists
