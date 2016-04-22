@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -617,7 +618,9 @@ class userEditMenu extends JFrame {
 	private JPasswordField passField;
 	private int rolle;
 	private JButton passButton;
-	public userEditMenu(String id, SQL sql, int rolle) {
+	private JPanel tab;
+	public userEditMenu(String id, SQL sql, int rolle, JPanel tab) {
+		this.tab = tab;
 		this.rolle = rolle;
 		this.sql = sql;
 		setAlwaysOnTop(true);
@@ -637,7 +640,8 @@ class userEditMenu extends JFrame {
 		});
 		editMenu menu = new editMenu(rolle);
 	}
-	public userEditMenu(SQL sql, int rolle) {
+	public userEditMenu(SQL sql, int rolle, JPanel tab) {
+		this.tab = tab;
 		this.rolle = rolle;
 		this.sql = sql;
 		setSize(Stuff.getWindowSize(0.3,0.2));
@@ -730,6 +734,14 @@ class userEditMenu extends JFrame {
 							}
 						}
 						dispose();
+						if (tab != null) {
+							if (tab instanceof GenericList) {
+								((GenericList) tab).refresh();
+							}
+							else if (tab instanceof CeoTab) {
+								((CeoTab) tab).refresh();
+							}
+						}
 					}
 				}
 			});
