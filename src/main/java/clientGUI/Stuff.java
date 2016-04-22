@@ -18,6 +18,9 @@ import static java.time.temporal.ChronoField.YEAR;
  * Created by Jens on 15-Apr-16.
  */
 abstract class Stuff {
+
+    private Stuff(){} // Can't be instansized
+
 	//Used to size a window relative to the main window, which is sized relative to the screen
 	public static Dimension getWindowSize(double factorX, double factorY) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,9 +56,7 @@ abstract class Stuff {
 	public static String bold(String text) {
 		return setBold() + text + endBold();
 	}
-	public static String setBold() {
-		return "<html><b>";
-	}
+	public static String setBold() {return "<html><b>";	}
 	public static String endBold() {
 		return "</b></html>";
 	}

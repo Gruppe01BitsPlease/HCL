@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Is responsible for managing food entries in the database
@@ -63,6 +64,14 @@ public class Shoppinglist {
         catch (SQLException e){
             return null;
         }
+    }
+    public String[] getTitles(){
+        return sql.getColumnNames("SELECT ingredient_id, `Ingredient Name`, Sum(`Total Ingredients`), " +
+                "`Ingredient Stock`, Sum(`Total Ingredients`)-`Ingredient Stock`'Total Minus Stock'" +
+        " FROM deliveries_ingredients_total;");
+
+
+
     }
 
     /**
@@ -143,6 +152,7 @@ public class Shoppinglist {
         String[][] array = list.getShoppinglist(2000);
 
         sql.print2dArray(array);
+        System.out.println(Arrays.toString(list.getTitles()));
 
         /*int add = list.addShoppinglist(array);
         System.out.println(add);
