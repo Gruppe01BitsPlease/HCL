@@ -48,8 +48,7 @@ public class DeliveryManager {
      * Possible to add several deliveries on the same day
      *@param date Formatted as yyyy-MM-dd
      * @return
-     * 1: OK
-     * -1: Does not exist
+     * ID: OK
      * -2: SQL Exception
      * -3: Invalid order ID
      * -5: Wrong date formatting
@@ -68,11 +67,15 @@ public class DeliveryManager {
 
             prep.executeUpdate();
 
-            return 1;
+            return sql.getLastID();
         }
         catch (SQLException e){
             System.out.println(e.toString() + ": " + e.getMessage());
             return -2;
+        }
+        catch (DateTimeParseException f) {
+            System.out.println(f.toString() + ": " + f.getMessage());
+            return -5;
         }
     }
     /**

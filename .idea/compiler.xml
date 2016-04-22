@@ -24,7 +24,6 @@
         <processorPath useClasspath="true" />
         <module name="foodplease" />
         <module name="HCL" />
-        <module name="HCL2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
