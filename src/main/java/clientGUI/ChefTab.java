@@ -79,12 +79,15 @@ class ChefTab extends JPanel {
                     DeliveryManager mng = new DeliveryManager(sql);
 					IngredientManager ingMng = new IngredientManager(sql);
                     for (int i = 0; i < selectedIDs.length; i++) {
-						String selectIngr = "SELECT ingredient_id, stock FROM HCL_ingredient WHERE ingredient_id IN " +
-								"(SELECT ingredient_id FROM HCL_food_ingredient WHERE food_id IN " +
-								"(SELECT food_id FROM HCL_order_food WHERE order_id IN " +
-								"(SELECT order_id FROM HCL_deliveries WHERE delivery_id = "+selectedIDs[i]+"))) AND active = 1";
+						String selectIngr = "SELECT ingredient_id, number FROM HCL_food_ingredient WHERE food_id IN (" +
+								"SELECT food_id FROM HCL_order_food WHERE order_id IN (" +
+								"SELECT order_id FROM HCL_deliveries WHERE delivery_id = " + selectedIDs[i] + ")) AND active = 1";
+						//Ingredients in delivery, and how many to be delivered
 						String[][] ingredients = sql.getStringTable(selectIngr, false);
-						System.out.println(selectIngr);
+						for (int j = 0; j < ingredients.length; j++) {
+							ingMng.removeStock(Integer.parseInt(ingredients[j][0]), Integer.parseInt(ingredients[j][1]));
+						}
+						System.out.println("Ingredients in delivery: \n"+selectIngr);
 						System.out.println("Deliver ID: " + selectedIDs[i]);
                         int rs = mng.complete(selectedIDs[i]);
 
@@ -102,20 +105,22 @@ class ChefTab extends JPanel {
 	}
 	private class viewVindow extends JPanel {
 		private DefaultTableModel tabModel;
+		private String foodQuery;
+		private String ingrQuery;
 		private JTableHCL tabTable;
 		private String[][] tabTitles;
 		private JTabbedPane ingredientTabs;
 		private ingredientTab ingrTab;
+		private int delivery_id;
 		viewVindow(int delivery_id) {
+			this.delivery_id = delivery_id;
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
-			String foodQuery;
-			String ingrQuery;
 			if (delivery_id != -1) {
 				foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
-						" WHERE delivery_id = " + delivery_id;
+						" WHERE delivery_id = " + delivery_id + " AND HCL_food.active = 1";
 				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
-						"HCL_deliveries WHERE delivery_id = " + delivery_id;
+						"HCL_deliveries WHERE delivery_id = " + delivery_id + " AND active = 1";
 			}
 			else {
 				foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries";
@@ -163,27 +168,29 @@ class ChefTab extends JPanel {
 		class ingredientList extends JPanel {
 			ingredientList(String food_id) {
 				setLayout(new BorderLayout());
-				String query = "SELECT name, number, stock, other, expiration_date FROM HCL_ingredient" +
-						" NATURAL JOIN HCL_food_ingredient WHERE food_id = " + food_id;
+				String query = "SELECT ingredient_id, name, number, stock, other, expiration_date FROM HCL_ingredient" +
+						" NATURAL JOIN HCL_food_ingredient WHERE food_id = " + food_id + " AND HCL_ingredient.active = 1";
 				String[][] foods = sql.getStringTable(query, false);
 				String[][] titles = ColumnNamer.getNamesWithOriginals(query, sql);
 				DefaultTableModel tabModel = new DefaultTableModel(foods, titles[1]);
 				JTableHCL table = new JTableHCL(tabModel);
+				table.removeIDs();
 				JScrollPane scroll = new JScrollPane(table);
 				add(scroll, BorderLayout.CENTER);
 			}
 		}
 		void change(int id) {
-			String select = "SELECT food_id, name, number FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
-					" WHERE delivery_id = " + id;
-			String ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
-					"HCL_deliveries WHERE delivery_id = " + id;
+			delivery_id = id;
+			foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries" +
+					" WHERE delivery_id = " + delivery_id + " AND HCL_food.active = 1";
+			ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN " +
+					"HCL_deliveries WHERE delivery_id = " + delivery_id + " AND active = 1";
 			System.out.println("Ingredients query: " + ingrQuery);
 			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
 			String[] ingrTabTitles = sql.getColumn(ingrQuery, 1);
 			System.out.println("Food ids: " + Arrays.toString(FoodIDs));
 			System.out.println("Tab titles: " + Arrays.toString(ingrTabTitles));
-			String[][] tabData = sql.getStringTable(select, false);
+			String[][] tabData = sql.getStringTable(foodQuery, false);
 			tabModel = new DefaultTableModel(tabData, tabTitles[1]);
 			ingrTab.refresh(FoodIDs, ingrTabTitles);
 			tabTable.setModel(tabModel);
