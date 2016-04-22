@@ -157,9 +157,9 @@ class OrderTab extends GenericList {
 
                 save.addActionListener( e-> {
 
-                    ArrayList<String> datesArrayAsArrayList= new ArrayList<>();
-
-                    for(String[] date : dateArray){
+                    for(String[] dateRow : dateArray){
+                        for(String date : dateRow){
+                        }
                     }
 
                     if(editDatesWindow != null) {
@@ -205,7 +205,6 @@ class OrderTab extends GenericList {
                     }*//*
                     //else {*/
                     dispose();
-                    //}
                     foodTab.generate();
                     refresh();
                 });

@@ -56,9 +56,8 @@ class Stuff {
 	public static String bold(String text) {
 		return setBold() + text + endBold();
 	}
-	public static String setBold() {
-		return "<html><b>";
-	}
+    public static String grey(String text){return setGrey()+text+endGrey();}
+	public static String setBold() {return "<html><b>";	}
 	public static String endBold() {
 		return "</b></html>";
 	}
@@ -84,6 +83,25 @@ class Stuff {
 		ret = ret.replaceAll(endBlue(), "");
 		return ret;
 	}
+
+    /**
+     * Checks if the inputted is in the array, and if it is; checks if it is greyed out.
+     */
+    public static boolean isGrayedInArray(String[][] array, String string){
+
+        for(String[] row : array){
+            for(String element : row){
+                if (element.contains(string) && element.contains(grey(string))) return true;
+            }
+        }
+        return false;
+    }
+
+    public static void main(String[]args){
+        String[][] array = {{"ost","per"},{"mat",grey("bord"),"ost"},{"laken","lader"}};
+
+        System.out.println(Stuff.isGrayedInArray(array,"bord"));
+    }
 }
 class datePane extends JPanel {
 	private JComboBox<String> yearBox;
