@@ -197,12 +197,12 @@ public class UserManager{
 
         return "-1";
     }
-    private  String getRandomString() { // Random combination from two tables
+    public String getRandomString() { // Random combination from two tables
 
         Random r = new Random();
 
-        String[] first = {"Norge","Sverige","Danmark","Finland","England","Spania","Russland","Korea"};
-        String[] second = {"ErBest","ErVerst","FinnsIkke","ErDårligeIFotball","ErGodeIFotball"};
+        String[] first = {"Norway","Sweeden","Denmark","Finland","England","Spain","Russia","Korea"};
+        String[] second = {"IsTheBest","IsTheWorst","IsCool","IsLame","DoesNotExist"};
 
         int r1 = r.nextInt(first.length);
         int r2 = r.nextInt(second.length);
@@ -282,12 +282,15 @@ public class UserManager{
         SQL sql = new SQL();
         UserManager u = new UserManager(sql);
 
-		//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
-        u.changePassword("olavhus","ostost","faiter119");
+		/*//u.generateUser("olavhus", "olavhus", 3); //Username, psw, role, 0 CEO
+        u.changePassword("olavhus","ostost","faiter119");*/
+        for(int i=1; i<100; i++){
+            System.out.println(u.getRandomString());
+        }
 
-		System.out.println(u.logon("olavhus", "ostost"));
+	/*	System.out.println(u.logon("olavhus", "ostost"));
         System.out.println(u.logon("olavhus", "faiter119"));
-        u.generate("admin", "admin", 0);
+        u.generate("admin", "admin", 0);*/
 
      /*   //System.out.println(u.update("HCL_users","user_name","ost","Magisk"));
         System.out.println(u.changePassword("Magisk","olavhus","ost"));*/
