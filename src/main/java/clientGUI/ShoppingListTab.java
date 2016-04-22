@@ -11,9 +11,6 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-/**
- * Created by Jens on 22-Apr-16.
- */
 public class ShoppingListTab extends JPanel {
 	private SQL sql;
 	private Shoppinglist shop;

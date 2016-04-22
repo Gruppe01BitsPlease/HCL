@@ -15,9 +15,6 @@ import java.util.Arrays;
 
 import static java.time.temporal.ChronoField.YEAR;
 
-/**
- * Created by Jens on 15-Apr-16.
- */
 class Stuff {
 
     private Stuff(){} // Can't be instansized
