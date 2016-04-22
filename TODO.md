@@ -4,7 +4,6 @@
 - Lage noe slags ruteplanlegger (Trenger ikke være sånn op javascript GoogleMaps implementasjon -.-')
 - Trenger ikke noe form for finanshåndtering? Ikke engang priser osv på produkter??
 - Javadoc i alle backend klasser, trenger vi så mye javadoc i GUI?
-- Ny order: Exception hvis kunde ikke finns, bruk drop-down
 - Legg til UseCase: Endre Settings elns
 
 **GUI**
