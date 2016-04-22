@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * Is responsible for managing food entries in the database
+ * Used for managing the "stock" of ingredients in the database
  */
 public class Shoppinglist {
 
@@ -19,6 +19,8 @@ public class Shoppinglist {
     }
 
     /**
+     * Calculates the total of needed ingredients in the interval, summs the total together and removes the current
+     *  stock, giving you the amount you need to buy to ensure enough ingredients.
      * @return Shopping list as String[]
      * @param interval Days from now until end of shopping list
      */

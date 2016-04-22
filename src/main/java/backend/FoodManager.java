@@ -22,8 +22,9 @@ public class FoodManager {
     }
 
     /**
+     * Generates a food and adds it to the database
      * @return
-     *  1: OK
+     *  ID: The ID of the added food
      * -2: SQL Exception
      * -3: Wrong parameters
      */
@@ -46,11 +47,11 @@ public class FoodManager {
     }
 
     /**
+     * Sets a food as "inactive", meaning it wont show up in the UI, but is still there for statistical reasons
      * @return
      *  1: OK
      * -1: Did not exists
      * -2: SQL Exception
-     * -3: Wrong parameters
      */
     public int delete(int id) {
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,id)) return -1;
@@ -69,7 +70,7 @@ public class FoodManager {
     }
 
     /**
-     *
+     * Adds an ingredient to a food and puts the values into the link-tables.
      * @return
      * 1: OK
      * -1: Food or ingredient don't exist
@@ -84,9 +85,7 @@ public class FoodManager {
         if(food_id <0 || ingredient_id <0 || amount <0 )return -3;
         if(!sql.rowExists(CURRENT_TABLE,"food_id",food_id) || !sql.rowExists("HCL_ingredient","ingredient_id",ingredient_id)) return -4;
 
-        int result = link.generate(CURRENT_TABLE_LINK,"food_id","ingredient_id",food_id,ingredient_id,amount);
-
-        return result;
+        return link.generate(CURRENT_TABLE_LINK,"food_id","ingredient_id",food_id,ingredient_id,amount);
     }
 
     public static void main(String[]args){

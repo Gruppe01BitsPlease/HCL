@@ -45,10 +45,11 @@ public class DeliveryManager {
         catch (SQLException e){return -2;}
     }
     /**
+     * Adds a date/delivery to an order at the spesified date
      * Possible to add several deliveries on the same day
      *@param date Formatted as yyyy-MM-dd
      * @return
-     * ID: OK
+     * ID: OK, id of created delivery
      * -2: SQL Exception
      * -3: Invalid order ID
      * -5: Wrong date formatting
@@ -79,7 +80,7 @@ public class DeliveryManager {
         }
     }
     /**
-     * Possible to add several deliveries on the same day
+     * Removes a delivery date
      * @return
      *  1: OK
      * -1: Does not exist
@@ -146,6 +147,11 @@ public class DeliveryManager {
         }
         return 1;
     }
+
+    /**
+     * Same as addDates(), but does not actaully add the dates, just returns a String[] of the dates that are
+     *  supposed to be added; used for GUI.
+     */
     public String[] getDatesToBeAdded(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days){
 
         if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return new String[0];
@@ -176,7 +182,11 @@ public class DeliveryManager {
     }
 
     /**
+     * Adds the dates from the "start" to the "end" at the weekdays spesified by the DayOfWeek-objects in the
+     *  days-table. Use getDatesToBeAdded() if you want to know what these dates are.
      * @param interval How often: 1 = per week, 2 = every other week, 3 = every third week etc
+     * @param days A DayOfWeek table filled with the weekdays you want deliveries on. Fks {DayOfWeek.MONDAY} will
+     *             add deliveries only on mondays.
      */
     public void addDates(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days/*boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun*/){
 
@@ -199,12 +209,12 @@ public class DeliveryManager {
                 weekCounter = 0;
                 current = current.plusDays(7*interval); // Skips weeks
             }
-
         }
-
     }
 
     /**
+     * Sets a delivery as "delivered", meaning it's been delivered to the customer in a satisfying manner and have
+     *  been payed for.
      * @return
      *  1: OK
      * -1: Does not exist
@@ -228,6 +238,14 @@ public class DeliveryManager {
         catch (SQLException e){return -2;}
 
     }
+
+    /**
+     * Sets a delivery as "completed", meaning the cheffs have finished the order and it is ready to be delivered
+     * @return
+     *  1: OK
+     * -1: Does not exist
+     * -2: SQL Exception
+     */
     public int complete(int delivery_id){
 
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -1;
