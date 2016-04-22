@@ -9,13 +9,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 
 /**
  * Creates the JPanel that is used as a tab in tabbedMenu
  */
 public class DriverTab extends JPanel {
 	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
-	private String query = "SELECT delivery_id, adress, delivery_date, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -47,6 +48,7 @@ public class DriverTab extends JPanel {
 			}
 		});
 		add(new northBar(), BorderLayout.NORTH);
+		add(new southBar(), BorderLayout.SOUTH);
 		table.removeIDs();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
@@ -56,8 +58,42 @@ public class DriverTab extends JPanel {
 		table.setModel(tabModel);
 		table.removeIDs();
 	}
+	private void refresh(int days) {
+		LocalDate now = LocalDate.now();
+		String date = now.plusDays(days).toString();
+		String dayQuery = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order " +
+				"WHERE active = 1 AND delivered = 0 AND delivery_date < '"+date+"' ORDER BY delivery_date ASC";
+		System.out.println("Day query: " + dayQuery);
+		data = sql.getStringTable(dayQuery, false);
+		tabModel = new DefaultTableModel(data, titles);
+		table.setModel(tabModel);
+		table.removeIDs();
+	}
+	private class southBar extends JPanel {
+		southBar() {
+			setLayout(new GridLayout(1, 2));
+			JLabel daysLabel = new JLabel("Days to show");
+			String[] dayChoices = new String[8];
+			for (int i = 0; i < 7; i++){
+				dayChoices[i] = Integer.toString(i + 1);
+			}
+			dayChoices[7] = "All";
+			JComboBox<String> dayBox = new JComboBox<>(dayChoices);
+			dayBox.addItemListener(e -> {
+				if (dayBox.getSelectedIndex() < 7) {
+					refresh(dayBox.getSelectedIndex() + 1);
+				}
+				else {
+					refresh();
+				}
+			});
+			dayBox.setSelectedIndex(7);
+			add(daysLabel);
+			add(dayBox);
+		}
+	}
 	private class northBar extends JPanel {
-		public northBar() {
+		northBar() {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Deliver");
 			JButton refresh = new JButton("Refresh");

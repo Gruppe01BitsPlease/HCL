@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Is responsible for managing food entries in the database
@@ -13,8 +14,8 @@ public class Shoppinglist {
 
     private SQL sql;
 
-    public Shoppinglist(){
-        this.sql = new SQL();
+    public Shoppinglist(SQL sql){
+        this.sql = sql;
     }
 
     /**
@@ -23,7 +24,7 @@ public class Shoppinglist {
      */
     public String[][] getShoppinglist(int interval){
 
-        String prepString = "SELECT ingredient_id, `Ingredient Name`, Sum(`Total Ingredients`), `Ingredient Stock`, Sum(`Total Ingredients`)-`Ingredient Stock`'Total Minus Stock'" +
+        String prepString = "SELECT ingredient_id, `Ingredient Name`, Sum(`Total Ingredients`), `Ingredient Stock`, `Ingredient Stock`-Sum(`Total Ingredients`)" +
                 " FROM deliveries_ingredients_total " +
                 "WHERE (`Total Ingredients`)-`Ingredient Stock` > 0 AND delivery_date BETWEEN CURDATE() AND CURDATE()+ ? " +
                 "GROUP BY ingredient_id;";
@@ -138,11 +139,12 @@ public class Shoppinglist {
     public static void main(String[]args){
 
         SQL sql = new SQL();
-        Shoppinglist list = new Shoppinglist();
+        Shoppinglist list = new Shoppinglist(sql);
 
         String[][] array = list.getShoppinglist(2000);
 
         sql.print2dArray(array);
+        //System.out.println(Arrays.toString(list.getTitles()));
 
         /*int add = list.addShoppinglist(array);
         System.out.println(add);

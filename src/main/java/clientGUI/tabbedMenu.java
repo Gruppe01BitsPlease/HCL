@@ -54,24 +54,26 @@ public class tabbedMenu extends JFrame {
 		addTabs();
 		add(tabs, BorderLayout.CENTER);
 		add(new menubar(rolle), BorderLayout.NORTH);
-		// 1 salg, 2 chef, 3 driver, 0 ceo
 		this.setVisible(true);
 	}
-
+	// 1 salg, 2 chef, 3 driver, 0 ceo
 	private void addTabs() {
 		if (rolle == 0) {
 			addTab(new CeoTab(rolle, sql));
 		}
-		if (rolle == 1 || rolle == 0) {
+		if (rolle <= 1) {
 			addTab(new OrderTab(sql, rolle));
 			addTab(new CustomerTab(sql, rolle));
 		}
-		if (rolle == 2 || rolle == 0) {
+		if (rolle <= 2) {
 			addTab(new FoodTab(sql, rolle));
 			addTab(new IngredientTab(sql, rolle));
+			addTab(new ShoppingListTab(sql));
+		}
+		if (rolle == 2) {
 			addTab(new ChefTab(sql, rolle));
 		}
-		if (rolle == 3 || rolle == 0) {
+		if (rolle == 3) {
 			addTab(new DriverTab(sql, rolle));
 		}
 	}
@@ -81,11 +83,9 @@ public class tabbedMenu extends JFrame {
 	private String foodName = "Foods";
 	private String ingrName = "Ingredients";
 	private String ordrName = "Orders";
-	private String packName = "Packages";
-	private String subscrName = "Subscriptions";
 	private String chefName = "Chef view";
-	private String statName = "Statistics";
 	private String drivName = "Driver view";
+	private String shopName = "Shopping list";
 
 	private void addTab(JPanel tab) {
 
@@ -119,6 +119,11 @@ public class tabbedMenu extends JFrame {
 		else if (tab instanceof DriverTab) {
 			if (tabs.indexOfTab(drivName) == -1) {
 				tabs.addTab(drivName, tab);
+			}
+		}
+		else if (tab instanceof ShoppingListTab) {
+			if (tabs.indexOfTab(shopName) == -1) {
+				tabs.addTab(shopName, tab);
 			}
 		}
 		addCloseButtons();
@@ -303,6 +308,18 @@ public class tabbedMenu extends JFrame {
 					JMenuItem chf = new JMenuItem(chefName);
 					chf.setEnabled(false);
 					newTab.add(chf);
+				}
+				if (tabs.indexOfTab(shopName) == -1) {
+					JMenuItem shp = new JMenuItem(shopName);
+					shp.addActionListener(e -> {
+						addTab(new ShoppingListTab(sql));
+					});
+					newTab.add(shp);
+				}
+				else {
+					JMenuItem shp = new JMenuItem(shopName);
+					shp.setEnabled(false);
+					newTab.add(shp);
 				}
 			}
 			if (rolle == 1 || rolle == 0) {

@@ -17,7 +17,9 @@ import static java.time.temporal.ChronoField.YEAR;
 /**
  * Created by Jens on 15-Apr-16.
  */
-abstract class Stuff {
+class Stuff {
+
+    private Stuff(){} // Can't be instansized
 	//Used to size a window relative to the main window, which is sized relative to the screen
 	public static Dimension getWindowSize(double factorX, double factorY) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -53,9 +55,8 @@ abstract class Stuff {
 	public static String bold(String text) {
 		return setBold() + text + endBold();
 	}
-	public static String setBold() {
-		return "<html><b>";
-	}
+    public static String grey(String text){return setGrey()+text+endGrey();}
+	public static String setBold() {return "<html><b>";	}
 	public static String endBold() {
 		return "</b></html>";
 	}
@@ -81,6 +82,55 @@ abstract class Stuff {
 		ret = ret.replaceAll(endBlue(), "");
 		return ret;
 	}
+    public static boolean isBold(String string){
+        return string.contains(setBold()) && string.contains(endBold());
+    }
+    public static boolean isGrey(String string){
+        return string.contains(setGrey()) && string.contains(endGrey());
+    }
+    /**
+     * Checks if the inputted is in the array, and if it is; checks if it is greyed out.
+     */
+    public static boolean isGrayedInArray(String[][] array, String string){
+
+        for(String[] row : array){
+            for(String element : row){
+                if (element != null && element.equals(grey(string))) return true;
+            }
+        }
+        return false;
+    }
+    public static boolean isBoldInArray(String[][] array, String string){
+        // System.out.println(Arrays.deepToString(array)+" - "+string);
+        if(array == null || string == null) return false;
+        for(String[] row : array){
+            for(String element : row){
+                if (element != null && element.contains(string) && element.contains(bold(string))) return true;
+            }
+        }
+        return false;
+    }
+    public static boolean arrayContains(String[] array, String string){
+        if(array == null || string == null) return false;
+
+        for(String element : array){
+            if(element != null && element.equals(string)) return true;
+        }
+        return false;
+    }
+    public static boolean twoDArrayContains(String[][] array, String string){
+        if(array == null || string == null) return false;
+        for(String[] row : array){
+            if(arrayContains(row,string)) return true;
+        }
+        return false;
+    }
+
+    public static void main(String[]args){
+        String[][] array = {{"ost","per"},{"mat",grey("bord"),"ost"},{"laken","lader"}};
+
+        System.out.println(Stuff.isGrayedInArray(array,"bord"));
+    }
 }
 class datePane extends JPanel {
 	private JComboBox<String> yearBox;
@@ -274,6 +324,7 @@ class editFields extends JPanel {
 		return comboBoxChoices;
 	}
 	public String[] getNewValues() {
+		//returns the new values as an array, should be in same order as columns in jtable (including hidden ones!)
 		String[] newValues = new String[selected.length];
 		for (int i = 0; i < newValues.length; i++) {
 			if (fields.get(i) instanceof JTextField) {
@@ -292,8 +343,6 @@ class editFields extends JPanel {
 			} else if (fields.get(i) instanceof JComboBox) {
 				JComboBox cmb = (JComboBox) fields.get(i);
 				String selID = comboBoxChoices[0][cmb.getSelectedIndex()];
-										/*String sel = (String) cmb.getSelectedItem();
-										String[] chosen = sel.split(",");*/
 				newValues[i] = selID;
 				System.out.println(newValues[i]);
 			}
@@ -399,7 +448,7 @@ class linkTab extends JPanel {
 								removeLinks.add(link);
 							}
 							for (int j = 0; j < linkTableData[sel[i]].length; j++) {
-								linkTableData[sel[i]][j] = Stuff.setGrey() + linkTableData[sel[i]][j] + Stuff.endGrey();
+								linkTableData[sel[i]][j] = Stuff.setGrey() + Stuff.removeHTML(linkTableData[sel[i]][j]) + Stuff.endGrey();
 							}
 						}
 						linkTableModel = new DefaultTableModel(linkTableData, titles[1]);
