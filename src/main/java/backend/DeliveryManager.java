@@ -24,7 +24,7 @@ public class DeliveryManager {
     public DeliveryManager(SQL sql){
         this.sql = sql;
     }
-
+    @Deprecated
     /**
      * @return
      *  1: OK
@@ -82,7 +82,6 @@ public class DeliveryManager {
      * Possible to add several deliveries on the same day
      * @return
      *  1: OK
-     * -1: Does not exist
      * -2: SQL Exception
      * -3: Wrong Parameters
      * -5: Wrong date formatting
@@ -146,13 +145,16 @@ public class DeliveryManager {
         }
         return 1;
     }
+
+
     public String[] getDatesToBeAdded(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days){
 
-        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return new String[0];
+        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0 || start == null || end == null || !(interval > 0) ) return new String[0];
 
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
 
         int weekCounter = 0;
+        //if (Period.between(current,end).isNegative()) return new String[0];
 
         ArrayList<String> dates = new ArrayList<>();
 
@@ -180,7 +182,7 @@ public class DeliveryManager {
      */
     public void addDates(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days/*boolean mon, boolean tues, boolean wed, boolean thur, boolean fri, boolean sat, boolean sun*/){
 
-        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return;
+        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0 || start == null || end == null || !(interval > 0) ) return;
 
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
 
