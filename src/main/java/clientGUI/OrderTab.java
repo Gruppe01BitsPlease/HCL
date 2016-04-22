@@ -134,7 +134,7 @@ class OrderTab extends GenericList {
                         for (int i = 0; i < sel.length; i++) {
                             for (int j = 0; j < subModel.getColumnCount(); j++) {
                                 if (subModel.getValueAt(sel[i], j) != null) {
-                                    String value = Stuff.setGrey() + subModel.getValueAt(sel[i], j) + Stuff.endGrey();
+                                    String value = Stuff.setGrey() + Stuff.removeHTML((String)subModel.getValueAt(sel[i], j)) + Stuff.endGrey();
                                     System.out.println("Setting grey!: "+value);
                                     subModel.setValueAt(value, sel[i], j);
                                     System.out.println(subModel.getValueAt(sel[i], j));
@@ -160,7 +160,7 @@ class OrderTab extends GenericList {
 
                 save.addActionListener( e-> { // FIXME: 22.04.2016 
 
-                    if(editDatesWindow != null) {
+                    /*if(editDatesWindow != null) {
 
                         for(String[] row : dateArray){
                             System.out.println("ROW: "+Arrays.toString(row)); // FIXME: 22.04.2016 
@@ -173,7 +173,7 @@ class OrderTab extends GenericList {
                                     try { LocalDate date = LocalDate.parse(elementNoHTML);} catch (DateTimeException ex) {continue;} // If the element is not a valid date, skip this iteration
 
                                     if (Stuff.isBold(element) && !Stuff.isGrey(element)) {
-                                        System.out.println(element+"Is bold? :"+Stuff.isBold(element) +" - Is Grey?: "+ Stuff.isGrey(element));
+                                        System.out.println(element+"Is bold? : "+Stuff.isBold(element) +" - Is Grey?: "+ Stuff.isGrey(element));
                                         manager.addDate(order_id, elementNoHTML);
                                     }
                                 }
@@ -181,7 +181,7 @@ class OrderTab extends GenericList {
                             }
                         }
 
-                    }
+                    }*/
 
 
                     String[] newValues = editFields.getNewValues();
@@ -197,7 +197,7 @@ class OrderTab extends GenericList {
                             }
                         }
                     }
-                    /*
+
                     DeliveryManager mng = new DeliveryManager(sql);
                     int removeResult = 0;
                     int addResult = 0;
@@ -209,14 +209,16 @@ class OrderTab extends GenericList {
                         }
                         if (value.contains(Stuff.setGrey())) {
                             //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
-                            removeResult = mng.removeDate(Integer.parseInt(dateArray[i][0]));
+                            if (dateArray[i][0] != null) {
+                                removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
+                            }
                         }
                     }
-                    *//*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
+                    /*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
                         JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
                         System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
-                    }*//*
-                    //else {*/
+                    }*/
+                    //else {
                     dispose();
                     foodTab.generate();
                     refresh();
