@@ -22,7 +22,7 @@ public class MyJFreeChart extends JPanel {
     private ChartPanel chartPanel;
 
     private MyJFreeChart(Builder builder) {
-
+       // setLayout(new BorderLayout());
         JFreeChart chart = createChart(builder.dataset, builder.title);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(500, 270));
@@ -66,7 +66,7 @@ public class MyJFreeChart extends JPanel {
     /**Creates a JPanel chart with the dataset*/
     private JFreeChart createChart(CategoryDataset dataset, String title) {
         // create the chart...
-        final JFreeChart chart = ChartFactory.createBarChart(
+        return ChartFactory.createBarChart(
                 title,         // chart title
                 "",               // x axis label
                 "",                  // y axis label
@@ -76,7 +76,6 @@ public class MyJFreeChart extends JPanel {
                 true,                     // tooltips?
                 false                     // URLs?
         );
-        return chart;
     }
     public static JPanel getOrdersByDayChart(){
         Statistics stats = new Statistics();

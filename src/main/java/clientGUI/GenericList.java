@@ -90,7 +90,12 @@ class GenericList extends JPanel {
 		return role;
 	}
 	public int getSelectedID() {
-		return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
+		if (scroll.isVisible()) {
+			return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
+		}
+		else {
+			return Integer.parseInt((String) searchList.getValueAt(searchList.getSelectedRow(), 0));
+		}
 	}
 	class cardTable extends JPanel {
 		public cardTable() {
@@ -120,10 +125,8 @@ class GenericList extends JPanel {
 			tabModel = new DefaultTableModel(table, titles);
 			list.setModel(tabModel);
 			System.out.println("REFRESH");
-			if (searchEnabled) {
-				ActionEvent act = new ActionEvent(this, 0, "");
-				searchPress.actionPerformed(act);
-			}
+			ActionEvent act = new ActionEvent(this, 0, "");
+			searchPress.actionPerformed(act);
 			list.removeIDs();
 			if (sortColumn != -1) {
 				list.setSortColumn(sortColumn);
@@ -333,7 +336,7 @@ class GenericList extends JPanel {
 							cardLayout.show(cards, scrollName);
 						}
 						else {
-							ArrayList<Integer> rowAdded = new ArrayList<Integer>();
+							ArrayList<Integer> rowAdded = new ArrayList<>();
 							searchTable = new String[table.length][table[0].length];
 							ArrayList<String[]> searchArray = new ArrayList<>();
 							for (int i = 0; i < table.length; i++) {

@@ -16,11 +16,10 @@ public class tabbedMenu extends JFrame {
 	private int x;
 	private int y;
 	private static JTabbedPane tabs;
-	private static boolean searchAdded;
 	private int rolle;
 
 	public tabbedMenu(int rolle, String username) throws Exception {
-		searchAdded = false;
+		boolean searchAdded = false;
 		sql = new SQL();
 		this.rolle = rolle;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);
@@ -30,35 +29,23 @@ public class tabbedMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowListener() {
 			@Override
-			public void windowOpened(WindowEvent e) {
-			}
-
+			public void windowOpened(WindowEvent e) {}
 			@Override
 			public void windowClosing(WindowEvent e) {
 				System.out.println("Closing connection");
 				sql.end();
 				System.exit(0);
 			}
-
 			@Override
-			public void windowClosed(WindowEvent e) {
-			}
-
+			public void windowClosed(WindowEvent e) {}
 			@Override
-			public void windowIconified(WindowEvent e) {
-			}
-
+			public void windowIconified(WindowEvent e) {}
 			@Override
-			public void windowDeiconified(WindowEvent e) {
-			}
-
+			public void windowDeiconified(WindowEvent e) {}
 			@Override
-			public void windowActivated(WindowEvent e) {
-			}
-
+			public void windowActivated(WindowEvent e) {}
 			@Override
-			public void windowDeactivated(WindowEvent e) {
-			}
+			public void windowDeactivated(WindowEvent e) {}
 		});
 		setMinimumSize(Stuff.getWindowSize(1, 1));
 		setLocationRelativeTo(null);
@@ -73,14 +60,11 @@ public class tabbedMenu extends JFrame {
 
 	private void addTabs() {
 		if (rolle == 0) {
-			//addTab(new StatisticsTab());
-			// addTab(new EmployeeTab(sql, rolle));
 			addTab(new CeoTab(rolle, sql));
 		}
 		if (rolle == 1 || rolle == 0) {
 			addTab(new OrderTab(sql, rolle));
 			addTab(new CustomerTab(sql, rolle));
-			//addTab(new SubscriptionTab(sql, rolle));
 		}
 		if (rolle == 2 || rolle == 0) {
 			addTab(new FoodTab(sql, rolle));
@@ -94,7 +78,6 @@ public class tabbedMenu extends JFrame {
 
 	private String ceoName = "CEO functions";
 	private String custName = "Customers";
-	//private String empName = "Employees";
 	private String foodName = "Foods";
 	private String ingrName = "Ingredients";
 	private String ordrName = "Orders";
@@ -115,11 +98,6 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(custName, tab);
 			}
 		}
-		/*else if (tab instanceof EmployeeTab) {
-			if (tabs.indexOfTab(empName) == -1) {
-				tabs.addTab(empName, tab);
-			}
-		}*/
 		else if (tab instanceof FoodTab) {
 			if (tabs.indexOfTab(foodName) == -1) {
 				tabs.addTab(foodName, tab);
@@ -133,26 +111,11 @@ public class tabbedMenu extends JFrame {
 				tabs.addTab(ordrName, tab);
 			}
 		}
-		/*else if (tab instanceof PackageTab) {
-			if (tabs.indexOfTab(packName) == -1) {
-				tabs.addTab(packName, tab);
-			}
-		}*/
-		/*else if (tab instanceof SubscriptionTab) {
-			if (tabs.indexOfTab(subscrName) == -1) {
-				tabs.addTab(subscrName, tab);
-			}
-		}*/
 		else if (tab instanceof ChefTab) {
 			if (tabs.indexOfTab(chefName) == -1) {
 				tabs.addTab(chefName, tab);
 			}
 		}
-		/*else if (tab instanceof StatisticsTab) {
-			if (tabs.indexOfTab(statName) == -1) {
-				tabs.addTab(statName, tab);
-			}
-		}*/
 		else if (tab instanceof DriverTab) {
 			if (tabs.indexOfTab(drivName) == -1) {
 				tabs.addTab(drivName, tab);
@@ -372,22 +335,7 @@ public class tabbedMenu extends JFrame {
 					newTab.add(cust);
 				}
 			}
-			if (rolle == 0) {/*
-				if (tabs.indexOfTab(empName) == -1) {
-					JMenuItem emp = new JMenuItem(empName);
-					emp.addActionListener(new AbstractAction() {
-						@Override
-						public void actionPerformed(ActionEvent e) {
-							addTab(new EmployeeTab(sql, rolle));
-						}
-					});
-					newTab.add(emp);
-				}
-				else {
-					JMenuItem emp = new JMenuItem(empName);
-					emp.setEnabled(false);
-					newTab.add(emp);
-				}*/
+			if (rolle == 0) {
 				if (tabs.indexOfTab(ceoName) == -1) {
 					JMenuItem ceo = new JMenuItem(ceoName);
 					ceo.addActionListener(new AbstractAction() {
@@ -404,7 +352,6 @@ public class tabbedMenu extends JFrame {
 				}
 			}
 		}
-
 		private class settingsMenu extends JFrame {
 			public settingsMenu() {
 				setTitle("Database settings");
@@ -426,7 +373,6 @@ public class tabbedMenu extends JFrame {
 				setVisible(true);
 			}
 		}
-
 	}
 
 	public static void main(String[] args) throws Exception {

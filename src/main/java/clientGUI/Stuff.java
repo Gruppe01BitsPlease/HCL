@@ -23,8 +23,7 @@ abstract class Stuff {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) (screen.width * 0.75);
 		int y = (int) (screen.height * 0.75);
-		Dimension dim = new Dimension((int) (x * factorX), (int) (y * factorY));
-		return dim;
+		return new Dimension((int) (x * factorX), (int) (y * factorY));
 	}
 	//Finds the index in the list from a search key
 	public static int findIndexOf(String[][] searchArrays, String search, int column) {
@@ -87,10 +86,7 @@ class datePane extends JPanel {
 	private JComboBox<String> yearBox;
 	private JComboBox<String> monthBox;
 	private JComboBox<Integer> dayBox;
-	private JTextField dayField;
 	private LocalDate date;
-	private ItemListener yearListener;
-	private ItemListener monthListener;
 	public datePane(String dateInput) {
 		//2014-01-31
 		if (dateInput != null) {
@@ -118,7 +114,7 @@ class datePane extends JPanel {
 		String[] months = { "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec" };
 		monthBox = new JComboBox<>(months);
 		dayBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex() + 1]);
-		yearListener = new ItemListener() {
+		ItemListener yearListener = new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				for (int i = 0; i < daysOfMonths.length; i++) {
@@ -130,7 +126,7 @@ class datePane extends JPanel {
 			}
 		};
 		yearBox.addItemListener(yearListener);
-		monthListener = new ItemListener() {
+		ItemListener monthListener = new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				JComboBox<Integer> newBox = new JComboBox<>(daysOfMonths[monthBox.getSelectedIndex()]);
@@ -156,13 +152,9 @@ class datePane extends JPanel {
 			//System.out.println(day.getText());
 			System.out.println(selyear + " " + selmonth);
 		}
-		else {
-			dayField = new JTextField("");
-		}
 		add(yearBox);
 		add(monthBox);
 		add(dayBox);
-		//add(dayField);
 	}
 	public String getDate() {
 		String year = ((String)(yearBox.getSelectedItem()));
@@ -186,15 +178,13 @@ class datePane extends JPanel {
 		return Integer.toString((Integer)dayBox.getSelectedItem());
 	}
 	public void addDays(int days) {
-		LocalDate neue = date.plusDays(days);
-		date = neue;
+		date = date.plusDays(days);
 		yearBox.setSelectedItem(date.getYear());
 		monthBox.setSelectedIndex(date.getMonthValue() - 1);
 		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);
 	}
 	public void addMonths(int months) {
-		LocalDate neue = date.plusMonths(months);
-		date = neue;
+		date = date.plusMonths(months);
 		yearBox.setSelectedItem(date.getYear());
 		monthBox.setSelectedIndex(date.getMonthValue() - 1);
 		dayBox.setSelectedIndex(date.getDayOfMonth() - 1);	}
@@ -207,21 +197,19 @@ class datePane extends JPanel {
 	public void setEnabled(boolean enable) {
 		yearBox.setEnabled(enable);
 		monthBox.setEnabled(enable);
-		dayField.setEnabled(enable);
+		dayBox.setEnabled(enable);
 	}
 }
 class editFields extends JPanel {
 	private ArrayList<JComponent> fields = new ArrayList<>();
 	private String[][] comboBoxChoices;
 	private String[] selected;
-	private String[] dataTypes;
-	private boolean newEntry;
-	private SQL sql;
+
 	public editFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
 		this.selected = selected;
-		this.newEntry = newEntry;
-		this.sql = sql;
-		dataTypes = DataTyper.getDataTypes(titles);
+		boolean newEntry1 = newEntry;
+		SQL sql1 = sql;
+		String[] dataTypes = DataTyper.getDataTypes(titles);
 		if (FKs != null && FKs.length > 0) {
 			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
 		}
@@ -255,8 +243,7 @@ class editFields extends JPanel {
 				add(k);
 			} else if (dataTypes[i].contains("SELECT")) {
 				JLabel j = new JLabel("Customer");
-				String[][] choices = {sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
-				comboBoxChoices = choices;
+				comboBoxChoices = new String[][]{sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
 				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
 				if (!newEntry) {
 					k.setSelectedItem(comboBoxChoices[1][Stuff.findIndexOf(comboBoxChoices[0], selected[i])]);
@@ -433,7 +420,6 @@ class linkTab extends JPanel {
 			setAlwaysOnTop(true);
 			JLabel label = new JLabel("Item");
 			JLabel amountLabel = new JLabel("Amount");
-			String[] foo2 = new String[0];
 			JComboBox<String> inpTemp = new JComboBox<>();
 			String choiceQuery = "SELECT DISTINCT " + link[1] + ", " + link[4] + " FROM " + link[3] +
 					" WHERE " + link[1] + " NOT IN (SELECT " + link[1] + " FROM " + link[2]
@@ -486,13 +472,11 @@ class linkTab extends JPanel {
 					if (newLink) {
 						createLinks.add(inputTable);
 					}
-					else if (!newLink) {
+					else {
 						changeLinks.add(inputTable);
-					}
-					if (!newLink) {
 						linkTableData[linkTable.getSelectedRow()] = addedLink;
 					}
-					else {
+					if (newLink) {
 						//Hackin all over the world
 						if (linkTableData.length == 0) {
 							linkTableData = sql.getStringTable(linkTab.this.linkQuery, false);
@@ -532,8 +516,7 @@ class linkTab extends JPanel {
 	}
 	public void generate() {
 		if (newEntry) {
-			int pk = sql.getLastID();
-			selectedID = pk;
+			selectedID = sql.getLastID();
 		}
 		for (int[] rem : removeLinks) {
 			System.out.println("Remove links: "+Arrays.toString(rem));
@@ -588,6 +571,7 @@ class userEditMenu extends JFrame {
 	public userEditMenu(String id, SQL sql, int rolle) {
 		this.rolle = rolle;
 		this.sql = sql;
+		setAlwaysOnTop(true);
 		String select = "SELECT user_name FROM HCL_user WHERE user_id = " + id;
 		userName = sql.getRow(select)[0];
 		passButton = new JButton("New password");
@@ -602,7 +586,7 @@ class userEditMenu extends JFrame {
 				}
 			}
 		});
-		editMenu menu = new editMenu();
+		editMenu menu = new editMenu(rolle);
 	}
 	public userEditMenu(SQL sql, int rolle) {
 		this.rolle = rolle;
@@ -631,7 +615,7 @@ class userEditMenu extends JFrame {
 				int res = mng.logon(userNameField.getText(), new String(passField.getPassword()));
 				if (res >= 0) {
 					userName = userNameField.getText();
-					editMenu menu = new editMenu();
+					editMenu menu = new editMenu(res);
 					dispose();
 				}
 				else {
@@ -662,7 +646,7 @@ class userEditMenu extends JFrame {
 		});
 	}
 	private class editMenu extends JFrame {
-		public editMenu() {
+		public editMenu(int rolle) {
 			setResizable(false);
 			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
@@ -747,9 +731,7 @@ class userEditMenu extends JFrame {
 				}
 			};
 			ok.addActionListener(action);
-			canc.addActionListener(e -> {
-				dispose();
-			});
+			canc.addActionListener(e -> dispose());
 			passField.addActionListener(action);
 			add(login);
 			add(userNameField);
@@ -785,9 +767,7 @@ class userEditMenu extends JFrame {
 					dispose();
 				}
 			});
-			cancel.addActionListener(e -> {
-				dispose();
-			});
+			cancel.addActionListener(e -> dispose());
 			add(user);
 			add(roleChoice);
 			add(save);

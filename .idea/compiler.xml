@@ -22,11 +22,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="foodplease" />
         <module name="HCL" />
         <module name="HCL2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="foodplease" target="1.8" />
       <module name="HCL" target="1.8" />
       <module name="HCL2" target="1.8" />
     </bytecodeTargetLevel>
