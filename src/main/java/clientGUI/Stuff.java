@@ -83,7 +83,12 @@ abstract class Stuff {
 		ret = ret.replaceAll(endBlue(), "");
 		return ret;
 	}
-
+    public static boolean isBold(String string){
+        return string.contains(setBold()) && string.contains(endBold());
+    }
+    public static boolean isGrey(String string){
+        return string.contains(setGrey()) && string.contains(endGrey());
+    }
     /**
      * Checks if the inputted is in the array, and if it is; checks if it is greyed out.
      */
@@ -91,8 +96,33 @@ abstract class Stuff {
 
         for(String[] row : array){
             for(String element : row){
-                if (element.contains(string) && element.contains(grey(string))) return true;
+                if (element != null && element.equals(grey(string))) return true;
             }
+        }
+        return false;
+    }
+    public static boolean isBoldInArray(String[][] array, String string){
+        // System.out.println(Arrays.deepToString(array)+" - "+string);
+        if(array == null || string == null) return false;
+        for(String[] row : array){
+            for(String element : row){
+                if (element != null && element.contains(string) && element.contains(bold(string))) return true;
+            }
+        }
+        return false;
+    }
+    public static boolean arrayContains(String[] array, String string){
+        if(array == null || string == null) return false;
+
+        for(String element : array){
+            if(element != null && element.equals(string)) return true;
+        }
+        return false;
+    }
+    public static boolean twoDArrayContains(String[][] array, String string){
+        if(array == null || string == null) return false;
+        for(String[] row : array){
+            if(arrayContains(row,string)) return true;
         }
         return false;
     }

@@ -15,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -134,7 +135,9 @@ class OrderTab extends GenericList {
                             for (int j = 0; j < subModel.getColumnCount(); j++) {
                                 if (subModel.getValueAt(sel[i], j) != null) {
                                     String value = Stuff.setGrey() + subModel.getValueAt(sel[i], j) + Stuff.endGrey();
+                                    System.out.println("Setting grey!: "+value);
                                     subModel.setValueAt(value, sel[i], j);
+                                    System.out.println(subModel.getValueAt(sel[i], j));
                                 }
                             }
                             deletedDates.add((String) subModel.getValueAt(sel[i], 0));
@@ -155,23 +158,32 @@ class OrderTab extends GenericList {
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
 
-                save.addActionListener( e-> {
-
-                    for(String[] dateRow : dateArray){
-                        for(String date : dateRow){
-                        }
-                    }
+                save.addActionListener( e-> { // FIXME: 22.04.2016 
 
                     if(editDatesWindow != null) {
-                        if (editDatesWindow.isSingleDelivery()) {
-                          //  if()
-                            manager.addDate(order_id, editDatesWindow.getStartDate().toString());
+
+                        for(String[] row : dateArray){
+                            System.out.println("ROW: "+Arrays.toString(row)); // FIXME: 22.04.2016 
+                            for(String element : row){
+
+                                if(element != null) {
+
+                                    String elementNoHTML = Stuff.removeHTML(element);
+
+                                    try { LocalDate date = LocalDate.parse(elementNoHTML);} catch (DateTimeException ex) {continue;} // If the element is not a valid date, skip this iteration
+
+                                    if (Stuff.isBold(element) && !Stuff.isGrey(element)) {
+                                        System.out.println(element+"Is bold? :"+Stuff.isBold(element) +" - Is Grey?: "+ Stuff.isGrey(element));
+                                        manager.addDate(order_id, elementNoHTML);
+                                    }
+                                }
+
+                            }
                         }
-                        else {
-                            manager.addDates(order_id, editDatesWindow.getStartDate(), editDatesWindow.getEndDate(), editDatesWindow.getInterval(), editDatesWindow.getDays());
-                        }
+
                     }
-                   /*
+
+
                     String[] newValues = editFields.getNewValues();
                     if (newOrder) {
                         order_id = generate(newValues);
@@ -185,6 +197,7 @@ class OrderTab extends GenericList {
                             }
                         }
                     }
+                    /*
                     DeliveryManager mng = new DeliveryManager(sql);
                     int removeResult = 0;
                     int addResult = 0;
