@@ -57,6 +57,7 @@ public class tabbedMenu extends JFrame {
 		this.setVisible(true);
 	}
 	// 1 salg, 2 chef, 3 driver, 0 ceo
+
 	private void addTabs() {
 		if (rolle == 0) {
 			addTab(new CeoTab(rolle, sql));
@@ -227,7 +228,7 @@ public class tabbedMenu extends JFrame {
 			editUser.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					userEditMenu edit = new userEditMenu(sql, rolle);
+					userEditMenu edit = new userEditMenu(sql, rolle, (JPanel)tabs.getTabComponentAt(tabs.indexOfTab(ceoName)));
 				}
 			});
 			settings.add(DBsettings);
