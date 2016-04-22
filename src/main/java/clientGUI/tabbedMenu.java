@@ -61,17 +61,19 @@ public class tabbedMenu extends JFrame {
 		if (rolle == 0) {
 			addTab(new CeoTab(rolle, sql));
 		}
-		if (rolle == 1 || rolle == 0) {
+		if (rolle <= 1) {
 			addTab(new OrderTab(sql, rolle));
 			addTab(new CustomerTab(sql, rolle));
 		}
-		if (rolle == 2 || rolle == 0) {
+		if (rolle <= 2) {
 			addTab(new FoodTab(sql, rolle));
 			addTab(new IngredientTab(sql, rolle));
-			addTab(new ChefTab(sql, rolle));
 			addTab(new ShoppingListTab(sql));
 		}
-		if (rolle == 3 || rolle == 0) {
+		if (rolle == 2) {
+			addTab(new ChefTab(sql, rolle));
+		}
+		if (rolle == 3) {
 			addTab(new DriverTab(sql, rolle));
 		}
 	}

@@ -9,6 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 /**
@@ -32,7 +33,9 @@ class ChefTab extends JPanel {
 		table = new JTableHCL(tabModel);
 		JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 		JScrollPane scroller = new JScrollPane(table);
-		centerPanel.add(scroller);
+		JPanel northPanel = new JPanel(new BorderLayout());
+		northPanel.add(scroller, BorderLayout.CENTER);
+		northPanel.add(new southBar(), BorderLayout.SOUTH);
 		table.setRowSelectionInterval(0,0);
 		viewVindow bottom;
 		try {
@@ -42,6 +45,7 @@ class ChefTab extends JPanel {
 			bottom = new viewVindow(-1);
 		}
 		botFinal = bottom;
+		centerPanel.add(northPanel);
 		centerPanel.add(botFinal);
 		add(centerPanel, BorderLayout.CENTER);
 		table.addMouseListener(new MouseAdapter() {
@@ -61,6 +65,40 @@ class ChefTab extends JPanel {
 		tabModel = new DefaultTableModel(data, titles);
 		table.setModel(tabModel);
 		table.removeIDs();
+	}
+	private void refresh(int days) {
+		LocalDate now = LocalDate.now();
+		String date = now.plusDays(days).toString();
+		String dayQuery = "SELECT delivery_id, adress, delivery_date, completed, delivered, HCL_deliveries.active FROM HCL_deliveries " +
+				"JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_deliveries.active = 1 AND completed = 0 " +
+				"AND delivery_date < '"+date+"' ORDER BY delivery_date ASC";
+		data = sql.getStringTable(dayQuery, false);
+		tabModel = new DefaultTableModel(data, titles);
+		table.setModel(tabModel);
+		table.removeIDs();
+	}
+	private class southBar extends JPanel {
+		southBar() {
+			setLayout(new GridLayout(1, 2));
+			JLabel daysLabel = new JLabel("Days to show");
+			String[] dayChoices = new String[8];
+			for (int i = 0; i < 7; i++){
+				dayChoices[i] = Integer.toString(i + 1);
+			}
+			dayChoices[7] = "All";
+			JComboBox<String> dayBox = new JComboBox<>(dayChoices);
+			dayBox.addItemListener(e -> {
+				if (dayBox.getSelectedIndex() < 7) {
+					refresh(dayBox.getSelectedIndex() + 1);
+				}
+				else {
+					refresh();
+				}
+			});
+			dayBox.setSelectedIndex(7);
+			add(daysLabel);
+			add(dayBox);
+		}
 	}
 	private class northBar extends JPanel {
 		northBar() {
