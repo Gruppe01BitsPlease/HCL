@@ -29,6 +29,7 @@
     <bytecodeTargetLevel>
       <module name="foodplease" target="1.8" />
       <module name="HCL" target="1.8" />
+      <module name="HCL2" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -44,13 +44,17 @@ public class ShoppingListTab extends JPanel {
 			refresh();
 		});
 		dayBox.setSelectedIndex(6);
-		JLabel boxLabel = new JLabel("Days to view:");
+		JLabel boxLabel = new JLabel("Days to show:");
 		JPanel boxPanel = new JPanel(new GridLayout(1, 2));
 		boxPanel.add(boxLabel);
 		boxPanel.add(dayBox);
-		JPanel northBar = new JPanel(new GridLayout(1, 2));
+		JPanel northBar = new JPanel(new GridLayout(1, 3));
 		JButton addStock = new JButton("Add to stock");
 		JButton addAll = new JButton("Add all to stock");
+		JButton refresh = new JButton("Refresh");
+		refresh.addActionListener(e -> {
+			refresh();
+		});
 		addStock.addActionListener(e -> {
 			if (table.getSelectedRow() != -1) {
 				addWindow window = new addWindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
@@ -74,6 +78,7 @@ public class ShoppingListTab extends JPanel {
 		});
 		northBar.add(addStock);
 		northBar.add(addAll);
+		northBar.add(refresh);
 		add(northBar, BorderLayout.NORTH);
 		add(scroller, BorderLayout.CENTER);
 		add(boxPanel, BorderLayout.SOUTH);
@@ -97,7 +102,7 @@ public class ShoppingListTab extends JPanel {
 				catch (Exception f) {
 					JOptionPane.showMessageDialog(addWindow.this, "Please enter a valid number");
 				}
-				int sure = JOptionPane.showConfirmDialog(ShoppingListTab.this, "Add " + amountField.getText() + " of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				int sure = JOptionPane.showConfirmDialog(addWindow.this, "Add " + amountField.getText() + " of this item to stock?", "", JOptionPane.YES_NO_OPTION);
 				if (sure == 0 && amount > 0) {
 					IngredientManager ingrMng = new IngredientManager(sql);
 					ingrMng.addStock(ingredient_id, amount);
@@ -106,7 +111,7 @@ public class ShoppingListTab extends JPanel {
 				refresh();
 			});
 			addBalance.addActionListener(e ->  {
-				int sure = JOptionPane.showConfirmDialog(ShoppingListTab.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				int sure = JOptionPane.showConfirmDialog(addWindow.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
 				if (sure == 0) {
 					shop.add(shoppingList, ingredient_id);
 					dispose();

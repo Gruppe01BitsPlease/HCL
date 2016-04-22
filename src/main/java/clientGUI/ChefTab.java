@@ -23,6 +23,7 @@ class ChefTab extends JPanel {
 	private JTableHCL table;
 	private viewVindow botFinal;
 	private DefaultTableModel tabModel;
+	private JComboBox<String> dayBox;
 	ChefTab(SQL sql, int role) {
 		this.sql = sql;
 		setLayout(new BorderLayout());
@@ -61,10 +62,15 @@ class ChefTab extends JPanel {
 		table.removeIDs();
 	}
 	private void refresh() {
-		data = sql.getStringTable(query, false);
-		tabModel = new DefaultTableModel(data, titles);
-		table.setModel(tabModel);
-		table.removeIDs();
+		if (dayBox.getSelectedIndex() == 7) {
+			data = sql.getStringTable(query, false);
+			tabModel = new DefaultTableModel(data, titles);
+			table.setModel(tabModel);
+			table.removeIDs();
+		}
+		else {
+			refresh(dayBox.getSelectedIndex() + 1);
+		}
 	}
 	private void refresh(int days) {
 		LocalDate now = LocalDate.now();
@@ -80,20 +86,15 @@ class ChefTab extends JPanel {
 	private class southBar extends JPanel {
 		southBar() {
 			setLayout(new GridLayout(1, 2));
-			JLabel daysLabel = new JLabel("Days to show");
+			JLabel daysLabel = new JLabel("Days to show:");
 			String[] dayChoices = new String[8];
 			for (int i = 0; i < 7; i++){
 				dayChoices[i] = Integer.toString(i + 1);
 			}
 			dayChoices[7] = "All";
-			JComboBox<String> dayBox = new JComboBox<>(dayChoices);
+			dayBox = new JComboBox<>(dayChoices);
 			dayBox.addItemListener(e -> {
-				if (dayBox.getSelectedIndex() < 7) {
-					refresh(dayBox.getSelectedIndex() + 1);
-				}
-				else {
-					refresh();
-				}
+				refresh();
 			});
 			dayBox.setSelectedIndex(7);
 			add(daysLabel);

@@ -74,6 +74,7 @@ public class LinkManager {
      */
     public int delete(String table,String PK1, String PK2, int value1, int value2){
 
+        if(table.trim().equals("") || PK1.trim().equals("") || PK2.trim().equals("") || value1 <0 || value2 <0) return -3;
         if(!sql.rowExists(table,PK1,PK2,value1,value2)) return -1;
 
         String sqlPrep = "Update "+table+" SET active = 0 WHERE "+PK1+" = ? AND "+PK2+" = ?;";
@@ -85,7 +86,7 @@ public class LinkManager {
 
             boolean success =  prep.execute();
 
-            return success ? 1 : -2;
+            return success ? -2 : 1;
         }
         catch (SQLException e) {
             System.out.println(e.toString());
