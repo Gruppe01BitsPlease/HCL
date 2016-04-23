@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 /**
  * Creates the data for the Jchart
+ * Extracts data from the database and compiles it into meaningful statistics
  */
 public class Statistics {
 
@@ -17,6 +18,9 @@ public class Statistics {
         this.sql = new SQL();
     }
 
+    /**
+     * @return An ArrayList of LocalDate containing all the delivery-dates, also inactive ones.
+     */
     private ArrayList<LocalDate> getDeliveryDates(){
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
@@ -46,10 +50,9 @@ public class Statistics {
         }
         return ingredients;
     }
-    /*
-     *  Orders over tid / Per dag / Måned
-     *  Total ordre, subscriptions
-     *  Mest populære ingrediens / mat
+
+    /**
+     * Total amount of subscriptions, using the deliverymanager.isSubscription method
      */
     public int getTotalSubscriptions(){
 
@@ -65,6 +68,10 @@ public class Statistics {
         }
         return count;
     }
+
+    /**
+     * @return Total amount of orders, inactive and not.
+     */
     public int getTotalOrders(){
 
         String[][] results = sql.getStringTable("SELECT COUNT(*) FROM HCL_order;",false);
@@ -74,8 +81,6 @@ public class Statistics {
         }
         return 0;
     }
-
-
 
     /**
      * Table of which days get the deliverables
@@ -225,6 +230,9 @@ public class Statistics {
 
     }
 
+    /**
+     * @return Cost off all completed and delivered orders.
+     */
     public int getGrossIncome(){
 
         String[][] results = sql.getStringTable("SELECT sum(price) FROM HCL_deliveries NATURAL JOIN HCL_order " +

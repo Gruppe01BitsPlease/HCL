@@ -2,9 +2,6 @@ package backend;
 
 import java.util.Arrays;
 
-/**
- *
- */
 public class Routeplanner {
 
     private SQL sql;
@@ -13,6 +10,10 @@ public class Routeplanner {
         this.sql = new SQL();
     }
 
+
+    /**
+     * @return The deliveres ordered by zip-code.
+     */
     public String[][] getRoute(){
         String[][] ordersToday = sql.getStringTable("SELECT customer_name, tlf, adress, postnr " +
                 "FROM HCL_customer NATURAL JOIN HCL_order NATURAL JOIN HCL_deliveries " +

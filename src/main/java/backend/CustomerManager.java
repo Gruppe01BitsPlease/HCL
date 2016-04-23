@@ -39,8 +39,7 @@ public class CustomerManager {
 
             return sql.getLastID();
         }
-        catch (SQLException e){
-            return -2;}
+        catch (SQLException e){return -2;}
     }
 
     /**

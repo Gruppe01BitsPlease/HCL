@@ -49,6 +49,8 @@ public class SQL {
      */
 	public boolean isConnected(){
 		try {
+            if(connection == null) connection = connect();
+
 			return connection != null && connection.isValid(3);
 		}
 		catch (SQLException e){
@@ -92,7 +94,6 @@ public class SQL {
 	/**
 	 * @return A ResultSet object
      * Cant close the ResultSet object here; if you do, you can't do anything with the object because reasons
-	 * TODO: Prepared statements
 	 */
 	public ResultSet query(String query) {
 		if (query == null || query.trim().equals("")) {
@@ -112,7 +113,8 @@ public class SQL {
 	/**
 	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
      * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
-     *                        primaryKeyValue: The value of the primary key
+     *                        primaryKeyValue: The value of the primary key.
+     * @return true if it managed to update the specified value, false otherwise
 	 */
 	public boolean update(String table, String colomnName, String primaryKey, String primaryKeyValue, String newValue) {
         //UPDATE HCL_user SET user_name =  'ost' WHERE user_name LIKE  'Mat'
@@ -230,7 +232,6 @@ public class SQL {
 
     /**
      *@return True if the searched value "primaryKeyValue" exists in the colomn "primaryKey" in the specified table
-     *
      */
     public boolean rowExists(String table, String primaryKey, String primaryKeyValue){
        /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
@@ -257,8 +258,8 @@ public class SQL {
 		}
     }
 
-	/**
-	 * Used where the value is an int
+    /**
+     *@return True if the searched value "primaryKeyValue" exists in the colomn "primaryKey" in the specified table
      */
     public boolean rowExists(String table, String primaryKey, int primaryKeyValue){
        /* if(table.split(" \"\':;").length > 1){ //Prevents sql-injection
@@ -285,8 +286,9 @@ public class SQL {
 		}
     }
 
-	/**
-	 * Used for link-tables
+    /**
+     *@return True if the searched value "primaryKeyValue" exists in the colomn "primaryKey" in the specified table
+     * Used for link-tables only
      */
 	public boolean rowExists(String table, String PK1,String PK2, int v1, int v2){
 
@@ -367,7 +369,7 @@ public class SQL {
 	}
 
 	/**
-	 * @return ID last inserted, or -1 if no result
+	 * @return ID last inserted into the datasbase, or -1 if no result
      */
 	public int getLastID(){
 		ResultSet res = query("SELECT LAST_INSERT_ID();");
@@ -388,19 +390,26 @@ public class SQL {
 
 	}
 
+    /**
+     *
+     * @param query
+     * @param column
+     * @return Only the spesified colomn from the query. Same as getStringTable[][colomn]
+     */
 	public String[] getColumn(String query, int column) {
-		String[][] ans = getStringTable(query, false);
-		//System.out.println(Arrays.toString(ans[0]));
-		String[] foo = new String[ans.length];
-		for (int i = 0; i < ans.length; i++) {
-			foo[i] = ans[i][column];
+		String[][] queryAsTable = getStringTable(query, false);
+		String[] result = new String[queryAsTable.length];
+		for (int i = 0; i < queryAsTable.length; i++) {
+			result[i] = queryAsTable[i][column];
 		}
-		return foo;
+		return result;
 	}
 
+    /**
+     * @return The first row of values from the query, literally getStringTable()[0];
+     */
 	public String[] getRow(String query) {
-		String[][] one = getStringTable(query, false);
-		return one[0];
+		return getStringTable(query, false)[0];
 	}
 	/**
 	 * Returns an array with the correct size for the specified query
@@ -434,7 +443,7 @@ public class SQL {
 	/**
 	 * Prints a generic [][] array. Can take all types off arrays cuz fancy
 	 */
-	<T> void print2dArray(T[][] array) {
+	public <T> void print2dArray(T[][] array) {
 		if (array != null && array.length != 0) {
 			System.out.println();
 			for (int i = 0; i < array[0].length; i++) {
@@ -457,9 +466,9 @@ public class SQL {
 	}
 
 	/**
-	 * @return An int-object
-	 * 1: okay, -1: SQLException
-	 *
+	 * @return
+	 * 1: OK, -1: SQLException
+     * ONLY USED FOR TESTING
 	 */
 	public int deleteForGood(String table, String PK1, int v1) {
 
@@ -482,7 +491,11 @@ public class SQL {
 		}
 
 	}
-
+    /**
+     * @return
+     * 1: OK, -1: SQLException
+     * ONLY USED FOR TESTING
+     */
 	public int deleteForGood(String table, String PK1, String PK2, int v1, int v2) {
 
 		try {
