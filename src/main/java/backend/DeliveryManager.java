@@ -219,8 +219,7 @@ public class DeliveryManager {
      *  1: OK
      * -1: Does not exist
      * -2: SQL Exception
-     * -3: Wrong Parameters
-     */
+     * */
     public int deliver(int delivery_id){
 
         if(!sql.rowExists(CURRENT_TABLE,CURRENT_TABLE_PK,delivery_id)) return -1;

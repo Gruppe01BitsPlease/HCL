@@ -21,7 +21,7 @@ public class DeliveryManagerTest {
     DeliveryManager manager;
     OrderManager oManager;
     CustomerManager cManager;
-    FoodManager fManager;
+
 
     SQL sql = new SQL();
 
@@ -30,13 +30,14 @@ public class DeliveryManagerTest {
         manager = new DeliveryManager(sql);
         oManager = new OrderManager(sql);
         cManager = new CustomerManager(sql);
-        fManager = new FoodManager(sql);
 
     }
 
     @After
     public void tearDown() throws Exception {
         manager = null;
+        oManager = null;
+        cManager = null;
         sql.end();
     }
 
@@ -129,11 +130,44 @@ public class DeliveryManagerTest {
 
     @Test
     public void deliver(){
+        int knutID = cManager.generate("Knut", "knut@hotmail.com", 75584788);
+        int bestilling4ID = oManager.generate(knutID, 123, "Moholt", 7030, "2017-02-02");
+        int levering4ID = manager.addDate(bestilling4ID, "2016-05-05");
+
+
+        String [][] active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + levering4ID, false);
+        assertEquals(0, Integer.parseInt(active[0][0]));
+        manager.deliver(levering4ID);
+        active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + levering4ID, false);
+        assertEquals(1, Integer.parseInt(active[0][0]));
+        assertEquals(-1, manager.deliver(11111));
+
+        sql.deleteForGood("HCL_deliveries", "delivery_id", levering4ID);
+        sql.deleteForGood("HCL_order", "order_id", bestilling4ID);
+        sql.deleteForGood("HCL_customer", "customer_id", knutID);
+
 
     }
 
+
+
     @Test
     public void complete(){
+        int lunaID = cManager.generate("Luna", "luna@hotmail.com", 75584788);
+        int bestilling5ID = oManager.generate(lunaID, 123, "Orkanger", 7030, "2017-02-02");
+        int levering5ID = manager.addDate(bestilling5ID, "2016-05-05");
+
+
+        String [][] active = sql.getStringTable("SELECT completed FROM HCL_deliveries where delivery_id = " + levering5ID, false);
+        assertEquals(0, Integer.parseInt(active[0][0]));
+        manager.complete(levering5ID);
+        active = sql.getStringTable("SELECT completed FROM HCL_deliveries where delivery_id = " + levering5ID, false);
+        assertEquals(1, Integer.parseInt(active[0][0]));
+        assertEquals(-1, manager.deliver(11111));
+
+        sql.deleteForGood("HCL_deliveries", "delivery_id", levering5ID);
+        sql.deleteForGood("HCL_order", "order_id", bestilling5ID);
+        sql.deleteForGood("HCL_customer", "customer_id", lunaID);
 
     }
 
