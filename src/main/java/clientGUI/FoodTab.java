@@ -15,7 +15,7 @@ class FoodTab extends GenericList {
 	private static String[][] linkTables = {{ "Ingredients", "ingredient_id", "HCL_food_ingredient", "HCL_ingredient", "name" },
 			{ "Orders", "order_id", "HCL_order_food", "HCL_order", "adress" }};
 	public FoodTab(SQL sql, int role) {
-		super(query, "HCL_food", linkTables, null, sql, role);
+		super(query, "HCL_food", linkTables, null, sql, role, 1);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		FoodTab.sql = sql;
 	}

@@ -38,20 +38,14 @@ class GenericList extends JPanel {
 	private int role;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
+	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
 		System.out.println(SqlTableName + "query: " + query);
 		this.role = role;
 		this.FKs = FKs;
-		//try {
-			this.sql = sql;
-			this.table = sql.getStringTable(query, false);
-			SqlColumnNames = sql.getColumnNames(query);
-			fillTable();
-		/*}
-		catch (Exception e) {
-			System.out.println("ERROR");
-		}*/
-
+		this.sql = sql;
+		this.table = sql.getStringTable(query, false);
+		SqlColumnNames = sql.getColumnNames(query);
+		fillTable();
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (FKs != null) {
 			for (int i = 0; i < FKs.length; i++) {
@@ -66,6 +60,7 @@ class GenericList extends JPanel {
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
         list = new JTableHCL(tabModel);
+		list.getRowSorter().toggleSortOrder(defaultSortColumn);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -81,10 +76,7 @@ class GenericList extends JPanel {
 		add(new northBar(), BorderLayout.NORTH);
 		add(cards, BorderLayout.CENTER);
 		cardLayout.show(cards, scrollName);
-		//searchScroll.setVisible(false);
-        //add(scroll, BorderLayout.CENTER);
 		list.removeIDs();
-		//removePK();
     }
 	public int getRole() {
 		return role;
@@ -105,11 +97,7 @@ class GenericList extends JPanel {
 		}
 	}
 	public void refresh() {
-		int sortColumn = -1;
-		try {
-			sortColumn = list.getSortColumn();
-		}
-		catch (Exception e) {}
+		int[] sortColumn = list.getSortColumn();
 		try {
 			table = sql.getStringTable(query, false);
 			fillTable();
@@ -128,7 +116,7 @@ class GenericList extends JPanel {
 			ActionEvent act = new ActionEvent(this, 0, "");
 			searchPress.actionPerformed(act);
 			list.removeIDs();
-			if (sortColumn != -1) {
+			if (sortColumn[0] != -1) {
 				list.setSortColumn(sortColumn);
 			}
 		}
@@ -257,22 +245,35 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
+							boolean success = true;
 							//fields = editFields.getFields();
 							String[] newValues = editFields.getNewValues();
 							if (!newEntry) {
 								for (int i = 1; i < newValues.length; i++) {
-									if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
+									boolean valid = true;
+									//checks if number is valid
+									if (dataTypes[i].equals("int")) {
+										try {
+											int value = Integer.parseInt(newValues[i]);
+										}
+										catch (NumberFormatException k) {
+											JOptionPane.showMessageDialog(editWindow.this, "Please enter a valid number in field: " + titles[i]);
+											valid = false;
+											success = false;
+										}
+									}
+									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
 										if (dataTypes[i].equals("boolean")) {
 											if (newValues[i].equals("true")) {
-												boolean update = true;
-												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
 											} else if (newValues[i].equals("false")) {
-												boolean update = false;
-												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], false);
 											} else {
 												System.out.println("ERROR NO BOOLEAN VALUE");
+												success = false;
 											}
-										} else {
+										}
+										else {
 											sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
 										}
 									}
@@ -282,13 +283,17 @@ class GenericList extends JPanel {
 									int res = GenericList.this.generate(newValues);
 									if (res == -2) {
 										JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
+										success = false;
 									} else if (res == -3) {
-										JOptionPane.showMessageDialog(editWindow.this, "There is a problem with one of the parameters.");
+										JOptionPane.showMessageDialog(editWindow.this, "One of the parameters appears to be invalid.");
+										success = false;
 									} else if (res == -4) {
 										JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
+										success = false;
 									}
 									//System.out.println(res);
 								} else {
+									//ID numbers are generated now, this should never happen
 									JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
@@ -305,7 +310,9 @@ class GenericList extends JPanel {
 									searchList.setModel(searchTableMod);
 								}
 							}
-							dispose();
+							if (success) {
+								dispose();
+							}
 						}
 					}
 				});

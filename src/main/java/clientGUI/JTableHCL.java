@@ -4,6 +4,9 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * This extension of the JTable class handles our tables, since they all operate similarly
@@ -37,10 +40,28 @@ public class JTableHCL extends JTable {
 			}
 		}
 	}
-	public int getSortColumn() {
-		return this.getRowSorter().getSortKeys().get(0).getColumn();
+	public int[] getSortColumn() {
+		//second int is ascending or descending. hacky
+		int ret[] = { -1 };
+		try {
+			int sorted = this.getRowSorter().getSortKeys().get(0).getColumn();
+			SortOrder sortOrder = this.getRowSorter().getSortKeys().get(0).getSortOrder();
+			int asc = 0;
+			if (sortOrder == SortOrder.ASCENDING) {
+				asc = 1;
+			}
+			ret = new int[]{ sorted, asc };
+			return ret;
+		}
+		catch (Exception e) {
+			return ret;
+		}
 	}
-	public void setSortColumn(int column) {
-		this.getRowSorter().toggleSortOrder(column);
+	public void setSortColumn(int[] sort) {
+		this.getRowSorter().toggleSortOrder(sort[0]);
+		if (sort[1] == 0) {
+			System.out.println("Descending");
+			this.getRowSorter().toggleSortOrder(sort[0]);
+		}
 	}
 }
