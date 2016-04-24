@@ -49,19 +49,14 @@ public class ShoppinglistTest {
     @Test
     public void addShoppinglist() throws Exception {
 
-        Full texts
-        delivery_id
-                food_id
-        ingredient_id
-        Food Name
-        Ingredient Name
-        Food Number
-        Ingredient Amount
-        Food Price
-        Ingredient Price
-        Ingredient Stock
-        delivery_date
-                String[][] testArray = {}{}{}{}{}{}{}{}{}{}{]
+        int forLiteID = iManager.generate("forLite", 1, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
+        String forLite = "" + forLiteID;
+        int forLite2ID = iManager.generate("forLiten", 1, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
+        String forLiten = "" + forLite2ID;
+
+        String[][] testArray = {forLite, forLiten}{}{}{}{}{}{}{}{}{}{]
+
+
 
 
         int forLiteID = iManager.generate("forLite", 1, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
