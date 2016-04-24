@@ -21,7 +21,7 @@ public class Statistics {
     /**
      * @return An ArrayList of LocalDate containing all the delivery-dates, also inactive ones.
      */
-    private ArrayList<LocalDate> getDeliveryDates(){
+    public ArrayList<LocalDate> getDeliveryDates(){
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
 
@@ -115,9 +115,11 @@ public class Statistics {
 
     /**
      * @return Orders placed stated year, month
+     * -1 if wrong parameters
      * @param month 1-12
      */
     public int getOrdersAt(int year, int month){
+        if(year < 1 || month < 1 || month > 12) return -1;
 
         int sum = 0;
 

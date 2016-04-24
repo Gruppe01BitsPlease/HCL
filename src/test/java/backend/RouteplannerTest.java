@@ -10,8 +10,6 @@ import org.junit.Test;
  */
 public class RouteplannerTest {
 
-    Routeplanner planner;
-
     SQL sql = new SQL();
     DeliveryManager dManager;
     OrderManager oManager;
