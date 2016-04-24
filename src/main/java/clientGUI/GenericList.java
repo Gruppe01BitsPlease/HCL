@@ -257,22 +257,34 @@ class GenericList extends JPanel {
 						String[] options = {"Yes", "No"};
 						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
+							boolean success = true;
 							//fields = editFields.getFields();
 							String[] newValues = editFields.getNewValues();
 							if (!newEntry) {
 								for (int i = 1; i < newValues.length; i++) {
-									if (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i]))) {
+									boolean valid = true;
+									if (dataTypes[i].equals("int")) {
+										try {
+											int value = Integer.parseInt(newValues[i]);
+										}
+										catch (NumberFormatException k) {
+											JOptionPane.showMessageDialog(editWindow.this, "Please enter a valid number in field: " + titles[i]);
+											valid = false;
+											success = false;
+										}
+									}
+									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
 										if (dataTypes[i].equals("boolean")) {
 											if (newValues[i].equals("true")) {
-												boolean update = true;
-												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
 											} else if (newValues[i].equals("false")) {
-												boolean update = false;
-												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], update);
+												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], false);
 											} else {
 												System.out.println("ERROR NO BOOLEAN VALUE");
+												success = false;
 											}
-										} else {
+										}
+										else {
 											sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], newValues[i]);
 										}
 									}
@@ -282,13 +294,17 @@ class GenericList extends JPanel {
 									int res = GenericList.this.generate(newValues);
 									if (res == -2) {
 										JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
+										success = false;
 									} else if (res == -3) {
-										JOptionPane.showMessageDialog(editWindow.this, "There is a problem with one of the parameters.");
+										JOptionPane.showMessageDialog(editWindow.this, "One of the parameters appears to be invalid.");
+										success = false;
 									} else if (res == -4) {
 										JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
+										success = false;
 									}
 									//System.out.println(res);
 								} else {
+									//ID numbers are generated now, this should never happen
 									JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
@@ -305,7 +321,9 @@ class GenericList extends JPanel {
 									searchList.setModel(searchTableMod);
 								}
 							}
-							dispose();
+							if (success) {
+								dispose();
+							}
 						}
 					}
 				});
