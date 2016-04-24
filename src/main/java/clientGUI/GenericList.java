@@ -105,7 +105,7 @@ class GenericList extends JPanel {
 		}
 	}
 	public void refresh() {
-		int sortColumn = -1;
+		int[] sortColumn = { -1 };
 		try {
 			sortColumn = list.getSortColumn();
 		}
@@ -128,7 +128,7 @@ class GenericList extends JPanel {
 			ActionEvent act = new ActionEvent(this, 0, "");
 			searchPress.actionPerformed(act);
 			list.removeIDs();
-			if (sortColumn != -1) {
+			if (sortColumn[0] != -1) {
 				list.setSortColumn(sortColumn);
 			}
 		}
@@ -263,6 +263,7 @@ class GenericList extends JPanel {
 							if (!newEntry) {
 								for (int i = 1; i < newValues.length; i++) {
 									boolean valid = true;
+									//checks if number is valid
 									if (dataTypes[i].equals("int")) {
 										try {
 											int value = Integer.parseInt(newValues[i]);
