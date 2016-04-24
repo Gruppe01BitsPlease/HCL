@@ -16,7 +16,7 @@ import java.util.Arrays;
  * Creates the JPanel that is used as a tab in tabbedMenu
  */
 class ChefTab extends JPanel {
-	private String query = "SELECT delivery_id, adress, delivery_date, completed, delivered, HCL_deliveries.active FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_deliveries.active = 1 AND completed = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT delivery_id, adress, delivery_date, completed, delivered, HCL_deliveries.active FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_deliveries.active = 1 AND completed = 0";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -60,8 +60,10 @@ class ChefTab extends JPanel {
 		});
 		add(new northBar(), BorderLayout.NORTH);
 		table.removeIDs();
+		table.getRowSorter().toggleSortOrder(2);
 	}
 	private void refresh() {
+		int[] sortColumn = table.getSortColumn();
 		if (dayBox.getSelectedIndex() == 7) {
 			data = sql.getStringTable(query, false);
 			tabModel = new DefaultTableModel(data, titles);
@@ -70,6 +72,9 @@ class ChefTab extends JPanel {
 		}
 		else {
 			refresh(dayBox.getSelectedIndex() + 1);
+		}
+		if (sortColumn[0] != -1) {
+			table.setSortColumn(sortColumn);
 		}
 	}
 	private void refresh(int days) {

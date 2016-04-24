@@ -38,20 +38,14 @@ class GenericList extends JPanel {
 	private int role;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role) {
+	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
 		System.out.println(SqlTableName + "query: " + query);
 		this.role = role;
 		this.FKs = FKs;
-		//try {
-			this.sql = sql;
-			this.table = sql.getStringTable(query, false);
-			SqlColumnNames = sql.getColumnNames(query);
-			fillTable();
-		/*}
-		catch (Exception e) {
-			System.out.println("ERROR");
-		}*/
-
+		this.sql = sql;
+		this.table = sql.getStringTable(query, false);
+		SqlColumnNames = sql.getColumnNames(query);
+		fillTable();
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (FKs != null) {
 			for (int i = 0; i < FKs.length; i++) {
@@ -66,6 +60,7 @@ class GenericList extends JPanel {
 		setLayout(new BorderLayout());
 		tabModel = new DefaultTableModel(table, titles);
         list = new JTableHCL(tabModel);
+		list.getRowSorter().toggleSortOrder(defaultSortColumn);
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -81,10 +76,7 @@ class GenericList extends JPanel {
 		add(new northBar(), BorderLayout.NORTH);
 		add(cards, BorderLayout.CENTER);
 		cardLayout.show(cards, scrollName);
-		//searchScroll.setVisible(false);
-        //add(scroll, BorderLayout.CENTER);
 		list.removeIDs();
-		//removePK();
     }
 	public int getRole() {
 		return role;
@@ -105,11 +97,7 @@ class GenericList extends JPanel {
 		}
 	}
 	public void refresh() {
-		int[] sortColumn = { -1 };
-		try {
-			sortColumn = list.getSortColumn();
-		}
-		catch (Exception e) {}
+		int[] sortColumn = list.getSortColumn();
 		try {
 			table = sql.getStringTable(query, false);
 			fillTable();

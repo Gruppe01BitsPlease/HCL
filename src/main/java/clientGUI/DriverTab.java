@@ -16,7 +16,7 @@ import java.time.LocalDate;
  */
 public class DriverTab extends JPanel {
 	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
-	private String query = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
+	private String query = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -50,10 +50,12 @@ public class DriverTab extends JPanel {
 		});
 		add(new northBar(), BorderLayout.NORTH);
 		add(new southBar(), BorderLayout.SOUTH);
+		table.getRowSorter().toggleSortOrder(2);
 		table.removeIDs();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 	}
 	private void refresh() {
+		int[] sortColumn = table.getSortColumn();
 		if (dayBox.getSelectedIndex() == 7) {
 			data = sql.getStringTable(query, false);
 			tabModel = new DefaultTableModel(data, titles);
@@ -62,6 +64,9 @@ public class DriverTab extends JPanel {
 		}
 		else {
 			refresh(dayBox.getSelectedIndex() + 1);
+		}
+		if (sortColumn[0] != -1) {
+			table.setSortColumn(sortColumn);
 		}
 	}
 	private void refresh(int days) {

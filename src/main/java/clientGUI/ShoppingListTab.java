@@ -31,6 +31,7 @@ public class ShoppingListTab extends JPanel {
 		column.setMaxWidth(0);
 		column.setWidth(0);
 		column.setPreferredWidth(0);
+		table.getRowSorter().toggleSortOrder(1);
 		JScrollPane scroller = new JScrollPane(table);
 		Integer[] dayArray = new Integer[7];
 		for (int i = 0; i < dayArray.length; i++) {

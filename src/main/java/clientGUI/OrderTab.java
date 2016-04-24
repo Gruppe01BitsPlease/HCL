@@ -30,7 +30,7 @@ class OrderTab extends GenericList {
     //Tab name, foreign PK, link table name, other table name, foreign identifier
     private SQL sql;
     public OrderTab(SQL sql, int role) {
-        super(query, "HCL_order", null, foreignKeys, sql, role);
+        super(query, "HCL_order", null, foreignKeys, sql, role, 1);
         add(new GenericSearch(), BorderLayout.SOUTH);
         this.sql = sql;
     }

@@ -14,7 +14,7 @@ class IngredientTab extends GenericList {
 	//Tab name, foreign PK, link table name, other table name, foreign identifier
 	private static String[][] linkTables = {{ "Foods", "food_id", "HCL_food_ingredient", "HCL_food", "name" }};
 	public IngredientTab(SQL sql, int role) {
-		super(query, "HCL_ingredient", linkTables, null, sql, role);
+		super(query, "HCL_ingredient", linkTables, null, sql, role, 1);
 		add(new GenericSearch(), BorderLayout.SOUTH);
 		this.sql = sql;
 	}

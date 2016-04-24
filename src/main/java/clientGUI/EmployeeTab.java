@@ -17,7 +17,7 @@ class EmployeeTab extends GenericList {
 	private SQL sql;
 	private int role;
 	public EmployeeTab(SQL sql, int role) {
-		super(query, "HCL_user", null, null, sql, role);
+		super(query, "HCL_user", null, null, sql, role, 1);
 		this.sql = sql;
 		this.role = role;
 		add(new GenericSearch(), BorderLayout.SOUTH);
