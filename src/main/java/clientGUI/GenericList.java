@@ -189,10 +189,10 @@ class GenericList extends JPanel {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
-		private ArrayList<linkTab> linkTabs = new ArrayList<>();
+		private ArrayList<LinkTab> linkTabs = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-		private editFields editFields;
+		private EditFields editFields;
 		public EditWindow(int ID, boolean newEntry) {
 			this.newEntry = newEntry;
 			if (!newEntry) {
@@ -209,12 +209,12 @@ class GenericList extends JPanel {
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setResizable(false);
-			editFields = new editFields(titles, selected, newEntry, null, sql);
+			editFields = new EditFields(titles, selected, newEntry, null, sql);
 			JTabbedPane tabs = new JTabbedPane();
 			tabs.addTab("Info", editFields);
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
+					LinkTab k = new LinkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
 					tabs.addTab(linkTables[i][0], k);
 					linkTabs.add(k);
 				}
@@ -294,7 +294,7 @@ class GenericList extends JPanel {
 									JOptionPane.showMessageDialog(EditWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
-							for (linkTab tab : linkTabs) {
+							for (LinkTab tab : linkTabs) {
 								tab.generate();
 							}
 							//table[index] = newValues;
