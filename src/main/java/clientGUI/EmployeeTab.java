@@ -41,7 +41,7 @@ class EmployeeTab extends GenericList {
 			JOptionPane.showMessageDialog(this, "You do not have the requred access level to create new users");
 		}
 		else if (!newEntry && role == 0) {
-			userEditMenu menu = new userEditMenu(Integer.toString(getSelectedID()), sql, role, this);
+			UserEditMenu menu = new UserEditMenu(Integer.toString(getSelectedID()), sql, role, this);
 		}
 	}
 	public int delete(int id) {

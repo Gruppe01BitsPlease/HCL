@@ -62,7 +62,7 @@ public class SQL {
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
-	public Connection connect() {
+	private Connection connect() {
 
 		try {
 			Class.forName(databasedriver);
@@ -503,7 +503,6 @@ public class SQL {
 
 			PreparedStatement prep = connection.prepareStatement(sqlPrep);
 
-			//  prep.setString(1, primaryKey);
 			prep.setInt(1, v1);
 			prep.setInt(2, v2);
 

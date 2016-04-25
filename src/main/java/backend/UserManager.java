@@ -76,10 +76,9 @@ public class UserManager{
     /**
      * Generates a new user with a random password, returns the random password
      */
-    public String generate(String username,int role){
+    public String generate(String username, int role){
         String rand = getRandomString();
-        generate(username,rand,role);
-        return rand;
+        return (generate(username,rand,role) >= 0) ? rand : "-1";
     }
 
     /**

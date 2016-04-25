@@ -53,7 +53,7 @@ class OrderTab extends GenericList {
     class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
         //deletedDates has ID's
-        private linkTab foodTab;
+        private LinkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
         private JTableHCL subTable;
@@ -61,7 +61,7 @@ class OrderTab extends GenericList {
         private String[] subTitles;
         private int order_id;
         private boolean newOrder;
-        private editFields editFields;
+        private EditFields editFields;
         private String[] selected;
         private String[][] titles;
         private EditBox editDatesWindow;
@@ -79,12 +79,12 @@ class OrderTab extends GenericList {
             if (!newOrder) {
                 selected = sql.getRow(selectedQuery);
             }
-            editFields = new editFields(titles[1], selected, newOrder, foreignKeys[0], sql);
+            editFields = new EditFields(titles[1], selected, newOrder, foreignKeys[0], sql);
             //tabs.addTab("Info", new infoTab());
             tabs.addTab("Edit", editFields);
             tabs.addTab("Dates", new DateTab());
             String[] link = { "Foods", "food_id", "HCL_order_food", "HCL_food", "name" };
-            foodTab = new linkTab(link, "order_id", order_id, sql, newOrder);
+            foodTab = new LinkTab(link, "order_id", order_id, sql, newOrder);
             tabs.addTab("Foods", foodTab);
             add(tabs, BorderLayout.CENTER);
             add(new LowerButtons(), BorderLayout.SOUTH);
@@ -194,8 +194,8 @@ class OrderTab extends GenericList {
         }
         class EditBox extends JFrame {
 
-            private datePane startDatePane;
-            private datePane endDatePane;
+            private DatePane startDatePane;
+            private DatePane endDatePane;
             private ArrayList<JCheckBox> dayBoxes;
             private ArrayList<JLabel> dayLabels;
             private JComboBox<String> intervalDropdown;
@@ -214,7 +214,7 @@ class OrderTab extends GenericList {
                 // StartDatePanel
                 startDatePanel.add(new JLabel("Start Date"));
 
-                startDatePane = new datePane(null);
+                startDatePane = new DatePane(null);
                 startDatePane.setDate(LocalDate.now().toString());
                 startDatePanel.add(startDatePane);
                 // StartDatePanel
@@ -223,7 +223,7 @@ class OrderTab extends GenericList {
                 // EndDatePanel
                 endDatePanel.add(new JLabel("End Date"));
 
-                endDatePane = new datePane(null);
+                endDatePane = new DatePane(null);
                 endDatePane.setDate(LocalDate.now().plusMonths(1).toString());
                 endDatePane.setEnabled(false);
                 endDatePanel.add(endDatePane);
