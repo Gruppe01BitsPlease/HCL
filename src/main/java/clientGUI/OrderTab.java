@@ -194,8 +194,8 @@ class OrderTab extends GenericList {
         }
         class EditBox extends JFrame {
 
-            private datePane startDatePane;
-            private datePane endDatePane;
+            private DatePane startDatePane;
+            private DatePane endDatePane;
             private ArrayList<JCheckBox> dayBoxes;
             private ArrayList<JLabel> dayLabels;
             private JComboBox<String> intervalDropdown;
@@ -214,7 +214,7 @@ class OrderTab extends GenericList {
                 // StartDatePanel
                 startDatePanel.add(new JLabel("Start Date"));
 
-                startDatePane = new datePane(null);
+                startDatePane = new DatePane(null);
                 startDatePane.setDate(LocalDate.now().toString());
                 startDatePanel.add(startDatePane);
                 // StartDatePanel
@@ -223,7 +223,7 @@ class OrderTab extends GenericList {
                 // EndDatePanel
                 endDatePanel.add(new JLabel("End Date"));
 
-                endDatePane = new datePane(null);
+                endDatePane = new DatePane(null);
                 endDatePane.setDate(LocalDate.now().plusMonths(1).toString());
                 endDatePane.setEnabled(false);
                 endDatePanel.add(endDatePane);
