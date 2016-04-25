@@ -143,7 +143,7 @@ public class Shoppinglist {
         SQL sql = new SQL();
         Shoppinglist list = new Shoppinglist(sql);
 
-        String[][] array = list.getShoppinglist(2000);
+        String[][] array = list.getShoppinglist(1);
 
         sql.print2dArray(array);
         //System.out.println(Arrays.toString(list.getTitles()));
