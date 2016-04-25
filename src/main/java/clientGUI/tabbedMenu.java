@@ -184,7 +184,7 @@ public class tabbedMenu extends JFrame {
 			Action logoutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					LogOnGUI logon = new LogOnGUI();
+					LogOnGUI logon = new LogOnGUI(sql);
 					dispose();
 				}
 			};

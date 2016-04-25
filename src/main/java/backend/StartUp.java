@@ -17,7 +17,7 @@ public class StartUp
 {
     private SettingsFile settings;
     private SettingsGUI window;
-    SQL sql;
+    SQL sql = new SQL();
 
 
     private StartUp(){ init();}
@@ -61,11 +61,11 @@ public class StartUp
                                 JOptionPane.YES_NO_OPTION);
                         if (reply == JOptionPane.NO_OPTION) {
                             window.dispose();
-                            new LogOnGUI();
+                            new LogOnGUI(sql);
                         }
                         if (reply == JOptionPane.YES_OPTION) {
                             window.dispose();
-                            new LogOnGUI();
+                            new LogOnGUI(sql);
                             DatabaseSetupGUI DBsetting = new DatabaseSetupGUI(sql);
                             DBsetting.setLocationRelativeTo(null);
                             DBsetting.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -82,7 +82,7 @@ public class StartUp
                 }
             });
         }else{
-            new LogOnGUI();
+            new LogOnGUI(sql);
         }
     }
 

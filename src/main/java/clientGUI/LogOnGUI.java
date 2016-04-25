@@ -11,8 +11,7 @@ import backend.*;
  * Creates the LogOn windows
  */
 public class LogOnGUI extends JFrame{
-	public LogOnGUI () {
-		SQL sql = new SQL();
+	public LogOnGUI (SQL sql) {
 		//window parameters
 		setTitle("Log in");
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
@@ -82,7 +81,8 @@ public class LogOnGUI extends JFrame{
 	public static void main(String[] args) throws Exception {
 		//	User u = new User();
 		//	u.generateUser("jens", "1234", 0);
-		LogOnGUI test = new LogOnGUI();
+		SQL sql = new SQL();
+		LogOnGUI test = new LogOnGUI(sql);
 	}
 }
 
