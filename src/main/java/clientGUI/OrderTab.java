@@ -336,18 +336,64 @@ class OrderTab extends GenericList {
                                     days.add(DayOfWeek.of(i+1));
                                 }
                             }
-                            DayOfWeek[] dayArray = new DayOfWeek[days.size()]; for(int i=0; i<days.size(); i++){dayArray[i] = days.get(i);}
-
-                            String[] daysToAdd = manager.getDatesToBeAdded(order_id,editDatesWindow.getStartDate(),
+                            DayOfWeek[] dayArray = new DayOfWeek[days.size()];
+                            for(int i=0; i<days.size(); i++){
+                                dayArray[i] = days.get(i);
+                                System.out.println("Day: " + dayArray[i]);
+                            }
+                            LocalDate startDate = editDatesWindow.getStartDate();
+                            for (int i = 0; i < dayArray.length; i++) {
+                                boolean success = false;
+                                while (!success) {
+                                    if (startDate.getDayOfWeek() != dayArray[i]) {
+                                        startDate = startDate.plusDays(1);
+                                        System.out.println(startDate.getDayOfWeek());
+                                    }
+                                    else {
+                                        success = true;
+                                    }
+                                }
+                            }
+                            //String[] boxChoices = {"One Delivery", "Every Week", "Every 2nd Week", "Every 3rd Week","Every 4th Week"};
+                            ArrayList<String> datesToAdd = new ArrayList<>();
+                            boolean complete = false;
+                            LocalDate addDate = startDate;
+                            datesToAdd.add(addDate.toString());
+                            while (!complete) {
+                                if (intervalDropdown.getSelectedIndex() == 1) {
+                                    addDate = addDate.plusDays(7);
+                                    System.out.println("Seven days");
+                                } else if (intervalDropdown.getSelectedIndex() == 2) {
+                                    addDate = addDate.plusDays(14);
+                                    System.out.println("14 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 3) {
+                                    addDate = addDate.plusDays(21);
+                                    System.out.println("21 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 4) {
+                                    addDate = addDate.plusDays(28);
+                                    System.out.println("28 days");
+                                }
+                                if (!(addDate.isAfter(editDatesWindow.getEndDate()))) {
+                                    datesToAdd.add(addDate.toString());
+                                }
+                                else {
+                                    complete = true;
+                                }
+                            }
+                            /*String[] daysToAdd = manager.getDatesToBeAdded(order_id,editDatesWindow.getStartDate(),
                                     editDatesWindow.getEndDate(),intervalDropdown.getSelectedIndex(),
                                     dayArray);
-
-                            System.out.println(Arrays.toString(daysToAdd));
-                            dates = new String[daysToAdd.length][6];
-
-                            for(int i=0; i<daysToAdd.length; i++){
-                                dates[i][0]=Stuff.bold("0"); dates[i][1] = Stuff.bold("0"); dates[i][2] = Stuff.bold(daysToAdd[i]); dates[i][3] = Stuff.bold("0"); dates[i][4] = Stuff.bold("0"); dates[i][5] = Stuff.bold("0");
-
+                            System.out.println("Days to add: " + Arrays.toString(daysToAdd));*/
+                            dates = new String[datesToAdd.size()][6];
+                            for(int i=0; i<datesToAdd.size(); i++){
+                                dates[i][0]=Stuff.bold("0");
+                                dates[i][1] = Stuff.bold("0");
+                                dates[i][2] = Stuff.bold(datesToAdd.get(i));
+                                dates[i][3] = Stuff.bold("0");
+                                dates[i][4] = Stuff.bold("0");
+                                dates[i][5] = Stuff.bold("0");
                             }
                         }
                     String[][] temp = new String[dateArray.length+dates.length][];
