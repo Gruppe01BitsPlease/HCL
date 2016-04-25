@@ -30,10 +30,10 @@ public class JTableHCL extends JTable {
 			String type = DataTyper.getDataType(tabModel.getColumnName(i));
 			if (type != null && type.equals("id") || type.equals("active")) {
 				TableColumn column = getColumnModel().getColumn(i);
-				column.setMinWidth(50);
-				column.setMaxWidth(50);
-				column.setWidth(50);
-				column.setPreferredWidth(50);
+				column.setMinWidth(0);
+				column.setMaxWidth(0);
+				column.setWidth(0);
+				column.setPreferredWidth(0);
 			}
 			else if (type == null){
 				System.out.println("Error in column hider: " + type);
