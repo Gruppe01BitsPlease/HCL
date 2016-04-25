@@ -110,10 +110,6 @@ public class OrderManagerTest {
         assertEquals(true, manager.isSubscription(bestilling5ID));
 
 
-
-
-
-
     }
 
 

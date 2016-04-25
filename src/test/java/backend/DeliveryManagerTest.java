@@ -43,6 +43,7 @@ public class DeliveryManagerTest {
 
     @Test
     public void removeDate() throws Exception{
+
         int rydigerID = cManager.generate("Rydiger", "rydiger@hotmail.com", 75584788);
         int bestillingID = oManager.generate(rydigerID, 123, "Voll", 7030, "2017-02-02");
         int leveringID = manager.addDate(bestillingID, "2016-05-05");
@@ -54,7 +55,7 @@ public class DeliveryManagerTest {
 
         //tester med gal/ingen ID
         assertEquals(1,manager.removeDate(levering2ID));
-        assertEquals(-1,manager.removeDate(99999999));
+        assertEquals(-3,manager.removeDate(99999999));
 
         sql.deleteForGood("HCL_deliveries", "delivery_id", leveringID);
         sql.deleteForGood("HCL_deliveries", "delivery_id", levering2ID);
