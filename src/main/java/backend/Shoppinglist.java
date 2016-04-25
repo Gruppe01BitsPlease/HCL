@@ -84,7 +84,7 @@ public class Shoppinglist {
             sql.connection.setAutoCommit(false);
 
             for (String[] row : list) {
-                out = manager.addStock(Integer.parseInt(row[0]), Integer.parseInt(row[4]));
+                out = manager.addStock(Integer.parseInt(row[0]), -Integer.parseInt(row[4]));
                 if (out < 0) return out; // Hvis vi får en feilkode
             }
             sql.connection.commit();
