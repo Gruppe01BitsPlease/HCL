@@ -55,7 +55,7 @@ class ShoppingListTab extends JPanel {
 		});
 		addStock.addActionListener(e -> {
 			if (table.getSelectedRow() != -1) {
-				addWindow window = new addWindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
+				AddWindow window = new AddWindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
 			}
 		});
 		table.addMouseListener(new MouseAdapter() {
@@ -63,7 +63,7 @@ class ShoppingListTab extends JPanel {
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
-					addWindow window = new addWindow(Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0)));
+					AddWindow window = new AddWindow(Integer.parseInt((String)table.getValueAt(table.getSelectedRow(), 0)));
 				}
 			}
 		});
@@ -81,8 +81,8 @@ class ShoppingListTab extends JPanel {
 		add(scroller, BorderLayout.CENTER);
 		add(boxPanel, BorderLayout.SOUTH);
 	}
-	private class addWindow extends JFrame {
-		public addWindow(int ingredient_id) {
+	private class AddWindow extends JFrame {
+		public AddWindow(int ingredient_id) {
 			setLocationRelativeTo(null);
 			setSize(Stuff.getWindowSize(0.3, 0.15));
 			setResizable(false);
@@ -98,9 +98,9 @@ class ShoppingListTab extends JPanel {
 					amount = Integer.parseInt(amountField.getText());
 				}
 				catch (Exception f) {
-					JOptionPane.showMessageDialog(addWindow.this, "Please enter a valid number");
+					JOptionPane.showMessageDialog(AddWindow.this, "Please enter a valid number");
 				}
-				int sure = JOptionPane.showConfirmDialog(addWindow.this, "Add " + amountField.getText() + " of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				int sure = JOptionPane.showConfirmDialog(AddWindow.this, "Add " + amountField.getText() + " of this item to stock?", "", JOptionPane.YES_NO_OPTION);
 				if (sure == 0 && amount > 0) {
 					IngredientManager ingrMng = new IngredientManager(sql);
 					ingrMng.addStock(ingredient_id, amount);
@@ -109,7 +109,7 @@ class ShoppingListTab extends JPanel {
 				refresh();
 			});
 			addBalance.addActionListener(e ->  {
-				int sure = JOptionPane.showConfirmDialog(addWindow.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
+				int sure = JOptionPane.showConfirmDialog(AddWindow.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
 				if (sure == 0) {
 					shop.add(shoppingList, ingredient_id);
 					dispose();

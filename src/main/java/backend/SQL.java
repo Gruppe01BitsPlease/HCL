@@ -111,7 +111,7 @@ public class SQL {
 	}
 
 	/**
-	 * Updates a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
+	 * Update   s a value in a table, PRIMARYKEYVALUE CAN ALSO BE INT
      * @param primaryKey The primary key of the spesified table, can also be any other colomn in the table, but then you could get duplicates.
      *                        primaryKeyValue: The value of the primary key.
      * @return true if it managed to update the specified value, false otherwise

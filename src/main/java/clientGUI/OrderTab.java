@@ -64,7 +64,7 @@ class OrderTab extends GenericList {
         private editFields editFields;
         private String[] selected;
         private String[][] titles;
-        private editBox editDatesWindow;
+        private EditBox editDatesWindow;
 
         public EditWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
@@ -82,17 +82,17 @@ class OrderTab extends GenericList {
             editFields = new editFields(titles[1], selected, newOrder, foreignKeys[0], sql);
             //tabs.addTab("Info", new infoTab());
             tabs.addTab("Edit", editFields);
-            tabs.addTab("Dates", new dateTab());
+            tabs.addTab("Dates", new DateTab());
             String[] link = { "Foods", "food_id", "HCL_order_food", "HCL_food", "name" };
             foodTab = new linkTab(link, "order_id", order_id, sql, newOrder);
             tabs.addTab("Foods", foodTab);
             add(tabs, BorderLayout.CENTER);
-            add(new lowerButtons(), BorderLayout.SOUTH);
+            add(new LowerButtons(), BorderLayout.SOUTH);
             setLocationRelativeTo(null);
             setVisible(true);
         }
-        class dateTab extends JPanel {
-            public dateTab() {
+        class DateTab extends JPanel {
+            public DateTab() {
                 getDateQuery = "SELECT * FROM HCL_deliveries WHERE order_id = " + order_id + " AND active = 1 ORDER BY delivery_date ASC";
                 dateArray = new String[0][];
                 if (!newOrder) {
@@ -108,15 +108,15 @@ class OrderTab extends GenericList {
                 subTable.removeIDs();
                 setLayout(new BorderLayout());
                 add(subScroll, BorderLayout.CENTER);
-                add(new buttons(), BorderLayout.SOUTH);
+                add(new Buttons(), BorderLayout.SOUTH);
             }
-            class buttons extends JPanel {
-                public buttons() {
+            class Buttons extends JPanel {
+                public Buttons() {
                     setLayout(new GridLayout(1, 2));
                     JButton neue = new JButton("New...");
                     JButton del = new JButton("Delete");
                     neue.addActionListener(e-> {
-                        editDatesWindow = new editBox();
+                        editDatesWindow = new EditBox();
                     });
                     del.addActionListener(e-> {
                         int[] sel = subTable.getSelectedRows();
@@ -137,8 +137,8 @@ class OrderTab extends GenericList {
                 }
             }
         }
-        class lowerButtons extends JPanel {
-            public lowerButtons() {
+        class LowerButtons extends JPanel {
+            public LowerButtons() {
 
                 //DeliveryManager manager = new DeliveryManager(new SQL());
 
@@ -213,7 +213,7 @@ class OrderTab extends GenericList {
                 add(cancel);
             }
         }
-        class editBox extends JFrame {
+        class EditBox extends JFrame {
 
             private datePane startDatePane;
             private datePane endDatePane;
@@ -221,7 +221,7 @@ class OrderTab extends GenericList {
             private ArrayList<JLabel> dayLabels;
             private JComboBox<String> intervalDropdown;
 
-            public editBox() {
+            public EditBox() {
 
                 setLayout(new GridLayout(5, 1));
                 setResizable(false);
