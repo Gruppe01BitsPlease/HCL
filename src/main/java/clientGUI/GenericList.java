@@ -264,6 +264,7 @@ class GenericList extends JPanel {
 									}
 									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
 										if (dataTypes[i].equals("boolean")) {
+											System.out.println("Boolean value: " + newValues[i]);
 											if (newValues[i].equals("true")) {
 												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
 											} else if (newValues[i].equals("false")) {

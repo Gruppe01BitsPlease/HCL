@@ -213,11 +213,6 @@ class OrderTab extends GenericList {
                             }
                         }
                     }
-                    /*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
-                        JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
-                        System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
-                    }*/
-                    //else {
                     dispose();
                     foodTab.generate();
                     refresh();
