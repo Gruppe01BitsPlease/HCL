@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class SettingsFile {
     // TODO: change to config.properties
-    private final String outPath = "./configdev.properties";
+    private final String outPath = "./config.properties";
 
     /**
      * Checks if file exists. If not it calls the createDefaultFile().
@@ -43,7 +43,7 @@ public class SettingsFile {
 
     private Properties readDefaultTemplate() throws IOException{
         //TODO: change to default.properties
-        final String defaultPath = "defaults/defaultdev.properties";
+        final String defaultPath = "defaults/default.properties";
         try(InputStream in = this.getClass().getClassLoader().getResourceAsStream(defaultPath)){
             Properties prop = new Properties();
             prop.load(in);
