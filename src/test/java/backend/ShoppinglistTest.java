@@ -46,11 +46,19 @@ public class ShoppinglistTest {
 
     @Test
     public void getShoppinglist() throws Exception {
+        String[][] testList = manager.getShoppinglist(10);
+        sql.print2dArray(testList);
 
     }
 
     @Test
     public void addShoppinglist() throws Exception {
+        String[][] testList = manager.getShoppinglist(10);
+        manager.addShoppinglist(testList);
+
+        sql.print2dArray(manager.getShoppinglist(10));
+
+
 
 
     }
