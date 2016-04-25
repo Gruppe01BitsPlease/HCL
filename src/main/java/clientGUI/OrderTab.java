@@ -52,9 +52,7 @@ class OrderTab extends GenericList {
 
     class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
-        private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
-        private ArrayList<String> deletedDates = new ArrayList<>();
         private linkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
@@ -131,7 +129,6 @@ class OrderTab extends GenericList {
                                     System.out.println(subModel.getValueAt(sel[i], j));
                                 }
                             }
-                            deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                         }
                         subTable.setModel(subModel);
                     });
@@ -143,7 +140,7 @@ class OrderTab extends GenericList {
         class LowerButtons extends JPanel {
             public LowerButtons() {
 
-                DeliveryManager manager = new DeliveryManager(new SQL());
+                //DeliveryManager manager = new DeliveryManager(new SQL());
 
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");

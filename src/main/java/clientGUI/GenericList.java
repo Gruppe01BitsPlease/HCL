@@ -38,7 +38,7 @@ class GenericList extends JPanel {
 	private int role;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
+	GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
 		System.out.println(SqlTableName + "query: " + query);
 		this.role = role;
 		this.FKs = FKs;
@@ -78,10 +78,7 @@ class GenericList extends JPanel {
 		cardLayout.show(cards, scrollName);
 		list.removeIDs();
     }
-	public int getRole() {
-		return role;
-	}
-	public int getSelectedID() {
+	int getSelectedID() {
 		if (scroll.isVisible()) {
 			return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
 		}
@@ -133,12 +130,14 @@ class GenericList extends JPanel {
 			}
 		}
 	}
-	public int generate(String[] arguments) {
+	int generate(String[] arguments) {
 		return -4;
 	}
-	public int delete(int nr) {
+	int delete(int nr) {
 		return -4;
 	}
+	void edit(int ID, boolean newItem) {
+		editWindow edit = new editWindow(ID, newItem);
 	public void edit(int ID, boolean newItem) {
 		EditWindow edit = new EditWindow(ID, newItem);
 	}
@@ -188,7 +187,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class EditWindow extends JFrame {
+	class editWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
@@ -227,9 +226,8 @@ class GenericList extends JPanel {
 			add(new SaveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		String[] comboBoxIDs;
-		class SaveCancelButtons extends JPanel {
-			public SaveCancelButtons() {
+		class saveCancelButtons extends JPanel {
+			public saveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
 				JButton save = new JButton("Save");
 				JButton cancel = new JButton("Cancel");
@@ -243,7 +241,7 @@ class GenericList extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						String[] options = {"Yes", "No"};
-						int sure = JOptionPane.showOptionDialog(EditWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							boolean success = true;
 							//fields = editFields.getFields();
@@ -301,7 +299,7 @@ class GenericList extends JPanel {
 							for (linkTab tab : linkTabs) {
 								tab.generate();
 							}
-							table[index] = newValues;
+							//table[index] = newValues;
 							refresh();
 							if (searchTableMod != null) {
 								int searchSelectedRow = searchList.getSelectedRow();

@@ -4,22 +4,18 @@ import javax.swing.*;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * This extension of the JTable class handles our tables, since they all operate similarly
  * It sets them to not be editable, it makes them sortable, and it hides the ID numbers from the user
  */
-public class JTableHCL extends JTable {
+class JTableHCL extends JTable {
 
 	private TableModel tabModel;
 
 	public JTableHCL(TableModel model) {
 		super(model);
 		tabModel = this.getModel();
-		TableColumnModel mod = this.getColumnModel();
 		this.setAutoCreateRowSorter(true);
 	}
 	public boolean isCellEditable(int row, int column) {
