@@ -107,9 +107,7 @@ public class DeliveryManagerTest {
         //Sjekker at metoden returnerer tom string for feile parametere
         String[] feilstring1 = manager.getDatesToBeAdded(99999999,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
         assertEquals(0, feilstring1.length);
-        String[] feilstring2 = manager.getDatesToBeAdded(bestilling3ID,null, LocalDate.of(2016,12,22), 2, testArray);
-        assertEquals(0, feilstring1.length);
-        String[] feilstring3 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), null, 2, testArray);
+        String[] feilstring3 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
         assertEquals(0, feilstring1.length);
         String[] feilstring4 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 0, testArray);
         assertEquals(0, feilstring1.length);
@@ -122,11 +120,6 @@ public class DeliveryManagerTest {
 
     }
 
-    @Test
-    public void addDates(){
-        //voidmetode, fette umulig!!!!!
-
-    }
 
     @Test
     public void deliver() throws Exception{
