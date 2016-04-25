@@ -44,23 +44,25 @@ public class DeliveryManagerTest {
     @Test
     public void removeDate() throws Exception{
 
-        int rydigerID = cManager.generate("Rydiger", "rydiger@hotmail.com", 75584788);
-        int bestillingID = oManager.generate(rydigerID, 123, "Voll", 7030, "2017-02-02");
-        int leveringID = manager.addDate(bestillingID, "2016-05-05");
-        int levering2ID = manager.addDate(bestillingID, "2016-05-05");
+        //Making test-objects
+        int custID = cManager.generate("Rydiger", "rydiger@hotmail.com", 75584788);
+        int orderID = oManager.generate(custID, 123, "Voll", 7030, "2017-02-02");
+        int deliveryID = manager.addDate(orderID, "2016-05-05");
+        int delivery2ID = manager.addDate(orderID, "2016-05-05");
 
-        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", leveringID));
-        manager.removeDate(leveringID);
-        assertFalse(sql.rowExists("HCL_deliveries", "delivery_id", leveringID));
+        //checks that a ddelivery exists, removes it, checks if it was removed.
+        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", deliveryID));
+        manager.removeDate(deliveryID);
+        assertFalse(sql.rowExists("HCL_deliveries", "delivery_id", deliveryID));
 
-        //tester med gal/ingen ID
-        assertEquals(1,manager.removeDate(levering2ID));
+        //testing with both real and fake ID.
+        assertEquals(1,manager.removeDate(delivery2ID));
         assertEquals(-3,manager.removeDate(99999999));
 
-        sql.deleteForGood("HCL_deliveries", "delivery_id", leveringID);
-        sql.deleteForGood("HCL_deliveries", "delivery_id", levering2ID);
-        sql.deleteForGood("HCL_order", "order_id", bestillingID);
-        sql.deleteForGood("HCL_customer", "customer_id", rydigerID);
+        sql.deleteForGood("HCL_deliveries", "delivery_id", deliveryID);
+        sql.deleteForGood("HCL_deliveries", "delivery_id", delivery2ID);
+        sql.deleteForGood("HCL_order", "order_id", orderID);
+        sql.deleteForGood("HCL_customer", "customer_id", custID);
 
     }
 
