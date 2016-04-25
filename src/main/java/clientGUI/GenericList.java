@@ -137,10 +137,8 @@ class GenericList extends JPanel {
 		return -4;
 	}
 	void edit(int ID, boolean newItem) {
-		editWindow edit = new editWindow(ID, newItem);
-	public void edit(int ID, boolean newItem) {
-		EditWindow edit = new EditWindow(ID, newItem);
-	}
+        EditWindow edit = new EditWindow(ID, newItem);
+    }
 	private class NorthBar extends JPanel {
 		public NorthBar() {
 			setLayout(new GridLayout(1, 5));
@@ -187,7 +185,7 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class editWindow extends JFrame {
+	class EditWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
@@ -226,8 +224,8 @@ class GenericList extends JPanel {
 			add(new SaveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		class saveCancelButtons extends JPanel {
-			public saveCancelButtons() {
+		class SaveCancelButtons extends JPanel {
+			public SaveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
 				JButton save = new JButton("Save");
 				JButton cancel = new JButton("Cancel");
@@ -241,7 +239,7 @@ class GenericList extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						String[] options = {"Yes", "No"};
-						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+						int sure = JOptionPane.showOptionDialog(EditWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							boolean success = true;
 							//fields = editFields.getFields();
