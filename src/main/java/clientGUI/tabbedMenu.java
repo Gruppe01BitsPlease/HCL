@@ -228,7 +228,13 @@ public class tabbedMenu extends JFrame {
 			editUser.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					userEditMenu edit = new userEditMenu(sql, rolle, (JPanel)tabs.getTabComponentAt(tabs.indexOfTab(ceoName)));
+					try {
+						JPanel tab = (JPanel)tabs.getTabComponentAt(tabs.indexOfTab(ceoName));
+						userEditMenu edit = new userEditMenu(sql, rolle, (JPanel) tabs.getTabComponentAt(tabs.indexOfTab(ceoName)));
+					}
+					catch (Exception k) {
+						userEditMenu edit = new userEditMenu(sql, rolle, null);
+					}
 				}
 			});
 			settings.add(DBsettings);
