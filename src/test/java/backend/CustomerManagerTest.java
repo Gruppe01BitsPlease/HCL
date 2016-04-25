@@ -28,22 +28,20 @@ public class CustomerManagerTest {
 
     @Test
     public void generate() throws Exception{
+        //Making test-object
+        int custID = manager.generate("Kjell-Sture", "Sturegutten@hotmail.com", 75584788);
 
-        int idKjell = manager.generate("Kjell-Sture", "Sturegutten@hotmail.com", 75584788);
-        int idLars = manager.generate("Kaffe-Lars", "coffein_lover@gmail.com", 75584061);
-
-        //Tester om Customer-objektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_customer", "customer_id", idKjell));
-        assertTrue(sql.rowExists("HCL_customer", "customer_id", idLars));
+        //Testing if the Customerobject actually exist.
+        assertTrue(sql.rowExists("HCL_customer", "customer_id", custID));
+        //Testing that a fake object does not exist.
         assertFalse(sql.rowExists("HCL_customer", "customer_name", 99999999));
 
-        //Prøver å lage ukorrekte Customer-objekter, og sjekker om generate() sender riktig feilmelding
+        //Trying to make fake objects and check if it return what is expected.
         assertEquals(-3, manager.generate("", "hei@nei.no", 12345678));
         assertEquals(-3, manager.generate("Astrid Anker-Hansen", "",87654321));
         assertEquals(-3, manager.generate("Jens-August Anker-Hansen","kulemeg@hotelcaesar.no", 0));
 
-        sql.deleteForGood("HCL_customer", "customer_id", idKjell);
-        sql.deleteForGood("HCL_customer", "customer_id", idLars);
+        sql.deleteForGood("HCL_customer", "customer_id", custID);
 
 
 
@@ -52,10 +50,11 @@ public class CustomerManagerTest {
     @Test
     //Lager customer-objekter og henter ID
     public void edit() throws Exception {
-        int lilleperID = manager.generate("LillePer", "Storegutten@hotmail.com", 75584788);
-        int storeperID = manager.generate("StorePer", "lillegutten@hotmail.com", 75584061);
+        //Making test-objects
+        int cust2ID = manager.generate("LillePer", "Storegutten@hotmail.com", 75584788);
+        int cust3ID = manager.generate("StorePer", "lillegutten@hotmail.com", 75584061);
 
-        //henter informasjon om LillePer før og etter edit.
+        //Getting information about the
         String førSetning = "SELECT * from HCL_customer where customer_id = " + lilleperID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
