@@ -12,7 +12,7 @@ import backend.*;
  */
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
-		//window pa	parameters
+		//window parameters
 		setTitle("Log in");
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image); // Put your own image instead of null
