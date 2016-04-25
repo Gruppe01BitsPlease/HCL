@@ -25,7 +25,7 @@ class CeoTab extends JPanel {
         // User Tab
 
         // Stats Panel
-        statTab = new StatisticsTab();
+        statTab = new StatisticsTab(sql);
         tabs.addTab("Statistics",statTab);
         // Stats Panel
 

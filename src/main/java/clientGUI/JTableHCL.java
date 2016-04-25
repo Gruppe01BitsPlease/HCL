@@ -10,29 +10,33 @@ import javax.swing.table.TableModel;
  * It sets them to not be editable, it makes them sortable, and it hides the ID numbers from the user
  */
 class JTableHCL extends JTable {
-
-	private TableModel tabModel;
-
 	public JTableHCL(TableModel model) {
 		super(model);
-		tabModel = this.getModel();
 		this.setAutoCreateRowSorter(true);
 	}
 	public boolean isCellEditable(int row, int column) {
 		return false;
 	}
 	public void removeIDs() {
+		TableModel tabModel = this.getModel();
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
 			String type = DataTyper.getDataType(tabModel.getColumnName(i));
-			if (type != null && type.equals("id") || type.equals("active")) {
+			if (type.equals("id") || type.equals("active")) {
 				TableColumn column = getColumnModel().getColumn(i);
-				column.setMinWidth(0);
-				column.setMaxWidth(0);
-				column.setWidth(0);
-				column.setPreferredWidth(0);
+				column.setMinWidth(50);
+				column.setMaxWidth(50);
+				column.setWidth(50);
+				column.setPreferredWidth(50);
 			}
-			else if (type == null){
-				System.out.println("Error in column hider: " + type);
+			else if (type.equals("boolean")) {
+				for (int j = 0; j < tabModel.getRowCount(); j++) {
+					if (tabModel.getValueAt(j, i).equals("1")) {
+						tabModel.setValueAt("\u2713", j, i);
+					}
+					else if (tabModel.getValueAt(j, i).equals("0")) {
+						tabModel.setValueAt("-", j, i);
+					}
+				}
 			}
 		}
 	}

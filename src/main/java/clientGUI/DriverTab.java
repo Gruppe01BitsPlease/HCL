@@ -40,7 +40,8 @@ class DriverTab extends JPanel {
 				if (e.getClickCount() == 2) {
 					int choice = JOptionPane.showConfirmDialog(null, "Deliver this order?", "Deliver", JOptionPane.YES_NO_OPTION);
 					if (choice == 0) {
-						int selID = Integer.parseInt((String) tabModel.getValueAt(table.getSelectedRow(), 0));
+						int selID = Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0));
+						System.out.println("Selected delivery: " + selID);
 						DeliveryManager mng = new DeliveryManager(sql);
 						mng.deliver(selID);
 						refresh();

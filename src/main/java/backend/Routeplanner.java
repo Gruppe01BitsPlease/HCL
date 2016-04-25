@@ -6,8 +6,8 @@ public class Routeplanner {
 
     private SQL sql;
 
-    public Routeplanner(){
-        this.sql = new SQL();
+    public Routeplanner(SQL sql){
+        this.sql = sql;
     }
 
 
@@ -25,8 +25,8 @@ public class Routeplanner {
 
 
     public static void main(String[]args){
-
-        Routeplanner planner = new Routeplanner();
+        SQL sql = new SQL();
+        Routeplanner planner = new Routeplanner(sql);
 
         System.out.println(Arrays.deepToString(planner.getRoute()));
 

@@ -43,6 +43,9 @@ class GenericList extends JPanel {
 		this.role = role;
 		this.FKs = FKs;
 		this.sql = sql;
+		if (sql == null) {
+			System.out.println("SQL is null!");
+		}
 		this.table = sql.getStringTable(query, false);
 		SqlColumnNames = sql.getColumnNames(query);
 		fillTable();

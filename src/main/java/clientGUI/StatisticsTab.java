@@ -1,5 +1,6 @@
 package clientGUI;
 
+import backend.SQL;
 import backend.Statistics;
 
 import javax.swing.*;
@@ -7,20 +8,19 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-import static clientGUI.MyJFreeChart.getNewDefaultTableModel;
 import static clientGUI.MyJFreeChart.getStats;
 
 /**
  * Creates the JPanel and adds the chart that is used as a tab in tabbedMenu
  */
 public class StatisticsTab extends JPanel{
-
+    private SQL sql;
     private JPanel westPanel;
     private JScrollPane table;
 
-    public StatisticsTab(){ // Thought about using an enum for the charts, but it just made it more complicated
-
-        Statistics stats = new Statistics();
+    public StatisticsTab(SQL sql){ // Thought about using an enum for the charts, but it just made it more complicated
+        this.sql = sql;
+        Statistics stats = new Statistics(sql);
 
         final String DAYS = "Orders By Day";
         final String MONTHS = "Orders By Month";
@@ -59,9 +59,9 @@ public class StatisticsTab extends JPanel{
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdown,BorderLayout.SOUTH);
         //
-        table = MyJFreeChart.getStats();
+        table = MyJFreeChart.getStats(sql);
         westPanel = new JPanel(new BorderLayout());
-        westPanel.add(MyJFreeChart.getStats(),BorderLayout.CENTER);
+        westPanel.add(MyJFreeChart.getStats(sql),BorderLayout.CENTER);
         //
         JButton refreshButton = new JButton("Refresh");
 
@@ -97,13 +97,13 @@ public class StatisticsTab extends JPanel{
         repaint();*/
     }
     public static void main(String[]args){
-
+        SQL sql = new SQL();
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        panel.add(new StatisticsTab(),BorderLayout.CENTER);
+        panel.add(new StatisticsTab(sql),BorderLayout.CENTER);
 
         frame.add(panel);
         frame.pack();

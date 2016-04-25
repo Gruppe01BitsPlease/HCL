@@ -14,8 +14,8 @@ public class Statistics {
 
     private SQL sql;
 
-    public Statistics(){
-        this.sql = new SQL();
+    public Statistics(SQL sql){
+        this.sql = sql;
     }
 
     /**
@@ -289,8 +289,8 @@ public class Statistics {
 
     }
     public static void main(String[]args){
-
-        Statistics stats = new Statistics();
+        SQL sql = new SQL();
+        Statistics stats = new Statistics(sql);
         LocalDate now = LocalDate.now();
 
        /* ArrayList<LocalDate> dates = stats.getDeliveryDates();

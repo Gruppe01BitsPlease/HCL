@@ -20,7 +20,7 @@ public class RouteplannerTest {
 
     @Before
     public void setUp() throws Exception {
-        manager = new Routeplanner();
+        manager = new Routeplanner(sql);
         dManager = new DeliveryManager(sql);
         oManager = new OrderManager(sql);
         cManager = new CustomerManager(sql);
@@ -47,18 +47,15 @@ public class RouteplannerTest {
         int bestilling2ID = oManager.generate(robertoID, 123, "Trondheim", 7030, "2016-02-02");
         int bestilling3ID = oManager.generate(robertoID, 123, "Trondheim", 7010, "2016-02-02");
         int bestilling4ID = oManager.generate(robertoID, 123, "Trondheim", 7023, "2016-02-02");
-        int levering1ID = dManager.addDate(bestilling1ID, "2016-04-23");
-        int levering2ID = dManager.addDate(bestilling2ID, "2016-04-23");
-        int levering3ID = dManager.addDate(bestilling3ID, "2016-04-23");
-        int levering4ID = dManager.addDate(bestilling4ID, "2016-04-23");
+        int levering1ID = dManager.addDate(bestilling1ID, "2016-04-25");
+        int levering2ID = dManager.addDate(bestilling2ID, "2016-04-25");
+        int levering3ID = dManager.addDate(bestilling3ID, "2016-04-25");
+        int levering4ID = dManager.addDate(bestilling4ID, "2016-04-25   '");
 
         //skriver ut informasjon om dagens leveringer sortert etter postnummer
         String[][] rute = manager.getRoute();
-        for(int j = 0; j <rute.length; j++){
-            for(int i = 0; i < rute[j].length; i++){
-                System.out.println(rute[j][i]);
-            }
-        }
+
+        sql.print2dArray(rute);
         //Skrev ut riktig, alle Robertos leveringer ble med.
 
 

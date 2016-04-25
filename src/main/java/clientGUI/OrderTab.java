@@ -293,7 +293,7 @@ class OrderTab extends GenericList {
 
                 });
                 saveButton.addActionListener(e -> {
-                    DeliveryManager manager = new DeliveryManager(new SQL());
+                    DeliveryManager manager = new DeliveryManager(sql);
 
                     String[][] dates;
 
@@ -377,7 +377,7 @@ class OrderTab extends GenericList {
                         temp[i] = dateArray[i];
                     }
                     int counter = 0;
-                    for(int j=dateArray.length; j<temp.length; j++){
+                    for(int j = dateArray.length; j < temp.length; j++){
                         temp[j] = dates[counter];
                         counter++;
                     }

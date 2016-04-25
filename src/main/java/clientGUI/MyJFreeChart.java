@@ -2,6 +2,7 @@ package clientGUI;
 
 import java.awt.*;
 
+import backend.SQL;
 import backend.Statistics;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -77,22 +78,22 @@ public class MyJFreeChart extends JPanel {
                 false                     // URLs?
         );
     }
-    public static JPanel getOrdersByDayChart(){
-        Statistics stats = new Statistics();
+    public static JPanel getOrdersByDayChart(SQL sql){
+        Statistics stats = new Statistics(sql);
         double[] data = stats.getOrdersPerDay();
         String[] days = {"Mon", "Tue", "Wed", "Thurs", "Fri", "Sat", "Sun"};
 
         return new MyJFreeChart.Builder().title("Orders per day").dataset("Orders", days, data).build();
     }
-    public static JPanel getOrdersByMonthChart(){
-        Statistics stats = new Statistics();
+    public static JPanel getOrdersByMonthChart(SQL sql){
+        Statistics stats = new Statistics(sql);
         String[] months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"};
         double[] data2 = stats.getOrdersPerMonth();
 
         return new MyJFreeChart.Builder().title("Orders per month").dataset("Orders", months, data2).build();
     }
-    public static JScrollPane getStats(){
-        Statistics stats = new Statistics();
+    public static JScrollPane getStats(SQL sql){
+        Statistics stats = new Statistics(sql);
 
         String[] names = {"Statistic","Value"};
 
@@ -141,8 +142,8 @@ public class MyJFreeChart extends JPanel {
 
 
     public static void main(final String[] args) { // http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
-
-        Statistics stats = new Statistics();
+        SQL sql = new SQL();
+        Statistics stats = new Statistics(sql);
 
         final String DAYS = "Orders By Day";
         final String MONTHS = "Orders By Month";
@@ -185,7 +186,7 @@ public class MyJFreeChart extends JPanel {
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdownPanel,BorderLayout.SOUTH);
 
-        westPanel.add(getStats());
+        westPanel.add(getStats(sql));
         //
         panel.add(westPanel,BorderLayout.WEST);
         panel.add(centerPanel,BorderLayout.CENTER);
