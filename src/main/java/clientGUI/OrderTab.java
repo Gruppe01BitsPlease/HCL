@@ -56,10 +56,10 @@ class OrderTab extends GenericList {
         return mng.generate(customerid, price, args[3], postnr, args[6]);
     }
     public void edit(int id, boolean newItem) {
-        editWindow edit = new editWindow(id, newItem);
+        EditWindow edit = new EditWindow(id, newItem);
     }
 
-    class editWindow extends JFrame {
+    class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
         private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
@@ -77,7 +77,7 @@ class OrderTab extends GenericList {
         private String[][] titles;
         private editBox editDatesWindow;
 
-        public editWindow(int order_id, boolean newOrder) {
+        public EditWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
             this.newOrder = newOrder;
             setSize(Stuff.getWindowSize(0.5,0.5));

@@ -23,3 +23,4 @@
 - Failer når du prøver å legge til en dato-hver-uke etter å ha lagt inn en singel-dato hvis hver-uke deliveriesen
     starter på samme dag?
 - bools kommer ikke med når du lager ingrediens
+- Fjern delivered og completed i chef view
