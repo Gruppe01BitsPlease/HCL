@@ -295,7 +295,7 @@ class GenericList extends JPanel {
 							for (linkTab tab : linkTabs) {
 								tab.generate();
 							}
-							table[index] = newValues;
+							//table[index] = newValues;
 							refresh();
 							if (searchTableMod != null) {
 								int searchSelectedRow = searchList.getSelectedRow();
