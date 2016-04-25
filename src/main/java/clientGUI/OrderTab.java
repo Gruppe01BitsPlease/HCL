@@ -123,7 +123,7 @@ class OrderTab extends GenericList {
                         for (int i = 0; i < sel.length; i++) {
                             for (int j = 0; j < subModel.getColumnCount(); j++) {
                                 if (subModel.getValueAt(sel[i], j) != null) {
-                                    String value = Stuff.setGrey() + Stuff.removeHTML((String)subModel.getValueAt(sel[i], j)) + Stuff.endGrey();
+                                    String value = Stuff.grey(Stuff.removeHTML((String)subModel.getValueAt(sel[i], j)));
                                     System.out.println("Setting grey!: "+value);
                                     subModel.setValueAt(value, sel[i], j);
                                     System.out.println(subModel.getValueAt(sel[i], j));
@@ -146,64 +146,43 @@ class OrderTab extends GenericList {
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
 
-                save.addActionListener( e-> { // FIXME: 22.04.2016 
-
-                    /*if(editDatesWindow != null) {
-
-                        for(String[] row : dateArray){
-                            System.out.println("ROW: "+Arrays.toString(row)); // FIXME: 22.04.2016 
-                            for(String element : row){
-
-                                if(element != null) {
-
-                                    String elementNoHTML = Stuff.removeHTML(element);
-
-                                    try { LocalDate date = LocalDate.parse(elementNoHTML);} catch (DateTimeException ex) {continue;} // If the element is not a valid date, skip this iteration
-
-                                    if (Stuff.isBold(element) && !Stuff.isGrey(element)) {
-                                        System.out.println(element+"Is bold? : "+Stuff.isBold(element) +" - Is Grey?: "+ Stuff.isGrey(element));
-                                        manager.addDate(order_id, elementNoHTML);
-                                    }
+                save.addActionListener( e-> { // FIXME: 22.04.2016
+                    int sure = JOptionPane.showConfirmDialog(EditWindow.this, "Are you sure?", "", JOptionPane.YES_NO_OPTION);
+                    if (sure == 0) {
+                        String[] newValues = editFields.getNewValues();
+                        if (newOrder) {
+                            order_id = generate(newValues);
+                        }
+                        System.out.println("New values: " + Arrays.toString(newValues));
+                        System.out.println("Selected original: " + Arrays.toString(selected));
+                        if (!newOrder) {
+                            for (int i = 0; i < newValues.length; i++) {
+                                if (!(newValues[i].equals(selected[i]))) {
+                                    sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
                                 }
-
                             }
                         }
 
-                    }*/
-
-                    String[] newValues = editFields.getNewValues();
-                    if (newOrder) {
-                        order_id = generate(newValues);
-                    }
-                    System.out.println("New values: " + Arrays.toString(newValues));
-                    System.out.println("Selected original: " + Arrays.toString(selected));
-                    if (!newOrder) {
-                        for (int i = 0; i < newValues.length; i++) {
-                            if (!(newValues[i].equals(selected[i]))) {
-                                sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
+                        DeliveryManager mng = new DeliveryManager(sql);
+                        int removeResult = 0;
+                        int addResult = 0;
+                        for (int i = 0; i < dateArray.length; i++) {
+                            System.out.println("Date: " + dateArray[i][2]);
+                            String value = (String) subModel.getValueAt(i, 2);
+                            if (value.contains(Stuff.setBold())) {
+                                addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
+                            }
+                            if (value.contains(Stuff.setGrey())) {
+                                //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
+                                if (dateArray[i][0] != null) {
+                                    removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
+                                }
                             }
                         }
+                        dispose();
+                        foodTab.generate();
+                        refresh();
                     }
-
-                    DeliveryManager mng = new DeliveryManager(sql);
-                    int removeResult = 0;
-                    int addResult = 0;
-                    for (int i = 0; i < dateArray.length; i++) {
-                        System.out.println("Date: " + dateArray[i][2]);
-                        String value = (String)subModel.getValueAt(i,2);
-                        if (value.contains(Stuff.setBold())) {
-                            addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
-                        }
-                        if (value.contains(Stuff.setGrey())) {
-                            //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
-                            if (dateArray[i][0] != null) {
-                                removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
-                            }
-                        }
-                    }
-                    dispose();
-                    foodTab.generate();
-                    refresh();
                 });
                 cancel.addActionListener(e->{
                     dispose();
@@ -336,18 +315,60 @@ class OrderTab extends GenericList {
                                     days.add(DayOfWeek.of(i+1));
                                 }
                             }
-                            DayOfWeek[] dayArray = new DayOfWeek[days.size()]; for(int i=0; i<days.size(); i++){dayArray[i] = days.get(i);}
-
-                            String[] daysToAdd = manager.getDatesToBeAdded(order_id,editDatesWindow.getStartDate(),
-                                    editDatesWindow.getEndDate(),intervalDropdown.getSelectedIndex(),
-                                    dayArray);
-
-                            System.out.println(Arrays.toString(daysToAdd));
-                            dates = new String[daysToAdd.length][6];
-
-                            for(int i=0; i<daysToAdd.length; i++){
-                                dates[i][0]=Stuff.bold("0"); dates[i][1] = Stuff.bold("0"); dates[i][2] = Stuff.bold(daysToAdd[i]); dates[i][3] = Stuff.bold("0"); dates[i][4] = Stuff.bold("0"); dates[i][5] = Stuff.bold("0");
-
+                            DayOfWeek[] dayArray = new DayOfWeek[days.size()];
+                            for(int i=0; i<days.size(); i++){
+                                dayArray[i] = days.get(i);
+                                System.out.println("Day: " + dayArray[i]);
+                            }
+                            LocalDate startDate = editDatesWindow.getStartDate();
+                            for (int i = 0; i < dayArray.length; i++) {
+                                boolean success = false;
+                                while (!success) {
+                                    if (startDate.getDayOfWeek() != dayArray[i]) {
+                                        startDate = startDate.plusDays(1);
+                                        System.out.println(startDate.getDayOfWeek());
+                                    }
+                                    else {
+                                        success = true;
+                                    }
+                                }
+                            }
+                            //String[] boxChoices = {"One Delivery", "Every Week", "Every 2nd Week", "Every 3rd Week","Every 4th Week"};
+                            ArrayList<String> datesToAdd = new ArrayList<>();
+                            boolean complete = false;
+                            LocalDate addDate = startDate;
+                            datesToAdd.add(addDate.toString());
+                            while (!complete) {
+                                if (intervalDropdown.getSelectedIndex() == 1) {
+                                    addDate = addDate.plusDays(7);
+                                    System.out.println("Seven days");
+                                } else if (intervalDropdown.getSelectedIndex() == 2) {
+                                    addDate = addDate.plusDays(14);
+                                    System.out.println("14 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 3) {
+                                    addDate = addDate.plusDays(21);
+                                    System.out.println("21 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 4) {
+                                    addDate = addDate.plusDays(28);
+                                    System.out.println("28 days");
+                                }
+                                if (!(addDate.isAfter(editDatesWindow.getEndDate()))) {
+                                    datesToAdd.add(addDate.toString());
+                                }
+                                else {
+                                    complete = true;
+                                }
+                            }
+                            dates = new String[datesToAdd.size()][6];
+                            for(int i=0; i<datesToAdd.size(); i++){
+                                dates[i][0]=Stuff.bold("0");
+                                dates[i][1] = Stuff.bold("0");
+                                dates[i][2] = Stuff.bold(datesToAdd.get(i));
+                                dates[i][3] = Stuff.bold("0");
+                                dates[i][4] = Stuff.bold("0");
+                                dates[i][5] = Stuff.bold("0");
                             }
                         }
                     String[][] temp = new String[dateArray.length+dates.length][];
@@ -360,9 +381,10 @@ class OrderTab extends GenericList {
                         temp[j] = dates[counter];
                         counter++;
                     }
-                    dateArray = temp; // I think these all these global variables should have been methods instead ftr - Olav
+                    dateArray = temp;
                     subModel = new DefaultTableModel(dateArray, subTitles); // -||-
                     subTable.setModel(subModel); // -||-
+                    subTable.removeIDs();
                     dispose();
                 });
 
