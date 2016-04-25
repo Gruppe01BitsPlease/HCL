@@ -19,4 +19,8 @@
 - Lage driver-rute-greier?
 
 **Olav Bugtesting**
--
+- Exc når du logger på bruker som ikke er CEO og prøver å endre settings
+- Failer når du prøver å legge til en dato-hver-uke etter å ha lagt inn en singel-dato hvis hver-uke deliveriesen
+    starter på samme dag?
+- bools kommer ikke med når du lager ingrediens
+- Fjern delivered og completed i chef view

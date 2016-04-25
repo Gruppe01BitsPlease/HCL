@@ -20,9 +20,7 @@ public class StartUp
     SQL sql;
 
 
-    private StartUp(){
-    init();
-    }
+    private StartUp(){ init();}
 
     /**
      * Startup Logic, checks everything is setup correctly, then calls the LoginGUI

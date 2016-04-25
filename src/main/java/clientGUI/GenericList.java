@@ -36,9 +36,8 @@ class GenericList extends JPanel {
 	private String searchName = "Search";
     private SQL sql;
 	private int role;
-	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
+	GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
 		System.out.println(SqlTableName + "query: " + query);
 		this.role = role;
 		this.FKs = FKs;
@@ -78,10 +77,7 @@ class GenericList extends JPanel {
 		cardLayout.show(cards, scrollName);
 		list.removeIDs();
     }
-	public int getRole() {
-		return role;
-	}
-	public int getSelectedID() {
+	int getSelectedID() {
 		if (scroll.isVisible()) {
 			return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
 		}
@@ -133,13 +129,13 @@ class GenericList extends JPanel {
 			}
 		}
 	}
-	public int generate(String[] arguments) {
+	int generate(String[] arguments) {
 		return -4;
 	}
-	public int delete(int nr) {
+	int delete(int nr) {
 		return -4;
 	}
-	public void edit(int ID, boolean newItem) {
+	void edit(int ID, boolean newItem) {
 		editWindow edit = new editWindow(ID, newItem);
 	}
 	private class northBar extends JPanel {
@@ -190,7 +186,6 @@ class GenericList extends JPanel {
 	}
 	class editWindow extends JFrame {
 		private String[] selected;
-		private ArrayList<JComponent> fields = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
 		private ArrayList<linkTab> linkTabs = new ArrayList<>();
 		private boolean newEntry;
@@ -227,7 +222,6 @@ class GenericList extends JPanel {
 			add(new saveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		String[] comboBoxIDs;
 		class saveCancelButtons extends JPanel {
 			public saveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
@@ -264,6 +258,7 @@ class GenericList extends JPanel {
 									}
 									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
 										if (dataTypes[i].equals("boolean")) {
+											System.out.println("Boolean value: " + newValues[i]);
 											if (newValues[i].equals("true")) {
 												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
 											} else if (newValues[i].equals("false")) {
@@ -300,7 +295,7 @@ class GenericList extends JPanel {
 							for (linkTab tab : linkTabs) {
 								tab.generate();
 							}
-							table[index] = newValues;
+							//table[index] = newValues;
 							refresh();
 							if (searchTableMod != null) {
 								int searchSelectedRow = searchList.getSelectedRow();

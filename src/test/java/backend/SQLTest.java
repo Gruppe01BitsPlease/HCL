@@ -28,9 +28,6 @@ public class SQLTest {
         fManager = new FoodManager(sql);
         lManager = new LinkManager(sql);
         iManager = new IngredientManager(sql);
-
-
-
     }
 
     @After

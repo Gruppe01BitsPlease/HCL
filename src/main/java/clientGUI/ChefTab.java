@@ -16,7 +16,7 @@ import java.util.Arrays;
  * Creates the JPanel that is used as a tab in tabbedMenu
  */
 class ChefTab extends JPanel {
-	private String query = "SELECT delivery_id, adress, delivery_date, completed, delivered, HCL_deliveries.active FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_deliveries.active = 1 AND completed = 0";
+	private String query = "SELECT delivery_id, adress, delivery_date, HCL_deliveries.active FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_deliveries.active = 1 AND completed = 0";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;

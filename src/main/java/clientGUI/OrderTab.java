@@ -1,21 +1,12 @@
 package clientGUI;
 
 import backend.DeliveryManager;
-import backend.LinkManager;
 import backend.OrderManager;
 import backend.SQL;
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-import org.jfree.data.time.Day;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,14 +47,12 @@ class OrderTab extends GenericList {
         return mng.generate(customerid, price, args[3], postnr, args[6]);
     }
     public void edit(int id, boolean newItem) {
-        editWindow edit = new editWindow(id, newItem);
+        EditWindow edit = new EditWindow(id, newItem);
     }
 
-    class editWindow extends JFrame {
+    class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
-        private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
-        private ArrayList<String> deletedDates = new ArrayList<>();
         private linkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
@@ -77,7 +66,7 @@ class OrderTab extends GenericList {
         private String[][] titles;
         private editBox editDatesWindow;
 
-        public editWindow(int order_id, boolean newOrder) {
+        public EditWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
             this.newOrder = newOrder;
             setSize(Stuff.getWindowSize(0.5,0.5));
@@ -140,7 +129,6 @@ class OrderTab extends GenericList {
                                     System.out.println(subModel.getValueAt(sel[i], j));
                                 }
                             }
-                            deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                         }
                         subTable.setModel(subModel);
                     });
@@ -152,7 +140,7 @@ class OrderTab extends GenericList {
         class lowerButtons extends JPanel {
             public lowerButtons() {
 
-                DeliveryManager manager = new DeliveryManager(new SQL());
+                //DeliveryManager manager = new DeliveryManager(new SQL());
 
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");
@@ -213,11 +201,6 @@ class OrderTab extends GenericList {
                             }
                         }
                     }
-                    /*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
-                        JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
-                        System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
-                    }*/
-                    //else {
                     dispose();
                     foodTab.generate();
                     refresh();
