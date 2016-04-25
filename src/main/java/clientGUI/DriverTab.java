@@ -48,8 +48,8 @@ public class DriverTab extends JPanel {
 				}
 			}
 		});
-		add(new northBar(), BorderLayout.NORTH);
-		add(new southBar(), BorderLayout.SOUTH);
+		add(new NorthBar(), BorderLayout.NORTH);
+		add(new SouthBar(), BorderLayout.SOUTH);
 		table.getRowSorter().toggleSortOrder(2);
 		table.removeIDs();
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -80,8 +80,8 @@ public class DriverTab extends JPanel {
 		table.setModel(tabModel);
 		table.removeIDs();
 	}
-	private class southBar extends JPanel {
-		southBar() {
+	private class SouthBar extends JPanel {
+		SouthBar() {
 			setLayout(new GridLayout(1, 2));
 			JLabel daysLabel = new JLabel("Days to show:");
 			String[] dayChoices = new String[8];
@@ -103,8 +103,8 @@ public class DriverTab extends JPanel {
 			add(dayBox);
 		}
 	}
-	private class northBar extends JPanel {
-		northBar() {
+	private class NorthBar extends JPanel {
+		NorthBar() {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Deliver");
 			JButton refresh = new JButton("Refresh");

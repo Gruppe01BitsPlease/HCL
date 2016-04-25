@@ -21,7 +21,7 @@ class ChefTab extends JPanel {
 	private String[] titles;
 	private SQL sql;
 	private JTableHCL table;
-	private viewVindow botFinal;
+	private ViewVindow botFinal;
 	private DefaultTableModel tabModel;
 	private JComboBox<String> dayBox;
 	ChefTab(SQL sql, int role) {
@@ -36,14 +36,14 @@ class ChefTab extends JPanel {
 		JScrollPane scroller = new JScrollPane(table);
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(scroller, BorderLayout.CENTER);
-		northPanel.add(new southBar(), BorderLayout.SOUTH);
+		northPanel.add(new SouthBar(), BorderLayout.SOUTH);
 		table.setRowSelectionInterval(0,0);
-		viewVindow bottom;
+		ViewVindow bottom;
 		try {
-			bottom = new viewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
+			bottom = new ViewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
 		}
 		catch (Exception e) {
-			bottom = new viewVindow(-1);
+			bottom = new ViewVindow(-1);
 		}
 		botFinal = bottom;
 		centerPanel.add(northPanel);
@@ -58,7 +58,7 @@ class ChefTab extends JPanel {
 				}
 			}
 		});
-		add(new northBar(), BorderLayout.NORTH);
+		add(new NorthBar(), BorderLayout.NORTH);
 		table.removeIDs();
 		table.getRowSorter().toggleSortOrder(2);
 	}
@@ -88,8 +88,8 @@ class ChefTab extends JPanel {
 		table.setModel(tabModel);
 		table.removeIDs();
 	}
-	private class southBar extends JPanel {
-		southBar() {
+	private class SouthBar extends JPanel {
+		SouthBar() {
 			setLayout(new GridLayout(1, 2));
 			JLabel daysLabel = new JLabel("Days to show:");
 			String[] dayChoices = new String[8];
@@ -106,8 +106,8 @@ class ChefTab extends JPanel {
 			add(dayBox);
 		}
 	}
-	private class northBar extends JPanel {
-		northBar() {
+	private class NorthBar extends JPanel {
+		NorthBar() {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Finish");
 			JButton refresh = new JButton("Refresh");
@@ -147,16 +147,16 @@ class ChefTab extends JPanel {
 			add(refresh);
 		}
 	}
-	private class viewVindow extends JPanel {
+	private class ViewVindow extends JPanel {
 		private DefaultTableModel tabModel;
 		private String foodQuery;
 		private String ingrQuery;
 		private JTableHCL tabTable;
 		private String[][] tabTitles;
 		private JTabbedPane ingredientTabs;
-		private ingredientTab ingrTab;
+		private IngredientTab ingrTab;
 		private int delivery_id;
-		viewVindow(int delivery_id) {
+		ViewVindow(int delivery_id) {
 			this.delivery_id = delivery_id;
 			setLayout(new BorderLayout());
 			JTabbedPane tabs = new JTabbedPane();
@@ -171,16 +171,16 @@ class ChefTab extends JPanel {
 				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN HCL_deliveries";
 			}
 			System.out.println("Food query: " + foodQuery);
-			tabs.addTab("Foods", new viewTab(foodQuery));
+			tabs.addTab("Foods", new ViewTab(foodQuery));
 			System.out.println("Ingredients query: " + ingrQuery);
 			String[] FoodIDs = sql.getColumn(ingrQuery, 0);
 			String[] tabTitles = sql.getColumn(ingrQuery, 1);
-			ingrTab = new ingredientTab(FoodIDs, tabTitles);
+			ingrTab = new IngredientTab(FoodIDs, tabTitles);
 			tabs.addTab("Ingredients", ingrTab);
 			add(tabs, BorderLayout.CENTER);
 		}
-		class viewTab extends JPanel {
-			viewTab(String query) {
+		class ViewTab extends JPanel {
+			ViewTab(String query) {
 				setLayout(new BorderLayout());
 				System.out.println("Chef view ingredient query:\t" + query);
 				System.out.println(query);
@@ -193,24 +193,24 @@ class ChefTab extends JPanel {
 				tabTable.removeIDs();
 			}
 		}
-		class ingredientTab extends JPanel {
-			ingredientTab(String[] IDs, String[] tabTitles) {
+		class IngredientTab extends JPanel {
+			IngredientTab(String[] IDs, String[] tabTitles) {
 				setLayout(new BorderLayout());
 				ingredientTabs = new JTabbedPane();
 				for (int i = 0; i < IDs.length; i++) {
-					ingredientTabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
+					ingredientTabs.addTab(tabTitles[i], new IngredientList(IDs[i]));
 				}
 				add(ingredientTabs, BorderLayout.CENTER);
 			}
 			void refresh(String[] IDs, String[] tabTitles) {
 				ingredientTabs.removeAll();
 				for (int i = 0; i < IDs.length; i++) {
-					ingredientTabs.addTab(tabTitles[i], new ingredientList(IDs[i]));
+					ingredientTabs.addTab(tabTitles[i], new IngredientList(IDs[i]));
 				}
 			}
 		}
-		class ingredientList extends JPanel {
-			ingredientList(String food_id) {
+		class IngredientList extends JPanel {
+			IngredientList(String food_id) {
 				setLayout(new BorderLayout());
 				String query = "SELECT ingredient_id, name, number, stock, other, expiration_date FROM HCL_ingredient" +
 						" NATURAL JOIN HCL_food_ingredient WHERE food_id = " + food_id + " AND HCL_ingredient.active = 1";

@@ -34,7 +34,7 @@ class EmployeeTab extends GenericList {
 	}
 	public void edit(int id, boolean newEntry) {
 		if (newEntry && role == 0) {
-			editBox box = new editBox();
+			EditBox box = new EditBox();
 		}
 		else if (newEntry && role < 0) {
 			JOptionPane.showMessageDialog(this, "You do not have the requred access level to create new users");
@@ -55,8 +55,8 @@ class EmployeeTab extends GenericList {
 		}
 		return ret;
 	}
-	private class editBox extends JFrame {
-		public editBox() {
+	private class EditBox extends JFrame {
+		public EditBox() {
 			setSize(Stuff.getWindowSize(0.3,0.25));
 			setLocationRelativeTo(null);
 			setTitle("New user");
@@ -72,13 +72,13 @@ class EmployeeTab extends GenericList {
 			save.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int sure = JOptionPane.showConfirmDialog(editBox.this, "Are you sure?", "Create user", JOptionPane.YES_NO_OPTION);
+					int sure = JOptionPane.showConfirmDialog(EditBox.this, "Are you sure?", "Create user", JOptionPane.YES_NO_OPTION);
 					if (sure == 0) {
 						UserManager mng = new UserManager(sql);
 						String pass = mng.generate(userNameField.getText(), roleBox.getSelectedIndex());
 						String start = LocalDate.now().toString();
 						sql.update("HCL_user", "user_start", "user_name", userNameField.getText(), start);
-						JOptionPane.showMessageDialog(editBox.this, "The password is: \"" + pass + "\". Write it down!");
+						JOptionPane.showMessageDialog(EditBox.this, "The password is: \"" + pass + "\". Write it down!");
 					}
 					dispose();
 					refresh();
