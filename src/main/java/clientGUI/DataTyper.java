@@ -12,11 +12,6 @@ abstract class DataTyper {
 		String[] ret = getDataTypes(data);
 		return ret[0];
 	}
-	public static String getDataTypeSQL(String sqlName) {
-		String[] data = { sqlName };
-		String[] ret = getDataTypesSQL(data);
-		return ret[0];
-	}
 	public static String[] getDataTypesSQL(String[] sqlNames) {
 		return getDataTypes(ColumnNamer.getNamesFromArray(sqlNames));
 	}

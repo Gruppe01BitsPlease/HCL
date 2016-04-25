@@ -1,21 +1,12 @@
 package clientGUI;
 
 import backend.DeliveryManager;
-import backend.LinkManager;
 import backend.OrderManager;
 import backend.SQL;
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-import org.jfree.data.time.Day;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,9 +52,7 @@ class OrderTab extends GenericList {
 
     class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
-        private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
-        private ArrayList<String> deletedDates = new ArrayList<>();
         private linkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
@@ -140,7 +129,6 @@ class OrderTab extends GenericList {
                                     System.out.println(subModel.getValueAt(sel[i], j));
                                 }
                             }
-                            deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                         }
                         subTable.setModel(subModel);
                     });
@@ -152,7 +140,7 @@ class OrderTab extends GenericList {
         class lowerButtons extends JPanel {
             public lowerButtons() {
 
-                DeliveryManager manager = new DeliveryManager(new SQL());
+                //DeliveryManager manager = new DeliveryManager(new SQL());
 
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");

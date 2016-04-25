@@ -23,9 +23,10 @@ class EmployeeTab extends GenericList {
 		add(new GenericSearch(), BorderLayout.SOUTH);
 	}
 	public int generate(String[] args) {
+		int role = 3;
 		UserManager mng = new UserManager(sql);
 		try {
-			int role = Integer.parseInt(args[3]);
+			role = Integer.parseInt(args[3]);
 		}
 		catch (Exception e) {
 			JOptionPane.showMessageDialog(this, "Role is invalid!");

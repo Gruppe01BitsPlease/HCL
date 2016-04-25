@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,14 +18,14 @@ class Stuff {
 
     private Stuff(){} // Can't be instansized
 	//Used to size a window relative to the main window, which is sized relative to the screen
-	public static Dimension getWindowSize(double factorX, double factorY) {
+	static Dimension getWindowSize(double factorX, double factorY) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) (screen.width * 0.75);
 		int y = (int) (screen.height * 0.75);
 		return new Dimension((int) (x * factorX), (int) (y * factorY));
 	}
 	//Finds the index in the list from a search key
-	public static int findIndexOf(String[][] searchArrays, String search, int column) {
+	static int findIndexOf(String[][] searchArrays, String search, int column) {
 		int ret = -1;
 		for (int i = 0; i < searchArrays.length; i++) {
 			if (searchArrays[i][column].equals(search)) {
@@ -41,7 +40,7 @@ class Stuff {
 		}
 		return ret;
 	}
-	public static int findIndexOf(String[] searchArray, String search) {
+	static int findIndexOf(String[] searchArray, String search) {
 		int ret = -1;
 		for (int i = 0; i < searchArray.length; i++) {
 			if (searchArray[i].equals(search)) {
@@ -50,27 +49,27 @@ class Stuff {
 		}
 		return ret;
 	}
-	public static String bold(String text) {
+	static String bold(String text) {
 		return setBold() + text + endBold();
 	}
-    public static String grey(String text){return setGrey()+text+endGrey();}
-	public static String setBold() {return "<html><b>";	}
-	public static String endBold() {
+	static String grey(String text){return setGrey()+text+endGrey();}
+	static String setBold() {return "<html><b>";	}
+	static String endBold() {
 		return "</b></html>";
 	}
-	public static String setGrey() {
+	static String setGrey() {
 		return "<html><p style=\"color:#808080\">";
 	}
-	public static String endGrey() {
+	static String endGrey() {
 		return "</p></html>";
 	}
-	public static String setBlue() {
+	static String setBlue() {
 		return "<html><p style=\"color:#0000FF\">";
 	}
-	public static String endBlue() {
+	static String endBlue() {
 		return "</p></html>";
 	}
-	public static String removeHTML(String input) {
+	static String removeHTML(String input) {
 		String ret = input;
 		ret = ret.replaceAll(setBold(), "");
 		ret = ret.replaceAll(endBold(), "");
@@ -89,7 +88,7 @@ class Stuff {
     /**
      * Checks if the inputted is in the array, and if it is; checks if it is greyed out.
      */
-    public static boolean isGrayedInArray(String[][] array, String string){
+    static boolean isGrayedInArray(String[][] array, String string){
 
         for(String[] row : array){
             for(String element : row){
@@ -108,7 +107,7 @@ class Stuff {
         }
         return false;
     }
-    public static boolean arrayContains(String[] array, String string){
+    static boolean arrayContains(String[] array, String string){
         if(array == null || string == null) return false;
 
         for(String element : array){
@@ -254,8 +253,6 @@ class editFields extends JPanel {
 	private String[] selected;
 	public editFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
 		this.selected = selected;
-		boolean newEntry1 = newEntry;
-		SQL sql1 = sql;
 		String[] dataTypes = DataTyper.getDataTypes(titles);
 		if (FKs != null && FKs.length > 0) {
 			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
@@ -317,9 +314,6 @@ class editFields extends JPanel {
 	public ArrayList<JComponent> getFields() {
 		return fields;
 	}
-	public String[][] getComboBoxChoices() {
-		return comboBoxChoices;
-	}
 	public String[] getNewValues() {
 		//returns the new values as an array, should be in same order as columns in jtable (including hidden ones!)
 		String[] newValues = new String[selected.length];
@@ -349,7 +343,6 @@ class editFields extends JPanel {
 }
 class linkTab extends JPanel {
 	private ArrayList<int[]> removeLinks = new ArrayList<>();
-	private ArrayList<String[]> addedLinks = new ArrayList<>();
 	private ArrayList<int[]> createLinks = new ArrayList<>();
 	private ArrayList<int[]> changeLinks = new ArrayList<>();
 	private String[][] linkTableData;
@@ -513,7 +506,6 @@ class linkTab extends JPanel {
 					addedLink[linkTableModel.findColumn("Amount")] = Stuff.bold(amount.getText());
 					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[1]))] = Stuff.bold(choiceID[input.getSelectedIndex()]);
 					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[4]))] = Stuff.bold((String)input.getSelectedItem());
-					addedLinks.add(addedLink);
 					int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
 					if (newLink) {
 						createLinks.add(inputTable);
@@ -550,15 +542,6 @@ class linkTab extends JPanel {
 			add(cancel);
 			setVisible(true);
 		}
-	}
-	public ArrayList<int[]> getRemoveLinks() {
-		return removeLinks;
-	}
-	public ArrayList<int[]> getCreateLinks() {
-		return createLinks;
-	}
-	public ArrayList<int[]> getChangeLinks() {
-		return changeLinks;
 	}
 	public void generate() {
 		if (newEntry) {
@@ -612,12 +595,10 @@ class userEditMenu extends JFrame {
 	private SQL sql;
 	private String userName;
 	private JPasswordField passField;
-	private int rolle;
 	private JButton passButton;
 	private JPanel tab;
 	public userEditMenu(String id, SQL sql, int rolle, JPanel tab) {
 		this.tab = tab;
-		this.rolle = rolle;
 		this.sql = sql;
 		setAlwaysOnTop(true);
 		String select = "SELECT user_name FROM HCL_user WHERE user_id = " + id;
@@ -638,7 +619,6 @@ class userEditMenu extends JFrame {
 	}
 	public userEditMenu(SQL sql, int rolle, JPanel tab) {
 		this.tab = tab;
-		this.rolle = rolle;
 		this.sql = sql;
 		setSize(Stuff.getWindowSize(0.3,0.2));
 		setLocationRelativeTo(null);
