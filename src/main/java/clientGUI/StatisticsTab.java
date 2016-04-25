@@ -8,6 +8,7 @@ import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import static clientGUI.MyJFreeChart.getNewDefaultTableModel;
 import static clientGUI.MyJFreeChart.getStats;
 
 /**
@@ -84,11 +85,11 @@ public class StatisticsTab extends JPanel{
 
         // JTableHCL temp = (JTableHCL) table.getViewport().getView();
 
-        System.out.println(getNewDefaultTableModel().getValueAt(0,1));
+        System.out.println(MyJFreeChart.getNewDefaultTableModel(sql).getValueAt(0,1));
 
         //temp.setModel(MyJFreeChart.getNewDefaultTableModel());
 
-        ((JTableHCL) table.getViewport().getView()).setModel(MyJFreeChart.getNewDefaultTableModel());
+        ((JTableHCL) table.getViewport().getView()).setModel(getNewDefaultTableModel(sql));
 
         ((DefaultTableModel) ((JTableHCL) table.getViewport().getView()).getModel()).fireTableDataChanged();
 

@@ -116,9 +116,9 @@ public class MyJFreeChart extends JPanel {
 
         return new JScrollPane(new JTableHCL(model));
     }
-    public static DefaultTableModel getNewDefaultTableModel(){
+    public static DefaultTableModel getNewDefaultTableModel(SQL sql){
 
-        Statistics stats = new Statistics();
+        Statistics stats = new Statistics(sql);
 
         String[] names = {"Statistic","Value"};
 
