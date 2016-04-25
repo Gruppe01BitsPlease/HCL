@@ -4,8 +4,10 @@ import backend.Statistics;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+import static clientGUI.MyJFreeChart.getNewDefaultTableModel;
 import static clientGUI.MyJFreeChart.getStats;
 
 /**
@@ -78,12 +80,21 @@ public class StatisticsTab extends JPanel{
     public JScrollPane getStatsPane(){
         return table;
     }
-    public void refreshStats(){
+    public void refreshStats(){ // impossible
 
-        westPanel.remove(table);
-        table = MyJFreeChart.getStats();
-        westPanel.add(table,BorderLayout.CENTER);
+        // JTableHCL temp = (JTableHCL) table.getViewport().getView();
 
+        System.out.println(getNewDefaultTableModel().getValueAt(0,1));
+
+        //temp.setModel(MyJFreeChart.getNewDefaultTableModel());
+
+        ((JTableHCL) table.getViewport().getView()).setModel(MyJFreeChart.getNewDefaultTableModel());
+
+        ((DefaultTableModel) ((JTableHCL) table.getViewport().getView()).getModel()).fireTableDataChanged();
+
+/*
+        table.repaint();
+        repaint();*/
     }
     public static void main(String[]args){
 

@@ -115,6 +115,30 @@ public class MyJFreeChart extends JPanel {
 
         return new JScrollPane(new JTableHCL(model));
     }
+    public static DefaultTableModel getNewDefaultTableModel(){
+
+        Statistics stats = new Statistics();
+
+        String[] names = {"Statistic","Value"};
+
+        String[][] statTable = {
+                {"Gross Income",Integer.toString(stats.getGrossIncome())+"kr"},
+                {"Total Orders",Integer.toString(stats.getTotalOrders())},
+                {"Total Deliveries Today",Integer.toString(stats.getDeliveriesToday())},
+                {"Total Subscriptions",Integer.toString(stats.getTotalSubscriptions())},
+                {"Average Orders Per Month This Year",String.format("%.5s",Double.toString(stats.getAvgOrdersPerMonthThisYear()))},
+                {"Popular Food All Time",stats.getAllTimePopularFood()},
+                {"Popular Food This Month",stats.getMonthlyPopularFood()},
+                {"Popular Ingredient All Time",stats.getAllTimePopularIngredient()},
+                {"Popular Ingredient This Month",stats.getMonthlyPopularIngredient()},
+                {"Number Of Customers",Integer.toString(stats.getNumberOfCustomers())},
+                {"Biggest Customer",stats.getBiggestCustomer()},
+                {"Biggest Customer This Month",stats.getBiggestCustomerThisMonth()}
+        };
+
+        return new DefaultTableModel(statTable,names);
+    }
+
 
     public static void main(final String[] args) { // http://www.java2s.com/Code/Java/Chart/JFreeChartBarChartDemo.htm
 
