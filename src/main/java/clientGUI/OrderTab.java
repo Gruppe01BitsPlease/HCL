@@ -382,10 +382,6 @@ class OrderTab extends GenericList {
                                     complete = true;
                                 }
                             }
-                            /*String[] daysToAdd = manager.getDatesToBeAdded(order_id,editDatesWindow.getStartDate(),
-                                    editDatesWindow.getEndDate(),intervalDropdown.getSelectedIndex(),
-                                    dayArray);
-                            System.out.println("Days to add: " + Arrays.toString(daysToAdd));*/
                             dates = new String[datesToAdd.size()][6];
                             for(int i=0; i<datesToAdd.size(); i++){
                                 dates[i][0]=Stuff.bold("0");
@@ -406,7 +402,7 @@ class OrderTab extends GenericList {
                         temp[j] = dates[counter];
                         counter++;
                     }
-                    dateArray = temp; // I think these all these global variables should have been methods instead ftr - Olav
+                    dateArray = temp;
                     subModel = new DefaultTableModel(dateArray, subTitles); // -||-
                     subTable.setModel(subModel); // -||-
                     dispose();
