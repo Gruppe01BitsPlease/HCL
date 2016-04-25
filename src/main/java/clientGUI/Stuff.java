@@ -252,7 +252,6 @@ class editFields extends JPanel {
 	private ArrayList<JComponent> fields = new ArrayList<>();
 	private String[][] comboBoxChoices;
 	private String[] selected;
-
 	public editFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
 		this.selected = selected;
 		boolean newEntry1 = newEntry;

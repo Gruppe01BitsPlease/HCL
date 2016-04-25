@@ -4,6 +4,7 @@ import backend.IngredientManager;
 import backend.SQL;
 
 import java.awt.*;
+import java.util.Arrays;
 
 /**
  * Creates the JPanel that is used as a tab in tabbedMenu
@@ -28,12 +29,22 @@ class IngredientTab extends GenericList {
 		try {
 			stock = Integer.parseInt(args[2]);
 			pprice = Integer.parseInt(args[3]);
-			nuts = Boolean.getBoolean(args[4]);
-			gluten = Boolean.getBoolean(args[5]);
-			lactose = Boolean.getBoolean(args[6]);
 		}
 		catch (Exception e) {
 			System.out.println("generate() error: " + e.getMessage());
+			stock = 0;
+			pprice = 0;
+		}
+		try {
+			nuts = Boolean.valueOf(args[4]);
+			gluten = Boolean.valueOf(args[5]);
+			lactose = Boolean.valueOf(args[6]);
+		}
+		catch (Exception k) {
+			System.out.println("generate() error: " + k.getMessage());
+			nuts = false;
+			gluten = false;
+			lactose = false;
 		}
 		return mng.generate(args[1], stock, pprice, nuts, gluten, lactose, args[7], args[8], args[9]);
 	}
