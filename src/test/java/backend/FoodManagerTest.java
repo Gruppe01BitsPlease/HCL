@@ -31,11 +31,13 @@ public class FoodManagerTest {
     @After
     public void tearDown() throws Exception {
         manager = null;
+        lManager = null;
+        iManager = null;
         sql.end();
     }
 
     @Test
-    public void generate() {
+    public void generate() throws Exception{
 
         //lager food-objekter
         int kakeID = manager.generate("Bløtkake", 75);
@@ -45,7 +47,7 @@ public class FoodManagerTest {
         assertTrue(sql.rowExists("HCL_food", "food_id", kakeID));
         assertTrue(sql.rowExists("HCL_food", "food_id", snippID));
         //Sjekker at uekte food-objekt ikke eksisterer
-        assertFalse(sql.rowExists("HCL_food", "food_id", 010101));
+        assertFalse(sql.rowExists("HCL_food", "food_id", 99999999));
 
         //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", 1));
@@ -56,7 +58,7 @@ public class FoodManagerTest {
     }
 
     @Test
-    public void delete() {
+    public void delete() throws Exception {
         //Lager testobjekter som kan slettes
         int idKlubb = manager.generate("Klubb", 60);
         int idMøs = manager.generate("Møsbrømslfse", 75);
@@ -68,7 +70,7 @@ public class FoodManagerTest {
 
         //Sjekker at sletting gir riktig return.
         assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
-        assertEquals(-1, manager.delete(379)); //Finnes ikke, riktig
+        assertEquals(-1, manager.delete(99999999)); //Finnes ikke, riktig
 
         sql.deleteForGood("HCL_food", "food_id", idKlubb);
         sql.deleteForGood("HCL_food", "food_id", idMøs);
@@ -77,7 +79,7 @@ public class FoodManagerTest {
     }
 
     @Test
-    public void addIngredient(){
+    public void addIngredient() throws Exception{
         //Lager ny ingrediens, henter ID
         int mandelID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
         //Lager mat-objekt og henter ID, samt legger mandel i grøten.
@@ -87,8 +89,8 @@ public class FoodManagerTest {
         //Sjekker at mandelen ligger i grøten
         assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID));
         //Sjekker at alle feilmeldingene fungerer
-        assertEquals(-4, manager.addIngredient(grøtID, 379, 40));
-        assertEquals(-4, manager.addIngredient(379, mandelID, 40));
+        assertEquals(-4, manager.addIngredient(grøtID, 99999999, 40));
+        assertEquals(-4, manager.addIngredient(99999999, mandelID, 40));
         assertEquals(-3, manager.addIngredient(grøtID, mandelID, -1));
 
 

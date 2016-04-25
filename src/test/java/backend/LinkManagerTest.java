@@ -30,6 +30,8 @@ public class LinkManagerTest {
     @After
     public void tearDown() throws Exception {
         manager = null;
+        fManager = null;
+        iManager = null;
         sql.end();
     }
 
@@ -46,8 +48,8 @@ public class LinkManagerTest {
         //Tester om linkobjektene faktisk ble laget.
         assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, gjørmeID));
         //Sjekker at uekte link-objekter ikke eksisterer
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", 1010, gjørmeID));
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, 1010));
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", 99999999, gjørmeID));
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", søleID, 99999999));
 
         //Prøver å lage ukorrekte linkobjekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", "food_id","ingredient_id", søleID, gjørmeID, 20));

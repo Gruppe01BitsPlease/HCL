@@ -35,7 +35,7 @@ public class UserManagerTest {
         //Tester om Customer-objektene faktisk ble laget.
         assertTrue(sql.rowExists("HCL_user", "user_id", idNils));
         assertTrue(sql.rowExists("HCL_user", "user_id", idOda));
-        assertFalse(sql.rowExists("HCL_user", "user_id", 1111111));
+        assertFalse(sql.rowExists("HCL_user", "user_id", 99999999));
 
         //Prøver å lage ukorrekte Customer-objekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", "hei", 1));

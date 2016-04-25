@@ -62,7 +62,7 @@ public class SQL {
 	/**
 	 * True if it managed to connect to specified database, false otherwise
 	 */
-	private Connection connect() {
+	public Connection connect() {
 
 		try {
 			Class.forName(databasedriver);

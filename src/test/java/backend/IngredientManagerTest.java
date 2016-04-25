@@ -28,7 +28,7 @@ public class IngredientManagerTest {
     }
 
     @Test
-    public void generate() {
+    public void generate() throws Exception{
 
         //Lager ingrediens, sjekker at den finnes, sjekker at ingrediens med falsk id ikke eksisterer
         int brunostID = manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
@@ -72,7 +72,7 @@ public class IngredientManagerTest {
             } //Skriver ut "68, riesling cabinett, 2, 99, 0, 1, 0, god vin!, 2017-06-06, 2018-06-06"
 
             //Tester at ikke metoden kan bli brukt med feil
-            assertEquals(-1, manager.edit(000, 10, 80, "hallo"));
+            assertEquals(-1, manager.edit(99999999, 10, 80, "hallo"));
             assertEquals(-3, manager.edit(ølID, -1, 80, "hallo" ));
             assertEquals(-3, manager.edit(ølID, 10, -1, "hallo" ));
             assertEquals(-3, manager.edit(ølID, 10, 80, "" ));
@@ -85,7 +85,7 @@ public class IngredientManagerTest {
 
 
    @Test
-    public void delete() {
+    public void delete() throws Exception {
         //Lager testobjekter som kan slettes
        int tranID = manager.generate("tran", 1, 60, false, false, false, "tas med teskje", "2017-06-06", "2018-06-06");
        int sanasolID = manager.generate("nordlands", 1, 56, false, true, false, "vitaminer", "2017-06-06", "2018-06-06");
@@ -97,7 +97,7 @@ public class IngredientManagerTest {
 
         //Sjekker at sletting gir riktig return.
         assertEquals(1, manager.delete(sanasolID)); //Finnes, riktig
-        assertEquals(-1, manager.delete(5550)); //Finnes ikke, riktig
+        assertEquals(-1, manager.delete(99999999)); //Finnes ikke, riktig
 
        sql.deleteForGood("HCL_ingredient", "ingredient_id", sanasolID);
        sql.deleteForGood("HCL_ingredient", "ingredient_id", tranID);
@@ -105,7 +105,7 @@ public class IngredientManagerTest {
     }
 
     @Test
-    public void addStock(){
+    public void addStock() throws Exception{
 
         int roseID = manager.generate("rose", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
         int tulipanID = manager.generate("tulipan", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
@@ -129,7 +129,7 @@ public class IngredientManagerTest {
 
         //Sjekker at det sendes siktig return
         assertEquals(1, manager.addStock(tulipanID, 14)); //Finnes, riktig
-        assertEquals(-1, manager.addStock(1010, 14)); //Finnes ikke, riktig
+        assertEquals(-1, manager.addStock(99999999, 14)); //Finnes ikke, riktig
         assertEquals(-3, manager.addStock(tulipanID, 0)); //Feil parameter, riktig
 
 
@@ -140,7 +140,7 @@ public class IngredientManagerTest {
 
 
     @Test
-    public void removeStock(){
+    public void removeStock() throws Exception{
 
         int hestehovID = manager.generate("hestehov", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
         int løvetannID = manager.generate("løvetann", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");

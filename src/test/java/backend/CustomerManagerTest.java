@@ -27,7 +27,7 @@ public class CustomerManagerTest {
     }
 
     @Test
-    public void generate() {
+    public void generate() throws Exception{
 
         int idKjell = manager.generate("Kjell-Sture", "Sturegutten@hotmail.com", 75584788);
         int idLars = manager.generate("Kaffe-Lars", "coffein_lover@gmail.com", 75584061);
@@ -35,7 +35,7 @@ public class CustomerManagerTest {
         //Tester om Customer-objektene faktisk ble laget.
         assertTrue(sql.rowExists("HCL_customer", "customer_id", idKjell));
         assertTrue(sql.rowExists("HCL_customer", "customer_id", idLars));
-        assertFalse(sql.rowExists("HCL_customer", "customer_name", 00101));
+        assertFalse(sql.rowExists("HCL_customer", "customer_name", 99999999));
 
         //Prøver å lage ukorrekte Customer-objekter, og sjekker om generate() sender riktig feilmelding
         assertEquals(-3, manager.generate("", "hei@nei.no", 12345678));
@@ -92,7 +92,7 @@ public class CustomerManagerTest {
 
         //tester med gal/ingen ID
         assertEquals(-1,manager.delete(0));
-        assertEquals(-1,manager.delete(001));
+        assertEquals(-1,manager.delete(99999999));
 
         sql.deleteForGood("HCL_customer", "customer_id", kariID);
 
