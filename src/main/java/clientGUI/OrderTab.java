@@ -293,7 +293,7 @@ class OrderTab extends GenericList {
 
                 });
                 saveButton.addActionListener(e -> {
-                    DeliveryManager manager = new DeliveryManager(new SQL());
+                    DeliveryManager manager = new DeliveryManager(sql);
 
                     String[][] dates;
 

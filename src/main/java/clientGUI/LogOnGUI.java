@@ -12,6 +12,7 @@ import backend.*;
  */
 public class LogOnGUI extends JFrame{
 	public LogOnGUI () {
+		SQL sql = new SQL();
 		//window parameters
 		setTitle("Log in");
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
@@ -50,10 +51,10 @@ public class LogOnGUI extends JFrame{
 				String pass = password.getText();
 				int i;
 				try {
-					UserManager u = new UserManager(new SQL());
+					UserManager u = new UserManager(sql);
 					i = u.logon(navn, pass);
 					if (i >= 0) {
-						tabbedMenu main = new tabbedMenu(i, navn);
+						tabbedMenu main = new tabbedMenu(i, navn, sql);
 						dispose();
 					} else if (i == -1) {
 						JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");

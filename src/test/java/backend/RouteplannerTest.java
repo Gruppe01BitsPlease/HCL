@@ -20,7 +20,7 @@ public class RouteplannerTest {
 
     @Before
     public void setUp() throws Exception {
-        manager = new Routeplanner();
+        manager = new Routeplanner(sql);
         dManager = new DeliveryManager(sql);
         oManager = new OrderManager(sql);
         cManager = new CustomerManager(sql);

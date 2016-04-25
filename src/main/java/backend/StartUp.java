@@ -38,7 +38,7 @@ public class StartUp
             }
         }
 
-        if (validateSettings() != 1 || !validateDBConnection()) {
+        if (validateSettings() != 1 || !validateDBConnection(sql)) {
             if(isFirstTime()){
                 JOptionPane.showMessageDialog(null,
                         "This looks like the first time you are running this application, please configure your database settings",
@@ -66,7 +66,7 @@ public class StartUp
                         if (reply == JOptionPane.YES_OPTION) {
                             window.dispose();
                             new LogOnGUI();
-                            DatabaseSetupGUI DBsetting = new DatabaseSetupGUI();
+                            DatabaseSetupGUI DBsetting = new DatabaseSetupGUI(sql);
                             DBsetting.setLocationRelativeTo(null);
                             DBsetting.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
                         }
@@ -101,8 +101,7 @@ public class StartUp
      * Returns true the database connection is successful
      * @return boolean
      */
-    private boolean validateDBConnection() {
-        sql = new SQL();
+    private boolean validateDBConnection(SQL sql) {
         System.out.println(sql.isConnected());
         return sql.isConnected(); // True if the database, username, password, and JDBC drivers are all correct, and the servers are online
     }
