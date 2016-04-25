@@ -21,7 +21,7 @@ public class StatisticsTest {
     @Before
     public void setUp() throws Exception {
         sql = new SQL();
-        manager = new Statistics();
+        manager = new Statistics(sql);
 
     }
 

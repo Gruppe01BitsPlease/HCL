@@ -5,8 +5,6 @@ package clientGUI;
  * 	Data types are mostly used for edit windows
  */
 abstract class DataTyper {
-
-
 	public static String getDataType(String UIName) {
 		String[] data = { UIName };
 		String[] ret = getDataTypes(data);

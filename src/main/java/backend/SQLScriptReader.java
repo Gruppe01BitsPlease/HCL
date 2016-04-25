@@ -11,8 +11,8 @@ import java.sql.Statement;
  */
 public class SQLScriptReader {
     SQL sql;
-    public SQLScriptReader(){
-    sql = new SQL();
+    public SQLScriptReader(SQL sql){
+    this.sql = sql;
     }
 
     private String convertStreamToString(java.io.InputStream is) {

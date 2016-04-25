@@ -19,8 +19,8 @@ import java.sql.SQLException;
     private JTextPane helpText;
 
 
-    public DatabaseSetupGUI(){
-        reset = new SQLScriptReader();
+    public DatabaseSetupGUI(SQL sql){
+        reset = new SQLScriptReader(sql);
         setVisible(true);
 
             //window parameters
@@ -85,7 +85,7 @@ import java.sql.SQLException;
 
             //buttonpanel
             JButton executeButton = new JButton("Execute");
-            executeButton.addActionListener((pressed) -> executeCheckedScripts());
+            executeButton.addActionListener((pressed) -> executeCheckedScripts(sql));
             executeButton.setToolTipText("Execute selected SQL Scripts");
             JButton closeButton = new JButton("Close");
             closeButton.addActionListener((pressed) -> dispose());
@@ -99,8 +99,7 @@ import java.sql.SQLException;
             add(buttonPanel);
         }
 
-    private void executeCheckedScripts(){
-        SQL sql = new SQL();
+    private void executeCheckedScripts(SQL sql){
         try {
             sql.connection.setAutoCommit(false);
             if (checkTables.isSelected()) {
@@ -139,10 +138,12 @@ import java.sql.SQLException;
                 JOptionPane.showMessageDialog(null, "Could not set AutoCommit back, do this manually!");
             }
         }
+        sql.end();
     }
 
     public static void main(String[] args){
-            DatabaseSetupGUI frame = new DatabaseSetupGUI();
+        SQL sql = new SQL();
+            DatabaseSetupGUI frame = new DatabaseSetupGUI(sql);
             frame.setVisible(true);
         }
 }

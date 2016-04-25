@@ -16,9 +16,9 @@ public class tabbedMenu extends JFrame {
 	private static JTabbedPane tabs;
 	private int rolle;
 
-	public tabbedMenu(int rolle, String username) {
-		sql = new SQL();
+	public tabbedMenu(int rolle, String username, SQL sql) {
 		this.rolle = rolle;
+		this.sql = sql;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);
 		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 		setIconImage(image);
@@ -184,7 +184,7 @@ public class tabbedMenu extends JFrame {
 			Action logoutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					LogOnGUI logon = new LogOnGUI();
+					LogOnGUI logon = new LogOnGUI(sql);
 					dispose();
 				}
 			};
@@ -397,7 +397,8 @@ public class tabbedMenu extends JFrame {
 	}
 
 	public static void main(String[] args) throws Exception {
-		tabbedMenu menu = new tabbedMenu(0, "CEO");
+		SQL sql = new SQL();
+		tabbedMenu menu = new tabbedMenu(0, "CEO", sql);
 		//tabbedMenu menu2 = new tabbedMenu(1, "Sales");
 	}
 }
