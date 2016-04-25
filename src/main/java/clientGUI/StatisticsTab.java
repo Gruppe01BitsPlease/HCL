@@ -3,6 +3,7 @@ package clientGUI;
 import backend.Statistics;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 
 import static clientGUI.MyJFreeChart.getStats;
@@ -11,6 +12,9 @@ import static clientGUI.MyJFreeChart.getStats;
  * Creates the JPanel and adds the chart that is used as a tab in tabbedMenu
  */
 public class StatisticsTab extends JPanel{
+
+    private JPanel westPanel;
+    private JScrollPane table;
 
     public StatisticsTab(){ // Thought about using an enum for the charts, but it just made it more complicated
 
@@ -52,10 +56,34 @@ public class StatisticsTab extends JPanel{
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.add(cards,BorderLayout.CENTER);
         centerPanel.add(dropdown,BorderLayout.SOUTH);
+        //
+        table = MyJFreeChart.getStats();
+        westPanel = new JPanel(new BorderLayout());
+        westPanel.add(MyJFreeChart.getStats(),BorderLayout.CENTER);
+        //
+        JButton refreshButton = new JButton("Refresh");
 
+        refreshButton.addActionListener(e ->
+                refreshStats()
+        );
+        westPanel.add(refreshButton, BorderLayout.SOUTH);
+        //
         setLayout(new BorderLayout());
-        add(getStats(), BorderLayout.WEST);
+        add(westPanel, BorderLayout.WEST);
         add(centerPanel, BorderLayout.CENTER);
+    }
+    public JPanel getStatsPanel(){
+        return westPanel;
+    }
+    public JScrollPane getStatsPane(){
+        return table;
+    }
+    public void refreshStats(){
+
+        westPanel.remove(table);
+        table = MyJFreeChart.getStats();
+        westPanel.add(table,BorderLayout.CENTER);
+
     }
     public static void main(String[]args){
 

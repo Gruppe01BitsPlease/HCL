@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,14 +18,14 @@ class Stuff {
 
     private Stuff(){} // Can't be instansized
 	//Used to size a window relative to the main window, which is sized relative to the screen
-	public static Dimension getWindowSize(double factorX, double factorY) {
+	static Dimension getWindowSize(double factorX, double factorY) {
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 		int x = (int) (screen.width * 0.75);
 		int y = (int) (screen.height * 0.75);
 		return new Dimension((int) (x * factorX), (int) (y * factorY));
 	}
 	//Finds the index in the list from a search key
-	public static int findIndexOf(String[][] searchArrays, String search, int column) {
+	static int findIndexOf(String[][] searchArrays, String search, int column) {
 		int ret = -1;
 		for (int i = 0; i < searchArrays.length; i++) {
 			if (searchArrays[i][column].equals(search)) {
@@ -41,7 +40,7 @@ class Stuff {
 		}
 		return ret;
 	}
-	public static int findIndexOf(String[] searchArray, String search) {
+	static int findIndexOf(String[] searchArray, String search) {
 		int ret = -1;
 		for (int i = 0; i < searchArray.length; i++) {
 			if (searchArray[i].equals(search)) {
@@ -50,27 +49,27 @@ class Stuff {
 		}
 		return ret;
 	}
-	public static String bold(String text) {
+	static String bold(String text) {
 		return setBold() + text + endBold();
 	}
-    public static String grey(String text){return setGrey()+text+endGrey();}
-	public static String setBold() {return "<html><b>";	}
-	public static String endBold() {
+	static String grey(String text){return setGrey()+text+endGrey();}
+	static String setBold() {return "<html><b>";	}
+	static String endBold() {
 		return "</b></html>";
 	}
-	public static String setGrey() {
+	static String setGrey() {
 		return "<html><p style=\"color:#808080\">";
 	}
-	public static String endGrey() {
+	static String endGrey() {
 		return "</p></html>";
 	}
-	public static String setBlue() {
+	static String setBlue() {
 		return "<html><p style=\"color:#0000FF\">";
 	}
-	public static String endBlue() {
+	static String endBlue() {
 		return "</p></html>";
 	}
-	public static String removeHTML(String input) {
+	static String removeHTML(String input) {
 		String ret = input;
 		ret = ret.replaceAll(setBold(), "");
 		ret = ret.replaceAll(endBold(), "");
@@ -89,7 +88,7 @@ class Stuff {
     /**
      * Checks if the inputted is in the array, and if it is; checks if it is greyed out.
      */
-    public static boolean isGrayedInArray(String[][] array, String string){
+    static boolean isGrayedInArray(String[][] array, String string){
 
         for(String[] row : array){
             for(String element : row){
@@ -108,7 +107,7 @@ class Stuff {
         }
         return false;
     }
-    public static boolean arrayContains(String[] array, String string){
+    static boolean arrayContains(String[] array, String string){
         if(array == null || string == null) return false;
 
         for(String element : array){
@@ -130,12 +129,12 @@ class Stuff {
         System.out.println(Stuff.isGrayedInArray(array,"bord"));
     }
 }
-class datePane extends JPanel {
+class DatePane extends JPanel {
 	private JComboBox<String> yearBox;
 	private JComboBox<String> monthBox;
 	private JComboBox<Integer> dayBox;
 	private LocalDate date;
-	public datePane(String dateInput) {
+	public DatePane(String dateInput) {
 		//2014-01-31
 		if (dateInput != null) {
 			date = LocalDate.parse(dateInput);
@@ -248,15 +247,12 @@ class datePane extends JPanel {
 		dayBox.setEnabled(enable);
 	}
 }
-class editFields extends JPanel {
+class EditFields extends JPanel {
 	private ArrayList<JComponent> fields = new ArrayList<>();
 	private String[][] comboBoxChoices;
 	private String[] selected;
-
-	public editFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
+	public EditFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
 		this.selected = selected;
-		boolean newEntry1 = newEntry;
-		SQL sql1 = sql;
 		String[] dataTypes = DataTyper.getDataTypes(titles);
 		if (FKs != null && FKs.length > 0) {
 			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
@@ -274,17 +270,17 @@ class editFields extends JPanel {
 				add(k);
 			} else if (dataTypes[i].equals("date")) {
 				JLabel j = new JLabel(titles[i]);
-				datePane k = new datePane(selected[i]);
+				DatePane k = new DatePane(selected[i]);
 				fields.add(k);
 				add(j);
 				add(k);
 			} else if (dataTypes[i].equals("curdate")) {
 				JLabel j = new JLabel(titles[i]);
-				datePane k = new datePane(selected[i]);
+				DatePane k = new DatePane(selected[i]);
 				if (newEntry) {
 					LocalDate now = LocalDate.now();
 					String date = now.toString();
-					k = new datePane(date);
+					k = new DatePane(date);
 				}
 				fields.add(k);
 				add(j);
@@ -318,9 +314,6 @@ class editFields extends JPanel {
 	public ArrayList<JComponent> getFields() {
 		return fields;
 	}
-	public String[][] getComboBoxChoices() {
-		return comboBoxChoices;
-	}
 	public String[] getNewValues() {
 		//returns the new values as an array, should be in same order as columns in jtable (including hidden ones!)
 		String[] newValues = new String[selected.length];
@@ -335,8 +328,8 @@ class editFields extends JPanel {
 				} else if (!(chk.isSelected())) {
 					newValues[i] = "false";
 				}
-			} else if (fields.get(i) instanceof datePane) {
-				datePane dtp = (datePane) fields.get(i);
+			} else if (fields.get(i) instanceof DatePane) {
+				DatePane dtp = (DatePane) fields.get(i);
 				newValues[i] = dtp.getDate();
 			} else if (fields.get(i) instanceof JComboBox) {
 				JComboBox cmb = (JComboBox) fields.get(i);
@@ -348,9 +341,8 @@ class editFields extends JPanel {
 		return newValues;
 	}
 }
-class linkTab extends JPanel {
+class LinkTab extends JPanel {
 	private ArrayList<int[]> removeLinks = new ArrayList<>();
-	private ArrayList<String[]> addedLinks = new ArrayList<>();
 	private ArrayList<int[]> createLinks = new ArrayList<>();
 	private ArrayList<int[]> changeLinks = new ArrayList<>();
 	private String[][] linkTableData;
@@ -365,7 +357,7 @@ class linkTab extends JPanel {
 	private int selectedID;
 	private String primaryColumn;
 	private boolean newEntry;
-	public linkTab(String[] link, String primaryColumn, int selectedID, SQL sql, boolean newEntry) {
+	public LinkTab(String[] link, String primaryColumn, int selectedID, SQL sql, boolean newEntry) {
 
 		this.newEntry = newEntry;
 		this.primaryColumn = primaryColumn;
@@ -403,26 +395,26 @@ class linkTab extends JPanel {
 					String[] selected = linkTableData[linkTable.getSelectedRow()];
 					System.out.println("Selected line: " + Arrays.toString(selected));
 
-					inputBox edit = new inputBox(selected, false);
+					InputBox edit = new InputBox(selected, false);
 				}
 			}
 		});
 		JScrollPane scroll = new JScrollPane(linkTable);
-		lowerButtons lower = new lowerButtons();
+		LowerButtons lower = new LowerButtons();
 		add(scroll, BorderLayout.CENTER);
 		add(lower, BorderLayout.SOUTH);
 		//Finds column index for primary key
 		PKColumnIndex = 0;
 		linkTable.removeIDs();
 	}
-	class lowerButtons extends JPanel {
-		public lowerButtons() {
+	class LowerButtons extends JPanel {
+		public LowerButtons() {
 			setLayout(new GridLayout(1, 2));
 			JButton neue = new JButton("New...");
 			neue.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					inputBox input = new inputBox(null, true);
+					InputBox input = new InputBox(null, true);
 				}
 			});
 			JButton delete = new JButton("Delete");
@@ -459,8 +451,8 @@ class linkTab extends JPanel {
 			add(delete);
 		}
 	}
-	class inputBox extends JFrame {
-		public inputBox(String[] selectedLink, boolean newLink) {
+	class InputBox extends JFrame {
+		public InputBox(String[] selectedLink, boolean newLink) {
 			setSize(Stuff.getWindowSize(0.3, 0.2));
 			setLayout(new GridLayout(3, 2));
 			setLocationRelativeTo(null);
@@ -514,7 +506,6 @@ class linkTab extends JPanel {
 					addedLink[linkTableModel.findColumn("Amount")] = Stuff.bold(amount.getText());
 					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[1]))] = Stuff.bold(choiceID[input.getSelectedIndex()]);
 					addedLink[linkTableModel.findColumn(ColumnNamer.getName(link[4]))] = Stuff.bold((String)input.getSelectedItem());
-					addedLinks.add(addedLink);
 					int[] inputTable = {linkIndex, Integer.parseInt(choiceID[input.getSelectedIndex()]), Integer.parseInt(amount.getText())};
 					if (newLink) {
 						createLinks.add(inputTable);
@@ -526,7 +517,7 @@ class linkTab extends JPanel {
 					if (newLink) {
 						//Hackin all over the world
 						if (linkTableData.length == 0) {
-							linkTableData = sql.getStringTable(linkTab.this.linkQuery, false);
+							linkTableData = sql.getStringTable(LinkTab.this.linkQuery, false);
 							System.out.println("Getting new data");
 						}
 						String[][] newData = new String[linkTableData.length + 1][];
@@ -551,15 +542,6 @@ class linkTab extends JPanel {
 			add(cancel);
 			setVisible(true);
 		}
-	}
-	public ArrayList<int[]> getRemoveLinks() {
-		return removeLinks;
-	}
-	public ArrayList<int[]> getCreateLinks() {
-		return createLinks;
-	}
-	public ArrayList<int[]> getChangeLinks() {
-		return changeLinks;
 	}
 	public void generate() {
 		if (newEntry) {
@@ -609,16 +591,14 @@ class linkTab extends JPanel {
 		}
 	}
 }
-class userEditMenu extends JFrame {
+class UserEditMenu extends JFrame {
 	private SQL sql;
 	private String userName;
 	private JPasswordField passField;
-	private int rolle;
 	private JButton passButton;
 	private JPanel tab;
-	public userEditMenu(String id, SQL sql, int rolle, JPanel tab) {
+	public UserEditMenu(String id, SQL sql, int rolle, JPanel tab) {
 		this.tab = tab;
-		this.rolle = rolle;
 		this.sql = sql;
 		setAlwaysOnTop(true);
 		String select = "SELECT user_name FROM HCL_user WHERE user_id = " + id;
@@ -627,19 +607,18 @@ class userEditMenu extends JFrame {
 		passButton.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int choice = JOptionPane.showConfirmDialog(userEditMenu.this, "Generate new password for this user?", "New password", JOptionPane.YES_NO_OPTION);
+				int choice = JOptionPane.showConfirmDialog(UserEditMenu.this, "Generate new password for this user?", "New password", JOptionPane.YES_NO_OPTION);
 				if (choice == 0) {
 					UserManager mng = new UserManager(sql);
 					String newPass = mng.generateRandomPassword(userName);
-					JOptionPane.showMessageDialog(userEditMenu.this, "The new password is: \"" + newPass + "\"");
+					JOptionPane.showMessageDialog(UserEditMenu.this, "The new password is: \"" + newPass + "\"");
 				}
 			}
 		});
-		editMenu menu = new editMenu(rolle);
+		EditMenu menu = new EditMenu(rolle);
 	}
-	public userEditMenu(SQL sql, int rolle, JPanel tab) {
+	public UserEditMenu(SQL sql, int rolle, JPanel tab) {
 		this.tab = tab;
-		this.rolle = rolle;
 		this.sql = sql;
 		setSize(Stuff.getWindowSize(0.3,0.2));
 		setLocationRelativeTo(null);
@@ -665,7 +644,7 @@ class userEditMenu extends JFrame {
 				int res = mng.logon(userNameField.getText(), new String(passField.getPassword()));
 				if (res >= 0) {
 					userName = userNameField.getText();
-					editMenu menu = new editMenu(res);
+					EditMenu menu = new EditMenu(res);
 					dispose();
 				}
 				else {
@@ -691,12 +670,12 @@ class userEditMenu extends JFrame {
 		passButton.addActionListener(new AbstractAction() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				passBox box = new passBox();
+				PassBox box = new PassBox();
 			}
 		});
 	}
-	private class editMenu extends JFrame {
-		public editMenu(int rolle) {
+	private class EditMenu extends JFrame {
+		public EditMenu(int rolle) {
 			setResizable(false);
 			setSize(Stuff.getWindowSize(0.5,0.5));
 			setLocationRelativeTo(null);
@@ -706,7 +685,7 @@ class userEditMenu extends JFrame {
 			setLayout(new BorderLayout());
 			String[] selectedUser = sql.getRow(selectQuery);
 			String[][] titles = ColumnNamer.getNamesWithOriginals(selectQuery, sql);
-			editFields fields = new editFields(titles[1], selectedUser, false, null, sql);
+			EditFields fields = new EditFields(titles[1], selectedUser, false, null, sql);
 			fields.getFields().get(0).setEnabled(false);
 			if (rolle != 0) {
 				fields.getFields().get(7).setEnabled(false);
@@ -722,7 +701,7 @@ class userEditMenu extends JFrame {
 			save.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int sure = JOptionPane.showConfirmDialog(editMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
+					int sure = JOptionPane.showConfirmDialog(EditMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
 					if (sure == 0) {
 						String[] newValues = fields.getNewValues();
 						for (int i = 0; i < newValues.length; i++) {
@@ -783,7 +762,7 @@ class userEditMenu extends JFrame {
 					} else if (role == -2) {
 						JOptionPane.showMessageDialog(LoginWindow.this, "There was a problem with the connection.");
 					} else if (role == 0) {
-						roleChangeBox box = new roleChangeBox(user_name);
+						RoleChangeBox box = new RoleChangeBox(user_name);
 						dispose();
 					}
 				}
@@ -800,8 +779,8 @@ class userEditMenu extends JFrame {
 			setVisible(true);
 		}
 	}
-	private class roleChangeBox extends JFrame {
-		public roleChangeBox(String user_name) {
+	private class RoleChangeBox extends JFrame {
+		public RoleChangeBox(String user_name) {
 			setResizable(false);
 			setSize(Stuff.getWindowSize(0.3,0.2));
 			setLayout(new GridLayout(2, 2));
@@ -819,7 +798,7 @@ class userEditMenu extends JFrame {
 			JButton save = new JButton("Save");
 			JButton cancel = new JButton("Cancel");
 			save.addActionListener(e -> {
-				int sure = JOptionPane.showConfirmDialog(roleChangeBox.this, "Are you sure", "Confirm", JOptionPane.YES_NO_OPTION);
+				int sure = JOptionPane.showConfirmDialog(RoleChangeBox.this, "Are you sure", "Confirm", JOptionPane.YES_NO_OPTION);
 				if (sure == 0) {
 					sql.update("HCL_user", "user_role", "User_name", user_name, roleChoice.getSelectedIndex());
 					dispose();
@@ -833,8 +812,8 @@ class userEditMenu extends JFrame {
 			setVisible(true);
 		}
 	}
-	private class passBox extends JFrame {
-		public passBox() {
+	private class PassBox extends JFrame {
+		public PassBox() {
 			setResizable(false);
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
@@ -849,10 +828,10 @@ class userEditMenu extends JFrame {
 			AbstractAction saveAction = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					int sure = JOptionPane.showConfirmDialog(passBox.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
+					int sure = JOptionPane.showConfirmDialog(PassBox.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
 					if (sure == 0) {
 						if (!(Arrays.equals(newPassField.getPassword(), newPassField2.getPassword()))) {
-							JOptionPane.showMessageDialog(passBox.this, "Passwords do not match");
+							JOptionPane.showMessageDialog(PassBox.this, "Passwords do not match");
 						} else {
 							UserManager mng = new UserManager(sql);
 							String oldPass = new String(passField.getPassword());

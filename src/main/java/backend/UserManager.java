@@ -43,7 +43,7 @@ public class UserManager{
 	public int generate(String username, String password, int role) {
 
         if(sql.rowExists(CURRENT_TABLE,"user_name",username)) return -1; // User already exists
-        if(role > 4 || role < 1 || username.trim().equals("") || password.trim().equals("")) return -3;
+        if(role > 4 || role < 0 || username.trim().equals("") || password.trim().equals("")) return -3;
 
 		try {
             byte[] salt = crypt.generateSalt();
@@ -74,12 +74,11 @@ public class UserManager{
 	}
 
     /**
-     *
+     * Generates a new user with a random password, returns the random password
      */
-    public String generate(String username,int role){
+    public String generate(String username, int role){
         String rand = getRandomString();
-        generate(username,rand,role);
-        return rand;
+        return (generate(username,rand,role) >= 0) ? rand : "-1";
     }
 
     /**
@@ -203,7 +202,7 @@ public class UserManager{
 
         Random r = new Random();
 
-        String[] first = {"Norway","Sweeden","Denmark","Finland","England","Spain","Russia","Korea"};
+        String[] first = {"Norway","Sweden","Denmark","Finland","England","Spain","Russia","Korea"};
         String[] second = {"IsTheBest","IsTheWorst","IsCool","IsLame","DoesNotExist"};
 
         int r1 = r.nextInt(first.length);

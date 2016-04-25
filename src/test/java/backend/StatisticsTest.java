@@ -16,10 +16,11 @@ import static org.junit.Assert.assertEquals;
 public class StatisticsTest {
 
     Statistics manager;
-    SQL sql = new SQL();
+    SQL sql;
 
     @Before
     public void setUp() throws Exception {
+        sql = new SQL();
         manager = new Statistics();
 
     }

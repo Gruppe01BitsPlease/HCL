@@ -28,12 +28,17 @@ class IngredientTab extends GenericList {
 		try {
 			stock = Integer.parseInt(args[2]);
 			pprice = Integer.parseInt(args[3]);
-			nuts = Boolean.getBoolean(args[4]);
-			gluten = Boolean.getBoolean(args[5]);
-			lactose = Boolean.getBoolean(args[6]);
 		}
 		catch (Exception e) {
 			System.out.println("generate() error: " + e.getMessage());
+		}
+		try {
+			nuts = Boolean.valueOf(args[4]);
+			gluten = Boolean.valueOf(args[5]);
+			lactose = Boolean.valueOf(args[6]);
+		}
+		catch (Exception k) {
+			System.out.println("generate() error: " + k.getMessage());
 		}
 		return mng.generate(args[1], stock, pprice, nuts, gluten, lactose, args[7], args[8], args[9]);
 	}

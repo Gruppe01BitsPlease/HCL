@@ -1,21 +1,12 @@
 package clientGUI;
 
 import backend.DeliveryManager;
-import backend.LinkManager;
 import backend.OrderManager;
 import backend.SQL;
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_COLOR_BURNPeer;
-import org.jfree.data.time.Day;
-import sun.awt.image.ImageWatched;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.xml.crypto.Data;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -56,15 +47,13 @@ class OrderTab extends GenericList {
         return mng.generate(customerid, price, args[3], postnr, args[6]);
     }
     public void edit(int id, boolean newItem) {
-        editWindow edit = new editWindow(id, newItem);
+        EditWindow edit = new EditWindow(id, newItem);
     }
 
-    class editWindow extends JFrame {
+    class EditWindow extends JFrame {
         //Addeddates has dates as strings, YYYYMMDD
-        private ArrayList<String> addedDates = new ArrayList<>();
         //deletedDates has ID's
-        private ArrayList<String> deletedDates = new ArrayList<>();
-        private linkTab foodTab;
+        private LinkTab foodTab;
         private DefaultTableModel subModel;
         private String getDateQuery;
         private JTableHCL subTable;
@@ -72,12 +61,12 @@ class OrderTab extends GenericList {
         private String[] subTitles;
         private int order_id;
         private boolean newOrder;
-        private editFields editFields;
+        private EditFields editFields;
         private String[] selected;
         private String[][] titles;
-        private editBox editDatesWindow;
+        private EditBox editDatesWindow;
 
-        public editWindow(int order_id, boolean newOrder) {
+        public EditWindow(int order_id, boolean newOrder) {
             this.order_id = order_id;
             this.newOrder = newOrder;
             setSize(Stuff.getWindowSize(0.5,0.5));
@@ -90,20 +79,20 @@ class OrderTab extends GenericList {
             if (!newOrder) {
                 selected = sql.getRow(selectedQuery);
             }
-            editFields = new editFields(titles[1], selected, newOrder, foreignKeys[0], sql);
+            editFields = new EditFields(titles[1], selected, newOrder, foreignKeys[0], sql);
             //tabs.addTab("Info", new infoTab());
             tabs.addTab("Edit", editFields);
-            tabs.addTab("Dates", new dateTab());
+            tabs.addTab("Dates", new DateTab());
             String[] link = { "Foods", "food_id", "HCL_order_food", "HCL_food", "name" };
-            foodTab = new linkTab(link, "order_id", order_id, sql, newOrder);
+            foodTab = new LinkTab(link, "order_id", order_id, sql, newOrder);
             tabs.addTab("Foods", foodTab);
             add(tabs, BorderLayout.CENTER);
-            add(new lowerButtons(), BorderLayout.SOUTH);
+            add(new LowerButtons(), BorderLayout.SOUTH);
             setLocationRelativeTo(null);
             setVisible(true);
         }
-        class dateTab extends JPanel {
-            public dateTab() {
+        class DateTab extends JPanel {
+            public DateTab() {
                 getDateQuery = "SELECT * FROM HCL_deliveries WHERE order_id = " + order_id + " AND active = 1 ORDER BY delivery_date ASC";
                 dateArray = new String[0][];
                 if (!newOrder) {
@@ -119,28 +108,27 @@ class OrderTab extends GenericList {
                 subTable.removeIDs();
                 setLayout(new BorderLayout());
                 add(subScroll, BorderLayout.CENTER);
-                add(new buttons(), BorderLayout.SOUTH);
+                add(new Buttons(), BorderLayout.SOUTH);
             }
-            class buttons extends JPanel {
-                public buttons() {
+            class Buttons extends JPanel {
+                public Buttons() {
                     setLayout(new GridLayout(1, 2));
                     JButton neue = new JButton("New...");
                     JButton del = new JButton("Delete");
                     neue.addActionListener(e-> {
-                        editDatesWindow = new editBox();
+                        editDatesWindow = new EditBox();
                     });
                     del.addActionListener(e-> {
                         int[] sel = subTable.getSelectedRows();
                         for (int i = 0; i < sel.length; i++) {
                             for (int j = 0; j < subModel.getColumnCount(); j++) {
                                 if (subModel.getValueAt(sel[i], j) != null) {
-                                    String value = Stuff.setGrey() + Stuff.removeHTML((String)subModel.getValueAt(sel[i], j)) + Stuff.endGrey();
+                                    String value = Stuff.grey(Stuff.removeHTML((String)subModel.getValueAt(sel[i], j)));
                                     System.out.println("Setting grey!: "+value);
                                     subModel.setValueAt(value, sel[i], j);
                                     System.out.println(subModel.getValueAt(sel[i], j));
                                 }
                             }
-                            deletedDates.add((String) subModel.getValueAt(sel[i], 0));
                         }
                         subTable.setModel(subModel);
                     });
@@ -149,78 +137,52 @@ class OrderTab extends GenericList {
                 }
             }
         }
-        class lowerButtons extends JPanel {
-            public lowerButtons() {
+        class LowerButtons extends JPanel {
+            public LowerButtons() {
 
-                DeliveryManager manager = new DeliveryManager(new SQL());
+                //DeliveryManager manager = new DeliveryManager(new SQL());
 
                 JButton save = new JButton("Save");
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
 
-                save.addActionListener( e-> { // FIXME: 22.04.2016 
-
-                    /*if(editDatesWindow != null) {
-
-                        for(String[] row : dateArray){
-                            System.out.println("ROW: "+Arrays.toString(row)); // FIXME: 22.04.2016 
-                            for(String element : row){
-
-                                if(element != null) {
-
-                                    String elementNoHTML = Stuff.removeHTML(element);
-
-                                    try { LocalDate date = LocalDate.parse(elementNoHTML);} catch (DateTimeException ex) {continue;} // If the element is not a valid date, skip this iteration
-
-                                    if (Stuff.isBold(element) && !Stuff.isGrey(element)) {
-                                        System.out.println(element+"Is bold? : "+Stuff.isBold(element) +" - Is Grey?: "+ Stuff.isGrey(element));
-                                        manager.addDate(order_id, elementNoHTML);
-                                    }
+                save.addActionListener( e-> { // FIXME: 22.04.2016
+                    int sure = JOptionPane.showConfirmDialog(EditWindow.this, "Are you sure?", "", JOptionPane.YES_NO_OPTION);
+                    if (sure == 0) {
+                        String[] newValues = editFields.getNewValues();
+                        if (newOrder) {
+                            order_id = generate(newValues);
+                        }
+                        System.out.println("New values: " + Arrays.toString(newValues));
+                        System.out.println("Selected original: " + Arrays.toString(selected));
+                        if (!newOrder) {
+                            for (int i = 0; i < newValues.length; i++) {
+                                if (!(newValues[i].equals(selected[i]))) {
+                                    sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
                                 }
-
                             }
                         }
 
-                    }*/
-
-                    String[] newValues = editFields.getNewValues();
-                    if (newOrder) {
-                        order_id = generate(newValues);
-                    }
-                    System.out.println("New values: " + Arrays.toString(newValues));
-                    System.out.println("Selected original: " + Arrays.toString(selected));
-                    if (!newOrder) {
-                        for (int i = 0; i < newValues.length; i++) {
-                            if (!(newValues[i].equals(selected[i]))) {
-                                sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
+                        DeliveryManager mng = new DeliveryManager(sql);
+                        int removeResult = 0;
+                        int addResult = 0;
+                        for (int i = 0; i < dateArray.length; i++) {
+                            System.out.println("Date: " + dateArray[i][2]);
+                            String value = (String) subModel.getValueAt(i, 2);
+                            if (value.contains(Stuff.setBold())) {
+                                addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
+                            }
+                            if (value.contains(Stuff.setGrey())) {
+                                //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
+                                if (dateArray[i][0] != null) {
+                                    removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
+                                }
                             }
                         }
+                        dispose();
+                        foodTab.generate();
+                        refresh();
                     }
-
-                    DeliveryManager mng = new DeliveryManager(sql);
-                    int removeResult = 0;
-                    int addResult = 0;
-                    for (int i = 0; i < dateArray.length; i++) {
-                        System.out.println("Date: " + dateArray[i][2]);
-                        String value = (String)subModel.getValueAt(i,2);
-                        if (value.contains(Stuff.setBold())) {
-                            addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
-                        }
-                        if (value.contains(Stuff.setGrey())) {
-                            //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
-                            if (dateArray[i][0] != null) {
-                                removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
-                            }
-                        }
-                    }
-                    /*if (deletedDates.size() > 0 && removeResult != 1 || addedDates.size() > 0 && addResult != 1) {
-                        JOptionPane.showMessageDialog(null, "There was a problem with updating the dates");
-                        System.out.println("Remove result: " + removeResult + "\nAdd result: " + addResult);
-                    }*/
-                    //else {
-                    dispose();
-                    foodTab.generate();
-                    refresh();
                 });
                 cancel.addActionListener(e->{
                     dispose();
@@ -230,15 +192,15 @@ class OrderTab extends GenericList {
                 add(cancel);
             }
         }
-        class editBox extends JFrame {
+        class EditBox extends JFrame {
 
-            private datePane startDatePane;
-            private datePane endDatePane;
+            private DatePane startDatePane;
+            private DatePane endDatePane;
             private ArrayList<JCheckBox> dayBoxes;
             private ArrayList<JLabel> dayLabels;
             private JComboBox<String> intervalDropdown;
 
-            public editBox() {
+            public EditBox() {
 
                 setLayout(new GridLayout(5, 1));
                 setResizable(false);
@@ -252,7 +214,7 @@ class OrderTab extends GenericList {
                 // StartDatePanel
                 startDatePanel.add(new JLabel("Start Date"));
 
-                startDatePane = new datePane(null);
+                startDatePane = new DatePane(null);
                 startDatePane.setDate(LocalDate.now().toString());
                 startDatePanel.add(startDatePane);
                 // StartDatePanel
@@ -261,7 +223,7 @@ class OrderTab extends GenericList {
                 // EndDatePanel
                 endDatePanel.add(new JLabel("End Date"));
 
-                endDatePane = new datePane(null);
+                endDatePane = new DatePane(null);
                 endDatePane.setDate(LocalDate.now().plusMonths(1).toString());
                 endDatePane.setEnabled(false);
                 endDatePanel.add(endDatePane);
@@ -353,18 +315,60 @@ class OrderTab extends GenericList {
                                     days.add(DayOfWeek.of(i+1));
                                 }
                             }
-                            DayOfWeek[] dayArray = new DayOfWeek[days.size()]; for(int i=0; i<days.size(); i++){dayArray[i] = days.get(i);}
-
-                            String[] daysToAdd = manager.getDatesToBeAdded(order_id,editDatesWindow.getStartDate(),
-                                    editDatesWindow.getEndDate(),intervalDropdown.getSelectedIndex(),
-                                    dayArray);
-
-                            System.out.println(Arrays.toString(daysToAdd));
-                            dates = new String[daysToAdd.length][6];
-
-                            for(int i=0; i<daysToAdd.length; i++){
-                                dates[i][0]=Stuff.bold("0"); dates[i][1] = Stuff.bold("0"); dates[i][2] = Stuff.bold(daysToAdd[i]); dates[i][3] = Stuff.bold("0"); dates[i][4] = Stuff.bold("0"); dates[i][5] = Stuff.bold("0");
-
+                            DayOfWeek[] dayArray = new DayOfWeek[days.size()];
+                            for(int i=0; i<days.size(); i++){
+                                dayArray[i] = days.get(i);
+                                System.out.println("Day: " + dayArray[i]);
+                            }
+                            LocalDate startDate = editDatesWindow.getStartDate();
+                            for (int i = 0; i < dayArray.length; i++) {
+                                boolean success = false;
+                                while (!success) {
+                                    if (startDate.getDayOfWeek() != dayArray[i]) {
+                                        startDate = startDate.plusDays(1);
+                                        System.out.println(startDate.getDayOfWeek());
+                                    }
+                                    else {
+                                        success = true;
+                                    }
+                                }
+                            }
+                            //String[] boxChoices = {"One Delivery", "Every Week", "Every 2nd Week", "Every 3rd Week","Every 4th Week"};
+                            ArrayList<String> datesToAdd = new ArrayList<>();
+                            boolean complete = false;
+                            LocalDate addDate = startDate;
+                            datesToAdd.add(addDate.toString());
+                            while (!complete) {
+                                if (intervalDropdown.getSelectedIndex() == 1) {
+                                    addDate = addDate.plusDays(7);
+                                    System.out.println("Seven days");
+                                } else if (intervalDropdown.getSelectedIndex() == 2) {
+                                    addDate = addDate.plusDays(14);
+                                    System.out.println("14 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 3) {
+                                    addDate = addDate.plusDays(21);
+                                    System.out.println("21 days");
+                                }
+                                else if (intervalDropdown.getSelectedIndex() == 4) {
+                                    addDate = addDate.plusDays(28);
+                                    System.out.println("28 days");
+                                }
+                                if (!(addDate.isAfter(editDatesWindow.getEndDate()))) {
+                                    datesToAdd.add(addDate.toString());
+                                }
+                                else {
+                                    complete = true;
+                                }
+                            }
+                            dates = new String[datesToAdd.size()][6];
+                            for(int i=0; i<datesToAdd.size(); i++){
+                                dates[i][0]=Stuff.bold("0");
+                                dates[i][1] = Stuff.bold("0");
+                                dates[i][2] = Stuff.bold(datesToAdd.get(i));
+                                dates[i][3] = Stuff.bold("0");
+                                dates[i][4] = Stuff.bold("0");
+                                dates[i][5] = Stuff.bold("0");
                             }
                         }
                     String[][] temp = new String[dateArray.length+dates.length][];
@@ -377,9 +381,10 @@ class OrderTab extends GenericList {
                         temp[j] = dates[counter];
                         counter++;
                     }
-                    dateArray = temp; // I think these all these global variables should have been methods instead ftr - Olav
+                    dateArray = temp;
                     subModel = new DefaultTableModel(dateArray, subTitles); // -||-
                     subTable.setModel(subModel); // -||-
+                    subTable.removeIDs();
                     dispose();
                 });
 

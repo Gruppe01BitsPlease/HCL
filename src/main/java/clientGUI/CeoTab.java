@@ -10,6 +10,7 @@ import java.awt.*;
  */
 class CeoTab extends JPanel {
     private EmployeeTab empTab;
+    private StatisticsTab statTab;
     public CeoTab(int role, SQL sql) {
 
         setLayout(new BorderLayout());
@@ -24,7 +25,8 @@ class CeoTab extends JPanel {
         // User Tab
 
         // Stats Panel
-        tabs.addTab("Statistics",new StatisticsTab());
+        statTab = new StatisticsTab();
+        tabs.addTab("Statistics",statTab);
         // Stats Panel
 
         // panel.add(tabs, BorderLayout.CENTER);
@@ -33,6 +35,7 @@ class CeoTab extends JPanel {
 
     }
     public void refresh() {
+        //statTab.refreshStats();
         empTab.refresh();
     }
 }

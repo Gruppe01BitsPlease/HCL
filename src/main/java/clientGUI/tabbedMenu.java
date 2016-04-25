@@ -13,13 +13,10 @@ import java.awt.event.*;
 public class tabbedMenu extends JFrame {
 	private SQL sql;
 	//X and Y is the size of the main menu window, other windows should be scaled according to this value
-	private int x;
-	private int y;
 	private static JTabbedPane tabs;
 	private int rolle;
 
-	public tabbedMenu(int rolle, String username) throws Exception {
-		boolean searchAdded = false;
+	public tabbedMenu(int rolle, String username) {
 		sql = new SQL();
 		this.rolle = rolle;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);
@@ -228,7 +225,13 @@ public class tabbedMenu extends JFrame {
 			editUser.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					userEditMenu edit = new userEditMenu(sql, rolle, (JPanel)tabs.getTabComponentAt(tabs.indexOfTab(ceoName)));
+					try {
+						JPanel tab = (JPanel)tabs.getTabComponentAt(tabs.indexOfTab(ceoName));
+						UserEditMenu edit = new UserEditMenu(sql, rolle, (JPanel) tabs.getTabComponentAt(tabs.indexOfTab(ceoName)));
+					}
+					catch (Exception k) {
+						UserEditMenu edit = new UserEditMenu(sql, rolle, null);
+					}
 				}
 			});
 			settings.add(DBsettings);
@@ -374,7 +377,7 @@ public class tabbedMenu extends JFrame {
 			public settingsMenu() {
 				setTitle("Database settings");
 				setLayout(new GridLayout(6, 1));
-				setSize((int) (x * 0.3), (int) (y * 0.3));
+				setSize(Stuff.getWindowSize(0.3, 0.3));
 				setLocationRelativeTo(null);
 				JLabel dbNameLabel = new JLabel("Database name:");
 				JTextField DBname = new JTextField();

@@ -30,7 +30,7 @@ class GenericList extends JPanel {
 	private JTableHCL list;
 	private JTableHCL searchList;
 	private JScrollPane scroll;
-	private cardTable cards;
+	private CardTable cards;
 	private CardLayout cardLayout;
 	private String scrollName = "List";
 	private String searchName = "Search";
@@ -38,7 +38,7 @@ class GenericList extends JPanel {
 	private int role;
 	private boolean searchEnabled = false;
 	private Action searchPress;
-	public GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
+	GenericList(String query, String SqlTableName, String[][] linkTables, String[][] FKs, SQL sql, int role, int defaultSortColumn) {
 		System.out.println(SqlTableName + "query: " + query);
 		this.role = role;
 		this.FKs = FKs;
@@ -72,16 +72,13 @@ class GenericList extends JPanel {
 			}
 		});
         scroll = new JScrollPane(list);
-		cards = new cardTable();
-		add(new northBar(), BorderLayout.NORTH);
+		cards = new CardTable();
+		add(new NorthBar(), BorderLayout.NORTH);
 		add(cards, BorderLayout.CENTER);
 		cardLayout.show(cards, scrollName);
 		list.removeIDs();
     }
-	public int getRole() {
-		return role;
-	}
-	public int getSelectedID() {
+	int getSelectedID() {
 		if (scroll.isVisible()) {
 			return Integer.parseInt((String) list.getValueAt(list.getSelectedRow(), 0));
 		}
@@ -89,8 +86,8 @@ class GenericList extends JPanel {
 			return Integer.parseInt((String) searchList.getValueAt(searchList.getSelectedRow(), 0));
 		}
 	}
-	class cardTable extends JPanel {
-		public cardTable() {
+	class CardTable extends JPanel {
+		public CardTable() {
 			cardLayout = new CardLayout();
 			setLayout(cardLayout);
 			add(scroll, scrollName);
@@ -133,17 +130,17 @@ class GenericList extends JPanel {
 			}
 		}
 	}
-	public int generate(String[] arguments) {
+	int generate(String[] arguments) {
 		return -4;
 	}
-	public int delete(int nr) {
+	int delete(int nr) {
 		return -4;
 	}
-	public void edit(int ID, boolean newItem) {
-		editWindow edit = new editWindow(ID, newItem);
-	}
-	private class northBar extends JPanel {
-		public northBar() {
+	void edit(int ID, boolean newItem) {
+        EditWindow edit = new EditWindow(ID, newItem);
+    }
+	private class NorthBar extends JPanel {
+		public NorthBar() {
 			setLayout(new GridLayout(1, 5));
 			JButton refresh = new JButton("Refresh");
 			JButton newThing = new JButton("New...");
@@ -188,15 +185,15 @@ class GenericList extends JPanel {
 			add(refresh);
 		}
 	}
-	class editWindow extends JFrame {
+	class EditWindow extends JFrame {
 		private String[] selected;
 		private ArrayList<JComponent> fields = new ArrayList<>();
 		//int[] inputTable = { linkIndex, ID of other item, amount };
-		private ArrayList<linkTab> linkTabs = new ArrayList<>();
+		private ArrayList<LinkTab> linkTabs = new ArrayList<>();
 		private boolean newEntry;
 		private int index;
-		private editFields editFields;
-		public editWindow(int ID, boolean newEntry) {
+		private EditFields editFields;
+		public EditWindow(int ID, boolean newEntry) {
 			this.newEntry = newEntry;
 			if (!newEntry) {
 				index = Stuff.findIndexOf(table, Integer.toString(ID), 0);
@@ -212,24 +209,23 @@ class GenericList extends JPanel {
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
 			setResizable(false);
-			editFields = new editFields(titles, selected, newEntry, null, sql);
+			editFields = new EditFields(titles, selected, newEntry, null, sql);
 			JTabbedPane tabs = new JTabbedPane();
 			tabs.addTab("Info", editFields);
 			if (linkTables != null) {
 				for (int i = 0; i < linkTables.length; i++) {
-					linkTab k = new linkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
+					LinkTab k = new LinkTab(linkTables[i], SqlColumnNames[0], ID, sql, newEntry);
 					tabs.addTab(linkTables[i][0], k);
 					linkTabs.add(k);
 				}
 				add(tabs, BorderLayout.CENTER);
 			}
 			add(tabs, BorderLayout.CENTER);
-			add(new saveCancelButtons(), BorderLayout.SOUTH);
+			add(new SaveCancelButtons(), BorderLayout.SOUTH);
 			setVisible(true);
 		}
-		String[] comboBoxIDs;
-		class saveCancelButtons extends JPanel {
-			public saveCancelButtons() {
+		class SaveCancelButtons extends JPanel {
+			public SaveCancelButtons() {
 				setLayout(new GridLayout(1, 2));
 				JButton save = new JButton("Save");
 				JButton cancel = new JButton("Cancel");
@@ -243,7 +239,7 @@ class GenericList extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						String[] options = {"Yes", "No"};
-						int sure = JOptionPane.showOptionDialog(editWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+						int sure = JOptionPane.showOptionDialog(EditWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							boolean success = true;
 							//fields = editFields.getFields();
@@ -257,13 +253,14 @@ class GenericList extends JPanel {
 											int value = Integer.parseInt(newValues[i]);
 										}
 										catch (NumberFormatException k) {
-											JOptionPane.showMessageDialog(editWindow.this, "Please enter a valid number in field: " + titles[i]);
+											JOptionPane.showMessageDialog(EditWindow.this, "Please enter a valid number in field: " + titles[i]);
 											valid = false;
 											success = false;
 										}
 									}
 									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
 										if (dataTypes[i].equals("boolean")) {
+											System.out.println("Boolean value: " + newValues[i]);
 											if (newValues[i].equals("true")) {
 												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
 											} else if (newValues[i].equals("false")) {
@@ -282,25 +279,25 @@ class GenericList extends JPanel {
 								if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
 									int res = GenericList.this.generate(newValues);
 									if (res == -2) {
-										JOptionPane.showMessageDialog(editWindow.this, "Database Error!");
+										JOptionPane.showMessageDialog(EditWindow.this, "Database Error!");
 										success = false;
 									} else if (res == -3) {
-										JOptionPane.showMessageDialog(editWindow.this, "One of the parameters appears to be invalid.");
+										JOptionPane.showMessageDialog(EditWindow.this, "One of the parameters appears to be invalid.");
 										success = false;
 									} else if (res == -4) {
-										JOptionPane.showMessageDialog(editWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
+										JOptionPane.showMessageDialog(EditWindow.this, "There is no method for generating this object, it must be overridden in the tab class.");
 										success = false;
 									}
 									//System.out.println(res);
 								} else {
 									//ID numbers are generated now, this should never happen
-									JOptionPane.showMessageDialog(editWindow.this, "Entry already exists! Choose a different ID number.");
+									JOptionPane.showMessageDialog(EditWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
-							for (linkTab tab : linkTabs) {
+							for (LinkTab tab : linkTabs) {
 								tab.generate();
 							}
-							table[index] = newValues;
+							//table[index] = newValues;
 							refresh();
 							if (searchTableMod != null) {
 								int searchSelectedRow = searchList.getSelectedRow();
@@ -324,7 +321,7 @@ class GenericList extends JPanel {
     class GenericSearch extends JPanel {
 		private JTextField search;
         public GenericSearch() {
-			buttonPanel panel = new buttonPanel();
+			ButtonPanel panel = new ButtonPanel();
 			//refresh();
             setLayout(new BorderLayout());
             search = new JTextField();
@@ -332,8 +329,8 @@ class GenericList extends JPanel {
             add(search, BorderLayout.CENTER);
 			add(panel, BorderLayout.EAST);
         }
-		private class buttonPanel extends JPanel {
-			public buttonPanel() {
+		private class ButtonPanel extends JPanel {
+			public ButtonPanel() {
 				setLayout(new GridLayout(1, 2));
 				JButton searcher = new JButton("Search");
 				searchPress = new AbstractAction() {
