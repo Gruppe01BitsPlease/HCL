@@ -191,7 +191,9 @@ class GenericList extends JPanel {
 			});
 			add(newThing);
 			add(delete);
-			add(refresh);
+			if (!(GenericList.this instanceof EmployeeTab)) {
+				add(refresh);
+			}
 		}
 	}
 	class EditWindow extends JFrame {

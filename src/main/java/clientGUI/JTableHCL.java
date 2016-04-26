@@ -25,10 +25,10 @@ class JTableHCL extends JTable {
 			DataTyper.DataType type = DataTyper.getDataType(tabModel.getColumnName(i));
 			if (type == DataTyper.DataType.ID || type == DataTyper.DataType.ACTIVE) {
 				TableColumn column = getColumnModel().getColumn(i);
-				column.setMinWidth(50);
-				column.setMaxWidth(50);
-				column.setWidth(50);
-				column.setPreferredWidth(50);
+				column.setMinWidth(0);
+				column.setMaxWidth(0);
+				column.setWidth(0);
+				column.setPreferredWidth(0);
 			}
 			else if (type == DataTyper.DataType.BOOLEAN) {
 				for (int j = 0; j < tabModel.getRowCount(); j++) {
@@ -43,7 +43,8 @@ class JTableHCL extends JTable {
 		}
 	}
 	public int[] getSortColumn() {
-		//second int is ascending or descending. hacky
+		//second int is ascending or descending. Probably stupid.
+		//Used to store the current sort method, refresh the table, and reapply the sorting with setSortColumn()
 		int ret[] = { -1 };
 		try {
 			int sorted = this.getRowSorter().getSortKeys().get(0).getColumn();

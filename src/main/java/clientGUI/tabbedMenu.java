@@ -10,13 +10,13 @@ import java.awt.event.*;
 /**
  * Main window
  */
-public class tabbedMenu extends JFrame {
+public class TabbedMenu extends JFrame {
 	private SQL sql;
 	//X and Y is the size of the main menu window, other windows should be scaled according to this value
 	private static JTabbedPane tabs;
 	private int rolle;
 
-	public tabbedMenu(int rolle, String username, SQL sql) {
+	public TabbedMenu(int rolle, String username, SQL sql) {
 		this.rolle = rolle;
 		this.sql = sql;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);
@@ -398,8 +398,8 @@ public class tabbedMenu extends JFrame {
 
 	public static void main(String[] args) throws Exception {
 		SQL sql = new SQL();
-		tabbedMenu menu = new tabbedMenu(0, "CEO", sql);
-		//tabbedMenu menu2 = new tabbedMenu(1, "Sales");
+		TabbedMenu menu = new TabbedMenu(0, "CEO", sql);
+		//TabbedMenu menu2 = new TabbedMenu(1, "Sales");
 	}
 }
 

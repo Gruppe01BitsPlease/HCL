@@ -32,7 +32,7 @@ public class Statistics {
                 LocalDate date = LocalDate.parse(datesString[i][0]);
                 dates.add(date);
             }
-            catch (DateTimeParseException e){return new ArrayList<LocalDate>();}
+            catch (Exception e){return new ArrayList<LocalDate>();}
         }
         return dates;
     }
