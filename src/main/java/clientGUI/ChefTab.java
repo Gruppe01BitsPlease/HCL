@@ -102,6 +102,7 @@ class ChefTab extends JPanel {
 			}
 			dayChoices[7] = "All";
 			dayBox = new JComboBox<>(dayChoices);
+                dayBox.setToolTipText("Interval in days of deliveries to show");
 			dayBox.addItemListener(e -> {
 				refresh();
 			});
@@ -122,7 +123,9 @@ class ChefTab extends JPanel {
 		NorthBar() {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Finish");
+                deliver.setToolTipText("Sets the order as completed and indicates that it is ready for delivery.");
 			JButton refresh = new JButton("Refresh");
+                refresh.setToolTipText("Refresh the list. Should not be necessary most of the time.");
 			refresh.addActionListener(e ->refresh());
 			deliver.addActionListener(e ->  {
                 int choice = JOptionPane.showConfirmDialog(null, "Complete deliveries?", "Order", JOptionPane.YES_NO_OPTION);
