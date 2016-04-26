@@ -35,8 +35,8 @@ class ShoppingListTab extends JPanel {
 		JScrollPane scroller = new JScrollPane(table);
 		Integer[] dayArray = new Integer[7];
 		for (int i = 0; i < dayArray.length; i++) {
-			dayArray[i] = i + 1;
-		}
+            dayArray[i] = i + 1;
+        }
 		dayBox = new JComboBox<>(dayArray);
             dayBox.setToolTipText("Interval in days of deliveries to show");
         dayBox.addItemListener(e -> {

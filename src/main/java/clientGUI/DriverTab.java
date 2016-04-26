@@ -91,7 +91,8 @@ class DriverTab extends JPanel {
 			}
 			dayChoices[7] = "All";
 			dayBox = new JComboBox<>(dayChoices);
-			dayBox.addItemListener(e -> {
+                dayBox.setToolTipText("Interval in days of deliveries to show");
+            dayBox.addItemListener(e -> {
 				if (dayBox.getSelectedIndex() < 7) {
 					refresh(dayBox.getSelectedIndex() + 1);
 				}
@@ -108,8 +109,11 @@ class DriverTab extends JPanel {
 		NorthBar() {
 			setLayout(new GridLayout(1, 2));
 			JButton deliver = new JButton("Deliver");
+                deliver.setToolTipText("Set the delivery as delivered and remove it from the list. " +
+                        "Indicates that the delivery has been paid for.");
 			JButton refresh = new JButton("Refresh");
-			refresh.addActionListener(new AbstractAction() {
+                refresh.setToolTipText("Refresh the list. Should not be necessary most of the time.");
+            refresh.addActionListener(new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					refresh();
