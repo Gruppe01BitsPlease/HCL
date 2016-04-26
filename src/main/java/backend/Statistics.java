@@ -25,7 +25,7 @@ public class Statistics {
 
         ArrayList<LocalDate> dates = new ArrayList<LocalDate>();
 
-        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM HCL_deliveries;",false);
+        String[][] datesString = sql.getStringTable("SELECT delivery_date FROM HCL_deliveries WHERE active = 1;",false);
 
         for(int i=0; i<datesString.length; i++){
             try {

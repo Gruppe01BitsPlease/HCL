@@ -12,6 +12,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 
 class OrderTab extends GenericList {
     private static String query = "SELECT order_id, customer_name, price, adress, postnr" +
@@ -351,47 +353,50 @@ class OrderTab extends GenericList {
                             DayOfWeek[] dayArray = new DayOfWeek[days.size()];
                             for(int i=0; i<days.size(); i++){
                                 dayArray[i] = days.get(i);
-                                System.out.println("Day: " + dayArray[i]);
                             }
                             LocalDate startDate = editDatesWindow.getStartDate();
-                            for (int i = 0; i < dayArray.length; i++) {
-                                boolean success = false;
-                                while (!success) {
-                                    if (startDate.getDayOfWeek() != dayArray[i]) {
-                                        startDate = startDate.plusDays(1);
-                                        System.out.println(startDate.getDayOfWeek());
-                                    }
-                                    else {
-                                        success = true;
-                                    }
-                                }
-                            }
+                            //for (int i = 0; i < dayArray.length; i++) {
+
+                            //}
                             //String[] boxChoices = {"One Delivery", "Every Week", "Every 2nd Week", "Every 3rd Week","Every 4th Week"};
                             ArrayList<String> datesToAdd = new ArrayList<>();
                             boolean complete = false;
-                            LocalDate addDate = startDate;
-                            datesToAdd.add(addDate.toString());
-                            while (!complete) {
-                                if (intervalDropdown.getSelectedIndex() == 1) {
-                                    addDate = addDate.plusDays(7);
-                                    System.out.println("Seven days");
-                                } else if (intervalDropdown.getSelectedIndex() == 2) {
-                                    addDate = addDate.plusDays(14);
-                                    System.out.println("14 days");
-                                }
-                                else if (intervalDropdown.getSelectedIndex() == 3) {
-                                    addDate = addDate.plusDays(21);
-                                    System.out.println("21 days");
-                                }
-                                else if (intervalDropdown.getSelectedIndex() == 4) {
-                                    addDate = addDate.plusDays(28);
-                                    System.out.println("28 days");
-                                }
-                                if (!(addDate.isAfter(editDatesWindow.getEndDate()))) {
-                                    datesToAdd.add(addDate.toString());
-                                }
-                                else {
-                                    complete = true;
+                            System.out.println("Day array:" + Arrays.toString(dayArray));
+                            long dayNumber = DAYS.between(startDate, editDatesWindow.getEndDate());
+                            for (long i = 0; i < dayNumber; i++) {
+                                for (int j = 0; j < dayArray.length; j++) {
+                                    boolean success = false;
+                                    while (!success) {
+                                        if (startDate.getDayOfWeek() != dayArray[j]) {
+                                            startDate = startDate.plusDays(1);
+                                            System.out.println(startDate.getDayOfWeek());
+                                        } else {
+                                            success = true;
+                                        }
+                                    }
+                                    LocalDate addDate = startDate;
+                                    if (addDate.isBefore(editDatesWindow.getEndDate())) {
+                                        datesToAdd.add(addDate.toString());
+                                    }
+                                    while (!complete) {
+                                        if (intervalDropdown.getSelectedIndex() == 1) {
+                                            addDate = addDate.plusDays(7);
+                                            System.out.println("Seven days");
+                                        } else if (intervalDropdown.getSelectedIndex() == 2) {
+                                            addDate = addDate.plusDays(14);
+                                            System.out.println("14 days");
+                                        } else if (intervalDropdown.getSelectedIndex() == 3) {
+                                            addDate = addDate.plusDays(21);
+                                            System.out.println("21 days");
+                                        } else if (intervalDropdown.getSelectedIndex() == 4) {
+                                            addDate = addDate.plusDays(28);
+                                            System.out.println("28 days");
+                                        }
+                                        if (addDate.isAfter(editDatesWindow.getEndDate())) {
+                                            complete = true;
+                                        }
+                                    }
+
                                 }
                             }
                             dates = new String[datesToAdd.size()][6];

@@ -37,6 +37,7 @@ class CeoTab extends JPanel {
         add(tabs,BorderLayout.CENTER);
     }
     public void refreshStats() {
+        //Hacky way of refreshing the statistics tab, since nothing else worked
         int selected = tabs.getSelectedIndex();
         tabs.removeTabAt(tabs.indexOfTab(statTitle));
         statTab = new StatisticsTab(sql, this);
