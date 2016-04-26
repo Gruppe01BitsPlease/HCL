@@ -171,8 +171,8 @@ class ChefTab extends JPanel {
 						"HCL_deliveries WHERE delivery_id = " + delivery_id + " AND active = 1";
 			}
 			else {
-				foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries";
-				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN HCL_deliveries";
+				foodQuery = "SELECT food_id, name FROM HCL_food";
+				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_food";
 			}
 			System.out.println("Food query: " + foodQuery);
 			tabs.addTab("Foods", new ViewTab(foodQuery));
