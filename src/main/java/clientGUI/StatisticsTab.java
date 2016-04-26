@@ -18,9 +18,10 @@ public class StatisticsTab extends JPanel{
     private SQL sql;
     private JPanel westPanel;
     private JScrollPane table;
-
-    public StatisticsTab(SQL sql){ // Thought about using an enum for the charts, but it just made it more complicated
+    private CeoTab tab;
+    public StatisticsTab(SQL sql, CeoTab tab){ // Thought about using an enum for the charts, but it just made it more complicated
         this.sql = sql;
+        this.tab = tab;
         Statistics stats = new Statistics(sql);
 
         final String DAYS = "Orders By Day";
@@ -82,20 +83,7 @@ public class StatisticsTab extends JPanel{
         return table;
     }
     public void refreshStats(){ // impossible
-
-        // JTableHCL temp = (JTableHCL) table.getViewport().getView();
-
-        System.out.println(MyJFreeChart.getNewDefaultTableModel(sql).getValueAt(0,1));
-
-        //temp.setModel(MyJFreeChart.getNewDefaultTableModel());
-
-        ((JTableHCL) table.getViewport().getView()).setModel(getNewDefaultTableModel(sql));
-
-        ((DefaultTableModel) ((JTableHCL) table.getViewport().getView()).getModel()).fireTableDataChanged();
-
-/*
-        table.repaint();
-        repaint();*/
+        tab.refreshStats();
     }
     public static void main(String[]args){
         SQL sql = new SQL();
@@ -104,7 +92,7 @@ public class StatisticsTab extends JPanel{
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        panel.add(new StatisticsTab(sql),BorderLayout.CENTER);
+        //panel.add(new StatisticsTab(sql),BorderLayout.CENTER);
 
         frame.add(panel);
         frame.pack();

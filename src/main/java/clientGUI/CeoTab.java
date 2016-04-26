@@ -28,21 +28,26 @@ class CeoTab extends JPanel {
         // User Tab
 
         // Stats Panel
-        statTab = new StatisticsTab(sql);
+        statTab = new StatisticsTab(sql, this);
         tabs.addTab(statTitle,statTab);
         // Stats Panel
 
         JButton refresh = new JButton("Refresh");
         refresh.addActionListener(e -> refresh());
         add(tabs,BorderLayout.CENTER);
-        add(refresh, BorderLayout.SOUTH);
-
+    }
+    public void refreshStats() {
+        int selected = tabs.getSelectedIndex();
+        tabs.removeTabAt(tabs.indexOfTab(statTitle));
+        statTab = new StatisticsTab(sql, this);
+        tabs.addTab(statTitle,statTab);
+        if (selected != -1) {
+            tabs.setSelectedIndex(selected);
+        }
     }
     public void refresh() {
         empTab.refresh();
-        tabs.removeTabAt(tabs.indexOfTab(statTitle));
-        statTab = new StatisticsTab(sql);
-        tabs.addTab(statTitle,statTab);
+        refreshStats();
     }
 }
 

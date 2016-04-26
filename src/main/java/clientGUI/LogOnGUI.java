@@ -14,8 +14,13 @@ public class LogOnGUI extends JFrame{
 	public LogOnGUI (SQL sql) {
 		//window parameters
 		setTitle("Log in");
-		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
-		setIconImage(image); // Put your own image instead of null
+		try {
+			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
+			setIconImage(image); // Put your own image instead of null
+		}
+		catch (Exception k) {
+			System.out.println("Failed to get image - " + k.toString());
+		}
 		setLayout(new GridLayout(5, 1));
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();

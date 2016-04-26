@@ -20,10 +20,15 @@ public class TabbedMenu extends JFrame {
 		this.rolle = rolle;
 		this.sql = sql;
 		setTitle("Bits Please HCL System 0.5 - User: " + username);
-		Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
-		setIconImage(image);
+		try {
+			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
+			setIconImage(image);
+		}
+		catch (Exception k) {
+			System.out.println("Failed to get image - " + k.toString());
+		}
 		setLayout(new BorderLayout());
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		addWindowListener(new WindowListener() {
 			@Override
 			public void windowOpened(WindowEvent e) {}
@@ -141,7 +146,6 @@ public class TabbedMenu extends JFrame {
 			JLabel tit = new JLabel(title);
 			ImageIcon icon = new ImageIcon(Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/delete.png")));
 			JButton close = new JButton(icon);
-
 			close.setContentAreaFilled(false);
 			close.setBorderPainted(false);
 			Dimension size = new Dimension(icon.getIconWidth(), icon.getIconHeight());
