@@ -154,7 +154,7 @@ public class DeliveryManager {
      */
     public String[] getDatesToBeAdded(int order_id,LocalDate start, LocalDate end, int interval, DayOfWeek[] days){
 
-        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0) return new String[0];
+        if(!sql.rowExists("HCL_order","order_id",order_id) || days.length == 0 || interval < 1) return new String[0];
 
         LocalDate current = LocalDate.of(start.getYear(),start.getMonth(),start.getDayOfMonth()); // "Deep" copy
 

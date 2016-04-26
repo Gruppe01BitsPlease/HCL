@@ -109,16 +109,17 @@ public class OrderManagerTest {
     public void isSubscription() throws Exception{
         //making test-objects
         int cust4ID = cManager.generate("Lulu", "epost", 12345678);
-        int order5ID = manager.generate(cust4ID, 123, "Elgeseter", 7030, "2017-02-02");
+        int order5ID = manager.generate(cust4ID, 123, "Elgeseter", 7030, "2017-01-01");
 
         //checking that order is not a subcription, making subscription, checks again.
         assertEquals(false, manager.isSubscription(order5ID));
         DayOfWeek[] testArray = {DayOfWeek.MONDAY};
-        dManager.addDates(order5ID, LocalDate.now(), LocalDate.of(2017,02,10), 2, testArray);
+        dManager.addDates(order5ID, LocalDate.of(2017,02,02), LocalDate.of(2017,02,10), 2, testArray);
         assertEquals(true, manager.isSubscription(order5ID));
 
-        sql.deleteForGood("HCL_customer", "customer_id", cust4ID);
         sql.deleteForGood("HCL_order", "order_id", order5ID);
+        sql.deleteForGood("HCL_customer", "customer_id", cust4ID);
+
 
 
     }
