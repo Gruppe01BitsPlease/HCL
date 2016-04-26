@@ -75,6 +75,7 @@ class OrderTab extends GenericList {
             setSize(Stuff.getWindowSize(0.5,0.5));
             setTitle("Order");
             setLayout(new BorderLayout());
+            setAlwaysOnTop(true);
             JTabbedPane tabs = new JTabbedPane();
             String selectedQuery = "SELECT * FROM HCL_order WHERE order_id = " + order_id;
             titles = ColumnNamer.getNamesWithOriginals(selectedQuery, sql);
@@ -239,6 +240,7 @@ class OrderTab extends GenericList {
 
                 setLayout(new GridLayout(5, 1));
                 setResizable(false);
+                setAlwaysOnTop(true);
 
                 JPanel startDatePanel = new JPanel(new GridLayout(1,2));
                 JPanel endDatePanel = new JPanel(new GridLayout(1,2));
