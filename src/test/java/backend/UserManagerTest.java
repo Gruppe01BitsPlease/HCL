@@ -86,13 +86,13 @@ public class UserManagerTest {
         //checks if the object exists before and after delete.
         assertTrue(sql.rowExists("HCL_user", "user_id", user3ID));
         manager.delete("Morten");
-        assertFalse(sql.rowExists("HCL_customer", "customer_id", user3ID));
+        assertFalse(sql.rowExists("HCL_user", "user_id", user3ID));
 
         //tests with wrong/no ID
         assertEquals(-1,manager.delete("Morten"));
         assertEquals(-1,manager.delete(""));
 
-        sql.deleteForGood("HCL_customer", "customer_id", user3ID);
+        sql.deleteForGood("HCL_user", "user_id", user3ID);
 
     }
 
@@ -109,7 +109,7 @@ public class UserManagerTest {
         assertEquals(1,manager.changePassword("Per", "per", "rep"));
         assertEquals(-3,manager.changePassword("Per", "august", "juni"));
 
-        sql.deleteForGood("HCL_customer", "customer_id", user4ID);
+        sql.deleteForGood("HCL_user", "user_id", user4ID);
 
     }
 
@@ -124,8 +124,8 @@ public class UserManagerTest {
         assertEquals(-1,manager.logon("", "kris"));
         assertEquals(-1,manager.logon("Kris", "suppe"));
 
-        sql.deleteForGood("HCL_customer", "customer_id", user5ID);
-        sql.deleteForGood("HCL_customer", "customer_id", user6ID);
+        sql.deleteForGood("HCL_user", "user_id", user5ID);
+        sql.deleteForGood("HCL_user", "user_id", user6ID);
 
     }
 
@@ -166,7 +166,7 @@ public class UserManagerTest {
         String password = manager.generateRandomPassword("Mai");
         manager.changePassword("Mai", password, "mai");
 
-        sql.deleteForGood("HCL_customer", "customer_id", user7ID);
+        sql.deleteForGood("HCL_user", "user_id", user7ID);
     }
 
 }
