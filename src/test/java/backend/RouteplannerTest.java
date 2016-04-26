@@ -39,9 +39,9 @@ public class RouteplannerTest {
 
     @Test
     public void getRoute() throws Exception {
-        //NB - bestillingens dato må endres til dagens dato dersom testene skal fungere
+        //NB - orderdate must be todays date if test shall function properly.
 
-        //Lager testobjekter
+        //making testobjects
         int robertoID = cManager.generate("Roberto", "rRoberto@hotmail.com", 75584788);
         int bestilling1ID = oManager.generate(robertoID, 123, "Trondheim", 7003, "2016-02-02");
         int bestilling2ID = oManager.generate(robertoID, 123, "Trondheim", 7030, "2016-02-02");
@@ -52,11 +52,11 @@ public class RouteplannerTest {
         int levering3ID = dManager.addDate(bestilling3ID, "2016-04-25");
         int levering4ID = dManager.addDate(bestilling4ID, "2016-04-25   '");
 
-        //skriver ut informasjon om dagens leveringer sortert etter postnummer
+        //prnts out information about the deliveriessorted on postalcodes
         String[][] rute = manager.getRoute();
 
         sql.print2dArray(rute);
-        //Skrev ut riktig, alle Robertos leveringer ble med.
+        //printed correctly, all of Robertos deliveries were included..
 
 
 

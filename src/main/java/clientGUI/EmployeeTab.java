@@ -14,6 +14,7 @@ import java.time.LocalDate;
 class EmployeeTab extends GenericList {
 	private static String query = "SELECT user_id, user_name, user_firstname, user_lastname, user_email, user_tlf, " +
 			"user_adress, user_postnr, user_start FROM HCL_user WHERE active = 1";
+	//private static String query = "";
 	private SQL sql;
 	private int role;
 	public EmployeeTab(SQL sql, int role) {

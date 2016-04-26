@@ -105,18 +105,5 @@ public class CustomerManager {
     }
 
     public static void main(String[]args){
-
-        SQL sql = new SQL();
-        CustomerManager c = new CustomerManager(sql);
-
-        // c.edit(1,"Grandma","Grandma@gmail.com",34567656);
-        //  System.out.println(ingredient.generate("Ost",100,10,false,false,true,"","2016-03-15","2016-03-16"));
-        //c.generate("Ostost","Swag@gmail.com",145678);
-        // c.delete("Grandma");
-        //System.out.println(c.delete("Microsoft"));
-       // System.out.println(c.edit("Cheese",10,200,""));
-        int i = c.generate("Test","test@gmail.com",86132139);
-        System.out.println(i);
-        System.out.println(c.delete(i));
     }
 }

@@ -39,68 +39,63 @@ public class FoodManagerTest {
     @Test
     public void generate() throws Exception{
 
-        //lager food-objekter
-        int kakeID = manager.generate("Bløtkake", 75);
-        int snippID = manager.generate("Sirupssnipp", 75);
+        //making test-objects
+        int foodID = manager.generate("Bløtkake", 75);
+        int food2ID = manager.generate("Sirupssnipp", 75);
 
-        //Tester om foodobjektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_food", "food_id", kakeID));
-        assertTrue(sql.rowExists("HCL_food", "food_id", snippID));
-        //Sjekker at uekte food-objekt ikke eksisterer
+        //Testing if the objects actually was made..
+        assertTrue(sql.rowExists("HCL_food", "food_id", foodID));
+        assertTrue(sql.rowExists("HCL_food", "food_id", food2ID));
+        //checking that fake objects doesn't exist.
         assertFalse(sql.rowExists("HCL_food", "food_id", 99999999));
 
-        //Prøver å lage ukorrekte foodobjekter, og sjekker om generate() sender riktig feilmelding
+        //Checking if wrong parameters give correct return
         assertEquals(-3, manager.generate("", 1));
         assertEquals(-3, manager.generate("Pultost",-1));
 
-        sql.deleteForGood("HCL_food", "food_id", kakeID);
-        sql.deleteForGood("HCL_food", "food_id", snippID);
+        sql.deleteForGood("HCL_food", "food_id", foodID);
+        sql.deleteForGood("HCL_food", "food_id", food2ID);
     }
 
     @Test
     public void delete() throws Exception {
-        //Lager testobjekter som kan slettes
-        int idKlubb = manager.generate("Klubb", 60);
-        int idMøs = manager.generate("Møsbrømslfse", 75);
+        //making test objects
+        int food3ID = manager.generate("Klubb", 60);
+        int food4ID = manager.generate("Møsbrømslfse", 75);
 
-        //Sjekker at Klubb finnes, sletter klubb, og forsikrer seg om at Klubb er slettet
-        assertTrue(sql.rowExists("HCL_food", "food_id", idKlubb));
-        manager.delete(idKlubb);
-        assertFalse(sql.rowExists("HCL_food", "food_id", idKlubb));
+        //checking if the object exist before and after delete
+        assertTrue(sql.rowExists("HCL_food", "food_id", food3ID));
+        manager.delete(food3ID);
+        assertFalse(sql.rowExists("HCL_food", "food_id", food3ID));
 
-        //Sjekker at sletting gir riktig return.
-        assertEquals(1, manager.delete(idMøs)); //Finnes, riktig
+        //checking for correct return.
+        assertEquals(1, manager.delete(food4ID)); //Finnes, riktig
         assertEquals(-1, manager.delete(99999999)); //Finnes ikke, riktig
 
-        sql.deleteForGood("HCL_food", "food_id", idKlubb);
-        sql.deleteForGood("HCL_food", "food_id", idMøs);
+        sql.deleteForGood("HCL_food", "food_id", food3ID);
+        sql.deleteForGood("HCL_food", "food_id", food4ID);
 
 
     }
 
     @Test
     public void addIngredient() throws Exception{
-        //Lager ny ingrediens, henter ID
-        int mandelID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
-        //Lager mat-objekt og henter ID, samt legger mandel i grøten.
-        int grøtID =  manager.generate("Grøt", 60);
-        manager.addIngredient(grøtID,mandelID,10);
+        //Making test objects
+        int foodID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
+        int ingID =  manager.generate("Grøt", 60);
+        manager.addIngredient(foodID,ingID,10);
 
-        //Sjekker at mandelen ligger i grøten
-        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID));
-        //Sjekker at alle feilmeldingene fungerer
-        assertEquals(-4, manager.addIngredient(grøtID, 99999999, 40));
-        assertEquals(-4, manager.addIngredient(99999999, mandelID, 40));
-        assertEquals(-3, manager.addIngredient(grøtID, mandelID, -1));
+        //checking that the link-object was correctly made.
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID));
+        //checking returns
+        assertEquals(-4, manager.addIngredient(foodID, 99999999, 40));
+        assertEquals(-4, manager.addIngredient(99999999, ingID, 40));
+        assertEquals(-3, manager.addIngredient(foodID, ingID, -1));
 
 
-        lManager.delete("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID);
-        iManager.delete(mandelID);
-        manager.delete(grøtID);
-
-        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", grøtID, mandelID);
-        sql.deleteForGood("HCL_food", "food_id", grøtID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", mandelID);
+        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID);
+        sql.deleteForGood("HCL_food", "food_id", foodID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ingID);
 
 
     }

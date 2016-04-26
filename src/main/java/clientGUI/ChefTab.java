@@ -17,6 +17,7 @@ import java.util.Arrays;
  */
 class ChefTab extends JPanel {
 	private String query = "SELECT delivery_id, adress, delivery_date FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_order.active = 1 AND HCL_deliveries.active = 1 AND completed = 0 AND delivered=0";
+	//private String query = "";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -37,7 +38,6 @@ class ChefTab extends JPanel {
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(scroller, BorderLayout.CENTER);
 		northPanel.add(new SouthBar(), BorderLayout.SOUTH);
-		table.setRowSelectionInterval(0,0);
 		ViewVindow bottom;
 		try {
 			bottom = new ViewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
@@ -170,8 +170,8 @@ class ChefTab extends JPanel {
 						"HCL_deliveries WHERE delivery_id = " + delivery_id + " AND active = 1";
 			}
 			else {
-				foodQuery = "SELECT food_id, name FROM HCL_food NATURAL JOIN HCL_order_food NATURAL JOIN HCL_deliveries";
-				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_order_food NATURAL JOIN HCL_food NATURAL JOIN HCL_deliveries";
+				foodQuery = "SELECT food_id, name FROM HCL_food";
+				ingrQuery = "SELECT DISTINCT food_id, name FROM HCL_food";
 			}
 			System.out.println("Food query: " + foodQuery);
 			tabs.addTab("Foods", new ViewTab(foodQuery));

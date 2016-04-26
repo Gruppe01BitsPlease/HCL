@@ -38,63 +38,57 @@ public class SQLTest {
 
     @After
     public void tearDown() throws Exception {
-        sql.end();
         manager = null;
+        fManager = null;
+        lManager = null;
+        iManager = null;
+        oManager = null;
+        sql.end();
     }
 
 
-    @Test
-    public void query() throws Exception {
-        //"INSERT INTO "+CURRENT_TABLE+CURRENT_TABLE_GENERATE_ARGUMENTS+" VALUES(?,?,?)
-        //int idUlf = manager.generate("Ulf-Sture", "Sturegutten@hotmail.com", 75584788);
-        //ResultSet rs = sql.query("SELECT customer_name FROM HCL_customer WHERE customer_id = " + idUlf);
-        //Array a = rs.getArray(1);
-        //String[] nullable = (String[])a.getArray();
-        //sql.deleteForGood("HCL_customer", "customer_id", idUlf);
-
-    }
 
 
     @Test
     public void update() throws Exception {
-        int kine = manager.generate("Kine-Sture", "Sturejenta@hotmail.com", 75584788);
-        String idKine = kine + "";
-        String førSetning = "SELECT * from HCL_customer where customer_id = " + idKine;
+        int cus = manager.generate("Kine-Sture", "Sturejenta@hotmail.com", 75584788);
+        String cusID = cus + "";
+        String førSetning = "SELECT * from HCL_customer where customer_id = " + cusID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
         }
 
-        sql.update("HCL_customer", "customer_name", "customer_id", idKine, "Kine");
+        sql.update("HCL_customer", "customer_name", "customer_id", cusID, "Kine");
 
-        String etterSetning = "SELECT * from HCL_customer where customer_id = " + idKine;
+        String etterSetning = "SELECT * from HCL_customer where customer_id = " + cusID;
         String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
         for(int i = 0; i < utskrift2[0].length; i++){
             System.out.println(utskrift2[0][i]);
         }
-        sql.deleteForGood("HCL_customer", "customer_id", kine);
+        sql.deleteForGood("HCL_customer", "customer_id", cus);
 
     }
 
     @Test
     public void update1() throws Exception {
 
-        int idKine = manager.generate("Kine-Sture", "Sturejenta@hotmail.com", 75584788);
-        String førSetning = "SELECT * from HCL_customer where customer_id = " + idKine;
+        int cus2ID = manager.generate("Kine-Sture", "Sturejenta@hotmail.com", 75584788);
+        String førSetning = "SELECT * from HCL_customer where customer_id = " + cus2ID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
         }
 
-        sql.update("HCL_customer", "customer_name", "customer_id", "Kine", idKine);
+        sql.update("HCL_customer", "customer_name", "customer_id", "Kine", cus2ID);
 
-        String etterSetning = "SELECT * from HCL_customer where customer_id = " + idKine;
+        String etterSetning = "SELECT * from HCL_customer where customer_id = " + cus2ID;
         String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
         for(int i = 0; i < utskrift2[0].length; i++){
             System.out.println(utskrift2[0][i]);
         }
 
-        sql.deleteForGood("HCL_customer", "customer_id", idKine);
+        sql.deleteForGood("HCL_customer", "customer_id", cus2ID);
 
     }
 
@@ -102,27 +96,24 @@ public class SQLTest {
     public void update2() throws Exception {
 
 
-        int trineID = manager.generate("Trinemor", "Trinemor@hotmail.com", 75584788);
-        int bestillingID = oManager.generate(trineID, 123, "Elgeseter", 7030, "2017-02-02");
+        int cus3ID = manager.generate("Trinemor", "Trinemor@hotmail.com", 75584788);
+        int orderID = oManager.generate(cus3ID, 123, "Elgeseter", 7030, "2017-02-02");
         LocalDate date = LocalDate.parse("2019-01-01");
 
-        String førSetning = "SELECT * from HCL_order where order_id = " + bestillingID;
+        String førSetning = "SELECT * from HCL_order where order_id = " + orderID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
         }
 
-        sql.update("HCL_order", "order_date","order_id", bestillingID + "", Date.valueOf(date));
+        sql.update("HCL_order", "order_date","order_id", orderID + "", Date.valueOf(date));
 
-        String etterSetning = "SELECT * from HCL_order where order_id = " + bestillingID;
-        String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
-        for(int i = 0; i < utskrift2[0].length; i++){
-            System.out.println(utskrift2[0][i]);
-        }
+        String etterSetning = "SELECT * from HCL_order where order_id = " + orderID;
+        String[][] print2  = sql.getStringTable(  etterSetning , false  );
+        sql.print2dArray(print2);
 
-
-        sql.deleteForGood("HCL_order", "order_id", bestillingID);
-        sql.deleteForGood("HCL_customer", "customer_id", trineID);
+        sql.deleteForGood("HCL_order", "order_id", orderID);
+        sql.deleteForGood("HCL_customer", "customer_id", cus3ID);
 
 
     }
@@ -130,22 +121,22 @@ public class SQLTest {
     @Test
     public void update3() throws Exception {
 
-        int ingredientID = iManager.generate("Brunost", 5, 56, false, false, false, "kul mat", "2016-04-04", "2017-05-06");
-        String førSetning = "SELECT nuts from HCL_ingredient where ingredient_id = " + ingredientID;
+        int ingID = iManager.generate("Brunost", 5, 56, false, false, false, "kul mat", "2016-04-04", "2017-05-06");
+        String førSetning = "SELECT nuts from HCL_ingredient where ingredient_id = " + ingID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
         }
 
-        sql.update("HCL_ingredient", "nuts","ingredient_id", ingredientID + "", true);
+        sql.update("HCL_ingredient", "nuts","ingredient_id", ingID + "", true);
 
-        String etterSetning = "SELECT nuts from HCL_ingredient where ingredient_id = " + ingredientID;
+        String etterSetning = "SELECT nuts from HCL_ingredient where ingredient_id = " + ingID;
         String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
         for(int i = 0; i < utskrift2[0].length; i++){
             System.out.println(utskrift2[0][i]);
         }
 
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", ingredientID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ingID);
 
     }
 
@@ -153,58 +144,58 @@ public class SQLTest {
     public void rowExists() throws Exception {
 
         assertFalse(sql.rowExists("HCL_customer", "customer_id", 99999999));
-        int idYlva = manager.generate("Ylva", "ylvan@hotmail.com", 75584788);
-        assertTrue(sql.rowExists("HCL_customer", "customer_id", idYlva));
+        int cus4ID = manager.generate("Ylva", "ylvan@hotmail.com", 75584788);
+        assertTrue(sql.rowExists("HCL_customer", "customer_id", cus4ID));
 
-        sql.deleteForGood("HCL_customer", "customer_id", idYlva);
+        sql.deleteForGood("HCL_customer", "customer_id", cus4ID);
 
     }
 
     @Test
     public void rowExists1() throws Exception {
-        int stoneID = iManager.generate("stein", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
-        int bucketID =  fManager.generate("bøtte", 60);
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", bucketID, stoneID));
-        fManager.addIngredient(bucketID,stoneID,10);
-        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", bucketID, stoneID));
+        int ing2ID = iManager.generate("stein", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
+        int foodID =  fManager.generate("bøtte", 60);
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", foodID, ing2ID));
+        fManager.addIngredient(foodID,ing2ID,10);
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", foodID, ing2ID));
 
-        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", bucketID, stoneID);
-        sql.deleteForGood("HCL_food", "food_id", bucketID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", stoneID);
+        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", foodID, ing2ID);
+        sql.deleteForGood("HCL_food", "food_id", foodID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing2ID);
 
     }
 
     @Test
     public void rowExists2() throws Exception {
         assertFalse(sql.rowExists("HCL_customer", "customer_id", 99999999));
-        int idYlva = manager.generate("Ylva", "ylvan@hotmail.com", 75584788);
-        String ylva = idYlva + "";
-        assertTrue(sql.rowExists("HCL_customer", "customer_id", ylva));
+        int cus5ID = manager.generate("Ylva", "ylvan@hotmail.com", 75584788);
+        String cus5 = cus5ID + "";
+        assertTrue(sql.rowExists("HCL_customer", "customer_id", cus5));
 
-        sql.deleteForGood("HCL_customer", "customer_id", idYlva);
+        sql.deleteForGood("HCL_customer", "customer_id", cus5ID);
 
     }
 
     @Test
     public void getStringTable() throws Exception {
-        int ida  = manager.generate("Ida", "mail", 98765432);
-        String query = "SELECT customer_name from HCL_customer where customer_id = " + ida;
+        int cus6ID  = manager.generate("Ida", "mail", 98765432);
+        String query = "SELECT customer_name from HCL_customer where customer_id = " + cus6ID;
         String[][] utskrift  = sql.getStringTable(  query , false  );
         sql.print2dArray(utskrift);
         utskrift = sql.getStringTable(  query , true  );
         sql.print2dArray(utskrift);
-        sql.deleteForGood("HCL_customer", "customer_id", ida);
+        sql.deleteForGood("HCL_customer", "customer_id", cus6ID);
     }
 
     @Test
     public void getColumnNames() throws Exception {
-        int oda  = manager.generate("Oda", "mail", 98765432);
-        String query = "SELECT customer_name from HCL_customer where customer_id = " + oda;
+        int cus7ID  = manager.generate("Oda", "mail", 98765432);
+        String query = "SELECT customer_name from HCL_customer where customer_id = " + cus7ID;
         String[] utskrift  = sql.getColumnNames( query );
         for (int i = 0; i < utskrift.length; i++){
             System.out.println(utskrift[i]);
         }
-        sql.deleteForGood("HCL_customer", "customer_id", oda);
+        sql.deleteForGood("HCL_customer", "customer_id", cus7ID);
 
     }
 
@@ -212,11 +203,11 @@ public class SQLTest {
 
     @Test
     public void print2dArray() throws Exception {
-        int julie  = manager.generate("Julie", "mail", 98765432);
-        String query = "SELECT * from HCL_customer where customer_id = " + julie;
+        int cus8ID  = manager.generate("Julie", "mail", 98765432);
+        String query = "SELECT * from HCL_customer where customer_id = " + cus8ID;
         String[][] utskrift  = sql.getStringTable(  query , true  );
         sql.print2dArray(utskrift);
-        sql.deleteForGood("HCL_customer", "customer_id", julie);
+        sql.deleteForGood("HCL_customer", "customer_id", cus8ID);
 
 
     }
@@ -233,13 +224,13 @@ public class SQLTest {
     @Test
     public void getColumn(){
 
-        int oda  = manager.generate("Oda", "mail", 98765432);
-        String query = "SELECT * from HCL_customer where customer_id = " + oda;
+        int cus9ID  = manager.generate("Oda", "mail", 98765432);
+        String query = "SELECT * from HCL_customer where customer_id = " + cus9ID;
         String[] utskrift  = sql.getColumn( query , 1);
         for (int i = 0; i < utskrift.length; i++){
             System.out.println(utskrift[i]);
         }
-        sql.deleteForGood("HCL_customer", "customer_id", oda);
+        sql.deleteForGood("HCL_customer", "customer_id", cus9ID);
 
 
     }
@@ -247,13 +238,13 @@ public class SQLTest {
     @Test
     public void getRow(){
 
-        int rutt  = manager.generate("Rutt", "mail", 98765432);
-        String query = "SELECT * from HCL_customer where customer_id = " + rutt;
+        int cus10ID  = manager.generate("Rutt", "mail", 98765432);
+        String query = "SELECT * from HCL_customer where customer_id = " + cus10ID;
         String[] utskrift  = sql.getRow( query );
         for (int i = 0; i < utskrift.length; i++){
             System.out.println(utskrift[i]);
         }
-        sql.deleteForGood("HCL_customer", "customer_id", rutt);
+        sql.deleteForGood("HCL_customer", "customer_id", cus10ID);
 
 
     }
@@ -268,6 +259,8 @@ public class SQLTest {
         sql.deleteForGood("HCL_ingredient", "ingredient_id", ingID);
         assertFalse(sql.rowExists("HCL_ingredient", "name", "tran"));
 
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing2ID);
+
 
 
 
@@ -276,21 +269,20 @@ public class SQLTest {
     @Test
     public void deleteForGood2(){
 
-        int kakestrøID = iManager.generate("kakestrø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
-        int kakeID =  fManager.generate("kake", 60);
-        lManager.generate("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID, 20);
+        int ingID = iManager.generate("kakestrø", 5, 56, false, false, true, "æsj", "2016-04-04", "2017-05-06");
+        int foodID =  fManager.generate("kake", 60);
+        lManager.generate("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID, 20);
 
 
         //Sjekker at kake-kakestrø finnes, sletter kake-kaktrø, og forsikrer seg om at kake-kakestrø er slettet
-        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID));
-        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID);
-        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", kakeID, kakestrøID));
+        assertTrue(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID));
+        sql.deleteForGood("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID);
+        assertFalse(sql.rowExists("HCL_food_ingredient", "food_id","ingredient_id", foodID, ingID));
 
 
 
-
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", kakestrøID);
-        sql.deleteForGood("HCL_food", "food_id", kakeID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ingID);
+        sql.deleteForGood("HCL_food", "food_id", foodID);
 
     }
 

@@ -10,6 +10,7 @@ import java.awt.*;
  */
 class IngredientTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_ingredient WHERE active = 1";
+	//private static String query = "";
 	private SQL sql;
 	//Tab name, foreign PK, link table name, other table name, foreign identifier
 	private static String[][] linkTables = {{ "Foods", "food_id", "HCL_food_ingredient", "HCL_food", "name" }};
