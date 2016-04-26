@@ -18,6 +18,8 @@ class JTableHCL extends JTable {
 		return false;
 	}
 	public void removeIDs() {
+		//This method hides ID numbers from the user, and replaces boolean 0's and 1's with checkmarks
+		//It simply sets the width to zero, to keep the data in the jtable
 		TableModel tabModel = this.getModel();
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
 			DataTyper.DataType type = DataTyper.getDataType(tabModel.getColumnName(i));

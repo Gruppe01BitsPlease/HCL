@@ -713,7 +713,7 @@ class UserEditMenu extends JFrame {
 								boolean valid = true;
 								if (dataTypes[i] == DataTyper.DataType.INT) {
 									try {
-										int test = Integer.parseInt(newValues[i]);
+										Integer.parseInt(newValues[i]);
 									} catch (Exception k) {
 										valid = false;
 									}

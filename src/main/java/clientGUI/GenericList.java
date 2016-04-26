@@ -251,7 +251,6 @@ class GenericList extends JPanel {
 						int sure = JOptionPane.showOptionDialog(EditWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							boolean success = true;
-							//fields = editFields.getFields();
 							String[] newValues = editFields.getNewValues();
 							if (!newEntry) {
 								for (int i = 1; i < newValues.length; i++) {
@@ -285,7 +284,20 @@ class GenericList extends JPanel {
 									}
 								}
 							} else if (newEntry) {
-								if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
+								boolean valid = true;
+								for (int i = 0; i < dataTypes.length; i++) {
+									if (dataTypes[i] == DataTyper.DataType.INT) {
+										try {
+											Integer.parseInt(newValues[i]);
+										}
+										catch (Exception k) {
+											valid = false;
+											success = false;
+											JOptionPane.showMessageDialog(EditWindow.this, "Please enter a valid number in field: " + titles[i]);
+										}
+									}
+								}
+								if (valid && !(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
 									int res = GenericList.this.generate(newValues);
 									if (res == -2) {
 										JOptionPane.showMessageDialog(EditWindow.this, "Database Error!");
@@ -298,9 +310,6 @@ class GenericList extends JPanel {
 										success = false;
 									}
 									//System.out.println(res);
-								} else {
-									//ID numbers are generated now, this should never happen
-									JOptionPane.showMessageDialog(EditWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
 							for (LinkTab tab : linkTabs) {
