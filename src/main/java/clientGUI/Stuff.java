@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static java.time.temporal.ChronoField.YEAR;
-
+/**
+ * Various useful methods
+ */
 class Stuff {
 
     private Stuff(){} // Can't be instansized
@@ -129,6 +131,9 @@ class Stuff {
         System.out.println(Stuff.isGrayedInArray(array,"bord"));
     }
 }
+/**
+ * This is our date entry panel, used everywhere you enter a date
+ */
 class DatePane extends JPanel {
 	private JComboBox<String> yearBox;
 	private JComboBox<String> monthBox;
@@ -247,6 +252,9 @@ class DatePane extends JPanel {
 		dayBox.setEnabled(enable);
 	}
 }
+/**
+ * This class generates edit fields for edit windows
+ */
 class EditFields extends JPanel {
 	private ArrayList<JComponent> fields = new ArrayList<>();
 	private String[][] comboBoxChoices;
@@ -343,6 +351,9 @@ class EditFields extends JPanel {
 		return newValues;
 	}
 }
+/**
+ * This class creates tabs where relations are linked by link tables
+ */
 class LinkTab extends JPanel {
 	private ArrayList<int[]> removeLinks = new ArrayList<>();
 	private ArrayList<int[]> createLinks = new ArrayList<>();
@@ -594,6 +605,9 @@ class LinkTab extends JPanel {
 		}
 	}
 }
+/**
+ * The menu for editing employees in the database
+ */
 class UserEditMenu extends JFrame {
 	private SQL sql;
 	private String userName;

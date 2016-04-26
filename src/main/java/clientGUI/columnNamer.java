@@ -5,7 +5,7 @@ import backend.SQL;
 import java.util.Arrays;
 
 /**
- * Fetches the columnames for the TabbedMenu
+ * This class "translates" column names from sql to more readable ones used in the UI
  */
 abstract class ColumnNamer {
 	public static String[] getNames(String query, SQL sql) {

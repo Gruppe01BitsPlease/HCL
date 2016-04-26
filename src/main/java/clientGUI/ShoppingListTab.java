@@ -10,7 +10,9 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-
+/**
+ * This tab shows the balance of ingredients going out and in stock
+ */
 class ShoppingListTab extends JPanel {
 	private SQL sql;
 	private Shoppinglist shop;
