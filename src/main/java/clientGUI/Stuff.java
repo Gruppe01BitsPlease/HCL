@@ -253,13 +253,15 @@ class EditFields extends JPanel {
 	private String[] selected;
 	public EditFields(String[] titles, String[] selected, boolean newEntry, String[] FKs, SQL sql) {
 		this.selected = selected;
-		String[] dataTypes = DataTyper.getDataTypes(titles);
+		DataTyper.DataType[] dataTypes = DataTyper.getDataTypes(titles);
+		String foreignSelect = "";
 		if (FKs != null && FKs.length > 0) {
-			dataTypes[Integer.parseInt(FKs[1])] = FKs[0];
+			dataTypes[Integer.parseInt(FKs[1])] = DataTyper.DataType.FOREIGN;
+			foreignSelect = FKs[0];
 		}
 		setLayout(new GridLayout(10, 2));
 		for (int i = 0; i < dataTypes.length; i++) {
-			if (dataTypes[i].equals("boolean")) {
+			if (dataTypes[i] == DataTyper.DataType.BOOLEAN) {
 				JLabel j = new JLabel(titles[i]);
 				JCheckBox k = new JCheckBox();
 				if (selected[i] != null && selected[i].equals("1")) {
@@ -268,13 +270,13 @@ class EditFields extends JPanel {
 				fields.add(k);
 				add(j);
 				add(k);
-			} else if (dataTypes[i].equals("date")) {
+			} else if (dataTypes[i] == DataTyper.DataType.DATE) {
 				JLabel j = new JLabel(titles[i]);
 				DatePane k = new DatePane(selected[i]);
 				fields.add(k);
 				add(j);
 				add(k);
-			} else if (dataTypes[i].equals("curdate")) {
+			} else if (dataTypes[i] == DataTyper.DataType.CURDATE) {
 				JLabel j = new JLabel(titles[i]);
 				DatePane k = new DatePane(selected[i]);
 				if (newEntry) {
@@ -285,9 +287,9 @@ class EditFields extends JPanel {
 				fields.add(k);
 				add(j);
 				add(k);
-			} else if (dataTypes[i].contains("SELECT")) {
+			} else if (dataTypes[i] == DataTyper.DataType.FOREIGN) {
 				JLabel j = new JLabel("Customer");
-				comboBoxChoices = new String[][]{sql.getColumn(dataTypes[i], 0), sql.getColumn(dataTypes[i], 1)};
+				comboBoxChoices = new String[][]{sql.getColumn(foreignSelect, 0), sql.getColumn(foreignSelect, 1)};
 				JComboBox<String> k = new JComboBox<>(comboBoxChoices[1]);
 				if (!newEntry) {
 					k.setSelectedItem(comboBoxChoices[1][Stuff.findIndexOf(comboBoxChoices[0], selected[i])]);
@@ -297,7 +299,7 @@ class EditFields extends JPanel {
 				add(j);
 				add(k);
 			}
-			else if (dataTypes[i].equals("id") || dataTypes[i].equals("active")) {
+			else if (dataTypes[i] == DataTyper.DataType.ID || dataTypes[i] == DataTyper.DataType.ACTIVE) {
 				JTextField k = new JTextField(selected[i]);
 				fields.add(k);
 			} else {
@@ -704,12 +706,12 @@ class UserEditMenu extends JFrame {
 					int sure = JOptionPane.showConfirmDialog(EditMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
 					if (sure == 0) {
 						String[] newValues = fields.getNewValues();
-						String[] dataTypes = DataTyper.getDataTypes(titles[1]);
+						DataTyper.DataType[] dataTypes = DataTyper.getDataTypes(titles[1]);
 						boolean success = true;
 						for (int i = 0; i < newValues.length; i++) {
 							if (!(newValues[i] == null || newValues[i].equals(""))) {
 								boolean valid = true;
-								if (dataTypes[i].equals("int")) {
+								if (dataTypes[i] == DataTyper.DataType.INT) {
 									try {
 										int test = Integer.parseInt(newValues[i]);
 									} catch (Exception k) {

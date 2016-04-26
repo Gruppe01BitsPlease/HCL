@@ -20,15 +20,15 @@ class JTableHCL extends JTable {
 	public void removeIDs() {
 		TableModel tabModel = this.getModel();
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
-			String type = DataTyper.getDataType(tabModel.getColumnName(i));
-			if (type.equals("id") || type.equals("active")) {
+			DataTyper.DataType type = DataTyper.getDataType(tabModel.getColumnName(i));
+			if (type == DataTyper.DataType.ID || type == DataTyper.DataType.ACTIVE) {
 				TableColumn column = getColumnModel().getColumn(i);
 				column.setMinWidth(50);
 				column.setMaxWidth(50);
 				column.setWidth(50);
 				column.setPreferredWidth(50);
 			}
-			else if (type.equals("boolean")) {
+			else if (type == DataTyper.DataType.BOOLEAN) {
 				for (int j = 0; j < tabModel.getRowCount(); j++) {
 					if (tabModel.getValueAt(j, i).equals("1")) {
 						tabModel.setValueAt("\u2713", j, i);

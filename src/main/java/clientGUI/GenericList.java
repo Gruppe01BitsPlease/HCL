@@ -22,7 +22,7 @@ class GenericList extends JPanel {
 	private String[][] searchTable;
 	private String[] titles;
 	private String[] SqlColumnNames;
-	private String[] dataTypes;
+	private DataTyper.DataType[] dataTypes;
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private String[][] linkTables;
@@ -54,11 +54,11 @@ class GenericList extends JPanel {
 		fillTable();
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (dataTypes == null) {
-			dataTypes = new String[1];
+			dataTypes = new DataTyper.DataType[1];
 		}
 		if (FKs != null) {
 			for (int i = 0; i < FKs.length; i++) {
-				dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
+				dataTypes[Integer.parseInt(FKs[i][1])] = DataTyper.DataType.FOREIGN;
 			}
 		}
 		this.SqlTableName = SqlTableName;
@@ -112,7 +112,7 @@ class GenericList extends JPanel {
 			dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 			if (FKs != null) {
 				for (int i = 0; i < FKs.length; i++) {
-					dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
+					dataTypes[Integer.parseInt(FKs[i][1])] = DataTyper.DataType.FOREIGN;
 				}
 			}
 			System.out.println(Arrays.toString(SqlColumnNames));
@@ -257,7 +257,7 @@ class GenericList extends JPanel {
 								for (int i = 1; i < newValues.length; i++) {
 									boolean valid = true;
 									//checks if number is valid
-									if (dataTypes[i].equals("int")) {
+									if (dataTypes[i] == DataTyper.DataType.INT) {
 										try {
 											int value = Integer.parseInt(newValues[i]);
 										}
@@ -268,7 +268,7 @@ class GenericList extends JPanel {
 										}
 									}
 									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
-										if (dataTypes[i].equals("boolean")) {
+										if (dataTypes[i] == DataTyper.DataType.BOOLEAN) {
 											System.out.println("Boolean value: " + newValues[i]);
 											if (newValues[i].equals("true")) {
 												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
