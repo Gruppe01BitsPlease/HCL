@@ -38,7 +38,8 @@ class ShoppingListTab extends JPanel {
 			dayArray[i] = i + 1;
 		}
 		dayBox = new JComboBox<>(dayArray);
-		dayBox.addItemListener(e -> {
+            dayBox.setToolTipText("Interval in days of deliveries to show");
+        dayBox.addItemListener(e -> {
 			refresh();
 		});
 		dayBox.setSelectedIndex(6);
@@ -48,9 +49,12 @@ class ShoppingListTab extends JPanel {
 		boxPanel.add(dayBox);
 		JPanel northBar = new JPanel(new GridLayout(1, 3));
 		JButton addStock = new JButton("Add to stock");
+            addStock.setToolTipText("Add stock to a single ingredient. You can select the amount of stock to be added.");
 		JButton addAll = new JButton("Add all to stock");
+            addAll.setToolTipText("Adds all items spesified in the shopping-list to the stock.");
 		JButton refresh = new JButton("Refresh");
-		refresh.addActionListener(e -> {
+            refresh.setToolTipText("Refresh the list. Should not be necessary most of the time.");
+        refresh.addActionListener(e -> {
 			refresh();
 		});
 		addStock.addActionListener(e -> {
@@ -90,7 +94,9 @@ class ShoppingListTab extends JPanel {
 			JLabel amountLabel = new JLabel("Amount to add to stock:");
 			JTextField amountField = new JTextField();
 			JButton add = new JButton("Add");
+                add.setToolTipText("Adds the inputted amount to the stock.");
 			JButton addBalance = new JButton("Add balance");
+                addBalance.setToolTipText("Adds the amount specified in the shopping list to the stock for this item.");
 			JButton cancel = new JButton("Cancel");
 			add.addActionListener(e -> {
 				int amount = -1;
