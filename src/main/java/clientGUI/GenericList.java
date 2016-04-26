@@ -150,7 +150,7 @@ class GenericList extends JPanel {
     }
 	private class NorthBar extends JPanel {
 		public NorthBar() {
-			setLayout(new GridLayout(1, 5));
+			setLayout(new GridLayout(1, 0));
 			JButton refresh = new JButton("Refresh");
 			JButton newThing = new JButton("New...");
 			JButton delete = new JButton("Delete");
