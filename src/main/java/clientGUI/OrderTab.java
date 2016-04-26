@@ -403,42 +403,7 @@ class OrderTab extends GenericList {
                                     }
                                 }
                                 startDate = startDate.plusDays(period);
-                            }/*
-
-                                    boolean success = false;
-                                    while (!success) {
-                                        if (startDate.getDayOfWeek() != dayArray[j]) {
-                                            startDate = startDate.plusDays(1);
-                                            System.out.println(startDate.getDayOfWeek());
-                                        } else {
-                                            success = true;
-                                        }
-                                    }
-                                    LocalDate addDate = startDate;
-                                    if (addDate.isBefore(editDatesWindow.getEndDate())) {
-                                        datesToAdd.add(addDate.toString());
-                                    }
-                                    while (!complete) {
-                                        if (intervalDropdown.getSelectedIndex() == 1) {
-                                            addDate = addDate.plusDays(7);
-                                            System.out.println("Seven days");
-                                        } else if (intervalDropdown.getSelectedIndex() == 2) {
-                                            addDate = addDate.plusDays(14);
-                                            System.out.println("14 days");
-                                        } else if (intervalDropdown.getSelectedIndex() == 3) {
-                                            addDate = addDate.plusDays(21);
-                                            System.out.println("21 days");
-                                        } else if (intervalDropdown.getSelectedIndex() == 4) {
-                                            addDate = addDate.plusDays(28);
-                                            System.out.println("28 days");
-                                        }
-                                        if (addDate.isAfter(editDatesWindow.getEndDate())) {
-                                            complete = true;
-                                        }
-                                    }
-
-                                }
-                            }*/
+                            }
                             dates = new String[datesToAdd.size()][6];
                             for(int i=0; i<datesToAdd.size(); i++){
                                 dates[i][0]=Stuff.bold("0");
