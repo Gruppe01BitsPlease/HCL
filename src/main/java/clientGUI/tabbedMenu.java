@@ -399,11 +399,5 @@ public class tabbedMenu extends JFrame {
 			}
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		SQL sql = new SQL();
-		tabbedMenu menu = new tabbedMenu(0, "CEO", sql);
-		//TabbedMenu menu2 = new TabbedMenu(1, "Sales");
-	}
 }
 

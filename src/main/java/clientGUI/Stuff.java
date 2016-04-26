@@ -124,12 +124,6 @@ class Stuff {
         }
         return false;
     }
-
-    public static void main(String[]args){
-        String[][] array = {{"ost","per"},{"mat",grey("bord"),"ost"},{"laken","lader"}};
-
-        System.out.println(Stuff.isGrayedInArray(array,"bord"));
-    }
 }
 /**
  * This is our date entry panel, used everywhere you enter a date

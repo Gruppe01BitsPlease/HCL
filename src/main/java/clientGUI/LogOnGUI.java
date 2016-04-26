@@ -83,12 +83,5 @@ public class LogOnGUI extends JFrame{
 		add(buttonrow);
 		this.setVisible(true);
 	}
-
-	public static void main(String[] args) throws Exception {
-		//	User u = new User();
-		//	u.generateUser("jens", "1234", 0);
-		SQL sql = new SQL();
-		LogOnGUI test = new LogOnGUI();
-	}
 }
 

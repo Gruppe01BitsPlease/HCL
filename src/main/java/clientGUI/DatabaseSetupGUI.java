@@ -140,10 +140,4 @@ import java.sql.SQLException;
         }
         sql.end();
     }
-
-    public static void main(String[] args){
-        SQL sql = new SQL();
-            DatabaseSetupGUI frame = new DatabaseSetupGUI(sql);
-            frame.setVisible(true);
-        }
 }

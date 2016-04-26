@@ -85,18 +85,4 @@ public class StatisticsTab extends JPanel{
     public void refreshStats(){ // impossible
         tab.refreshStats();
     }
-    public static void main(String[]args){
-        SQL sql = new SQL();
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel(new BorderLayout());
-
-        //panel.add(new StatisticsTab(sql),BorderLayout.CENTER);
-
-        frame.add(panel);
-        frame.pack();
-        frame.setVisible(true);
-
-    }
 }

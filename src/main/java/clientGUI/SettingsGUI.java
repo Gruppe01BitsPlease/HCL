@@ -156,8 +156,6 @@ public class SettingsGUI extends JFrame {
         user.setText(settings.getPropValue("user"));
         password.setText(settings.getPropValue("password"));
     }
-
-    public static void main(String[] args){ new SettingsGUI();}
 }
 
 
