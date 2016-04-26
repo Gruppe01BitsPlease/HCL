@@ -358,16 +358,53 @@ class OrderTab extends GenericList {
                                 dayArray[i] = days.get(i);
                             }
                             LocalDate startDate = editDatesWindow.getStartDate();
+                            LocalDate endDate = editDatesWindow.getEndDate();
                             //for (int i = 0; i < dayArray.length; i++) {
 
                             //}
                             //String[] boxChoices = {"One Delivery", "Every Week", "Every 2nd Week", "Every 3rd Week","Every 4th Week"};
                             ArrayList<String> datesToAdd = new ArrayList<>();
-                            boolean complete = false;
                             System.out.println("Day array:" + Arrays.toString(dayArray));
                             long dayNumber = DAYS.between(startDate, editDatesWindow.getEndDate());
+                            int period = 0;
+                            if (intervalDropdown.getSelectedIndex() == 1) {
+                                period = 7;
+                                System.out.println("Seven days");
+                            } else if (intervalDropdown.getSelectedIndex() == 2) {
+                                period = 14;
+                                System.out.println("14 days");
+                            } else if (intervalDropdown.getSelectedIndex() == 3) {
+                                period = 21;
+                                System.out.println("21 days");
+                            } else if (intervalDropdown.getSelectedIndex() == 4) {
+                                period = 28;
+                                System.out.println("28 days");
+                            }
+                            boolean allAdded = false;
                             for (long i = 0; i < dayNumber; i++) {
+                                LocalDate addDate = LocalDate.of(startDate.getYear(), startDate.getMonthValue(), startDate.getDayOfMonth());
                                 for (int j = 0; j < dayArray.length; j++) {
+                                    boolean finished = false;
+                                    while (!finished) {
+                                        if (addDate.getDayOfWeek() == dayArray[j] && !(datesToAdd.contains(addDate.toString()))) {
+                                            if (addDate.isBefore(endDate.plusDays(1))) {
+                                                datesToAdd.add(addDate.toString());
+                                                //addDate = startDate.plusDays(period);
+                                                System.out.println("Adding day: " + addDate.toString());
+                                                finished = true;
+                                            } else {
+                                                allAdded = true;
+                                                finished = true;
+                                            }
+                                        } else {
+                                            addDate = addDate.plusDays(1);
+                                            System.out.println("Skipping day");
+                                        }
+                                    }
+                                }
+                                startDate = startDate.plusDays(period);
+                            }/*
+
                                     boolean success = false;
                                     while (!success) {
                                         if (startDate.getDayOfWeek() != dayArray[j]) {
@@ -401,7 +438,7 @@ class OrderTab extends GenericList {
                                     }
 
                                 }
-                            }
+                            }*/
                             dates = new String[datesToAdd.size()][6];
                             for(int i=0; i<datesToAdd.size(); i++){
                                 dates[i][0]=Stuff.bold("0");
