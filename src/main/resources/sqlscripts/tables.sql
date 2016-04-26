@@ -119,15 +119,21 @@ ALTER TABLE HCL_order_food ADD FOREIGN KEY (food_id) REFERENCES HCL_food (food_i
 --
 
 INSERT INTO  HCL_user (
-  `user_id` ,
-  `user_name` ,
-  `user_role` ,
-  `user_salt` ,
-  `user_pass` ,
-  `active`
+  user_id,
+  user_name,
+  user_role,
+  user_salt,
+  user_pass,
+  user_firstname,
+  user_lastname,
+  user_email,
+  user_tlf,
+  user_adress,
+  user_postnr,
+  user_start,
+  active
 )
-VALUES (DEFAULT , 'admin', '0', 'IOdABDSNfAA=', 'I+D2C2RKkFjw1UxOEbd5k8BdYkE=', '1');
-
+VALUES (DEFAULT, 'admin', 0, 'IOdABDSNfAA=', 'I+D2C2RKkFjw1UxOEbd5k8BdYkE=', 'Delete Me', 'Or Change Password', '', NULL, '', NULL, '2016-04-26', 1);
 -- --------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 1;
 -- --------------------------------------------------------
