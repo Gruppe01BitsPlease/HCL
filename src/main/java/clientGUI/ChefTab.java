@@ -38,10 +38,6 @@ class ChefTab extends JPanel {
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(scroller, BorderLayout.CENTER);
 		northPanel.add(new SouthBar(), BorderLayout.SOUTH);
-		try {
-			table.setRowSelectionInterval(0, 0);
-		}
-		catch (Exception e) {}
 		ViewVindow bottom;
 		try {
 			bottom = new ViewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
