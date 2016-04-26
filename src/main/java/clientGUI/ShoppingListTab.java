@@ -43,10 +43,7 @@ class ShoppingListTab extends JPanel {
 			refresh();
 		});
 		dayBox.setSelectedIndex(6);
-		JLabel boxLabel = new JLabel("Days to show:");
-		JPanel boxPanel = new JPanel(new GridLayout(1, 2));
-		boxPanel.add(boxLabel);
-		boxPanel.add(dayBox);
+
 		JPanel northBar = new JPanel(new GridLayout(1, 3));
 		JButton addStock = new JButton("Add to stock");
             addStock.setToolTipText("Add stock to a single ingredient. You can select the amount of stock to be added.");
@@ -83,7 +80,21 @@ class ShoppingListTab extends JPanel {
 		northBar.add(refresh);
 		add(northBar, BorderLayout.NORTH);
 		add(scroller, BorderLayout.CENTER);
-		add(boxPanel, BorderLayout.SOUTH);
+		add(new SouthBar(), BorderLayout.SOUTH);
+
+	}
+	private class SouthBar extends JPanel {
+		public SouthBar() {
+			setLayout(new GridLayout(1, 4));
+			JLabel boxLabel = new JLabel("Days to show:");
+			JPanel boxPanel = new JPanel(new GridLayout(1, 2));
+			boxPanel.add(boxLabel);
+			boxPanel.add(dayBox);
+			add(Box.createHorizontalBox());
+			add(Box.createHorizontalBox());
+			add(Box.createHorizontalBox());
+			add(boxPanel);
+		}
 	}
 	private class AddWindow extends JFrame {
 		public AddWindow(int ingredient_id) {
