@@ -198,6 +198,7 @@ class OrderTab extends GenericList {
                                 }
                             }
                         }
+                        foodTab.generate();
                         if (success) {
                             DeliveryManager mng = new DeliveryManager(sql);
                             int removeResult = 0;
@@ -216,7 +217,7 @@ class OrderTab extends GenericList {
                                 }
                             }
                             dispose();
-                            foodTab.generate();
+                            System.out.println("Generating");
                             refresh();
                         }
                     }

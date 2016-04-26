@@ -25,10 +25,10 @@ class JTableHCL extends JTable {
 			DataTyper.DataType type = DataTyper.getDataType(tabModel.getColumnName(i));
 			if (type == DataTyper.DataType.ID || type == DataTyper.DataType.ACTIVE) {
 				TableColumn column = getColumnModel().getColumn(i);
-				column.setMinWidth(0);
-				column.setMaxWidth(0);
-				column.setWidth(0);
-				column.setPreferredWidth(0);
+				column.setMinWidth(50);
+				column.setMaxWidth(50);
+				column.setWidth(50);
+				column.setPreferredWidth(50);
 			}
 			else if (type == DataTyper.DataType.BOOLEAN) {
 				for (int j = 0; j < tabModel.getRowCount(); j++) {

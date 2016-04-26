@@ -554,6 +554,7 @@ class LinkTab extends JPanel {
 	public void generate() {
 		if (newEntry) {
 			selectedID = sql.getLastID();
+			System.out.println("ID: " + selectedID);
 		}
 		for (int[] rem : removeLinks) {
 			System.out.println("Remove links: "+Arrays.toString(rem));

@@ -256,7 +256,7 @@ class GenericList extends JPanel {
 								for (int i = 1; i < newValues.length; i++) {
 									boolean valid = true;
 									//checks if number is valid
-									if (dataTypes[i] == DataTyper.DataType.INT) {
+									if (dataTypes[i] == DataTyper.DataType.INT && !(newValues[i].equals("") || newValues[i] == null)) {
 										try {
 											int value = Integer.parseInt(newValues[i]);
 										}
@@ -286,7 +286,7 @@ class GenericList extends JPanel {
 							} else if (newEntry) {
 								boolean valid = true;
 								for (int i = 0; i < dataTypes.length; i++) {
-									if (dataTypes[i] == DataTyper.DataType.INT) {
+									if (dataTypes[i] == DataTyper.DataType.INT && !(newValues[i].equals("") || newValues[i] == null)) {
 										try {
 											Integer.parseInt(newValues[i]);
 										}
