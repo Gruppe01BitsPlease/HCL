@@ -160,7 +160,7 @@ class OrderTab extends GenericList {
                             boolean valid = true;
                             DataTyper.DataType[] dataTypes = DataTyper.getDataTypesSQL(titles[0]);
                             for (int i = 0; i < dataTypes.length; i++) {
-                                if (dataTypes[i] == DataTyper.DataType.INT) {
+                                if (dataTypes[i] == DataTyper.DataType.INT && !(newValues[i].equals("") || newValues[i] == null)) {
                                     try {
                                         Integer.parseInt(newValues[i]);
                                     }
