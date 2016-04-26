@@ -704,12 +704,29 @@ class UserEditMenu extends JFrame {
 					int sure = JOptionPane.showConfirmDialog(EditMenu.this, "Are you sure?", "Edit user", JOptionPane.YES_NO_OPTION);
 					if (sure == 0) {
 						String[] newValues = fields.getNewValues();
+						String[] dataTypes = DataTyper.getDataTypes(titles[1]);
+						boolean success = true;
 						for (int i = 0; i < newValues.length; i++) {
-							if (selectedUser[i] == null || !(selectedUser[i].equals(newValues[i]))) {
-								sql.update("HCL_user", titles[0][i], "user_name", userName, newValues[i]);
+							if (!(newValues[i] == null || newValues[i].equals(""))) {
+								boolean valid = true;
+								if (dataTypes[i].equals("int")) {
+									try {
+										int test = Integer.parseInt(newValues[i]);
+									} catch (Exception k) {
+										valid = false;
+									}
+								}
+								if (valid && (selectedUser[i] == null || !(selectedUser[i].equals(newValues[i])))) {
+									sql.update("HCL_user", titles[0][i], "user_name", userName, newValues[i]);
+								} else if (!valid) {
+									JOptionPane.showMessageDialog(EditMenu.this, "Please enter a valid number in field: " + titles[1][i]);
+									success = false;
+								}
 							}
 						}
-						dispose();
+						if (success ) {
+							dispose();
+						}
 						if (tab != null) {
 							if (tab instanceof GenericList) {
 								((GenericList) tab).refresh();
