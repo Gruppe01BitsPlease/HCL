@@ -81,8 +81,8 @@ public class FoodManagerTest {
     @Test
     public void addIngredient() throws Exception{
         //Making test objects
-        int foodID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
-        int ingID =  manager.generate("Grøt", 60);
+        int ingID = iManager.generate("mandel", 5, 56, false, false, true, "kun en", "2016-04-04", "2017-05-06");
+        int foodID =  manager.generate("Grøt", 60);
         manager.addIngredient(foodID,ingID,10);
 
         //checking that the link-object was correctly made.

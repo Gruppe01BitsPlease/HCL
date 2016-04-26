@@ -10,16 +10,16 @@ import java.awt.event.*;
 /**
  * Main window
  */
-public class TabbedMenu extends JFrame {
+public class tabbedMenu extends JFrame {
 	private SQL sql;
 	//X and Y is the size of the main menu window, other windows should be scaled according to this value
 	private static JTabbedPane tabs;
 	private int rolle;
 
-	public TabbedMenu(int rolle, String username, SQL sql) {
+	public tabbedMenu(int rolle, String username, SQL sql) {
 		this.rolle = rolle;
 		this.sql = sql;
-		setTitle("Bits Please HCL System 0.5 - User: " + username);
+		setTitle("Bits Please HCL System 1.0 - User: " + username);
 		try {
 			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
 			setIconImage(image);
@@ -188,7 +188,7 @@ public class TabbedMenu extends JFrame {
 			Action logoutpress = new AbstractAction() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					LogOnGUI logon = new LogOnGUI(sql);
+					LogOnGUI logon = new LogOnGUI();
 					dispose();
 				}
 			};
@@ -402,7 +402,7 @@ public class TabbedMenu extends JFrame {
 
 	public static void main(String[] args) throws Exception {
 		SQL sql = new SQL();
-		TabbedMenu menu = new TabbedMenu(0, "CEO", sql);
+		tabbedMenu menu = new tabbedMenu(0, "CEO", sql);
 		//TabbedMenu menu2 = new TabbedMenu(1, "Sales");
 	}
 }

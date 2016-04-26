@@ -42,10 +42,3 @@ CREATE VIEW deliveries_foods_ingredients AS
 -- Ingredients per delivery. AND total ingredients of that type in the delivery, with the stock
 
 -- -----------------------------
-
--- Ingredients per delivery. AND total ingredients of that type in the delivery, with the stock
-DROP VIEW IF EXISTS deliveries_ingredients_total;
-CREATE VIEW deliveries_ingredients_total AS
-  SELECT delivery_date,delivery_id, ingredient_id,`Ingredient Name`,Sum(`Food Number`*`Ingredient Amount`)'Total Ingredients',`Ingredient Stock`
-  FROM deliveries_foods_ingredients GROUP BY delivery_id, ingredient_id ORDER BY delivery_date asc;
--- Ingredients per delivery. AND total ingredients of that type in the delivery, with the stock

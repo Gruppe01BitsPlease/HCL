@@ -61,11 +61,12 @@ public class StartUp
                                 JOptionPane.YES_NO_OPTION);
                         if (reply == JOptionPane.NO_OPTION) {
                             window.dispose();
-                            new LogOnGUI(sql);
+                            new LogOnGUI();
                         }
                         if (reply == JOptionPane.YES_OPTION) {
                             window.dispose();
-                            new LogOnGUI(sql);
+                            new LogOnGUI();
+                            sql = new SQL();
                             DatabaseSetupGUI DBsetting = new DatabaseSetupGUI(sql);
                             DBsetting.setLocationRelativeTo(null);
                             DBsetting.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -82,7 +83,7 @@ public class StartUp
                 }
             });
         }else{
-            new LogOnGUI(sql);
+            new LogOnGUI();
         }
     }
 

@@ -67,7 +67,7 @@ public class ShoppinglistTest {
 
     }
 
-    @Test
+    /* unrealistic test
     public void add() throws Exception {
         String[][] testList2 = manager.getShoppinglist(10);
         sql.print2dArray(manager.getShoppinglist(10));
@@ -76,5 +76,6 @@ public class ShoppinglistTest {
         //prints out correctly - the first row is now removed.
 
     }
+    */
 
 }

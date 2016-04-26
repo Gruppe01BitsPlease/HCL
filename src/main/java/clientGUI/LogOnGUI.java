@@ -11,8 +11,9 @@ import backend.*;
  * Creates the LogOn windows
  */
 public class LogOnGUI extends JFrame{
-	public LogOnGUI (SQL sql) {
+	public LogOnGUI () {
 		//window parameters
+		SQL sql = new SQL();
 		setTitle("Log in");
 		try {
 			Image image = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icons/titleIcon.png"));
@@ -58,7 +59,7 @@ public class LogOnGUI extends JFrame{
 					UserManager u = new UserManager(sql);
 					i = u.logon(navn, pass);
 					if (i >= 0) {
-						TabbedMenu main = new TabbedMenu(i, navn, sql);
+						tabbedMenu main = new tabbedMenu(i, navn, sql);
 						dispose();
 					} else if (i == -1) {
 						JOptionPane.showMessageDialog(null, "The user name or password is incorrect.");
@@ -87,7 +88,7 @@ public class LogOnGUI extends JFrame{
 		//	User u = new User();
 		//	u.generateUser("jens", "1234", 0);
 		SQL sql = new SQL();
-		LogOnGUI test = new LogOnGUI(sql);
+		LogOnGUI test = new LogOnGUI();
 	}
 }
 

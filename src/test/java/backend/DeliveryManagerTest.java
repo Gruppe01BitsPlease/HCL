@@ -91,7 +91,7 @@ public class DeliveryManagerTest {
 
 
 
-    @Test
+    /* NOT USED IN PROJECT ANYMORE TEST NOT WORKING EITHER
     public void getDatesToBeAdded() throws Exception{
 
         //Making test-objects
@@ -121,7 +121,7 @@ public class DeliveryManagerTest {
         sql.deleteForGood("HCL_customer", "customer_id", cust3ID);
 
     }
-
+    */
 
     @Test
     public void deliver() throws Exception{

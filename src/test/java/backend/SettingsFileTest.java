@@ -18,18 +18,18 @@ public class SettingsFileTest {
         testFile = new SettingsFile();
         testFile.setPropValue("firsttime", "0");
         testFile.setPropValue("host", "jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
-        testFile.setPropValue("database", "olavhus");
-        testFile.setPropValue("user", "olavhus");
-        testFile.setPropValue("password", "CmrXjoQn");
+        testFile.setPropValue("database", "bjornhaf");
+        testFile.setPropValue("user", "bjornhaf");
+        testFile.setPropValue("password", "olNWRNkV");
     }
 
     @After
     public void tearDown() throws Exception {
         testFile.setPropValue("firsttime", "0");
         testFile.setPropValue("host", "jdbc:mysql://mysql.stud.iie.ntnu.no:3306/");
-        testFile.setPropValue("database", "olavhus");
-        testFile.setPropValue("user", "olavhus");
-        testFile.setPropValue("password", "CmrXjoQn");
+        testFile.setPropValue("database", "bjornhaf");
+        testFile.setPropValue("user", "bjornhaf");
+        testFile.setPropValue("password", "olNWRNkV");
         testFile = null;
     }
 
@@ -37,9 +37,9 @@ public class SettingsFileTest {
     public void getPropValue() throws Exception {
         assertTrue(testFile.getPropValue("firsttime").equals("0"));
         assertTrue(testFile.getPropValue("host").equals("jdbc:mysql://mysql.stud.iie.ntnu.no:3306/"));
-        assertTrue(testFile.getPropValue("database").equals("olavhus"));
-        assertTrue(testFile.getPropValue("user").equals("olavhus"));
-        assertTrue(testFile.getPropValue("password").equals("CmrXjoQn"));
+        assertTrue(testFile.getPropValue("database").equals("bjornhaf"));
+        assertTrue(testFile.getPropValue("user").equals("bjornhaf"));
+        assertTrue(testFile.getPropValue("password").equals("olNWRNkV"));
     }
 
     @Test

@@ -113,7 +113,7 @@ public class OrderManagerTest {
 
         //checking that order is not a subcription, making subscription, checks again.
         assertEquals(false, manager.isSubscription(order5ID));
-        DayOfWeek[] testArray = {DayOfWeek.MONDAY};
+        DayOfWeek[] testArray = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY};
         dManager.addDates(order5ID, LocalDate.of(2017,02,02), LocalDate.of(2017,02,10), 2, testArray);
         assertEquals(true, manager.isSubscription(order5ID));
 
