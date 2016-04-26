@@ -83,7 +83,7 @@ class DriverTab extends JPanel {
 	}
 	private class SouthBar extends JPanel {
 		SouthBar() {
-			setLayout(new GridLayout(1, 2));
+			setLayout(new GridLayout(1, 4));
 			JLabel daysLabel = new JLabel("Days to show:");
 			String[] dayChoices = new String[8];
 			for (int i = 0; i < 7; i++){
@@ -100,8 +100,13 @@ class DriverTab extends JPanel {
 				}
 			});
 			dayBox.setSelectedIndex(7);
-			add(daysLabel);
-			add(dayBox);
+			JPanel daysPanel = new JPanel(new GridLayout(1, 2));
+			daysPanel.add(daysLabel);
+			daysPanel.add(dayBox);
+			add(Box.createHorizontalBox());
+			add(Box.createHorizontalBox());
+			add(Box.createHorizontalBox());
+			add(daysPanel);
 		}
 	}
 	private class NorthBar extends JPanel {

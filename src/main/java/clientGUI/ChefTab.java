@@ -36,8 +36,9 @@ class ChefTab extends JPanel {
 		JPanel centerPanel = new JPanel(new GridLayout(2, 1));
 		JScrollPane scroller = new JScrollPane(table);
 		JPanel northPanel = new JPanel(new BorderLayout());
+		SouthBar southBar = new SouthBar();
 		northPanel.add(scroller, BorderLayout.CENTER);
-		northPanel.add(new SouthBar(), BorderLayout.SOUTH);
+		northPanel.add(southBar, BorderLayout.SOUTH);
 		ViewVindow bottom;
 		try {
 			bottom = new ViewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
@@ -55,6 +56,7 @@ class ChefTab extends JPanel {
 				super.mouseClicked(e);
 				if (e.getClickCount() == 2) {
 					botFinal.change(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));
+					southBar.setTitle((String) table.getValueAt(table.getSelectedRow(), 1));
 				}
 			}
 		});
@@ -89,8 +91,10 @@ class ChefTab extends JPanel {
 		table.removeIDs();
 	}
 	private class SouthBar extends JPanel {
+		private JLabel titleLabel;
 		SouthBar() {
-			setLayout(new GridLayout(1, 2));
+			setLayout(new GridLayout(1, 4));
+			titleLabel = new JLabel("");
 			JLabel daysLabel = new JLabel("Days to show:");
 			String[] dayChoices = new String[8];
 			for (int i = 0; i < 7; i++){
@@ -101,9 +105,17 @@ class ChefTab extends JPanel {
 			dayBox.addItemListener(e -> {
 				refresh();
 			});
+			JPanel daysPanel = new JPanel(new GridLayout(1, 2));
+			daysPanel.add(daysLabel);
+			daysPanel.add(dayBox);
 			dayBox.setSelectedIndex(7);
-			add(daysLabel);
-			add(dayBox);
+			add(titleLabel);
+			add(Box.createHorizontalBox());
+			add(Box.createHorizontalBox());
+			add(daysPanel);
+		}
+		public void setTitle(String title) {
+			titleLabel.setText("Delivery to: " + title);
 		}
 	}
 	private class NorthBar extends JPanel {
