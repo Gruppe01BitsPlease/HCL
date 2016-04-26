@@ -68,24 +68,24 @@ public class DeliveryManagerTest {
 
     @Test
     public void addDate() throws Exception{
-        int annaID = cManager.generate("Anna", "anna@hotmail.com", 75584788);
-        int bestilling2ID = oManager.generate(annaID, 123, "Moholt", 7030, "2017-02-02");
-        int levering3ID = manager.addDate(bestilling2ID, "2016-05-05");
-        int levering4ID = manager.addDate(bestilling2ID, "2016-06-05");
+        int cust2ID = cManager.generate("Anna", "anna@hotmail.com", 75584788);
+        int order2ID = oManager.generate(cust2ID, 123, "Moholt", 7030, "2017-02-02");
+        int delivery3ID = manager.addDate(order2ID, "2016-05-05");
+        int delivery4ID = manager.addDate(order2ID, "2016-06-05");
 
-        //Tester om Customer-objektene faktisk ble laget.
-        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", levering3ID));
-        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", levering4ID));
+        //Testing that the customer objects actually was made.
+        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", delivery3ID));
+        assertTrue(sql.rowExists("HCL_deliveries", "delivery_id", delivery4ID));
         assertFalse(sql.rowExists("HCL_deliveries", "delivery_id", 99999999));
 
-        //Sjekker at alle feilmeldingene fungerer
+        //Testing that correct returns are given
         assertEquals(-3, manager.addDate(102948, "2016-05-05"));
-        assertEquals(-5, manager.addDate(bestilling2ID, "12345-05-05"));
+        assertEquals(-5, manager.addDate(order2ID, "12345-05-05"));
 
-        sql.deleteForGood("HCL_deliveries", "delivery_id", levering3ID);
-        sql.deleteForGood("HCL_deliveries", "delivery_id", levering4ID);
-        sql.deleteForGood("HCL_order", "order_id", bestilling2ID);
-        sql.deleteForGood("HCL_customer", "customer_id", annaID);
+        sql.deleteForGood("HCL_deliveries", "delivery_id", delivery3ID);
+        sql.deleteForGood("HCL_deliveries", "delivery_id", delivery4ID);
+        sql.deleteForGood("HCL_order", "order_id", order2ID);
+        sql.deleteForGood("HCL_customer", "customer_id", cust2ID);
 
     }
 
@@ -94,55 +94,55 @@ public class DeliveryManagerTest {
     @Test
     public void getDatesToBeAdded() throws Exception{
 
-        int regineID = cManager.generate("Regine", "anna@hotmail.com", 75584788);
-        int bestilling3ID = oManager.generate(regineID, 123, "Lade", 7030, "2017-02-02");
-
-
+        //Making test-objects
+        int cust3ID = cManager.generate("Regine", "anna@hotmail.com", 75584788);
+        int order3ID = oManager.generate(cust3ID, 123, "Lade", 7030, "2017-02-02");
         DayOfWeek[] testArray = {DayOfWeek.MONDAY, DayOfWeek.FRIDAY };
 
-        //Lager teststring hvor getDatesToBeAdded henter ut datoene og skriver ut.
-        String[] testArray2 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
+        //Making a test-String and prints out the dates
+        String[] testArray2 = manager.getDatesToBeAdded(order3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
         for (int i = 0; i < testArray2.length; i++){
             System.out.println(testArray2[i]);
         }
-        //skrev ut "2016-12-02" og "2016-12-05", noe som er riktig
+        //printed "2016-12-02" og "2016-12-05", which is correct
 
-        //Sjekker at metoden returnerer tom string for feile parametere
+        //Checking that wrong parameters give empty strings
         String[] feilstring1 = manager.getDatesToBeAdded(99999999,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
         assertEquals(0, feilstring1.length);
-        String[] feilstring3 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
-        assertEquals(0, feilstring1.length);
-        String[] feilstring4 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 0, testArray);
-        assertEquals(0, feilstring1.length);
-        String[] feilstring5 = manager.getDatesToBeAdded(bestilling3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, new DayOfWeek[0]);
-        assertEquals(0, feilstring1.length);
+        String[] feilstring3 = manager.getDatesToBeAdded(order3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, testArray);
+        assertEquals(0, feilstring3.length);
+        String[] feilstring4 = manager.getDatesToBeAdded(order3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 0, testArray);
+        assertEquals(0, feilstring4.length);
+        String[] feilstring5 = manager.getDatesToBeAdded(order3ID,LocalDate.of(2016,12,01), LocalDate.of(2016,12,22), 2, new DayOfWeek[0]);
+        assertEquals(0, feilstring5.length);
 
 
-        sql.deleteForGood("HCL_order", "order_id", bestilling3ID);
-        sql.deleteForGood("HCL_customer", "customer_id", regineID);
+        sql.deleteForGood("HCL_order", "order_id", order3ID);
+        sql.deleteForGood("HCL_customer", "customer_id", cust3ID);
 
     }
 
 
     @Test
     public void deliver() throws Exception{
-        //Lager testobjekter
-        int knutID = cManager.generate("Knut", "knut@hotmail.com", 75584788);
-        int bestilling4ID = oManager.generate(knutID, 123, "Moholt", 7030, "2017-02-02");
-        int levering4ID = manager.addDate(bestilling4ID, "2016-05-05");
+        //Making test-objects
+        int cust4ID = cManager.generate("Knut", "knut@hotmail.com", 75584788);
+        int order4ID = oManager.generate(cust4ID, 123, "Moholt", 7030, "2017-02-02");
+        int delivery5ID = manager.addDate(order4ID, "2016-05-05");
 
 
-        //sjekker om leveranse er levert og får negativ, leverer, sjekker igjen og får positiv.
-        String [][] active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + levering4ID, false);
+        //checking if delivery is made and gets false, make delivery and checks again.
+        String [][] active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + delivery5ID, false);
         assertEquals(0, Integer.parseInt(active[0][0]));
-        manager.deliver(levering4ID);
-        active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + levering4ID, false);
+        manager.deliver(delivery5ID);
+        active = sql.getStringTable("SELECT delivered FROM HCL_deliveries where delivery_id = " + delivery5ID, false);
         assertEquals(1, Integer.parseInt(active[0][0]));
-        assertEquals(-1, manager.deliver(11111));
+        //checks with wrong ID
+        assertEquals(-1, manager.deliver(99999999));
 
-        sql.deleteForGood("HCL_deliveries", "delivery_id", levering4ID);
-        sql.deleteForGood("HCL_order", "order_id", bestilling4ID);
-        sql.deleteForGood("HCL_customer", "customer_id", knutID);
+        sql.deleteForGood("HCL_deliveries", "delivery_id", delivery5ID);
+        sql.deleteForGood("HCL_order", "order_id", order4ID);
+        sql.deleteForGood("HCL_customer", "customer_id", cust4ID);
 
 
     }
@@ -151,17 +151,18 @@ public class DeliveryManagerTest {
 
     @Test
     public void complete() throws Exception{
-        //lager testobjekter
+        //making test-objects
         int lunaID = cManager.generate("Luna", "luna@hotmail.com", 75584788);
         int bestilling5ID = oManager.generate(lunaID, 123, "Orkanger", 7030, "2017-02-02");
         int levering5ID = manager.addDate(bestilling5ID, "2016-05-05");
 
-        //Sjekker om levering 5 er completed, og får til før svar om at den ikke er det, etterpå at den er det.
+        //Checks if delivery5 is completed, complete it, and then checks again.
         String [][] active = sql.getStringTable("SELECT completed FROM HCL_deliveries where delivery_id = " + levering5ID, false);
         assertEquals(0, Integer.parseInt(active[0][0]));
         manager.complete(levering5ID);
         active = sql.getStringTable("SELECT completed FROM HCL_deliveries where delivery_id = " + levering5ID, false);
         assertEquals(1, Integer.parseInt(active[0][0]));
+        //Checks with wrong parameters
         assertEquals(-1, manager.deliver(99999999));
 
         sql.deleteForGood("HCL_deliveries", "delivery_id", levering5ID);

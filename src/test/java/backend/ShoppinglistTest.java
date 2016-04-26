@@ -48,6 +48,7 @@ public class ShoppinglistTest {
     public void getShoppinglist() throws Exception {
         String[][] testList = manager.getShoppinglist(10);
         sql.print2dArray(testList);
+        //prints out the shoppinglist - which is correct according to the database
 
     }
 
@@ -55,9 +56,13 @@ public class ShoppinglistTest {
     public void addShoppinglist() throws Exception {
         String[][] testList = manager.getShoppinglist(10);
         sql.print2dArray(manager.getShoppinglist(10));
-        manager.addShoppinglist(testList);
+        //prints out the shoppinglist - which is correct according to the database
 
+        //adds the shoppinglist
+        manager.addShoppinglist(testList);
         sql.print2dArray(manager.getShoppinglist(10));
+        //prints out nothing, which is correct
+
 
 
     }
@@ -66,8 +71,9 @@ public class ShoppinglistTest {
     public void add() throws Exception {
         String[][] testList2 = manager.getShoppinglist(10);
         sql.print2dArray(manager.getShoppinglist(10));
-        manager.add(testList2, 0);
+        manager.add(testList2, 0);//removes the first row
         sql.print2dArray(manager.getShoppinglist(10));
+        //prints out correctly - the first row is now removed.
 
     }
 

@@ -23,118 +23,118 @@ public class IngredientManagerTest {
 
     @After
     public void tearDown() throws Exception {
-        sql.end();
         manager = null;
+        sql.end();
     }
 
     @Test
     public void generate() throws Exception{
 
-        //Lager ingrediens, sjekker at den finnes, sjekker at ingrediens med falsk id ikke eksisterer
-        int brunostID = manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
-        assertTrue(sql.rowExists("HCL_ingredient", "ingredient_id", brunostID));
+        //making test-objects
+        int ingID = manager.generate("Brunost", 5, 56, false, false, true, "kul mat", "2016-04-04", "2017-05-06");
+        assertTrue(sql.rowExists("HCL_ingredient", "ingredient_id", ingID));
         assertFalse(sql.rowExists("HCL_ingredient", "ingredient_id", 010101));
 
 
-        //Prøver å lage ukorrekte ingrediensobjekter, og sjekker om generate() sender riktig feilmelding
+        //Checking if fake objects return correctly
         assertEquals(-3,manager.generate (" ", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
         assertEquals(-3, manager.generate("Kyllingvinge ", -1, 40, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
 
-        //Sjekker at et objekt ikke kan bli laget to ganger
-        int ostID = manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06");
+        //checking that an object can't be duplicated.
+        int ing2ID = manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06");
         assertEquals(-1, manager.generate("Rødost", 5, 56, false, false, true, "mac er best", "2016-04-04", "2017-05-06"));
 
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", brunostID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", ostID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ingID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing2ID);
 
     }
 
     @Test
-    //Lager ingredient-objekter og henter ID
+    //Making test-objects
     public void edit() throws Exception {
-        int vinID = manager.generate("riesling cabinett", 1, 104, false, true, false, "hei", "2017-06-06", "2018-06-06");
-        int ølID = manager.generate("nordlands", 1, 32, false, true, false, "hei", "2017-06-06", "2018-06-06");
+        int ing3ID = manager.generate("riesling cabinett", 1, 104, false, true, false, "hei", "2017-06-06", "2018-06-06");
+        int ing4ID = manager.generate("nordlands", 1, 32, false, true, false, "hei", "2017-06-06", "2018-06-06");
 
-        //henter informasjon om vinen før og etter edit.
-        String førSetning = "SELECT * from HCL_ingredient where ingredient_id = " + vinID;
+        //printing information before and after edit.
+        String førSetning = "SELECT * from HCL_ingredient where ingredient_id = " + ing3ID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
-        } //Skriver ut "68, riesling cabinett, 1, 104, 0, 1, 0, hei, 2017-06-06, 2018-06-06"
+        } //printing "id, riesling cabinett, 1, 104, 0, 1, 0, hei, 2017-06-06, 2018-06-06"
 
 
-            manager.edit(vinID, 2,99, "god vin!");
+            manager.edit(ing3ID, 2,99, "god vin!");
 
-            String etterSetning = "SELECT * from HCL_ingredient where ingredient_id = " + vinID;
+            String etterSetning = "SELECT * from HCL_ingredient where ingredient_id = " + ing3ID;
             String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
             for(int i = 0; i < utskrift2[0].length; i++){
                 System.out.println(utskrift2[0][i]);
-            } //Skriver ut "68, riesling cabinett, 2, 99, 0, 1, 0, god vin!, 2017-06-06, 2018-06-06"
+            } //printing "id, riesling cabinett, 2, 99, 0, 1, 0, god vin!, 2017-06-06, 2018-06-06"
 
-            //Tester at ikke metoden kan bli brukt med feil
+            //Testing if right return when wrong parameters
             assertEquals(-1, manager.edit(99999999, 10, 80, "hallo"));
-            assertEquals(-3, manager.edit(ølID, -1, 80, "hallo" ));
-            assertEquals(-3, manager.edit(ølID, 10, -1, "hallo" ));
-            assertEquals(-3, manager.edit(ølID, 10, 80, "" ));
+            assertEquals(-3, manager.edit(ing4ID, -1, 80, "hallo" ));
+            assertEquals(-3, manager.edit(ing4ID, 10, -1, "hallo" ));
+            assertEquals(-3, manager.edit(ing4ID, 10, 80, "" ));
 
 
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", vinID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", ølID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing3ID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing4ID);
         }
 
 
 
    @Test
     public void delete() throws Exception {
-        //Lager testobjekter som kan slettes
-       int tranID = manager.generate("tran", 1, 60, false, false, false, "tas med teskje", "2017-06-06", "2018-06-06");
-       int sanasolID = manager.generate("nordlands", 1, 56, false, true, false, "vitaminer", "2017-06-06", "2018-06-06");
+        //making test-objects
+       int ing5ID = manager.generate("tran", 1, 60, false, false, false, "tas med teskje", "2017-06-06", "2018-06-06");
+       int ing6ID = manager.generate("nordlands", 1, 56, false, true, false, "vitaminer", "2017-06-06", "2018-06-06");
 
-        //Sjekker at tran finnes, sletter tran, og forsikrer seg om at tran er slettet
+        //checks that objects exists, deletes it and checks again.
         assertTrue(sql.rowExists("HCL_ingredient", "name", "tran"));
-        manager.delete(tranID);
+        manager.delete(ing5ID);
         assertFalse(sql.rowExists("HCL_ingredient", "name", "tran"));
 
-        //Sjekker at sletting gir riktig return.
-        assertEquals(1, manager.delete(sanasolID)); //Finnes, riktig
-        assertEquals(-1, manager.delete(99999999)); //Finnes ikke, riktig
+        //checking if deleting gets right return.
+        assertEquals(1, manager.delete(ing6ID));
+        assertEquals(-1, manager.delete(99999999));
 
-       sql.deleteForGood("HCL_ingredient", "ingredient_id", sanasolID);
-       sql.deleteForGood("HCL_ingredient", "ingredient_id", tranID);
+       sql.deleteForGood("HCL_ingredient", "ingredient_id", ing6ID);
+       sql.deleteForGood("HCL_ingredient", "ingredient_id", ing5ID);
 
     }
 
     @Test
     public void addStock() throws Exception{
 
-        int roseID = manager.generate("rose", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
-        int tulipanID = manager.generate("tulipan", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
+        int ing7ID = manager.generate("rose", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
+        int ing8ID = manager.generate("tulipan", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
 
-        //henter informasjon om antall roser før og etter edit.
-        String førSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + roseID;
+        //gets information before and after edit
+        String førSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + ing7ID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
-        } //Skriver ut "5, rose"
+        } //prints "5, rose"
 
 
-        manager.addStock(roseID, 14);
+        manager.addStock(ing7ID, 14);
 
-        String etterSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + roseID;
+        String etterSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + ing7ID;
         String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
         for(int i = 0; i < utskrift2[0].length; i++){
             System.out.println(utskrift2[0][i]);
-        } //Skriver ut "19, rose"
+        } //prints "19, rose"
 
 
-        //Sjekker at det sendes siktig return
-        assertEquals(1, manager.addStock(tulipanID, 14)); //Finnes, riktig
+        //checking for correct return
+        assertEquals(1, manager.addStock(ing8ID, 14)); //Finnes, riktig
         assertEquals(-1, manager.addStock(99999999, 14)); //Finnes ikke, riktig
-        assertEquals(-3, manager.addStock(tulipanID, 0)); //Feil parameter, riktig
+        assertEquals(-3, manager.addStock(ing8ID, 0)); //Feil parameter, riktig
 
 
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", roseID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", tulipanID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing7ID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing8ID);
 
     }
 
@@ -142,35 +142,35 @@ public class IngredientManagerTest {
     @Test
     public void removeStock() throws Exception{
 
-        int hestehovID = manager.generate("hestehov", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
-        int løvetannID = manager.generate("løvetann", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
+        int ing9ID = manager.generate("hestehov", 5, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
+        int ing10ID = manager.generate("løvetann", 7, 50, false, false, false, "liten bukett", "2017-06-06", "2018-06-06");
 
-        //henter informasjon om antall hetehover før og etter edit.
-        String førSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + hestehovID;
+        //gets information about the number of objects before and after removineStock
+        String førSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + ing9ID;
         String[][] utskrift1  = sql.getStringTable(  førSetning , false  );
         for(int i = 0; i < utskrift1[0].length; i++){
             System.out.println(utskrift1[0][i]);
-        } //Skriver ut "5, hestehov"
+        } //prints "5, hestehov"
 
 
-        manager.removeStock(hestehovID, 2);
+        manager.removeStock(ing9ID, 2);
 
-        String etterSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + hestehovID;
+        String etterSetning = "SELECT stock, name from HCL_ingredient where ingredient_id = " + ing9ID;
         String[][] utskrift2  = sql.getStringTable(  etterSetning , false  );
         for(int i = 0; i < utskrift2[0].length; i++){
             System.out.println(utskrift2[0][i]);
-        } //Skriver ut "3, hestehov"
+        } //prints "3, hestehov"
 
 
-        //Sjekker at det sendes siktig return
-        assertEquals(1, manager.removeStock(løvetannID, 1)); //Finnes, riktig
-        assertEquals(-1, manager.removeStock(1010, 14)); //Finnes ikke, riktig
-        assertEquals(-3, manager.removeStock(løvetannID, 0)); //Ugyldig parameter, riktig
-        assertEquals(-3, manager.removeStock(løvetannID, 20)); //Ugyldig parameter, riktig
+        //checking for correct return
+        assertEquals(1, manager.removeStock(ing10ID, 1));
+        assertEquals(-1, manager.removeStock(1010, 14));
+        assertEquals(-3, manager.removeStock(ing10ID, 0));
+        assertEquals(-3, manager.removeStock(ing10ID, 20));
 
 
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", løvetannID);
-        sql.deleteForGood("HCL_ingredient", "ingredient_id", hestehovID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing10ID);
+        sql.deleteForGood("HCL_ingredient", "ingredient_id", ing9ID);
 
     }
 
