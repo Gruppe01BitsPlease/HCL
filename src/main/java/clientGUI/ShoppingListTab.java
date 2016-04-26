@@ -130,7 +130,7 @@ class ShoppingListTab extends JPanel {
 			addBalance.addActionListener(e ->  {
 				int sure = JOptionPane.showConfirmDialog(AddWindow.this, "Add all of this item to stock?", "", JOptionPane.YES_NO_OPTION);
 				if (sure == 0) {
-					shop.add(shoppingList, ingredient_id);
+					shop.add(shoppingList, Stuff.findIndexOf(shoppingList, Integer.toString(ingredient_id), 0));
 					dispose();
 				}
 				refresh();
@@ -140,12 +140,12 @@ class ShoppingListTab extends JPanel {
 				refresh();
 			});
 			setLayout(new GridLayout(2, 1));
-			JPanel bottomPanel = new JPanel(new GridLayout(1, 3));
+			JPanel bottomPanel = new JPanel(new GridLayout(1, 0));
 			JPanel topPanel = new JPanel(new GridLayout(1, 2));
 			topPanel.add(amountLabel);
 			topPanel.add(amountField);
 			bottomPanel.add(add);
-			bottomPanel.add(addBalance);
+			//bottomPanel.add(addBalance);
 			bottomPanel.add(cancel);
 			add(topPanel);
 			add(bottomPanel);
