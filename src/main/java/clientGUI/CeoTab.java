@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Creates the JPanel that is used as a tab in tabbedMenu
+ * Creates the JPanel that is used as a tab in TabbedMenu
  */
 class CeoTab extends JPanel {
     private EmployeeTab empTab;

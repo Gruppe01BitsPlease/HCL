@@ -22,7 +22,7 @@ class GenericList extends JPanel {
 	private String[][] searchTable;
 	private String[] titles;
 	private String[] SqlColumnNames;
-	private String[] dataTypes;
+	private DataTyper.DataType[] dataTypes;
     private DefaultTableModel tabModel;
 	private DefaultTableModel searchTableMod;
 	private String[][] linkTables;
@@ -54,11 +54,11 @@ class GenericList extends JPanel {
 		fillTable();
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 		if (dataTypes == null) {
-			dataTypes = new String[1];
+			dataTypes = new DataTyper.DataType[1];
 		}
 		if (FKs != null) {
 			for (int i = 0; i < FKs.length; i++) {
-				dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
+				dataTypes[Integer.parseInt(FKs[i][1])] = DataTyper.DataType.FOREIGN;
 			}
 		}
 		this.SqlTableName = SqlTableName;
@@ -112,7 +112,7 @@ class GenericList extends JPanel {
 			dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
 			if (FKs != null) {
 				for (int i = 0; i < FKs.length; i++) {
-					dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
+					dataTypes[Integer.parseInt(FKs[i][1])] = DataTyper.DataType.FOREIGN;
 				}
 			}
 			System.out.println(Arrays.toString(SqlColumnNames));
@@ -251,13 +251,12 @@ class GenericList extends JPanel {
 						int sure = JOptionPane.showOptionDialog(EditWindow.this, "Are you sure?", "Update", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
 						if (sure == 0) {
 							boolean success = true;
-							//fields = editFields.getFields();
 							String[] newValues = editFields.getNewValues();
 							if (!newEntry) {
 								for (int i = 1; i < newValues.length; i++) {
 									boolean valid = true;
 									//checks if number is valid
-									if (dataTypes[i].equals("int")) {
+									if (dataTypes[i] == DataTyper.DataType.INT) {
 										try {
 											int value = Integer.parseInt(newValues[i]);
 										}
@@ -268,7 +267,7 @@ class GenericList extends JPanel {
 										}
 									}
 									if (valid && (newValues[i] != null && !(newValues[i].equals("")) && !(newValues[i].equals(selected[i])))) {
-										if (dataTypes[i].equals("boolean")) {
+										if (dataTypes[i] == DataTyper.DataType.BOOLEAN) {
 											System.out.println("Boolean value: " + newValues[i]);
 											if (newValues[i].equals("true")) {
 												sql.update(SqlTableName, SqlColumnNames[i], SqlColumnNames[0], selected[0], true);
@@ -285,7 +284,20 @@ class GenericList extends JPanel {
 									}
 								}
 							} else if (newEntry) {
-								if (!(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
+								boolean valid = true;
+								for (int i = 0; i < dataTypes.length; i++) {
+									if (dataTypes[i] == DataTyper.DataType.INT) {
+										try {
+											Integer.parseInt(newValues[i]);
+										}
+										catch (Exception k) {
+											valid = false;
+											success = false;
+											JOptionPane.showMessageDialog(EditWindow.this, "Please enter a valid number in field: " + titles[i]);
+										}
+									}
+								}
+								if (valid && !(sql.rowExists(SqlTableName, SqlColumnNames[0], newValues[0]))) {
 									int res = GenericList.this.generate(newValues);
 									if (res == -2) {
 										JOptionPane.showMessageDialog(EditWindow.this, "Database Error!");
@@ -298,9 +310,6 @@ class GenericList extends JPanel {
 										success = false;
 									}
 									//System.out.println(res);
-								} else {
-									//ID numbers are generated now, this should never happen
-									JOptionPane.showMessageDialog(EditWindow.this, "Entry already exists! Choose a different ID number.");
 								}
 							}
 							for (LinkTab tab : linkTabs) {

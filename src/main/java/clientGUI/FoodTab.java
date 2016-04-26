@@ -6,7 +6,7 @@ import backend.SQL;
 import java.awt.*;
 
 /**
- * Creates the JPanel that is used as a tab in tabbedMenu
+ * Creates the JPanel that is used as a tab in TabbedMenu
  */
 class FoodTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_food WHERE active = 1";

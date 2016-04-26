@@ -12,7 +12,7 @@ import java.awt.event.MouseEvent;
 import java.time.LocalDate;
 
 /**
- * Creates the JPanel that is used as a tab in tabbedMenu
+ * Creates the JPanel that is used as a tab in TabbedMenu
  */
 class DriverTab extends JPanel {
 	private String query = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0";

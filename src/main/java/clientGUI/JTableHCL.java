@@ -18,17 +18,19 @@ class JTableHCL extends JTable {
 		return false;
 	}
 	public void removeIDs() {
+		//This method hides ID numbers from the user, and replaces boolean 0's and 1's with checkmarks
+		//It simply sets the width to zero, to keep the data in the jtable
 		TableModel tabModel = this.getModel();
 		for (int i = tabModel.getColumnCount() - 1; i >= 0; i--) {
-			String type = DataTyper.getDataType(tabModel.getColumnName(i));
-			if (type.equals("id") || type.equals("active")) {
+			DataTyper.DataType type = DataTyper.getDataType(tabModel.getColumnName(i));
+			if (type == DataTyper.DataType.ID || type == DataTyper.DataType.ACTIVE) {
 				TableColumn column = getColumnModel().getColumn(i);
 				column.setMinWidth(50);
 				column.setMaxWidth(50);
 				column.setWidth(50);
 				column.setPreferredWidth(50);
 			}
-			else if (type.equals("boolean")) {
+			else if (type == DataTyper.DataType.BOOLEAN) {
 				for (int j = 0; j < tabModel.getRowCount(); j++) {
 					if (tabModel.getValueAt(j, i).equals("1")) {
 						tabModel.setValueAt("\u2713", j, i);

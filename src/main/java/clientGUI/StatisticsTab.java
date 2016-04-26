@@ -12,7 +12,7 @@ import static clientGUI.MyJFreeChart.getNewDefaultTableModel;
 import static clientGUI.MyJFreeChart.getStats;
 
 /**
- * Creates the JPanel and adds the chart that is used as a tab in tabbedMenu
+ * Creates the JPanel and adds the chart that is used as a tab in TabbedMenu
  */
 public class StatisticsTab extends JPanel{
     private SQL sql;

@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 /**
- * Creates the JPanel that is used as a tab in tabbedMenu
+ * Creates the JPanel that is used as a tab in TabbedMenu
  */
 class ChefTab extends JPanel {
 	private String query = "SELECT delivery_id, adress, delivery_date FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_order.active = 1 AND HCL_deliveries.active = 1 AND completed = 0 AND delivered=0";

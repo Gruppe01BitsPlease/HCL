@@ -147,42 +147,74 @@ class OrderTab extends GenericList {
                 JButton cancel = new JButton("Cancel");
                 setLayout(new GridLayout(1, 2));
 
-                save.addActionListener( e-> { // FIXME: 22.04.2016
+                save.addActionListener( e-> {
                     int sure = JOptionPane.showConfirmDialog(EditWindow.this, "Are you sure?", "", JOptionPane.YES_NO_OPTION);
                     if (sure == 0) {
                         String[] newValues = editFields.getNewValues();
+                        boolean success = true;
                         if (newOrder) {
-                            order_id = generate(newValues);
+                            boolean valid = true;
+                            DataTyper.DataType[] dataTypes = DataTyper.getDataTypesSQL(titles[0]);
+                            for (int i = 0; i < dataTypes.length; i++) {
+                                if (dataTypes[i] == DataTyper.DataType.INT) {
+                                    try {
+                                        Integer.parseInt(newValues[i]);
+                                    }
+                                    catch (Exception k) {
+                                        JOptionPane.showMessageDialog(EditWindow.this, "Please enter a valid number in field: " + titles[1][i]);
+                                        valid = false;
+                                        success = false;
+                                    }
+                                }
+                            }
+                            if (valid) {
+                                order_id = generate(newValues);
+                            }
                         }
-                        System.out.println("New values: " + Arrays.toString(newValues));
-                        System.out.println("Selected original: " + Arrays.toString(selected));
-                        if (!newOrder) {
-                            for (int i = 0; i < newValues.length; i++) {
-                                if (!(newValues[i].equals(selected[i]))) {
-                                    sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
+                        else if (!newOrder) {
+                            boolean valid = true;
+                            DataTyper.DataType[] dataTypes = DataTyper.getDataTypesSQL(titles[0]);
+                            for (int i = 0; i < dataTypes.length; i++) {
+                                if (dataTypes[i] == DataTyper.DataType.INT && !(newValues[i].equals("") || newValues[i] == null)) {
+                                    try {
+                                        Integer.parseInt(newValues[i]);
+                                    }
+                                    catch (Exception k) {
+                                        JOptionPane.showMessageDialog(EditWindow.this, "Please enter a valid number in field: " + titles[1][i]);
+                                        valid = false;
+                                        success = false;
+                                    }
+                                }
+                            }
+                            if (valid) {
+                                for (int i = 0; i < newValues.length; i++) {
+                                    if (!(newValues[i].equals(selected[i])) && !(newValues[i].equals("") || newValues[i] == null)) {
+                                        sql.update("HCL_order", titles[0][i], "order_id", Integer.toString(order_id), newValues[i]);
+                                    }
                                 }
                             }
                         }
-
-                        DeliveryManager mng = new DeliveryManager(sql);
-                        int removeResult = 0;
-                        int addResult = 0;
-                        for (int i = 0; i < dateArray.length; i++) {
-                            System.out.println("Date: " + dateArray[i][2]);
-                            String value = (String) subModel.getValueAt(i, 2);
-                            if (value.contains(Stuff.setBold())) {
-                                addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
-                            }
-                            if (value.contains(Stuff.setGrey())) {
-                                //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
-                                if (dateArray[i][0] != null) {
-                                    removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
+                        if (success) {
+                            DeliveryManager mng = new DeliveryManager(sql);
+                            int removeResult = 0;
+                            int addResult = 0;
+                            for (int i = 0; i < dateArray.length; i++) {
+                                System.out.println("Date: " + dateArray[i][2]);
+                                String value = (String) subModel.getValueAt(i, 2);
+                                if (value.contains(Stuff.setBold())) {
+                                    addResult = mng.addDate(order_id, Stuff.removeHTML(dateArray[i][2]));
+                                }
+                                if (value.contains(Stuff.setGrey())) {
+                                    //System.out.println("Removing delivery id: "+Integer.parseInt(dateArray[i][0]));
+                                    if (dateArray[i][0] != null) {
+                                        removeResult = mng.removeDate(Integer.parseInt(Stuff.removeHTML(dateArray[i][0])));
+                                    }
                                 }
                             }
+                            dispose();
+                            foodTab.generate();
+                            refresh();
                         }
-                        dispose();
-                        foodTab.generate();
-                        refresh();
                     }
                 });
                 cancel.addActionListener(e->{

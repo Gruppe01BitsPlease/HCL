@@ -5,130 +5,133 @@ package clientGUI;
  * 	Data types are mostly used for edit windows
  */
 abstract class DataTyper {
-	public static String getDataType(String UIName) {
+	public static DataType getDataType(String UIName) {
 		String[] data = { UIName };
-		String[] ret = getDataTypes(data);
+		DataType[] ret = getDataTypes(data);
 		return ret[0];
 	}
-	public static String[] getDataTypesSQL(String[] sqlNames) {
+	public static DataType[] getDataTypesSQL(String[] sqlNames) {
 		return getDataTypes(ColumnNamer.getNamesFromArray(sqlNames));
 	}
-	public static String[] getDataTypes(String[] UINames) {
-		String[] ret = new String[UINames.length];
+	public enum DataType {
+		ID, STRING, INT, BOOLEAN, CURDATE, DATE, ACTIVE, FOREIGN
+	}
+	public static DataType[] getDataTypes(String[] UINames) {
+		DataType[] ret = new DataType[UINames.length];
 		for (int i = 0; i < UINames.length; i++) {
 			if (UINames[i].equals("Customer")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Customer name")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Name")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("E-mail")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Telephone")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Food ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Price")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Ingredient ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Amount")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("In stock")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Purchase price")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Contains nuts")) {
-				ret[i] = "boolean";
+				ret[i] = DataType.BOOLEAN;
 			}
 			else if (UINames[i].equals("Contains gluten")) {
-				ret[i] = "boolean";
+				ret[i] = DataType.BOOLEAN;
 			}
 			else if (UINames[i].equals("Contains lactose")) {
-				ret[i] = "boolean";
+				ret[i] = DataType.BOOLEAN;
 			}
 			else if (UINames[i].equals("Other info")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Purchase date")) {
-				ret[i] = "curdate";
+				ret[i] = DataType.CURDATE;
 			}
 			else if (UINames[i].equals("Expiration date")) {
-				ret[i] = "date";
+				ret[i] = DataType.DATE;
 			}
 			else if (UINames[i].equals("Order ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Address")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Order date")) {
-				ret[i] = "curdate";
+				ret[i] = DataType.CURDATE;
 			}
 			else if (UINames[i].equals("Delivery date")) {
-				ret[i] = "curdate";
+				ret[i] = DataType.CURDATE;
 			}
 			else if (UINames[i].equals("Package ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Date ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Date")) {
-				ret[i] = "date";
+				ret[i] = DataType.DATE;
 			}
 			else if (UINames[i].equals("User ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("User name")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("First name")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Last name")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("E-mail")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Telephone")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Address")) {
-				ret[i] = "string";
+				ret[i] = DataType.STRING;
 			}
 			else if (UINames[i].equals("Post code")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Start date")) {
-				ret[i] = "curdate";
+				ret[i] = DataType.CURDATE;
 			}
 			else if (UINames[i].equals("Post code")) {
-				ret[i] = "int";
+				ret[i] = DataType.INT;
 			}
 			else if (UINames[i].equals("Delivered")) {
-				ret[i] = "boolean";
+				ret[i] = DataType.BOOLEAN;
 			}
 			else if (UINames[i].equals("Active")) {
-				ret[i] = "active";
+				ret[i] = DataType.ACTIVE;
 			}
 			else if (UINames[i].equals("ID")) {
-				ret[i] = "id";
+				ret[i] = DataType.ID;
 			}
 			else if (UINames[i].equals("Completed")) {
-				ret[i] = "boolean";
+				ret[i] = DataType.BOOLEAN;
 			}
 			else {
 				System.out.println("ERROR no data type found: " + UINames[i]);
