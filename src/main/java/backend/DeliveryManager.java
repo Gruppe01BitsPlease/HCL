@@ -196,7 +196,7 @@ public class DeliveryManager {
 
         int weekCounter = 0;
 
-        while(!Period.between(current,end).isZero()){
+        while(!Period.between(current,end).isNegative()){
 
             for(DayOfWeek day : days){
                 if(current.getDayOfWeek().equals(day)){ addDate(order_id,current.toString());}
