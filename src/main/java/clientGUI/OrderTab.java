@@ -73,6 +73,7 @@ class OrderTab extends GenericList {
             this.order_id = order_id;
             this.newOrder = newOrder;
             setSize(Stuff.getWindowSize(0.5,0.5));
+            setResizable(false);
             setTitle("Order");
             setLayout(new BorderLayout());
             setAlwaysOnTop(true);

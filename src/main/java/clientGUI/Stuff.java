@@ -456,6 +456,7 @@ class LinkTab extends JPanel {
 	class InputBox extends JFrame {
 		public InputBox(String[] selectedLink, boolean newLink) {
 			setSize(Stuff.getWindowSize(0.3, 0.2));
+			setResizable(false);
 			setLayout(new GridLayout(3, 2));
 			setLocationRelativeTo(null);
 			setAlwaysOnTop(true);
@@ -801,7 +802,7 @@ class UserEditMenu extends JFrame {
 	private class RoleChangeBox extends JFrame {
 		public RoleChangeBox(String user_name) {
 			setResizable(false);
-			setSize(Stuff.getWindowSize(0.3,0.2));
+			setSize(Stuff.getWindowSize(0.3,0.15));
 			setLayout(new GridLayout(2, 2));
 			setTitle("Change user role");
 			setLocationRelativeTo(null);
