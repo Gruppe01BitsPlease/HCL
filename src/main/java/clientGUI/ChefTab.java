@@ -17,6 +17,7 @@ import java.util.Arrays;
  */
 class ChefTab extends JPanel {
 	private String query = "SELECT delivery_id, adress, delivery_date FROM HCL_deliveries JOIN HCL_order ON (HCL_deliveries.order_id = HCL_order.order_id) WHERE HCL_order.active = 1 AND HCL_deliveries.active = 1 AND completed = 0 AND delivered=0";
+	//private String query = "";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;
@@ -37,7 +38,10 @@ class ChefTab extends JPanel {
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(scroller, BorderLayout.CENTER);
 		northPanel.add(new SouthBar(), BorderLayout.SOUTH);
-		table.setRowSelectionInterval(0,0);
+		try {
+			table.setRowSelectionInterval(0, 0);
+		}
+		catch (Exception e) {}
 		ViewVindow bottom;
 		try {
 			bottom = new ViewVindow(Integer.parseInt((String) table.getValueAt(table.getSelectedRow(), 0)));

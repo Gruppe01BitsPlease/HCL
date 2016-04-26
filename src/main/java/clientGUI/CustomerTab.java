@@ -10,6 +10,7 @@ import java.awt.*;
  */
 class CustomerTab extends GenericList {
 	private static String query = "SELECT * FROM HCL_customer WHERE active = 1";
+	//private static String query = "";
 	private SQL sql;
 	public CustomerTab(SQL sql, int role) {
 		super(query, "HCL_customer", null, null, sql, role, 1);

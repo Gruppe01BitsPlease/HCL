@@ -336,8 +336,8 @@ public class SQL {
 
 			if(header){
 				out = arrayWithCorrectSize(query, true);
-				for (int i = 1; i <= colomns; i++) {
-					out[0][i - 1] = meta.getColumnName(i); // Legger inn s�ylenavnene i �verste rad? hopefully
+				for (int i = 0; i < colomns; i++) {
+					out[0][i] = meta.getColumnName(i + 1); // Legger inn s�ylenavnene i �verste rad? hopefully
 				}
 				int i = 1;
 				while (res.next() && i < out.length) {
@@ -385,9 +385,21 @@ public class SQL {
 	 * Returns only the column names from the database
      */
 	public String[] getColumnNames(String query) {
-
-		return getStringTable(query, true)[0];
-
+		//return getStringTable(query, true)[0];
+		try {
+			ResultSet res = query(query);
+			ResultSetMetaData meta = res.getMetaData();
+			int columns = meta.getColumnCount();
+			String[] ret = new String[columns];
+			for (int i = 0; i < ret.length; i++) {
+				ret[i] = meta.getColumnName(i + 1);
+			}
+			return ret;
+		}
+		catch (SQLException e) {
+			System.out.println(e.toString());
+			return null;
+		}
 	}
 
     /**

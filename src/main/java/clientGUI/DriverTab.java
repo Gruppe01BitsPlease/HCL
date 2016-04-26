@@ -15,8 +15,8 @@ import java.time.LocalDate;
  * Creates the JPanel that is used as a tab in tabbedMenu
  */
 class DriverTab extends JPanel {
-	//private String query = "SELECT date_id, adress, delivery_date FROM HCL_order WHERE active = 1 AND delivered = 0 ORDER BY delivery_date ASC";
 	private String query = "SELECT delivery_id, adress, delivery_date, postnr, completed FROM HCL_deliveries NATURAL JOIN HCL_order WHERE active = 1 AND delivered = 0";
+	//private String query = "";
 	private String[][] data;
 	private String[] titles;
 	private SQL sql;

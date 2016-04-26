@@ -17,6 +17,7 @@ class OrderTab extends GenericList {
     private static String query = "SELECT order_id, customer_name, price, adress, postnr" +
             " , order_date, active FROM HCL_order NATURAL JOIN HCL_customer  WHERE HCL_order.active = 1 " +
             "ORDER BY customer_name ASC";
+    //private static String query = "";
     private static String[][] foreignKeys = {{ "SELECT DISTINCT customer_id, customer_name FROM HCL_customer WHERE active=1;", "1" }};
     //Tab name, foreign PK, link table name, other table name, foreign identifier
     private SQL sql;

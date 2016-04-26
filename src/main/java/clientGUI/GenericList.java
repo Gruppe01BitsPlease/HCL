@@ -48,8 +48,14 @@ class GenericList extends JPanel {
 		}
 		this.table = sql.getStringTable(query, false);
 		SqlColumnNames = sql.getColumnNames(query);
+		if (SqlColumnNames == null) {
+			SqlColumnNames = new String[1];
+		}
 		fillTable();
 		dataTypes = DataTyper.getDataTypesSQL(SqlColumnNames);
+		if (dataTypes == null) {
+			dataTypes = new String[1];
+		}
 		if (FKs != null) {
 			for (int i = 0; i < FKs.length; i++) {
 				dataTypes[Integer.parseInt(FKs[i][1])] = FKs[i][0];
